@@ -21,7 +21,7 @@ const MainLayout: FC<{
       className={`${poppins.variable} ${poppins.className} relative min-h-screen w-screen bg-white text-gray-900`}
     >
       <Header />
-      <main>{children}</main>
+      <main className="bg-green-500 h-screen">{children}</main>
     </div>
   );
 };

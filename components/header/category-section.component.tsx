@@ -1,19 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Menu,
-  ShoppingBag,
-  Phone,
-  Stethoscope,
-  Smartphone,
-  Shirt,
-  Laptop,
-  Home,
-  Bell,
-  Upload,
-} from "lucide-react";
+// types
+import type { FC } from "react";
 
-export default function CategorySection() {
+// local components
+import Tooltip from "@/components/common/tooltip.component";
+
+// icons
+import { Menu, Phone, Stethoscope, Smartphone, Upload } from "lucide-react";
+
+const CategorySection: FC = () => {
   return (
     <header className="bg-orange-500 px-3 py-1 sm:px-5">
       <div className="max-w-8xl mx-auto flex items-center justify-between gap-4 text-white">
@@ -60,23 +56,65 @@ export default function CategorySection() {
                 href: "/home-kitchen",
                 label: "Home & Kitchen",
               },
-            ].map(({ href, label, icon: Icon }) => (
-              <Link
-                key={label}
-                href={href}
-                className="flex items-center gap-2 rounded-md py-1.5 transition-colors group"
-              >
-                {Icon && (
-                  <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
-                    <Icon
-                      className="size-4 text-orange-500"
-                      strokeWidth={2.5}
-                    />
-                  </div>
-                )}
-                <span className="text-sm font-medium text-white group-hover:underline">{label}</span>
-              </Link>
-            ))}
+            ].map(({ href, label, icon: Icon }) => {
+              if (label == "Quick Order") {
+                return (
+                  <Tooltip
+                    className="z-50 rounded-xl bg-white py-1 font-semibold"
+                    content={
+                      <div className="space-y-1 px-3 py-1.5">
+                        <p className="tracking-wide text-orange-500">
+                          Call us now to order
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-lime-400">
+                            <Phone className="size-4 fill-gray-900" />
+                          </span>
+                          <span className="text-[15px]">+91 94157 61434</span>
+                        </div>
+                      </div>
+                    }
+                  >
+                    <Link
+                      key={label}
+                      href={href}
+                      className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
+                    >
+                      {Icon && (
+                        <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
+                          <Icon
+                            className="size-4 text-orange-500"
+                            strokeWidth={2.5}
+                          />
+                        </div>
+                      )}
+                      <span className="text-sm font-medium text-white group-hover:underline">
+                        {label}
+                      </span>
+                    </Link>
+                  </Tooltip>
+                );
+              }
+              return (
+                <Link
+                  key={label}
+                  href={href}
+                  className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
+                >
+                  {Icon && (
+                    <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
+                      <Icon
+                        className="size-4 text-orange-500"
+                        strokeWidth={2.5}
+                      />
+                    </div>
+                  )}
+                  <span className="text-sm font-medium text-white group-hover:underline">
+                    {label}
+                  </span>
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
@@ -119,4 +157,6 @@ export default function CategorySection() {
       </div>
     </header>
   );
-}
+};
+
+export default CategorySection;
