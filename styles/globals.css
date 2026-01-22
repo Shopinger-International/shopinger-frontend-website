@@ -6,3 +6,8 @@
   --color-bg-primary: #ff740a;
   --color-text-primary: #353535;
 }
+
+@theme {
+  --width-8xl: 96rem;
+  --max-width-8xl: 96rem;
+}

@@ -7,6 +7,7 @@ import type { FC } from "react";
 // local components
 import Searchbar from "@/components/header/searchbar.component";
 import Cart from "@/components/common/icons/cart.icon";
+import CategorySection from "@/components/header/category-section.component";
 
 // external components
 import {
@@ -42,7 +43,7 @@ const Header: FC<HeaderProps> = () => {
     <div className="fixed top-0 z-30 w-full bg-black">
       {/** HEADER */}
       <header className="w-full">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-10 py-2.5">
+        <div className="mx-auto flex w-full max-w-8xl items-center justify-between gap-10 py-2.5">
           {/** LOGO SECTION */}
           <div className="items-center justify-center lg:h-14 xl:flex">
             <Link
@@ -203,6 +204,7 @@ const Header: FC<HeaderProps> = () => {
           </button>
         </div>
       </header>
+      <CategorySection />
     </div>
   );
 };
