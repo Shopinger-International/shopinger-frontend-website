@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 
+// local components
+import PromoBanner from "@/components/home/promo-banner.component";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -12,6 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export default function Home() {
-  return <div>
-  </div>;
+  return (
+    <div className="mt-33.25">
+      <PromoBanner />
+    </div>
+  );
 }

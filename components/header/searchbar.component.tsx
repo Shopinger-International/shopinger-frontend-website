@@ -2,7 +2,6 @@ import Image from "next/image";
 import { useState, useEffect, Fragment } from "react";
 // types
 import type { FC } from "react";
-import type { ICategory } from "@/types/categories";
 import type { IProduct } from "@/types/product";
 
 // external components
@@ -31,18 +30,16 @@ import Axios from "@/lib/axios";
 // react query
 import { useQuery, useMutation } from "@tanstack/react-query";
 
-const Searchbar: FC = () => {
+// hooks
+import useCategories from "@/hooks/use-categories";
+
+const Searchbar: FC<{
+  className: string;
+}> = ({ className }) => {
   const [search_value, setSearchValue] = useState("");
   const [debounced_search_value, setDebouncedSearchValue] = useState("");
   const [selected_category, setSelectedCategory] = useState("Menu");
-
-  const { data: categories = [] } = useQuery<ICategory[], Error>({
-    queryKey: ["categories-list"],
-    queryFn: async () => {
-      const { data } = await Axios.get<ICategory[]>("/categories");
-      return data;
-    },
-  });
+  const { data: categories = [] } = useCategories();
 
   const { data: search_product_list = [] } = useQuery<IProduct[], Error>({
     queryKey: ["search-product-list", debounced_search_value],
@@ -64,7 +61,12 @@ const Searchbar: FC = () => {
     };
   }, [search_value]);
   return (
-    <div className="mx-auto flex w-full max-w-xl items-stretch rounded-lg border border-orange-500 bg-white">
+    <div
+      className={clsx(
+        "flex w-full items-stretch rounded-lg border border-orange-500 bg-white lg:max-w-xl",
+        className,
+      )}
+    >
       {/* Category Dropdown */}
       <Menu as="div" className="relative">
         <MenuButton
@@ -182,30 +184,3 @@ const Searchbar: FC = () => {
 };
 
 export default Searchbar;
-
-// const PRODUCTS: Product[] = [
-//   { id: 1, name: "iPhone 15", sku: "APL-IP15" },
-//   { id: 2, name: "Samsung Galaxy S24", sku: "SMS-S24" },
-//   { id: 3, name: "Pixel 8", sku: "GGL-P8" },
-//   { id: 4, name: "OnePlus 12", sku: "OP-12" },
-//   { id: 5, name: "Nothing Phone 2", sku: "NP-2" },
-// ];
-
-// export default function ProductSearchCombobox() {
-//   const [query, setQuery] = useState("");
-//   const [selected, setSelected] = useState<Product | null>(null);
-
-//   const filteredProducts = useMemo(() => {
-//     if (!query) return PRODUCTS;
-
-//     return PRODUCTS.filter((product) =>
-//       `${product.name} ${product.sku}`
-//         .toLowerCase()
-//         .includes(query.toLowerCase())
-//     );
-//   }, [query]);
-
-//   return (
-
-//   );
-// }

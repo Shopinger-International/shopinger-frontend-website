@@ -1,17 +1,41 @@
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 // types
 import type { FC } from "react";
+import type { ICategory } from "@/types/categories";
 
 // local components
 import Tooltip from "@/components/common/tooltip.component";
+import AIAssistant from "../common/ai-chat-box.component";
 
 // icons
 import { Menu, Phone, Stethoscope, Smartphone, Upload } from "lucide-react";
 
+// hooks
+import useCategories from "@/hooks/use-categories";
+
+function getRandomCategories<T>(arr: T[], count = 3) {
+  const copy = [...arr];
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+
+  return copy.slice(0, count);
+}
+
 const CategorySection: FC = () => {
+  const { data: categories = [] } = useCategories();
+  const [selected_category, setSelectedCategory] = useState<ICategory | null>();
+
+  const random_categories = useMemo(() => {
+    return getRandomCategories<ICategory>(categories, 4);
+  }, [categories]);
+  console.log("value of random_categories", random_categories);
   return (
-    <header className="bg-orange-500 px-3 py-1 sm:px-5">
+    <div className="bg-orange-500 px-3 py-1 sm:px-5">
       <div className="max-w-8xl mx-auto flex items-center justify-between gap-4 text-white">
         {/* Left Section: Menu + Navigation */}
         <div className="flex items-center gap-4">
@@ -39,22 +63,6 @@ const CategorySection: FC = () => {
                 href: "/medical",
                 label: "Medical",
                 icon: Stethoscope,
-              },
-              {
-                href: "/mobiles",
-                label: "Mobiles",
-              },
-              {
-                href: "/fashion",
-                label: "Fashion",
-              },
-              {
-                href: "/electronics",
-                label: "Electronics",
-              },
-              {
-                href: "/home-kitchen",
-                label: "Home & Kitchen",
               },
             ].map(({ href, label, icon: Icon }) => {
               if (label == "Quick Order") {
@@ -95,6 +103,7 @@ const CategorySection: FC = () => {
                   </Tooltip>
                 );
               }
+
               return (
                 <Link
                   key={label}
@@ -113,6 +122,18 @@ const CategorySection: FC = () => {
                     {label}
                   </span>
                 </Link>
+              );
+            })}
+            {random_categories.map(({ name, id }) => {
+              return (
+                <span
+                  key={`category-${id}`}
+                  className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
+                >
+                  <span className="text-sm font-medium text-white group-hover:underline">
+                    {name}
+                  </span>
+                </span>
               );
             })}
           </nav>
@@ -140,22 +161,24 @@ const CategorySection: FC = () => {
           </button>
 
           {/* Profile/Notification */}
-          <div className="w flex flex-col items-center gap-0.5">
-            <span className="flex size-8 items-center justify-center rounded-full bg-white">
-              <Image
-                src="/header/barsati.png"
-                alt="barsati"
-                width={17}
-                height={20}
-              />
-            </span>
-            <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
-              Barsati
-            </span>
-          </div>
+          <Tooltip content={<AIAssistant />}>
+            <div className="w flex flex-col items-center gap-0.5">
+              <span className="flex size-8 items-center justify-center rounded-full bg-white">
+                <Image
+                  src="/header/barsati.png"
+                  alt="barsati"
+                  width={17}
+                  height={20}
+                />
+              </span>
+              <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
+                Barsati
+              </span>
+            </div>
+          </Tooltip>
         </div>
       </div>
-    </header>
+    </div>
   );
 };
 
