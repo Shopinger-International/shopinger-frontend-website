@@ -211,41 +211,37 @@ const CategorySection: FC = () => {
         </div>
       </div>
       {selected_category && (
-        <div className="max-w-8xl mx-auto flex items-center gap-6 bg-white px-4 py-2 text-gray-900 shadow-lg">
-          {/* Fixed label */}
-          <span className="shrink-0 text-lg font-semibold text-orange-500">
-            {selected_category.name}
-          </span>
+        <div className="sticky top-[56px] z-40 bg-white shadow-lg">
+          <div className="max-w-8xl mx-auto flex items-center gap-6 px-4 py-2 text-gray-900">
+            <span className="shrink-0 text-lg font-semibold text-orange-500">
+              {selected_category.name}
+            </span>
 
-          {/* Scrollable content */}
-          <nav
-            ref={sub_nav_ref}
-            className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap"
-          >
-            {selected_category?.subCategories.map(({ id, name }) => (
-              <span
-                key={`sub-category-${id}`}
-                className="group flex shrink-0 items-center gap-2 rounded-md py-1.5 transition-colors"
-              >
-                <span className="text-sm font-medium group-hover:underline">
-                  {name}
+            <nav
+              ref={sub_nav_ref}
+              className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap"
+            >
+              {selected_category.subCategories.map(({ id, name }) => (
+                <span
+                  key={`sub-category-${id}`}
+                  className="group flex shrink-0 items-center gap-2 rounded-md py-1.5"
+                >
+                  <span className="text-sm font-medium group-hover:underline">
+                    {name}
+                  </span>
                 </span>
-              </span>
-            ))}
-          </nav>
-          {/* Right arrow */}
-          <button
-            onClick={() =>
-              sub_nav_ref.current?.scrollBy({
-                left: 200,
-                behavior: "smooth",
-              })
-            }
-            className="shrink-0 rounded-full p-1 hover:bg-gray-100"
-            aria-label="Scroll right"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
+              ))}
+            </nav>
+
+            <button
+              onClick={() =>
+                sub_nav_ref.current?.scrollBy({ left: 200, behavior: "smooth" })
+              }
+              className="shrink-0 rounded-full p-1 hover:bg-gray-100"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+          </div>
         </div>
       )}
     </>

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -32,8 +33,26 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = () => {
+  useEffect(() => {
+    const header = document.getElementById("app-header");
+    if (!header) return;
+
+    const setHeight = () => {
+      document.documentElement.style.setProperty(
+        "--header-height",
+        `${header.offsetHeight + 16}px`,
+      );
+    };
+
+    setHeight();
+
+    const observer = new ResizeObserver(setHeight);
+    observer.observe(header);
+
+    return () => observer.disconnect();
+  }, []);
   return (
-    <header className="fixed top-0 z-30 w-full bg-black">
+    <header className="fixed top-0 z-30 w-full bg-black" id="app-header">
       <div
         className={clsx(
           "mx-auto grid w-full",
@@ -166,7 +185,7 @@ const Header: FC<HeaderProps> = () => {
                 <Triangle
                   className={clsx(
                     "size-3 fill-white transition-transform",
-                    "rotate-0 group-hover:rotate-180",
+                    "rotate-180 group-hover:rotate-0",
                   )}
                 />
               </button>
