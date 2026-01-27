@@ -174,21 +174,23 @@ const Header: FC<HeaderProps> = () => {
                 </div>
               }
             >
-              <button
-                className={clsx(
-                  "flex items-center gap-2 rounded-full px-3 py-2 text-white",
-                  "group transition hover:bg-white/10 focus:outline-none",
-                )}
-              >
-                <CircleUserRound className="size-6" strokeWidth={1.5} />
-                <span className="font-semibold">Login</span>
-                <Triangle
+              {({ open }) => (
+                <button
                   className={clsx(
-                    "size-3 fill-white transition-transform",
-                    "rotate-180 group-hover:rotate-0",
+                    "flex items-center gap-2 rounded-full px-3 py-2 text-white",
+                    "transition hover:bg-white/10 focus:outline-none",
                   )}
-                />
-              </button>
+                >
+                  <CircleUserRound className="size-6" strokeWidth={1.5} />
+                  <span className="font-semibold">Login</span>
+                  <Triangle
+                    className={clsx(
+                      "size-3 fill-white transition-transform",
+                      open ? "rotate-0" : "rotate-180",
+                    )}
+                  />
+                </button>
+              )}
             </Tooltip>
           </div>
           <Link

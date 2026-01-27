@@ -24,7 +24,7 @@ import clsx from "clsx";
 
 type TooltipProps = {
   content: ReactElement;
-  children: ReactElement;
+  children: (props: { open: boolean }) => ReactElement;
   className?: string;
   offset_distance?: number;
 };
@@ -43,12 +43,17 @@ const Tooltip: FC<TooltipProps> = ({
       placement: "bottom",
       open,
       onOpenChange: setOpen,
-      middleware: [offset(offset_distance), flip(), shift(), arrow({ element: arrow_ref })],
+      middleware: [
+        offset(offset_distance),
+        flip(),
+        shift(),
+        arrow({ element: arrow_ref }),
+      ],
     });
   const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
 
-  const hover = useHover(context,{
-    handleClose:safePolygon()
+  const hover = useHover(context, {
+    handleClose: safePolygon(),
   });
   const focus = useFocus(context);
   const dismiss = useDismiss(context);
@@ -75,7 +80,7 @@ const Tooltip: FC<TooltipProps> = ({
         {...getReferenceProps()}
         className="inline-block"
       >
-        {children}
+        {children({ open })}
       </span>
 
       {open && (

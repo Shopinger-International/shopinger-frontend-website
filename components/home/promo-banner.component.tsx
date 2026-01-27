@@ -57,7 +57,7 @@ const PromoBanner: FC = () => {
       >
         {banners.map(({ key, image_src, width, height }) => (
           <SwiperSlide key={key}>
-            <div className="relative aspect-2/1 w-full lg:aspect-16/4">
+            <div className="relative aspect-2/1 w-full lg:aspect-16/3">
               <Image
                 src={image_src}
                 alt={key}

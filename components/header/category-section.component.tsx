@@ -22,6 +22,9 @@ import {
 // hooks
 import useCategories from "@/hooks/use-categories";
 
+// helpers
+import clsx from "clsx";
+
 function getRandomCategories<T>(arr: T[], count = 3) {
   const copy = [...arr];
 
@@ -98,23 +101,25 @@ const CategorySection: FC = () => {
                         </div>
                       }
                     >
-                      <Link
-                        key={label}
-                        href={href}
-                        className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                      >
-                        {Icon && (
-                          <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
-                            <Icon
-                              className="size-4 text-orange-500"
-                              strokeWidth={2.5}
-                            />
-                          </div>
-                        )}
-                        <span className="text-sm font-medium text-white group-hover:underline">
-                          {label}
-                        </span>
-                      </Link>
+                      {({ open }) => (
+                        <Link
+                          key={label}
+                          href={href}
+                          className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
+                        >
+                          {Icon && (
+                            <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
+                              <Icon
+                                className="size-4 text-orange-500"
+                                strokeWidth={2.5}
+                              />
+                            </div>
+                          )}
+                          <span className="text-sm font-medium text-white group-hover:underline">
+                            {label}
+                          </span>
+                        </Link>
+                      )}
                     </Tooltip>
                   );
                 }
@@ -147,7 +152,13 @@ const CategorySection: FC = () => {
                     className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
                     onClick={() => setSelectedCategory(category)}
                   >
-                    <span className="text-sm font-medium text-white group-hover:underline">
+                    <span
+                      className={clsx(
+                        "text-sm font-medium text-white group-hover:underline",
+                        selected_category?.id == id &&
+                          "font-semibold underline",
+                      )}
+                    >
                       {name}
                     </span>
                   </button>
@@ -191,57 +202,57 @@ const CategorySection: FC = () => {
 
             {/* Profile/Notification */}
             <div className="hidden lg:inline">
-              <Tooltip content={<AIAssistant />}>
-                <div className="w flex flex-col items-center gap-0.5">
-                  <span className="flex size-8 items-center justify-center rounded-full bg-white">
-                    <Image
-                      src="/header/barsati.png"
-                      alt="barsati"
-                      width={17}
-                      height={20}
-                    />
-                  </span>
-                  <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
-                    Barsati
-                  </span>
-                </div>
+              <Tooltip content={<AIAssistant />} className="z-100">
+                {({ open }) => (
+                  <div className="w flex flex-col items-center gap-0.5">
+                    <span className="flex size-8 items-center justify-center rounded-full bg-white">
+                      <Image
+                        src="/header/barsati.png"
+                        alt="barsati"
+                        width={17}
+                        height={20}
+                      />
+                    </span>
+                    <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
+                      Barsati
+                    </span>
+                  </div>
+                )}
               </Tooltip>
             </div>
           </div>
         </div>
       </div>
       {selected_category && (
-        <div className="sticky top-[56px] z-40 bg-white shadow-lg">
-          <div className="max-w-8xl mx-auto flex items-center gap-6 px-4 py-2 text-gray-900">
-            <span className="shrink-0 text-lg font-semibold text-orange-500">
-              {selected_category.name}
-            </span>
+        <div className="max-w-8xl mx-auto flex items-center gap-6 bg-gray-100 px-4 py-2 text-gray-900 shadow-lg">
+          <span className="shrink-0 text-lg font-semibold text-orange-500">
+            {selected_category.name}
+          </span>
 
-            <nav
-              ref={sub_nav_ref}
-              className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap"
-            >
-              {selected_category.subCategories.map(({ id, name }) => (
-                <span
-                  key={`sub-category-${id}`}
-                  className="group flex shrink-0 items-center gap-2 rounded-md py-1.5"
-                >
-                  <span className="text-sm font-medium group-hover:underline">
-                    {name}
-                  </span>
+          <nav
+            ref={sub_nav_ref}
+            className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap"
+          >
+            {selected_category.subCategories.map(({ id, name }) => (
+              <span
+                key={`sub-category-${id}`}
+                className="group flex shrink-0 items-center gap-2 rounded-md py-1.5"
+              >
+                <span className="text-sm font-medium group-hover:underline">
+                  {name}
                 </span>
-              ))}
-            </nav>
+              </span>
+            ))}
+          </nav>
 
-            <button
-              onClick={() =>
-                sub_nav_ref.current?.scrollBy({ left: 200, behavior: "smooth" })
-              }
-              className="shrink-0 rounded-full p-1 hover:bg-gray-100"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-          </div>
+          <button
+            onClick={() =>
+              sub_nav_ref.current?.scrollBy({ left: 200, behavior: "smooth" })
+            }
+            className="shrink-0 rounded-full p-1 hover:bg-gray-100"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
         </div>
       )}
     </>
