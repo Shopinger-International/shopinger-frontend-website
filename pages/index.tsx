@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export default function Home() {
   return (
-    <div className="mt-33.25">
+    <div className="mt-37.25 space-y-10 px-4">
       <PromoBanner />
     </div>
   );

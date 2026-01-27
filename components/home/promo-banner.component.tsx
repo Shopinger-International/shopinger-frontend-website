@@ -33,15 +33,15 @@ const banners = [
 
 const PromoBanner: FC = () => {
   return (
-    <div className="relative w-full overflow-hidden">
+    <div className="lg:max-w-8xl relative mx-auto w-full overflow-hidden rounded-xl border-2 border-orange-500">
       {/* Left Arrow */}
       <button className="promo-prev absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 backdrop-blur transition hover:bg-black/60">
-        <ChevronLeft className="size-8 text-white" />
+        <ChevronLeft className="size-4 text-white lg:size-8" />
       </button>
 
       {/* Right Arrow */}
       <button className="promo-next absolute top-1/2 right-4 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 backdrop-blur transition hover:bg-black/60">
-        <ChevronRight className="size-8 text-white" />
+        <ChevronRight className="size-4 text-white lg:size-8" />
       </button>
 
       <Swiper
@@ -57,7 +57,7 @@ const PromoBanner: FC = () => {
       >
         {banners.map(({ key, image_src, width, height }) => (
           <SwiperSlide key={key}>
-            <div className="relative aspect-16/5 w-full">
+            <div className="relative aspect-2/1 w-full lg:aspect-16/4">
               <Image
                 src={image_src}
                 alt={key}

@@ -38,7 +38,7 @@ const Header: FC<HeaderProps> = () => {
         className={clsx(
           "mx-auto grid w-full",
           "grid-cols-[auto_1fr_auto]",
-          "gap-3 px-4 py-3 lg:px-0",
+          "gap-3 px-4 py-3",
           "lg:max-w-8xl",
           "lg:grid-cols-[auto_minmax(0,1fr)_auto_auto]",
           "lg:gap-8",
