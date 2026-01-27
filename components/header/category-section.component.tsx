@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 // types
@@ -10,7 +10,14 @@ import Tooltip from "@/components/common/tooltip.component";
 import AIAssistant from "../common/ai-chat-box.component";
 
 // icons
-import { Menu, Phone, Stethoscope, Smartphone, Upload } from "lucide-react";
+import {
+  Menu,
+  Phone,
+  Stethoscope,
+  Smartphone,
+  Upload,
+  ChevronRight,
+} from "lucide-react";
 
 // hooks
 import useCategories from "@/hooks/use-categories";
@@ -29,24 +36,29 @@ function getRandomCategories<T>(arr: T[], count = 3) {
 const CategorySection: FC = () => {
   const { data: categories = [] } = useCategories();
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
+  const nav_ref = useRef<HTMLDivElement>(null);
 
   const random_categories = useMemo(() => {
     return getRandomCategories<ICategory>(categories, 4);
   }, [categories]);
-  console.log("value of random_categories", random_categories);
   return (
     <div className="bg-orange-500 px-3 py-1 sm:px-5">
       <div className="max-w-8xl mx-auto flex items-center justify-between gap-4 text-white">
         {/* Left Section: Menu + Navigation */}
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-4">
           {/* Menu Button */}
-          <button className="flex shrink-0 items-center gap-2.5">
+          <button className="hidden shrink-0 items-center gap-2.5 lg:flex">
             <Menu className="h-7 w-7" strokeWidth={2} />
             <span className="hidden font-semibold sm:block">Menu</span>
           </button>
 
           {/* Navigation Items */}
-          <nav className="hidden items-center gap-6 lg:flex">
+          <nav
+            ref={nav_ref}
+            className={
+              "no-scrollbar flex min-w-0 items-center gap-6 overflow-x-auto whitespace-nowrap"
+            }
+          >
             {/* Grocery */}
             {[
               {
@@ -137,10 +149,22 @@ const CategorySection: FC = () => {
               );
             })}
           </nav>
+          <button
+            onClick={() => {
+              nav_ref.current?.scrollBy({
+                left: 200,
+                behavior: "smooth",
+              });
+            }}
+            className="shrink-0 rounded-full bg-white/20 p-1.5 text-white hover:bg-white/30 lg:hidden"
+            aria-label="Scroll categories right"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
         </div>
 
         {/* Right Section: Sale Timer + Get App + Profile */}
-        <div className="flex shrink-0 items-center gap-2 md:gap-4">
+        <div className="hidden shrink-0 items-center gap-2 md:gap-4 lg:flex">
           {/* Festive Sale Timer */}
           <div className="hidden items-center gap-2 md:flex">
             <span className="text-lg font-semibold text-stone-50 capitalize md:text-xl">
@@ -161,21 +185,23 @@ const CategorySection: FC = () => {
           </button>
 
           {/* Profile/Notification */}
-          <Tooltip content={<AIAssistant />}>
-            <div className="w flex flex-col items-center gap-0.5">
-              <span className="flex size-8 items-center justify-center rounded-full bg-white">
-                <Image
-                  src="/header/barsati.png"
-                  alt="barsati"
-                  width={17}
-                  height={20}
-                />
-              </span>
-              <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
-                Barsati
-              </span>
-            </div>
-          </Tooltip>
+          <div className="hidden lg:inline">
+            <Tooltip content={<AIAssistant />}>
+              <div className="w flex flex-col items-center gap-0.5">
+                <span className="flex size-8 items-center justify-center rounded-full bg-white">
+                  <Image
+                    src="/header/barsati.png"
+                    alt="barsati"
+                    width={17}
+                    height={20}
+                  />
+                </span>
+                <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
+                  Barsati
+                </span>
+              </div>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </div>

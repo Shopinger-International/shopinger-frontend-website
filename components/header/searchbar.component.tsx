@@ -33,9 +33,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 // hooks
 import useCategories from "@/hooks/use-categories";
 
-const Searchbar: FC<{
-  className: string;
-}> = ({ className }) => {
+const Searchbar: FC = () => {
   const [search_value, setSearchValue] = useState("");
   const [debounced_search_value, setDebouncedSearchValue] = useState("");
   const [selected_category, setSelectedCategory] = useState("Menu");
@@ -63,8 +61,7 @@ const Searchbar: FC<{
   return (
     <div
       className={clsx(
-        "flex w-full items-stretch rounded-lg border border-orange-500 bg-white lg:max-w-xl",
-        className,
+        "flex w-full items-stretch rounded-lg border border-orange-500 bg-white lg:max-w-2xl",
       )}
     >
       {/* Category Dropdown */}
