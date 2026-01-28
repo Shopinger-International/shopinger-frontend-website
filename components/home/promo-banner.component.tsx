@@ -33,7 +33,7 @@ const banners = [
 
 const PromoBanner: FC = () => {
   return (
-    <div className="lg:max-w-8xl relative mx-auto w-full overflow-hidden rounded-xl border-2 border-gray-300">
+    <div className="relative w-full overflow-hidden rounded-xl border-2 border-gray-300">
       {/* Left Arrow */}
       <button className="promo-prev absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60">
         <ChevronLeft className="size-4 text-white lg:size-6" />

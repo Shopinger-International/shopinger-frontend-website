@@ -9,6 +9,7 @@ import Searchbar from "@/components/header/searchbar.component";
 import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
 import Tooltip from "@/components/common/tooltip.component";
+import AIAssistant from "../common/ai-chat-box.component";
 
 // icons
 import {
@@ -62,7 +63,7 @@ const Header: FC<HeaderProps> = () => {
           "mx-auto grid w-full items-center",
           "grid-cols-[auto_1fr_auto]",
           "gap-3 px-4 py-1.5",
-          "lg:max-w-8xl",
+          // "lg:max-w-8xl",
           "lg:grid-cols-[auto_minmax(0,1fr)_auto_auto]",
           "lg:gap-8",
         )}
@@ -91,7 +92,7 @@ const Header: FC<HeaderProps> = () => {
           <Searchbar />
         </div>
         {/* RIGHT: Actions */}
-        <div className="order-2 -mr-3 flex items-center justify-end gap-10 lg:order-3 lg:-mr-8">
+        <div className="order-2 -mr-3 flex items-center justify-end gap-6 lg:order-3 lg:-mr-8">
           {/* <Link
             href="/"
             className="hidden rounded-full border-2 border-white bg-orange-500 px-6 py-1.5 text-[15px] font-medium text-white lg:inline"
@@ -218,6 +219,25 @@ const Header: FC<HeaderProps> = () => {
             </span>
             <span>Cart</span>
           </Link>
+          <div className="hidden lg:inline">
+            <Tooltip content={<AIAssistant />} className="z-100">
+              {({ open }) => (
+                <div className="w flex flex-col items-center gap-0.5">
+                  <span className="flex size-6 items-center justify-center rounded-full bg-white">
+                    <Image
+                      src="/header/barsati.png"
+                      alt="barsati"
+                      width={14}
+                      height={17}
+                    />
+                  </span>
+                  <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
+                    Barsati
+                  </span>
+                </div>
+              )}
+            </Tooltip>
+          </div>
           <Tooltip
             className="z-100"
             content={

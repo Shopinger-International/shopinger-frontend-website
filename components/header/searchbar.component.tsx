@@ -61,7 +61,7 @@ const Searchbar: FC = () => {
   return (
     <div
       className={clsx(
-        "flex w-full items-stretch rounded-lg border border-orange-500 bg-white lg:max-w-2xl",
+        "flex w-full items-stretch rounded-lg border border-orange-500 bg-white",
       )}
     >
       {/* Category Dropdown */}

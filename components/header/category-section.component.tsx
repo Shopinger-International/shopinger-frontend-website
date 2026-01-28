@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 // types
@@ -7,7 +7,8 @@ import type { ICategory } from "@/types/categories";
 
 // local components
 import Tooltip from "@/components/common/tooltip.component";
-import AIAssistant from "../common/ai-chat-box.component";
+
+// icons
 
 // icons
 import {
@@ -16,6 +17,7 @@ import {
   Stethoscope,
   Smartphone,
   Upload,
+  ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 
@@ -25,26 +27,45 @@ import useCategories from "@/hooks/use-categories";
 // helpers
 import clsx from "clsx";
 
-function getRandomCategories<T>(arr: T[], count = 3) {
-  const copy = [...arr];
-
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-
-  return copy.slice(0, count);
-}
-
 const CategorySection: FC = () => {
   const { data: categories = [] } = useCategories();
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
+  const [can_scroll_left, setCanScrollLeft] = useState(false);
+  const [can_scroll_right, setCanScrollRight] = useState(false);
   const nav_ref = useRef<HTMLDivElement>(null);
   const sub_nav_ref = useRef<HTMLDivElement>(null);
+  const updateScrollState = (el: HTMLDivElement | null) => {
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth);
+  };
 
-  const random_categories = useMemo(() => {
-    return getRandomCategories<ICategory>(categories, 4);
+  useEffect(() => {
+    const el = nav_ref.current;
+    if (!el) return;
+
+    let ticking = false;
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateScrollState(el);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    updateScrollState(el);
+    el.addEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [categories]);
+
   return (
     <>
       <div className="bg-orange-500 px-4 py-0.5">
@@ -56,127 +77,147 @@ const CategorySection: FC = () => {
               <Menu className="h-7 w-7" strokeWidth={2} />
               <span className="hidden font-semibold sm:block">Menu</span>
             </button>
-
-            {/* Navigation Items */}
-            <nav
-              ref={nav_ref}
-              className={
-                "no-scrollbar flex min-w-0 items-center gap-6 overflow-x-auto whitespace-nowrap"
-              }
-            >
-              {/* Grocery */}
-              {[
-                {
-                  href: "/grocery",
-                  label: "Grocery",
-                  icon: Upload,
-                },
-                {
-                  href: "/quick-order",
-                  label: "Quick Order",
-                  icon: Phone,
-                },
-                {
-                  href: "/medical",
-                  label: "Medical",
-                  icon: Stethoscope,
-                },
-              ].map(({ href, label, icon: Icon }) => {
-                if (label == "Quick Order") {
-                  return (
-                    <Tooltip
-                      key={label}
-                      className="z-50 rounded-xl border border-gray-200 bg-white py-1 font-semibold shadow-lg"
-                      content={
-                        <div className="space-y-1 px-3 py-1.5">
-                          <p className="tracking-wide text-orange-500">
-                            Call us now to order
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-lime-400">
-                              <Phone className="size-4 fill-gray-900" />
-                            </span>
-                            <span className="text-[15px]">+91 94157 61434</span>
-                          </div>
-                        </div>
-                      }
-                    >
-                      {({ open }) => (
-                        <Link
-                          key={label}
-                          href={href}
-                          className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                        >
-                          {Icon && (
-                            <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
-                              <Icon
-                                className="size-4 text-orange-500"
-                                strokeWidth={2.5}
-                              />
-                            </div>
-                          )}
-                          <span className="text-sm font-medium text-white group-hover:underline">
-                            {label}
-                          </span>
-                        </Link>
-                      )}
-                    </Tooltip>
-                  );
+            <div className="flex items-center min-w-0">
+            {/* Left Arrow */}
+              <button
+                onClick={() =>
+                  nav_ref.current?.scrollBy({ left: -200, behavior: "smooth" })
                 }
+                className={clsx(
+                  "shrink-0 rounded-full bg-white/20 p-1.5 transition-opacity",
+                  can_scroll_left
+                    ? "opacity-100"
+                    : "pointer-events-none hidden",
+                )}
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
 
-                return (
-                  <Link
-                    key={label}
-                    href={href}
-                    className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                  >
-                    {Icon && (
-                      <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
-                        <Icon
-                          className="size-4 text-orange-500"
-                          strokeWidth={2.5}
-                        />
-                      </div>
-                    )}
-                    <span className="text-sm font-medium text-white group-hover:underline">
-                      {label}
-                    </span>
-                  </Link>
-                );
-              })}
-              {random_categories.map((category) => {
-                const { id, name } = category;
-                return (
-                  <button
-                    key={`category-${id}`}
-                    className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    <span
-                      className={clsx(
-                        "text-sm font-medium text-white group-hover:underline",
-                        selected_category?.id == id &&
-                          "font-semibold underline",
-                      )}
+              {/* Navigation Items */}
+              <nav
+                ref={nav_ref}
+                className={
+                  "no-scrollbar flex min-w-0 items-center gap-6 overflow-x-auto whitespace-nowrap"
+                }
+              >
+                {/* Grocery */}
+                {[
+                  {
+                    href: "/grocery",
+                    label: "Grocery",
+                    icon: Upload,
+                  },
+                  {
+                    href: "/quick-order",
+                    label: "Quick Order",
+                    icon: Phone,
+                  },
+                  {
+                    href: "/medical",
+                    label: "Medical",
+                    icon: Stethoscope,
+                  },
+                ].map(({ href, label, icon: Icon }) => {
+                  if (label == "Quick Order") {
+                    return (
+                      <Tooltip
+                        key={label}
+                        className="z-50 rounded-xl border border-gray-200 bg-white py-1 font-semibold shadow-lg"
+                        content={
+                          <div className="space-y-1 px-3 py-1.5">
+                            <p className="tracking-wide text-orange-500">
+                              Call us now to order
+                            </p>
+                            <div className="flex items-center gap-2">
+                              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-lime-400">
+                                <Phone className="size-4 fill-gray-900" />
+                              </span>
+                              <span className="text-[15px]">
+                                +91 94157 61434
+                              </span>
+                            </div>
+                          </div>
+                        }
+                      >
+                        {({ open }) => (
+                          <Link
+                            key={label}
+                            href={href}
+                            className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
+                          >
+                            {Icon && (
+                              <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
+                                <Icon
+                                  className="size-4 text-orange-500"
+                                  strokeWidth={2.5}
+                                />
+                              </div>
+                            )}
+                            <span className="text-sm font-medium text-white group-hover:underline">
+                              {label}
+                            </span>
+                          </Link>
+                        )}
+                      </Tooltip>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={label}
+                      href={href}
+                      className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
                     >
-                      {name}
-                    </span>
-                  </button>
-                );
-              })}
-            </nav>
-            <button
-              onClick={() => {
-                nav_ref.current?.scrollBy({
-                  left: 200,
-                  behavior: "smooth",
-                });
-              }}
-              className="shrink-0 rounded-full bg-white/20 p-1.5 text-white hover:bg-white/30 lg:hidden"
-              aria-label="Scroll categories right"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
+                      {Icon && (
+                        <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
+                          <Icon
+                            className="size-4 text-orange-500"
+                            strokeWidth={2.5}
+                          />
+                        </div>
+                      )}
+                      <span className="text-sm font-medium text-white group-hover:underline">
+                        {label}
+                      </span>
+                    </Link>
+                  );
+                })}
+                {categories.map((category) => {
+                  const { id, name } = category;
+                  return (
+                    <button
+                      key={`category-${id}`}
+                      className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      <span
+                        className={clsx(
+                          "text-sm font-medium text-white group-hover:underline",
+                          selected_category?.id == id &&
+                            "font-semibold underline",
+                        )}
+                      >
+                        {name}
+                      </span>
+                    </button>
+                  );
+                })}
+              </nav>
+              {/* Right Arrow */}
+              <button
+                onClick={() =>
+                  nav_ref.current?.scrollBy({ left: 200, behavior: "smooth" })
+                }
+                className={clsx(
+                  "shrink-0 rounded-full bg-white/20 p-1.5 transition-opacity",
+                  can_scroll_right
+                    ? "opacity-100"
+                    : "pointer-events-none opacity-0",
+                )}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
           {/* Right Section: Sale Timer + Get App + Profile */}
