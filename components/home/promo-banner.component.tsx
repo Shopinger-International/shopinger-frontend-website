@@ -64,7 +64,7 @@ const PromoBanner: FC = () => {
       >
         {banners.map(({ key, image_src }) => (
           <SwiperSlide key={key}>
-            <div className="group relative aspect-2/1 w-full overflow-hidden lg:aspect-16/3">
+            <div className="group relative aspect-2/1 w-full overflow-hidden lg:aspect-20/3">
               <Image
                 src={image_src}
                 alt={key}

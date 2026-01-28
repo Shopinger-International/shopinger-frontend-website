@@ -1,20 +1,9 @@
-import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 
 // local components
 import PromoBanner from "@/components/home/promo-banner.component";
 import SaleLiveSection from "@/components/home/sale-live-section.component";
 import WatchLiveSection from "@/components/home/watch-live-section.component";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export default function Home() {
   return (

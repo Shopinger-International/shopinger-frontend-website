@@ -43,7 +43,7 @@ const Header: FC<HeaderProps> = () => {
     const setHeight = () => {
       document.documentElement.style.setProperty(
         "--header-height",
-        `${header.offsetHeight + 16}px`,
+        `${header.offsetHeight + 12}px`,
       );
     };
 
@@ -58,9 +58,9 @@ const Header: FC<HeaderProps> = () => {
     <header className="fixed top-0 z-30 w-full bg-black" id="app-header">
       <div
         className={clsx(
-          "mx-auto grid w-full",
+          "mx-auto grid w-full items-center",
           "grid-cols-[auto_1fr_auto]",
-          "gap-3 px-4 py-3",
+          "gap-3 px-4 py-1.5",
           "lg:max-w-8xl",
           "lg:grid-cols-[auto_minmax(0,1fr)_auto_auto]",
           "lg:gap-8",

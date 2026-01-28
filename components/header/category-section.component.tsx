@@ -47,7 +47,7 @@ const CategorySection: FC = () => {
   }, [categories]);
   return (
     <>
-      <div className="bg-orange-500 px-4 py-1">
+      <div className="bg-orange-500 px-4 py-0.5">
         <div className="max-w-8xl mx-auto flex items-center justify-between gap-4 text-white">
           {/* Left Section: Menu + Navigation */}
           <div className="flex min-w-0 items-center gap-4">
@@ -86,7 +86,7 @@ const CategorySection: FC = () => {
                   return (
                     <Tooltip
                       key={label}
-                      className="z-50 rounded-xl bg-white py-1 font-semibold border border-gray-200 shadow-lg"
+                      className="z-50 rounded-xl border border-gray-200 bg-white py-1 font-semibold shadow-lg"
                       content={
                         <div className="space-y-1 px-3 py-1.5">
                           <p className="tracking-wide text-orange-500">
@@ -201,7 +201,7 @@ const CategorySection: FC = () => {
             </button>
 
             {/* Profile/Notification */}
-            <div className="hidden lg:inline">
+            {/* <div className="hidden lg:inline">
               <Tooltip content={<AIAssistant />} className="z-100">
                 {({ open }) => (
                   <div className="w flex flex-col items-center gap-0.5">
@@ -219,13 +219,13 @@ const CategorySection: FC = () => {
                   </div>
                 )}
               </Tooltip>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
       {selected_category && (
         <div className="max-w-8xl mx-auto flex items-center gap-6 bg-gray-100 px-4 py-2 text-gray-900 shadow-lg">
-          <span className="shrink-0 text-md lg:text-lg font-semibold text-orange-500">
+          <span className="text-md shrink-0 font-semibold text-orange-500 lg:text-lg">
             {selected_category.name}
           </span>
 

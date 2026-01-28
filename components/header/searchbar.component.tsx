@@ -68,7 +68,7 @@ const Searchbar: FC = () => {
       <Menu as="div" className="relative">
         <MenuButton
           className={clsx(
-            "text-text-primary flex items-center gap-2 rounded-l-lg border border-orange-500 px-3 py-2.5 focus:outline-none",
+            "text-text-primary flex items-center gap-2 rounded-l-lg border border-orange-500 px-3 py-1.5 focus:outline-none",
             selected_category == "All" ? "font-semibold" : "font-medium",
           )}
         >
