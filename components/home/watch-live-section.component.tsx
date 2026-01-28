@@ -34,7 +34,7 @@ const WatchLiveSection: FC = () => {
         </div>
 
         {/* Video Wrapper */}
-        <div className="group relative aspect-5/4 overflow-hidden rounded-2xl bg-black md:rounded-3xl">
+        <div className="group relative aspect-6/4 lg:aspect-6/3 overflow-hidden rounded-2xl bg-black md:rounded-3xl">
           {/* Video */}
           <video
             ref={videoRef}
@@ -56,7 +56,7 @@ const WatchLiveSection: FC = () => {
 
           {/* Watch Now */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <button className="flex items-center gap-3 rounded-full bg-black/70 px-8 py-4 text-lg font-semibold text-white backdrop-blur transition-all hover:scale-105 hover:bg-black/80">
+            <button className="flex items-center gap-3 rounded-full bg-black/70 px-8 py-4 text-lg font-semibold text-white backdrop-blur transition-all hover:scale-105 hover:bg-black/60">
               <ExternalLink className="h-6 w-6" />
               Watch Now
             </button>
@@ -64,7 +64,7 @@ const WatchLiveSection: FC = () => {
 
           {/* Share */}
           <button
-            className="absolute top-4 right-4 rounded-full bg-black/70 p-3 text-white backdrop-blur transition hover:scale-110"
+            className="absolute top-4 right-4 rounded-full bg-orange-500 p-2.5 text-white backdrop-blur transition hover:scale-110"
             aria-label="Share"
           >
             <Share2 className="h-5 w-5" />
@@ -73,7 +73,7 @@ const WatchLiveSection: FC = () => {
           {/* Mute Toggle */}
           <button
             onClick={toggleMute}
-            className="absolute right-4 bottom-4 rounded-full bg-black/70 p-3 text-white backdrop-blur transition hover:scale-110"
+            className="absolute right-4 bottom-4 rounded-full bg-orange-500 p-2.5 text-white backdrop-blur transition hover:scale-110"
             aria-label={isMuted ? "Unmute" : "Mute"}
           >
             {isMuted ? (

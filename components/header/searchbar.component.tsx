@@ -36,7 +36,7 @@ import useCategories from "@/hooks/use-categories";
 const Searchbar: FC = () => {
   const [search_value, setSearchValue] = useState("");
   const [debounced_search_value, setDebouncedSearchValue] = useState("");
-  const [selected_category, setSelectedCategory] = useState("Menu");
+  const [selected_category, setSelectedCategory] = useState("All");
   const { data: categories = [] } = useCategories();
 
   const { data: search_product_list = [] } = useQuery<IProduct[], Error>({
@@ -107,7 +107,7 @@ const Searchbar: FC = () => {
           {/* Input */}
           <ComboboxInput
             className="h-full w-full px-4 text-gray-700 placeholder-black/65 outline-none"
-            placeholder="Search anything on shopinger"
+            placeholder="Search Mobile"
             aria-label="Search products, stores and collections"
             autoComplete="off"
             // displayValue={(product: Product) => product?.name ?? ""}

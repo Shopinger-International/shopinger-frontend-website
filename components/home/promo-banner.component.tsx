@@ -35,13 +35,13 @@ const PromoBanner: FC = () => {
   return (
     <div className="lg:max-w-8xl relative mx-auto w-full overflow-hidden rounded-xl border-2 border-gray-300">
       {/* Left Arrow */}
-      <button className="promo-prev absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 backdrop-blur transition hover:bg-black/60">
-        <ChevronLeft className="size-4 text-white lg:size-8" />
+      <button className="promo-prev absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60">
+        <ChevronLeft className="size-4 text-white lg:size-6" />
       </button>
 
       {/* Right Arrow */}
-      <button className="promo-next absolute top-1/2 right-4 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 backdrop-blur transition hover:bg-black/60">
-        <ChevronRight className="size-4 text-white lg:size-8" />
+      <button className="promo-next absolute top-1/2 right-4 z-10 -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60">
+        <ChevronRight className="size-4 text-white lg:size-6" />
       </button>
 
       <Swiper
@@ -64,7 +64,7 @@ const PromoBanner: FC = () => {
       >
         {banners.map(({ key, image_src }) => (
           <SwiperSlide key={key}>
-            <div className="group relative aspect-2/1 w-full overflow-hidden lg:aspect-20/3">
+            <div className="group relative aspect-3/1 w-full overflow-hidden lg:aspect-20/3">
               <Image
                 src={image_src}
                 alt={key}

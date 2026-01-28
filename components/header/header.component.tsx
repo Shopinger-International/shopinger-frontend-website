@@ -23,6 +23,7 @@ import {
   Bell,
   CircleQuestionMark,
   Megaphone,
+  MapPin,
 } from "lucide-react";
 
 // helpers
@@ -91,6 +92,21 @@ const Header: FC<HeaderProps> = () => {
         </div>
         {/* RIGHT: Actions */}
         <div className="order-2 -mr-3 flex items-center justify-end gap-10 lg:order-3 lg:-mr-8">
+          {/* <Link
+            href="/"
+            className="hidden rounded-full border-2 border-white bg-orange-500 px-6 py-1.5 text-[15px] font-medium text-white lg:inline"
+          >
+            Seller
+          </Link> */}
+          <button className="hidden lg:inline-block">
+            <div className="flex gap-2">
+              <MapPin className="mt-1 size-6 text-white" />
+              <div className="flex flex-col items-start text-white">
+                <span className="text-xs">Delivering to Delhi 110001</span>
+                <span className="text-sm font-semibold">Update Location</span>
+              </div>
+            </div>
+          </button>
           <button className="hidden items-center gap-1.5 text-white lg:flex">
             <span className="text-xl">
               {countries.find(({ name }) => name == "India")?.flag}
@@ -105,12 +121,6 @@ const Header: FC<HeaderProps> = () => {
               />
             </span>
           </button>
-          <Link
-            href="/"
-            className="hidden rounded-full border-2 border-white bg-orange-500 px-6 py-1.5 text-[15px] font-medium text-white lg:inline"
-          >
-            Seller
-          </Link>
           <div className="hidden lg:inline">
             <Tooltip
               offset_distance={6}
