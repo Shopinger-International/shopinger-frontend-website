@@ -225,7 +225,7 @@ const CategorySection: FC = () => {
       </div>
       {selected_category && (
         <div className="max-w-8xl mx-auto flex items-center gap-6 bg-gray-100 px-4 py-2 text-gray-900 shadow-lg">
-          <span className="shrink-0 text-lg font-semibold text-orange-500">
+          <span className="shrink-0 text-md lg:text-lg font-semibold text-orange-500">
             {selected_category.name}
           </span>
 

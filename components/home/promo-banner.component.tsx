@@ -33,7 +33,7 @@ const banners = [
 
 const PromoBanner: FC = () => {
   return (
-    <div className="lg:max-w-8xl relative mx-auto w-full overflow-hidden rounded-xl border-2 border-orange-500">
+    <div className="lg:max-w-8xl relative mx-auto w-full overflow-hidden rounded-xl border-2 border-gray-300">
       {/* Left Arrow */}
       <button className="promo-prev absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 backdrop-blur transition hover:bg-black/60">
         <ChevronLeft className="size-4 text-white lg:size-8" />
@@ -47,23 +47,31 @@ const PromoBanner: FC = () => {
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         slidesPerView={1}
+        speed={900}
+        parallax
+        autoplay={{
+          delay: 3500,
+          disableOnInteraction: false,
+        }}
         navigation={{
           prevEl: ".promo-prev",
           nextEl: ".promo-next",
         }}
-        pagination={{ clickable: true }}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        pagination={{
+          clickable: true,
+        }}
         loop
       >
-        {banners.map(({ key, image_src, width, height }) => (
+        {banners.map(({ key, image_src }) => (
           <SwiperSlide key={key}>
-            <div className="relative aspect-2/1 w-full lg:aspect-16/3">
+            <div className="group relative aspect-2/1 w-full overflow-hidden lg:aspect-16/3">
               <Image
                 src={image_src}
                 alt={key}
                 fill
-                className="object-cover object-top"
                 priority
+                data-swiper-parallax="-10%"
+                className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
               />
             </div>
           </SwiperSlide>
