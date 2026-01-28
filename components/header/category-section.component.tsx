@@ -69,7 +69,7 @@ const CategorySection: FC = () => {
   return (
     <>
       <div className="bg-orange-500 px-4 py-0.5">
-        <div className="max-w-8xl mx-auto flex items-center justify-between gap-4 text-white">
+        <div className="flex items-center justify-between gap-4 text-white">
           {/* Left Section: Menu + Navigation */}
           <div className="flex min-w-0 items-center gap-4">
             {/* Menu Button */}
@@ -77,8 +77,8 @@ const CategorySection: FC = () => {
               <Menu className="h-7 w-7" strokeWidth={2} />
               <span className="hidden font-semibold sm:block">Menu</span>
             </button>
-            <div className="flex items-center min-w-0">
-            {/* Left Arrow */}
+            <div className="flex min-w-0 items-center">
+              {/* Left Arrow */}
               <button
                 onClick={() =>
                   nav_ref.current?.scrollBy({ left: -200, behavior: "smooth" })
@@ -265,7 +265,7 @@ const CategorySection: FC = () => {
         </div>
       </div>
       {selected_category && (
-        <div className="max-w-8xl mx-auto flex items-center gap-6 bg-gray-100 px-4 py-2 text-gray-900 shadow-lg">
+        <div className="flex items-center gap-6 bg-gray-100 px-4 py-2 text-gray-900 shadow-lg">
           <span className="text-md shrink-0 font-semibold text-orange-500 lg:text-lg">
             {selected_category.name}
           </span>
