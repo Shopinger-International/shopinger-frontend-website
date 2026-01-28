@@ -25,6 +25,7 @@ import {
   CircleQuestionMark,
   Megaphone,
   MapPin,
+  Sparkles
 } from "lucide-react";
 
 // helpers
@@ -223,14 +224,10 @@ const Header: FC<HeaderProps> = () => {
             <Tooltip content={<AIAssistant />} className="z-100">
               {({ open }) => (
                 <div className="w flex flex-col items-center gap-0.5">
-                  <span className="flex size-6 items-center justify-center rounded-full bg-white">
-                    <Image
-                      src="/header/barsati.png"
-                      alt="barsati"
-                      width={14}
-                      height={17}
-                    />
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white">
+                    <Sparkles className="h-4 w-4 text-orange-500" />
                   </span>
+
                   <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
                     Barsati
                   </span>

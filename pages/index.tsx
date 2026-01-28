@@ -1,4 +1,3 @@
-import { Geist, Geist_Mono } from "next/font/google";
 
 // local components
 import PromoBanner from "@/components/home/promo-banner.component";
