@@ -97,7 +97,12 @@ const Tooltip: FC<TooltipProps> = ({
               width={20}
               height={10}
               fill="#fff"
-              tipRadius={3}
+              stroke="#d1d5db"
+              strokeWidth={1}
+              tipRadius={2}
+              style={{
+                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
+              }}
             />
             {content}
           </div>

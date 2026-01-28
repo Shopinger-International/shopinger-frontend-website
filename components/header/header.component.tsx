@@ -20,6 +20,9 @@ import {
   Heart,
   Gift,
   Menu,
+  Bell,
+  CircleQuestionMark,
+  Megaphone,
 } from "lucide-react";
 
 // helpers
@@ -205,9 +208,48 @@ const Header: FC<HeaderProps> = () => {
             </span>
             <span>Cart</span>
           </Link>
-          <button>
-            <EllipsisVertical className="size-6 text-white" />
-          </button>
+          <Tooltip
+            className="z-100"
+            content={
+              <div className="z-50 w-max rounded-xl border border-neutral-300 bg-white py-2 shadow-lg">
+                {[
+                  {
+                    label: "Support",
+                    href: "/support",
+                    icon: CircleQuestionMark,
+                  },
+                  {
+                    label: "Advertise",
+                    href: "/advertise",
+                    icon: Megaphone,
+                  },
+                  {
+                    label: "Notification Setting",
+                    href: "notification-setting",
+                    icon: Bell,
+                  },
+                ].map(({ label, href, icon: Icon }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    className={clsx(
+                      "flex items-center gap-3 px-4 py-3 text-sm",
+                      "transition hover:font-semibold hover:text-orange-500",
+                    )}
+                  >
+                    <Icon className="size-5" strokeWidth={1.5} />
+                    <span>{label}</span>
+                  </Link>
+                ))}
+              </div>
+            }
+          >
+            {({ open }) => (
+              <button>
+                <EllipsisVertical className="size-6 text-white" />
+              </button>
+            )}
+          </Tooltip>
         </div>
       </div>
       <CategorySection />
