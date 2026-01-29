@@ -46,9 +46,9 @@ const AiChatBox: FC = () => {
     });
   }
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, typing]);
+  // useEffect(() => {
+  //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [messages, typing]);
 
   const sendMessage = () => {
     if (!input.trim()) return;

@@ -25,7 +25,7 @@ import {
   CircleQuestionMark,
   Megaphone,
   MapPin,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 
 // helpers
@@ -117,7 +117,7 @@ const Header: FC<HeaderProps> = () => {
             <span>
               <Triangle
                 className={clsx(
-                  "size-3 fill-white transition-transform",
+                  "size-2.5 fill-white transition-transform",
                   false ? "rotate-0" : "rotate-180",
                 )}
               />
@@ -200,7 +200,7 @@ const Header: FC<HeaderProps> = () => {
                   <span className="font-semibold">Login</span>
                   <Triangle
                     className={clsx(
-                      "size-3 fill-white transition-transform",
+                      "size-2.5 fill-white transition-transform",
                       open ? "rotate-0" : "rotate-180",
                     )}
                   />
@@ -223,12 +223,12 @@ const Header: FC<HeaderProps> = () => {
           <div className="hidden lg:inline">
             <Tooltip content={<AIAssistant />} className="z-100">
               {({ open }) => (
-                <div className="w flex flex-col items-center gap-0.5">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white">
-                    <Sparkles className="h-4 w-4 text-orange-500" />
-                  </span>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="relative h-5 w-5">
+                    <Sparkles className="absolute top-0 left-0 animate-pulse text-yellow-300" />
+                  </div>
 
-                  <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
+                  <span className="hidden text-xs font-medium text-white capitalize sm:block">
                     Barsati
                   </span>
                 </div>

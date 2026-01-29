@@ -115,7 +115,7 @@ const SectionBlock: FC<SectionBlockProps> = ({
   products,
 }) => {
   return (
-    <div className="space-y-4 border border-gray-300 p-3 rounded-lg bg-gray-100">
+    <div className="space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-md font-semibold text-gray-900">
@@ -125,7 +125,7 @@ const SectionBlock: FC<SectionBlockProps> = ({
 
         <Link
           href={viewAllHref}
-          className="text-md font-semibold text-orange-500 hover:underline"
+          className="text-sm font-semibold text-orange-500 hover:underline md:text-base"
         >
           View All
         </Link>

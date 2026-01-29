@@ -73,7 +73,7 @@ const Searchbar: FC = () => {
           )}
         >
           {selected_category}
-          <Triangle className="fill-text-primary size-3 rotate-180" />
+          <Triangle className="fill-text-primary size-2.5 rotate-180" />
         </MenuButton>
 
         <MenuItems className="ring-opacity-5 absolute left-0 z-50 mt-1 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-orange-500 focus:outline-none">

@@ -18,7 +18,7 @@ const MainLayout: FC<{
   const [is_drawer_open, setIsDrawerOpen] = useState(false);
   return (
     <div
-      className={`${poppins.variable} ${poppins.className} relative min-h-screen w-screen bg-white text-gray-900`}
+      className={`${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900`}
     >
       <Header />
       <main>{children}</main>
