@@ -19,6 +19,9 @@ import { toFormikValidate } from "@/helpers/common.helper";
 // data
 import { countries } from "@/data/countries.data";
 
+// icons
+import { ChevronDown } from "lucide-react";
+
 export type IInitialValues = {
   contact: string;
   country_code: Country | undefined;
@@ -41,10 +44,14 @@ const login_validation_schema = z.object({
   ),
 });
 
+function startsWithNumber(str: string) {
+  return /^[0-9]/.test(str);
+}
+
 const LoginForm: FC = () => {
   return (
-    <div className="relative flex min-h-155 min-w-108 flex-col items-center space-y-4 bg-white px-6 lg:px-12">
-      <div className="relative mt-30 flex size-20 shrink-0 items-center justify-center">
+    <div className="relative flex min-h-155 w-full flex-col items-center space-y-4 bg-white px-6 lg:w-max lg:min-w-108 lg:px-12">
+      <div className="relative mt-40 flex size-20 shrink-0 items-center justify-center lg:mt-30">
         <Image
           src="/dark-mobile-logo.jpg"
           alt="Shopinger – Online Shopping Platform"
@@ -54,7 +61,7 @@ const LoginForm: FC = () => {
         />
       </div>
       {/* Heading */}
-      <h2 className="text-2xl font-bold text-orange-500">Login or Sign Up</h2>
+      <h2 className="text-2xl font-bold">Login or Sign Up</h2>
 
       <Formik<IInitialValues>
         initialValues={initial_values}
@@ -75,35 +82,26 @@ const LoginForm: FC = () => {
                     Enter mobile number or email
                   </label>
                   <div className="flex items-center gap-1">
-                    <Popover className="relative">
-                      <PopoverButton className="flex items-center gap-1 rounded-l-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-orange-400 focus:outline-none">
-                        {values.country_code?.calling_code}
-                        <svg
-                          className="h-4 w-4 text-gray-500"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </PopoverButton>
+                    {startsWithNumber(field.value) && (
+                      <Popover className="relative">
+                        <PopoverButton className="flex h-10 items-center gap-1 rounded-l-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-orange-400 focus:outline-none">
+                          {values.country_code?.calling_code}
+                          <ChevronDown className="size-4" />
+                        </PopoverButton>
 
-                      <PopoverPanel className="absolute z-20 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                        <div className="max-h-64 overflow-y-auto p-2">
-                          <CountrySelector />
-                        </div>
-                      </PopoverPanel>
-                    </Popover>
+                        <PopoverPanel className="absolute z-20 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                          <div className="max-h-64 overflow-y-auto p-2">
+                            <CountrySelector />
+                          </div>
+                        </PopoverPanel>
+                      </Popover>
+                    )}
+
                     <input
                       id="contact"
                       type="text"
                       placeholder="Mobile number or email"
-                      className="w-full rounded-r-md border border-gray-300 px-3 py-2 hover:outline-orange-500"
+                      className="h-10 w-full rounded-r-md border border-gray-300 px-3 hover:outline-orange-500"
                       {...field}
                     />
                   </div>
