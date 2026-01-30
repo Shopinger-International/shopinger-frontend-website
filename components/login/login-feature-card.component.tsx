@@ -12,7 +12,7 @@ type IProps = {
   >;
 };
 
-const RegisterFeatureCard: FC<IProps> = ({
+const LoginFeatureCard: FC<IProps> = ({
   image_src,
   label,
   para,
@@ -28,9 +28,11 @@ const RegisterFeatureCard: FC<IProps> = ({
           fill={true}
         />
       </div>
-      <div className="flex-1">
-        <div className="mb-1 flex items-center gap-2">
-          <Icon className="size-5 text-orange-500" />
+      <div className="flex-1 space-y-1.5">
+        <div className="flex items-center gap-2">
+          <span className="rounded-lg bg-orange-100 p-1.5">
+            <Icon className="size-5 text-orange-500" />
+          </span>
           <h3 className="text-md font-medium">{label}</h3>
         </div>
         <p className="text-sm">{para}</p>
@@ -38,4 +40,4 @@ const RegisterFeatureCard: FC<IProps> = ({
     </div>
   );
 };
-export default RegisterFeatureCard;
+export default LoginFeatureCard;

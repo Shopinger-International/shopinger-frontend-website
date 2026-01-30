@@ -79,7 +79,7 @@ const Header: FC<HeaderProps> = () => {
             className="relative flex h-8 w-34 shrink-0 items-center justify-center lg:h-13 lg:w-57"
           >
             <Image
-              src="/logo.png"
+              src="/light-logo.png"
               alt="Shopinger – Online Shopping Platform"
               fill
               priority

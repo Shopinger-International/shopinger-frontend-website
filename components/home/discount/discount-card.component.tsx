@@ -43,7 +43,7 @@ const products = [
 
 const DiscountCard: FC = () => {
   return (
-    <div className="relative w-60 overflow-hidden rounded-2xl border-2 border-orange-200 p-4 lg:w-82">
+    <div className="relative w-60 overflow-hidden rounded-2xl border-2 border-orange-200 bg-[url('/pattern/pattern-1.png')] p-4 lg:w-82">
       {/* Header */}
       <div className="relative mb-6 flex items-center justify-between md:mb-8">
         <h2 className="text-md font-semibold text-orange-500 md:text-2xl">
