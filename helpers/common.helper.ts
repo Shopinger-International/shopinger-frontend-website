@@ -1,5 +1,12 @@
 // types
 import type { ZodType } from "zod";
+import type { CountryCode } from "libphonenumber-js";
+
+// helpers/phone.helper.ts
+import {
+  getCountryCallingCode,
+  parsePhoneNumberFromString,
+} from "libphonenumber-js";
 
 // Convert smart quotes → normal apostrophe before comparison:
 const normalizeText = (str: string) =>
@@ -25,4 +32,20 @@ const capitalizeValue = (value: string) =>
     .toLowerCase()
     .replace(/\b\w/g, (char) => char.toUpperCase());
 
-export { normalizeText, toFormikValidate, capitalizeValue };
+const startsWithNumber = (str: string) => /^[0-9]/.test(str);
+
+const getCallingCode = (iso2: CountryCode) => {
+  try {
+    return `+${getCountryCallingCode(iso2)}`;
+  } catch {
+    return "";
+  }
+};
+
+export {
+  normalizeText,
+  toFormikValidate,
+  capitalizeValue,
+  startsWithNumber,
+  getCallingCode,
+};
