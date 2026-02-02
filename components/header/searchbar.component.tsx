@@ -25,13 +25,13 @@ import { Triangle, Search } from "lucide-react";
 import clsx from "clsx";
 
 // lib
-import Axios from "@/lib/axios";
+import Axios from "@/lib/axios/public.lib";
 
 // react query
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 // hooks
-import useCategories from "@/hooks/use-categories";
+import useCategories from "@/hooks/axios/common/use-categories";
 
 const Searchbar: FC = () => {
   const [search_value, setSearchValue] = useState("");

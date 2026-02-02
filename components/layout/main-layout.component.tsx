@@ -15,7 +15,6 @@ const poppins = Poppins({
 const MainLayout: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [is_drawer_open, setIsDrawerOpen] = useState(false);
   return (
     <div
       className={`${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900`}

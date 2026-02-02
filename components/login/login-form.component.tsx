@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 // types
 import type { FC } from "react";
@@ -31,6 +32,10 @@ import { countries } from "@/data/countries.data";
 
 // icons
 import { ChevronDown } from "lucide-react";
+
+// hooks
+import useSendOTPMutation from "@/hooks/axios/login/use-send-otp-mutation";
+import useVerifyLoginOtp from "@/hooks/axios/login/verify-login-otp-mutation";
 
 export type IInitialValues = {
   contact: string;
@@ -87,6 +92,9 @@ export const login_validation_schema = z
   });
 
 const LoginForm: FC = () => {
+  const send_otp_mutation = useSendOTPMutation();
+  const verify_otp_mutation = useVerifyLoginOtp();
+  const router = useRouter();
   const [show_otp, setShowOtp] = useState<boolean>(false);
   const [otp_val, setOtpVal] = useState("");
   const [user_details, setUserDetails] =
@@ -111,8 +119,14 @@ const LoginForm: FC = () => {
           validate={toFormikValidate(login_validation_schema)}
           onSubmit={(values) => {
             setUserDetails(values);
-            setShowOtp(true);
-            console.log("values on submit", values);
+            send_otp_mutation.mutate(
+              { phone: values.contact },
+              {
+                onSuccess() {
+                  setShowOtp(true);
+                },
+              },
+            );
           }}
         >
           {({ values, errors, setFieldValue, handleSubmit }) => (
@@ -169,7 +183,8 @@ const LoginForm: FC = () => {
               </Field>
               <button
                 onClick={() => console.log(errors)}
-                className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-bold text-white shadow-sm hover:bg-orange-600"
+                className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
+                disabled={send_otp_mutation.isPending}
                 type="submit"
               >
                 Get OTP
@@ -199,7 +214,23 @@ const LoginForm: FC = () => {
               containerClassName="flex gap-2"
             />
           </HeadlessField>
-          <button className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-bold text-white shadow-sm hover:bg-orange-600">
+          <button
+            disabled={verify_otp_mutation.isPending}
+            onClick={() => {
+              verify_otp_mutation.mutate(
+                {
+                  mobile: user_details.contact,
+                  otp: otp_val,
+                },
+                {
+                  onSuccess() {
+                    router.push("/");
+                  },
+                },
+              );
+            }}
+            className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
+          >
             Continue
           </button>
         </div>

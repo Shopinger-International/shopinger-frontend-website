@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 // hooks
-import useCategories from "@/hooks/use-categories";
+import useCategories from "@/hooks/axios/common/use-categories";
 
 // helpers
 import clsx from "clsx";

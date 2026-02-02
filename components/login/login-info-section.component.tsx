@@ -9,7 +9,7 @@ import { Van, Pill, Smartphone } from "lucide-react";
 
 const LoginInfoSection: FC = () => {
   return (
-    <div className="hidden min-h-155 w-max max-w-108 flex-col gap-3 bg-orange-500 p-9 lg:flex">
+    <div className="hidden min-h-155 w-max max-w-108 flex-col gap-3 bg-[url('/pattern/pattern-2.png')] bg-cover bg-no-repeat p-9 lg:flex">
       <div className="space-y-2">
         <h1 className="text-xl font-bold text-white">
           Welcome to{" "}
