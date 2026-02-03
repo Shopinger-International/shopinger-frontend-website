@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 // types
@@ -10,7 +10,6 @@ import type { CountryCode } from "libphonenumber-js";
 // external components
 import { Formik, Form, Field } from "formik";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
-import { Field as HeadlessField, Label } from "@headlessui/react";
 
 // local components
 import CountrySelector from "@/components/login/country-selector.component";
@@ -22,6 +21,7 @@ import {
   toFormikValidate,
   startsWithNumber,
   getCallingCode,
+  formatSeconds,
 } from "@/helpers/common.helper";
 import clsx from "clsx";
 
@@ -96,9 +96,20 @@ const LoginForm: FC = () => {
   const verify_otp_mutation = useVerifyLoginOtp();
   const router = useRouter();
   const [show_otp, setShowOtp] = useState<boolean>(false);
-  const [otp_val, setOtpVal] = useState("");
   const [user_details, setUserDetails] =
     useState<IInitialValues>(initial_values);
+  const [timer, setTimer] = useState(60);
+
+  // countdown
+  useEffect(() => {
+    if (timer <= 0 || !show_otp) return;
+
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timer, show_otp]);
   return (
     <div className="relative flex min-h-155 w-full flex-col items-center space-y-4 bg-white px-6 lg:w-max lg:min-w-108 lg:px-12">
       <div className="relative mt-40 flex size-20 shrink-0 items-center justify-center lg:mt-30">
@@ -118,11 +129,11 @@ const LoginForm: FC = () => {
           initialValues={initial_values}
           validate={toFormikValidate(login_validation_schema)}
           onSubmit={(values) => {
-            setUserDetails(values);
             send_otp_mutation.mutate(
               { phone: values.contact },
               {
                 onSuccess() {
+                  setUserDetails(values);
                   setShowOtp(true);
                 },
               },
@@ -193,34 +204,16 @@ const LoginForm: FC = () => {
           )}
         </Formik>
       ) : (
-        <div className="space-y-4">
-          <HeadlessField>
-            <Label>
-              Enter OTP Sent on{" "}
-              {startsWithNumber(user_details.contact) &&
-                getCallingCode(user_details.country?.code as CountryCode)}{" "}
-              {user_details.contact}
-            </Label>
-
-            <OTPInput
-              value={otp_val}
-              onChange={(val) => {
-                console.log("value of otp", val);
-                if (/^\d*$/.test(val)) {
-                  setOtpVal(val);
-                }
-              }}
-              maxLength={6}
-              containerClassName="flex gap-2"
-            />
-          </HeadlessField>
-          <button
-            disabled={verify_otp_mutation.isPending}
-            onClick={() => {
+        <>
+          <Formik
+            initialValues={{
+              otp: "",
+            }}
+            onSubmit={(values) => {
               verify_otp_mutation.mutate(
                 {
                   mobile: user_details.contact,
-                  otp: otp_val,
+                  otp: values.otp,
                 },
                 {
                   onSuccess() {
@@ -229,11 +222,83 @@ const LoginForm: FC = () => {
                 },
               );
             }}
-            className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
           >
-            Continue
-          </button>
-        </div>
+            {({ setFieldValue, handleSubmit, resetForm }) => (
+              <Form onSubmit={handleSubmit} className="space-y-3">
+                <Field name="otp">
+                  {({ field, meta }: FieldProps<string, IInitialValues>) => (
+                    <>
+                      <label>
+                        Enter OTP Sent on{" "}
+                        {startsWithNumber(user_details.contact) &&
+                          getCallingCode(
+                            user_details.country?.code as CountryCode,
+                          )}{" "}
+                        {user_details.contact}
+                      </label>
+
+                      <OTPInput
+                        {...field}
+                        onChange={(val) => {
+                          if (/^\d*$/.test(val)) {
+                            setFieldValue(field.name, val);
+                          }
+                        }}
+                        maxLength={6}
+                        containerClassName="flex gap-2"
+                      />
+                      {meta.touched && meta.error && (
+                        <p className="text-red-500">{meta.error}</p>
+                      )}
+                    </>
+                  )}
+                </Field>
+                <button
+                  type="submit"
+                  disabled={verify_otp_mutation.isPending}
+                  className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
+                >
+                  Continue
+                </button>
+                <div className="text-center">
+                  <span className="text-sm text-gray-500">
+                    Didn't receive OTP?
+                  </span>{" "}
+                  <button
+                    disabled={timer > 0}
+                    onClick={() => {
+                      send_otp_mutation.mutate(
+                        {
+                          phone: user_details.contact,
+                        },
+                        {
+                          onSuccess() {
+                            setTimer(60);
+                            resetForm();
+                          },
+                        },
+                      );
+                    }}
+                    className={clsx(
+                      "font-medium text-orange-500 hover:text-orange-600",
+                      "disabled:text-orange-300",
+                    )}
+                  >
+                    Resend
+                  </button>{" "}
+                  {timer > 0 && (
+                    <span className="font-medium">
+                      in{" "}
+                      <span className="text-orange-500">
+                        {formatSeconds(timer)} sec
+                      </span>
+                    </span>
+                  )}
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </>
       )}
     </div>
   );
