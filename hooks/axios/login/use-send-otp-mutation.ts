@@ -29,12 +29,18 @@ const useSendOTPMutation = () => {
       return data;
     },
     onSuccess(response) {
-      enqueueSnackbar(response.message);
+      enqueueSnackbar(response.message, {
+        key: "user-login-and-register-with-otp-success",
+        variant:"success"
+      });
     },
 
     onError(error) {
       // @ts-ignore
-      enqueueSnackbar(error.response.data.message);
+      enqueueSnackbar(error.response.data.message, {
+        key: "user-login-and-register-with-otp-error",
+        variant:"error"
+      });
     },
   });
 };

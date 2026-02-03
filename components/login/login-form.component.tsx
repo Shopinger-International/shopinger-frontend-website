@@ -274,6 +274,7 @@ const LoginForm: FC = () => {
                     Didn't receive OTP?
                   </span>{" "}
                   <button
+                    type="button"
                     disabled={timer > 0}
                     onClick={() => {
                       send_otp_mutation.mutate(

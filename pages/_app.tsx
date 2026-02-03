@@ -11,6 +11,9 @@ import { SnackbarProvider } from "notistack";
 // react query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+// local components
+import {SuccessSnackbar,ErrorSnackbar}  from "@/components/common/snackbar.component";
+
 const query_client = new QueryClient();
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -31,6 +34,10 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         anchorOrigin={{
           horizontal: "right",
           vertical: "bottom",
+        }}
+        Components={{
+          success: SuccessSnackbar,
+          error:ErrorSnackbar
         }}
       >
         {getLayout(<Component {...pageProps} />)}

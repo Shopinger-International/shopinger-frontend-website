@@ -34,12 +34,18 @@ const useVerifyLoginOtp = () => {
       return res.data;
     },
     onSuccess(response) {
-      enqueueSnackbar(response.message);
+      enqueueSnackbar(response.message, {
+        key: "user-verify-login-otp-success",
+        variant:"success"
+      });
     },
 
     onError(error) {
       // @ts-ignore
-      enqueueSnackbar(error.response.data.message);
+      enqueueSnackbar(error.response.data.message, {
+        key: "user-verify-login-otp-error",
+        variant:"error"
+      });
     },
   });
 };
