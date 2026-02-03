@@ -189,7 +189,7 @@ const LoginForm: FC = () => {
                         type="text"
                         placeholder="Mobile number or email"
                         className={clsx(
-                          "h-10 w-full rounded-r-md border border-gray-400 px-3 hover:outline-orange-500",
+                          "h-10 w-full rounded-r-md border border-gray-300 px-3 hover:outline-orange-500 focus:outline-orange-500",
                           startsWithNumber(field.value)
                             ? "rounded-r-md"
                             : "rounded-md",
@@ -254,15 +254,16 @@ const LoginForm: FC = () => {
                 <Field name="otp">
                   {({ field, meta }: FieldProps<string, IInitialValues>) => (
                     <>
-                      <label className="flex items-center justify-between text-sm">
+                      <label className="flex items-center justify-between text-sm font-medium">
                         <span>
-                          Enter OTP Sent on{" "}
+                          OTP Sent on{" "}
                           {startsWithNumber(user_details.contact) &&
                             getCallingCode(
                               user_details.country?.code as CountryCode,
                             )}{" "}
                           {user_details.contact}
                         </span>
+                        {" "}
                         <button
                           type="button"
                           onClick={() => {
@@ -339,6 +340,12 @@ const LoginForm: FC = () => {
           </Formik>
         </>
       )}
+      <p className="absolute bottom-6 text-sm lg:hidden">
+        Need Help? Call us at {" "}
+        <a href="tel:+919415761434" className="text-orange-500 font-medium">
+          +91 9415761434
+        </a>
+      </p>
     </div>
   );
 };
