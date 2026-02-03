@@ -254,7 +254,7 @@ const LoginForm: FC = () => {
                 <Field name="otp">
                   {({ field, meta }: FieldProps<string, IInitialValues>) => (
                     <>
-                      <label className="flex items-center justify-between">
+                      <label className="flex items-center justify-between text-sm">
                         <span>
                           Enter OTP Sent on{" "}
                           {startsWithNumber(user_details.contact) &&
@@ -271,7 +271,7 @@ const LoginForm: FC = () => {
                           }}
                           className="flex cursor-pointer items-center gap-1 text-sm font-medium text-orange-500 hover:text-orange-600"
                         >
-                          <Pencil className="size-4" />
+                          Change
                         </button>
                       </label>
 
