@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -30,7 +31,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { countries } from "@/data/countries.data";
 
 // icons
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Pencil } from "lucide-react";
 
 // hooks
 import useSendOTPMutation from "@/hooks/axios/login/use-send-otp-mutation";
@@ -119,6 +120,12 @@ const LoginForm: FC = () => {
   }, [timer, show_otp]);
   return (
     <div className="relative flex min-h-155 w-full flex-col items-center space-y-4 bg-white px-6 lg:w-max lg:min-w-108 lg:px-12">
+      <button
+        onClick={() => router.push("/")}
+        className="text-md absolute top-6 right-6 inline-block font-semibold text-orange-500 lg:hidden"
+      >
+        SKIP
+      </button>
       <div className="relative mt-40 flex size-20 shrink-0 items-center justify-center lg:mt-30">
         <Image
           src="/dark-mobile-logo.jpg"
@@ -133,7 +140,7 @@ const LoginForm: FC = () => {
 
       {!show_otp ? (
         <Formik<IInitialValues>
-          initialValues={initial_values}
+          initialValues={user_details}
           validate={toFormikValidate(login_validation_schema)}
           onSubmit={(values) => {
             setShowOtp(true);
@@ -208,6 +215,16 @@ const LoginForm: FC = () => {
               >
                 Get OTP
               </button>
+              <p className="-mt-1 text-center text-sm font-medium">
+                I agree to{" "}
+                <Link href="/" className="text-orange-500">
+                  T&C
+                </Link>{" "}
+                and{" "}
+                <Link href="/" className="text-orange-500">
+                  Privacy Policy
+                </Link>
+              </p>
             </Form>
           )}
         </Formik>
@@ -237,13 +254,25 @@ const LoginForm: FC = () => {
                 <Field name="otp">
                   {({ field, meta }: FieldProps<string, IInitialValues>) => (
                     <>
-                      <label>
-                        Enter OTP Sent on{" "}
-                        {startsWithNumber(user_details.contact) &&
-                          getCallingCode(
-                            user_details.country?.code as CountryCode,
-                          )}{" "}
-                        {user_details.contact}
+                      <label className="flex items-center justify-between">
+                        <span>
+                          Enter OTP Sent on{" "}
+                          {startsWithNumber(user_details.contact) &&
+                            getCallingCode(
+                              user_details.country?.code as CountryCode,
+                            )}{" "}
+                          {user_details.contact}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowOtp(false);
+                            setTimer(60);
+                          }}
+                          className="flex cursor-pointer items-center gap-1 text-sm font-medium text-orange-500 hover:text-orange-600"
+                        >
+                          <Pencil className="size-4" />
+                        </button>
                       </label>
 
                       <OTPInput
