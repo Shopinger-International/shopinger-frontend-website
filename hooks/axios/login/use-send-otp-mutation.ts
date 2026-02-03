@@ -4,6 +4,9 @@ import { useMutation } from "@tanstack/react-query";
 // lib
 import publicAxios from "@/lib/axios/public.lib";
 
+// helpers
+import { enqueueSnackbar } from "notistack";
+
 type IResponse = {
   is_success: boolean;
   message: string;
@@ -12,7 +15,6 @@ type IResponse = {
 type IRequestPayload = {
   phone: string;
 };
-
 
 const useSendOTPMutation = () => {
   return useMutation<IResponse, Error, IRequestPayload>({
@@ -25,6 +27,14 @@ const useSendOTPMutation = () => {
         },
       );
       return data;
+    },
+    onSuccess(response) {
+      enqueueSnackbar(response.message);
+    },
+
+    onError(error) {
+      // @ts-ignore
+      enqueueSnackbar(error.response.data.message);
     },
   });
 };

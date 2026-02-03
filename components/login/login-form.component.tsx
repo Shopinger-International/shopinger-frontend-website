@@ -24,7 +24,6 @@ import {
   formatSeconds,
 } from "@/helpers/common.helper";
 import clsx from "clsx";
-
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 // data
@@ -47,7 +46,7 @@ const initial_values = {
   country: countries.find(({ name }) => name == "India"),
 };
 
-export const login_validation_schema = z
+const login_validation_schema = z
   .object({
     contact: z.string().trim(),
     country: z
@@ -91,6 +90,14 @@ export const login_validation_schema = z
     });
   });
 
+const otp_schema = z.object({
+  otp: z
+    .string()
+    .min(1, "OTP is required")
+    .regex(/^\d+$/, "OTP must contain only numbers")
+    .length(6, "OTP must be exactly 6 digits"),
+});
+
 const LoginForm: FC = () => {
   const send_otp_mutation = useSendOTPMutation();
   const verify_otp_mutation = useVerifyLoginOtp();
@@ -129,10 +136,11 @@ const LoginForm: FC = () => {
           initialValues={initial_values}
           validate={toFormikValidate(login_validation_schema)}
           onSubmit={(values) => {
+            setShowOtp(true);
             send_otp_mutation.mutate(
               { phone: values.contact },
               {
-                onSuccess() {
+                onSuccess(response) {
                   setUserDetails(values);
                   setShowOtp(true);
                 },
@@ -209,6 +217,7 @@ const LoginForm: FC = () => {
             initialValues={{
               otp: "",
             }}
+            validate={toFormikValidate(otp_schema)}
             onSubmit={(values) => {
               verify_otp_mutation.mutate(
                 {
@@ -280,8 +289,8 @@ const LoginForm: FC = () => {
                       );
                     }}
                     className={clsx(
-                      "font-medium text-orange-500 hover:text-orange-600",
-                      "disabled:text-orange-300",
+                      "cursor-pointer font-medium text-orange-500 hover:text-orange-600",
+                      "disabled:cursor-not-allowed disabled:text-orange-300",
                     )}
                   >
                     Resend

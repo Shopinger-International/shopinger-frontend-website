@@ -5,6 +5,9 @@ import type { NextPage } from "next";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
+// notistack
+import { SnackbarProvider } from "notistack";
+
 // react query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -23,7 +26,15 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <QueryClientProvider client={query_client}>
-      {getLayout(<Component {...pageProps} />)}
+      <SnackbarProvider
+        autoHideDuration={3000}
+        anchorOrigin={{
+          horizontal: "right",
+          vertical: "bottom",
+        }}
+      >
+        {getLayout(<Component {...pageProps} />)}
+      </SnackbarProvider>
     </QueryClientProvider>
   );
 }

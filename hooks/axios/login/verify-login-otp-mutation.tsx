@@ -1,5 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
+
+// lib
 import publicAxios from "@/lib/axios/public.lib";
+
+// helpers
+import { enqueueSnackbar } from "notistack";
 
 interface VerifyOtpPayload {
   mobile: string;
@@ -27,6 +32,14 @@ const useVerifyLoginOtp = () => {
       );
 
       return res.data;
+    },
+    onSuccess(response) {
+      enqueueSnackbar(response.message);
+    },
+
+    onError(error) {
+      // @ts-ignore
+      enqueueSnackbar(error.response.data.message);
     },
   });
 };
