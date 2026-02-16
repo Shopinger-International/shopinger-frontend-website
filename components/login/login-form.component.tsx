@@ -38,18 +38,18 @@ import useSendOTPMutation from "@/hooks/axios/login/use-send-otp-mutation";
 import useVerifyLoginOtp from "@/hooks/axios/login/verify-login-otp-mutation";
 
 export type IInitialValues = {
-  contact: string;
+  identifier: string;
   country: Country | undefined;
 };
 
 const initial_values = {
-  contact: "",
+  identifier: "",
   country: countries.find(({ name }) => name == "India"),
 };
 
 const login_validation_schema = z
   .object({
-    contact: z.string().trim(),
+    identifier: z.string().trim(),
     country: z
       .object({
         code: z.string(), // "IN", "US"
@@ -57,11 +57,11 @@ const login_validation_schema = z
       .optional(),
   })
   .superRefine((data, ctx) => {
-    const { contact, country } = data;
+    const { identifier, country } = data;
 
-    const is_email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+    const is_email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
 
-    const is_digit_only = /^\d+$/.test(contact);
+    const is_digit_only = /^\d+$/.test(identifier);
 
     // ✅ Email
     if (is_email) return;
@@ -69,13 +69,13 @@ const login_validation_schema = z
     // ✅ Phone with country
     if (is_digit_only && country) {
       const phone = parsePhoneNumberFromString(
-        contact,
+        identifier,
         country.code as CountryCode,
       );
 
       if (!phone?.isValid()) {
         ctx.addIssue({
-          path: ["contact"],
+          path: ["identifier"],
           message: "Enter a valid phone number",
           code: "custom",
         });
@@ -85,7 +85,7 @@ const login_validation_schema = z
 
     // ❌ Neither email nor phone
     ctx.addIssue({
-      path: ["contact"],
+      path: ["identifier"],
       message: "Enter a valid phone number or email",
       code: "custom",
     });
@@ -119,16 +119,16 @@ const LoginForm: FC = () => {
     return () => clearInterval(interval);
   }, [timer, show_otp]);
   return (
-    <div className="relative flex min-h-155 w-full flex-col items-center space-y-4 bg-white px-6 lg:w-max lg:min-w-108 lg:px-12">
+    <div className="relative flex min-h-136 w-full flex-col items-center space-y-3 bg-white px-6 lg:w-max lg:min-w-108 lg:px-12">
       <button
         onClick={() => router.push("/")}
         className="text-md absolute top-6 right-6 inline-block font-semibold text-orange-500 lg:hidden"
       >
         SKIP
       </button>
-      <div className="relative mt-40 flex size-20 shrink-0 items-center justify-center lg:mt-30">
+      <div className="relative mt-40 flex size-20 shrink-0 items-center justify-center lg:mt-20">
         <Image
-          src="/dark-mobile-logo.jpg"
+          src="/dark-mobile-logo.png"
           alt="Shopinger – Online Shopping Platform"
           fill
           priority
@@ -136,7 +136,7 @@ const LoginForm: FC = () => {
         />
       </div>
       {/* Heading */}
-      <h2 className="text-2xl font-bold">Login or Sign Up</h2>
+      <h2 className="text-xl font-bold">Login or Sign Up</h2>
 
       {!show_otp ? (
         <Formik<IInitialValues>
@@ -145,7 +145,7 @@ const LoginForm: FC = () => {
           onSubmit={(values) => {
             setShowOtp(true);
             send_otp_mutation.mutate(
-              { phone: values.contact },
+              { identifier: values.identifier },
               {
                 onSuccess(response) {
                   setUserDetails(values);
@@ -157,11 +157,11 @@ const LoginForm: FC = () => {
         >
           {({ values, errors, setFieldValue, handleSubmit }) => (
             <Form onSubmit={handleSubmit} className="w-full space-y-4">
-              <Field name="contact">
+              <Field name="identifier">
                 {({ field, meta }: FieldProps<string, IInitialValues>) => (
                   <div className="space-y-2">
                     <label
-                      htmlFor="contact"
+                      htmlFor="identifier"
                       className="text-md block font-medium text-gray-700"
                     >
                       Enter mobile number or email
@@ -185,7 +185,7 @@ const LoginForm: FC = () => {
                       )}
 
                       <input
-                        id="contact"
+                        id="identifier"
                         type="text"
                         placeholder="Mobile number or email"
                         className={clsx(
@@ -209,7 +209,7 @@ const LoginForm: FC = () => {
               </Field>
               <button
                 onClick={() => console.log(errors)}
-                className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
+                className="h-10 w-full cursor-pointer rounded-md bg-orange-500 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
                 disabled={send_otp_mutation.isPending}
                 type="submit"
               >
@@ -238,7 +238,7 @@ const LoginForm: FC = () => {
             onSubmit={(values) => {
               verify_otp_mutation.mutate(
                 {
-                  mobile: user_details.contact,
+                  identifier: user_details.identifier,
                   otp: values.otp,
                 },
                 {
@@ -257,13 +257,12 @@ const LoginForm: FC = () => {
                       <label className="flex items-center justify-between text-sm font-medium">
                         <span>
                           OTP Sent on{" "}
-                          {startsWithNumber(user_details.contact) &&
+                          {startsWithNumber(user_details.identifier) &&
                             getCallingCode(
                               user_details.country?.code as CountryCode,
                             )}{" "}
-                          {user_details.contact}
-                        </span>
-                        {" "}
+                          {user_details.identifier}
+                        </span>{" "}
                         <button
                           type="button"
                           onClick={() => {
@@ -307,17 +306,12 @@ const LoginForm: FC = () => {
                     type="button"
                     disabled={timer > 0}
                     onClick={() => {
-                      send_otp_mutation.mutate(
-                        {
-                          phone: user_details.contact,
+                      send_otp_mutation.mutate(user_details, {
+                        onSuccess() {
+                          setTimer(60);
+                          resetForm();
                         },
-                        {
-                          onSuccess() {
-                            setTimer(60);
-                            resetForm();
-                          },
-                        },
-                      );
+                      });
                     }}
                     className={clsx(
                       "cursor-pointer font-medium text-orange-500 hover:text-orange-600",
@@ -341,8 +335,8 @@ const LoginForm: FC = () => {
         </>
       )}
       <p className="absolute bottom-6 text-sm lg:hidden">
-        Need Help? Call us at {" "}
-        <a href="tel:+919415761434" className="text-orange-500 font-medium">
+        Need Help? Call us at{" "}
+        <a href="tel:+919415761434" className="font-medium text-orange-500">
           +91 9415761434
         </a>
       </p>

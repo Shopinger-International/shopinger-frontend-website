@@ -1,29 +1,27 @@
-type ISubCategory = {
-  description: string;
-  id: string;
-  imgUrl: string;
-  is_active: boolean;
-  is_hidden: boolean;
-  mainCategoryId: number;
+interface IBaseCategory {
+  id: number;
   name: string;
   slug: string;
-};
+  description: string;
+  imgUrl: string;
 
-type ICategory = {
   cgst: string;
-  commission: string;
-  createdAt: string;
-  description: string;
-  id: 20;
+  sgst: string;
   igst: string;
-  imgUrl: string;
+  commission: string;
+  plateform_fee: string;
+
   is_active: boolean;
   is_hidden: boolean;
-  name: string;
-  plateform_fee: string;
-  sgst: string;
-  slug: string;
-  subCategories: Array<ISubCategory>;
-};
+  createdAt: string;
+}
 
-export { ICategory };
+interface ISubSubCategory extends IBaseCategory {}
+interface ISubCategory extends IBaseCategory {
+  subSubCategories: ISubSubCategory[];
+}
+interface ICategory extends IBaseCategory {
+  subCategories: ISubCategory[];
+}
+
+export { ISubSubCategory, ISubCategory, ICategory };

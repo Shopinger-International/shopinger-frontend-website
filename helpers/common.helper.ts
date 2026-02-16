@@ -56,5 +56,5 @@ export {
   capitalizeValue,
   startsWithNumber,
   getCallingCode,
-  formatSeconds
+  formatSeconds,
 };

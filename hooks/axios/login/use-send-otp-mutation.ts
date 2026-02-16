@@ -13,17 +13,17 @@ type IResponse = {
 };
 
 type IRequestPayload = {
-  phone: string;
+  identifier: string;
 };
 
 const useSendOTPMutation = () => {
   return useMutation<IResponse, Error, IRequestPayload>({
     mutationKey: ["user-login-and-register-with-otp"],
-    async mutationFn({ phone }) {
+    async mutationFn({ identifier }) {
       const { data } = await publicAxios.post<IResponse>(
         "/user-login-and-register-with-otp",
         {
-          phone,
+          identifier,
         },
       );
       return data;
@@ -31,7 +31,7 @@ const useSendOTPMutation = () => {
     onSuccess(response) {
       enqueueSnackbar(response.message, {
         key: "user-login-and-register-with-otp-success",
-        variant:"success"
+        variant: "success",
       });
     },
 
@@ -39,7 +39,7 @@ const useSendOTPMutation = () => {
       // @ts-ignore
       enqueueSnackbar(error.response.data.message, {
         key: "user-login-and-register-with-otp-error",
-        variant:"error"
+        variant: "error",
       });
     },
   });

@@ -1,3 +1,4 @@
+import Head from "next/head";
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
@@ -15,19 +16,21 @@ import DiscountSection from "@/components/home/discount/discount-section.compone
 
 const HomePage: NextPageWithLayout = () => {
   return (
-    <div className="space-y-4 pt-(--header-height)">
-      <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
-        <PromoBanner />
-        <ProductMarquee />
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[60%_1fr]">
-          {/* Sale Live Section */}
-          <SaleLiveSection />
-          <WatchLiveSection />
+    <>
+      <div className="space-y-4 pt-(--header-height)">
+        <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
+          <PromoBanner />
+          <ProductMarquee />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[60%_1fr]">
+            {/* Sale Live Section */}
+            <SaleLiveSection />
+            <WatchLiveSection />
+          </div>
         </div>
+        <BestDeals />
+        <DiscountSection />
       </div>
-      <BestDeals />
-      <DiscountSection />
-    </div>
+    </>
   );
 };
 

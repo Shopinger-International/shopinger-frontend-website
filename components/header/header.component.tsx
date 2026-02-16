@@ -218,7 +218,7 @@ const Header: FC<HeaderProps> = () => {
               </span>
               <Cart width={30} height={23} />
             </span>
-            <span>Cart</span>
+            <span>$ 1000</span>
           </Link>
           <div className="hidden lg:inline">
             <Tooltip content={<AIAssistant />} className="z-100">

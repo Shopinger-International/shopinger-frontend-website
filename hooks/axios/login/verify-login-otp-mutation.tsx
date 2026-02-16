@@ -7,7 +7,7 @@ import publicAxios from "@/lib/axios/public.lib";
 import { enqueueSnackbar } from "notistack";
 
 interface VerifyOtpPayload {
-  mobile: string;
+  identifier: string;
   otp: string;
 }
 
@@ -20,10 +20,10 @@ interface VerifyOtpResponse {
 const useVerifyLoginOtp = () => {
   return useMutation<VerifyOtpResponse, Error, VerifyOtpPayload>({
     mutationKey: ["verify-login-otp"],
-    mutationFn: async ({ mobile, otp }) => {
+    mutationFn: async ({ identifier, otp }) => {
       const res = await publicAxios.post<VerifyOtpResponse>(
         `/user-verify-login-otp`,
-        new URLSearchParams({ mobile, otp }),
+        new URLSearchParams({ identifier, otp }),
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -36,7 +36,7 @@ const useVerifyLoginOtp = () => {
     onSuccess(response) {
       enqueueSnackbar(response.message, {
         key: "user-verify-login-otp-success",
-        variant:"success"
+        variant: "success",
       });
     },
 
@@ -44,7 +44,7 @@ const useVerifyLoginOtp = () => {
       // @ts-ignore
       enqueueSnackbar(error.response.data.message, {
         key: "user-verify-login-otp-error",
-        variant:"error"
+        variant: "error",
       });
     },
   });
