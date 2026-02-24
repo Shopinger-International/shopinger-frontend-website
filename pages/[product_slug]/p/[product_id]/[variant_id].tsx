@@ -12,8 +12,12 @@ import type IMedia from "@/types/media";
 import MainLayout from "@/components/layout/main-layout.component";
 
 // local components
-import ProductGallary from "@/components/product/product-gallary.component";
-import ProductInfo from "@/components/product/product-info.component";
+import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
+import ProductInfo from "@/components/product/product-info/product-info.component";
+import MobileProductInfo from "@/components/product/product-info/mobile-product-info.component";
+
+// mobile
+import MobileProductGallary from "@/components/product/product-gallary/mobile-product-gallary.component";
 
 // icons
 import { ChevronRight } from "lucide-react";
@@ -87,7 +91,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     sub_sub_category,
   } = product;
   const meta_description = generateMetaDescription(description);
-  const products = getAllProducts();
+  console.log('value of product',product);
 
   const visual_variant_attribute_values = variant?.variant_attribute_values
     .filter(({ attribute }) => attribute.is_visual == true)
@@ -153,10 +157,10 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         </title>
         <meta name="description" content={meta_description} key="desc" />
       </Head>
-      <div className="-mt-2 border-b border-neutral-300 pt-(--header-height)">
+      <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="max-w-8xl mx-auto w-full px-4">
           <nav aria-label="Breadcrumb">
-            <ol className="flex items-center gap-2 py-3 text-sm text-gray-600">
+            <ol className="flex items-center gap-2 py-1 text-xs text-gray-600">
               {[
                 main_category.name,
                 sub_category.name,
@@ -174,9 +178,19 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           </nav>
         </div>
       </div>
-      <div className="max-w-8xl mx-auto mt-10 flex w-full grid-cols-2 gap-8 px-4">
-        <ProductGallary variant={variant} media_group={media_group} product={product} />
+      <div className="max-w-8xl mx-auto flex w-full flex-col gap-8 px-4 pt-(--header-height) lg:mt-8 lg:flex-row lg:pt-0">
+        <ProductGallary
+          variant={variant}
+          media_group={media_group}
+          product={product}
+        />
         <ProductInfo
+          product={product}
+          variant={variant as IVariant}
+          selected_attributes={selected_attributes}
+          media_group={media_group}
+        />
+        <MobileProductInfo
           product={product}
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
@@ -203,7 +217,6 @@ export const getStaticPaths = (async () => {
       };
     });
   });
-  console.log("value of paths")
   return {
     paths,
     fallback: "blocking",

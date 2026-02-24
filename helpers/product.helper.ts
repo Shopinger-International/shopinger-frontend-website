@@ -1,3 +1,5 @@
+import type { IVariantInventory } from "@/types/variant";
+
 const generateMetaDescription = (htmlDescription: string) => {
   // 1. Remove HTML tags
   const plainText = htmlDescription.replace(/<[^>]*>?/gm, "");
@@ -23,4 +25,16 @@ const generateSlug = (text: string) => {
     .replace(/-+/g, "-"); // remove duplicate hyphens
 };
 
-export { generateMetaDescription, generateSlug };
+function getStockStatus(variant_inventory: IVariantInventory) {
+  if (variant_inventory.stock <= 0) {
+    return "out_of_stock";
+  }
+
+  if (variant_inventory.stock <= variant_inventory.low_stock_threshold) {
+    return "low_stock";
+  }
+
+  return "in_stock";
+}
+
+export { generateMetaDescription, generateSlug, getStockStatus };

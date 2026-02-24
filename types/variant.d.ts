@@ -40,3 +40,4 @@ type IVariant = {
   variant_pricing:IVariantPricing;
 };
 export default IVariant;
+export {IVariantInventory}

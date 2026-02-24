@@ -33,3 +33,28 @@
 .animate-marquee {
   animation: marquee 25s linear infinite;
 }
+
+/* Pagination wrapper */
+.swiper-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Custom bullet base */
+.custom-bullet {
+  width: 20px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #e5e7eb;
+  opacity: 1;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Active bullet */
+.custom-bullet-active {
+  background-color: #f97316;
+  width: 40px;
+}
