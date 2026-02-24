@@ -1,5 +1,3 @@
-import Link from "next/link";
-import Image from "next/image";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -13,12 +11,6 @@ import { Star } from "lucide-react";
 import Badge from "@/components/product/badge.component";
 import IAttributeType from "@/types/attribute";
 import VariantSelection from "@/components/product/variant-selection.component";
-
-// helpers
-import { generateSlug } from "@/helpers/product.helper";
-
-// clsx
-import clsx from "clsx";
 
 type IProps = {
   product: IProduct;
@@ -89,8 +81,8 @@ const ProductInfo: FC<IProps> = ({
           {sub_sub_category.name}
         </Badge>
       </div>
-      <h1 className="mb-3 text-2xl font-medium">{heading}</h1>
-      <div className="flex items-center gap-2.5 text-3xl mb-1">
+      <h1 className="mb-3 text-xl font-medium">{heading}</h1>
+      <div className="mb-1 flex items-center gap-2.5 text-3xl">
         <span className="text-gray-600">M.R.P</span>
         <span>₹{selling_price_with_commission}</span>
         <span className="text-xl line-through">₹{mrp}</span>

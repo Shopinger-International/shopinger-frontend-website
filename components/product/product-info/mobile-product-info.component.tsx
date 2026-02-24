@@ -85,7 +85,7 @@ const MobileProductInfo: FC<IProps> = ({
   return (
     <div className="lg:hidden">
       <div className="space-y-3">
-        <h1 className="text-xs font-semibold">{heading}</h1>
+        <h1 className="text-sm font-semibold">{heading}</h1>
         <MobileProductGallary
           variant={variant}
           media_group={media_group}
@@ -97,7 +97,9 @@ const MobileProductInfo: FC<IProps> = ({
           media_group={media_group}
         />
         <div className="mb-2.5 flex items-center gap-2.5 text-2xl">
-          <span className="font-semibold">₹{selling_price_with_commission}</span>
+          <span className="font-semibold">
+            ₹{selling_price_with_commission}
+          </span>
           <span className="text-xl line-through">₹{mrp}</span>
           {!!discount_percentage && (
             <span className="rounded-full bg-orange-500 px-2 py-1 text-xs font-medium text-white">

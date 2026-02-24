@@ -92,6 +92,7 @@ const VariantSelection: FC<{
                         )}
                       >
                         <Image
+                          sizes={"90px"}
                           src={
                             media_group[attribute.id as number][
                               value.toLowerCase()
