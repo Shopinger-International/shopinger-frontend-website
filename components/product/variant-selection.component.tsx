@@ -20,7 +20,7 @@ const VariantSelection: FC<{
   selected_attributes: Record<string, any>;
   media_group: IMediaGroup;
 }> = ({
-  product: { id: product_id, title, variants },
+  product: { id: product_id, title, variants, brand },
   selected_attributes,
   media_group,
 }) => {
@@ -42,7 +42,7 @@ const VariantSelection: FC<{
     }, {});
 
   return (
-    <div className="space-y-4 mb-4">
+    <section className="mb-4 space-y-4" aria-label="Variant Selector">
       {Object.values(variant_attributes_values_group)
         .sort((a, b) => {
           // visual attributes first
@@ -52,14 +52,18 @@ const VariantSelection: FC<{
         .map(({ attribute: { is_visual, ...attribute }, values }) => (
           <div className="space-y-2" key={`variant-attribute-${attribute.id}`}>
             <h3 className="font-bold">
-              {attribute.name} :{" "}
+              {attribute.name} <span aria-hidden="true"> : </span>
               <span className="font-normal">
                 {attribute.options?.find(
                   ({ value }) => value == selected_attributes[attribute.code],
                 )?.label ?? selected_attributes[attribute.code]}
               </span>{" "}
             </h3>
-            <div className="flex items-center gap-3 flex-wrap">
+            <div
+              className="flex flex-wrap items-center gap-3"
+              role="group"
+              aria-label={`Choose ${attribute.name}`}
+            >
               {Array.from(values).map((value) => {
                 const is_selected =
                   selected_attributes[attribute.code] === value;
@@ -80,6 +84,7 @@ const VariantSelection: FC<{
                   <Link
                     href={`/${product_slug}/p/${product_id}/${variant?.id}`}
                     key={`variant-attribute-value-${value}`}
+                    aria-current={is_selected ? "page" : undefined}
                   >
                     {is_visual ? (
                       <div
@@ -98,7 +103,7 @@ const VariantSelection: FC<{
                             ][0].url
                           }
                           fill={true}
-                          alt="image"
+                          alt={value}
                         />
                       </div>
                     ) : (
@@ -121,7 +126,7 @@ const VariantSelection: FC<{
             </div>
           </div>
         ))}
-    </div>
+    </section>
   );
 };
 

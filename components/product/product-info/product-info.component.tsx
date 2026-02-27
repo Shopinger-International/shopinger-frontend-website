@@ -10,6 +10,7 @@ import { Star } from "lucide-react";
 // local components
 import Badge from "@/components/product/badge.component";
 import VariantSelection from "@/components/product/variant-selection.component";
+import CheckDeliveryAvailability from "@/components/product/product-info/check-delivery-availability.component";
 
 type IProps = {
   product: IProduct;
@@ -52,15 +53,18 @@ const ProductInfo: FC<IProps> = ({
     );
   const heading = `${updated_title} ${!!nor_visual_variant_attributes.length ? "(" + nor_visual_variant_attributes.join(", ") + ")" : ""} ${!!visual_variant_attributes.length ? " - " + visual_variant_attributes.join(", ") : " "}`;
   return (
-    <div className="hidden lg:block">
+    <section aria-labelledby="product-title" className="hidden lg:block">
       <div className="mb-8 flex gap-2">
         {brand && <Badge className="bg-[#FFE2D0]">{brand}</Badge>}
         <Badge className="border border-neutral-300 bg-white">
           {sub_sub_category.name}
         </Badge>
       </div>
-      <h1 className="mb-3 text-xl font-medium">{heading}</h1>
-      <div className="mb-1 flex flex-col text-3xl">
+      <h1 id="product-title" className="mb-3 text-xl font-medium">
+        {heading}
+      </h1>
+      {/** MRP */}
+      <section className="mb-1 flex flex-col text-3xl">
         <p>
           <span>₹{selling_price_with_commission}</span>
           {!!discount_percentage && (
@@ -73,38 +77,41 @@ const ProductInfo: FC<IProps> = ({
           <span className="text-gray-600">M.R.P</span>{" "}
           <span className="text-sm line-through">₹{mrp}</span>
         </p>
-      </div>
+      </section>
       <p className="mb-2.5 text-sm">Inclusive of all taxes</p>
-      <div className="mb-2.5 text-sm">
-        <span className="font-medium">
-          4.6 <Star className="inline size-4 fill-amber-300 text-amber-300" />
-        </span>{" "}
-        | <span className="text-orange-500">2,847 reviews</span>{" "}
-        <span className="">500+ bought in past month</span>
-      </div>
+
+      {/** RATING */}
+      <p
+        className="mb-2.5 inline text-sm"
+        aria-label="Product rating and reviews"
+      >
+        <strong className="font-medium">4.6 </strong>{" "}
+        <span className="sr-only">out of 5 stars</span>{" "}
+        <Star
+          className="inline size-4 fill-amber-300 text-amber-300"
+          aria-hidden="true"
+        />
+        <span aria-hidden="true"> | </span>{" "}
+        <a
+          href="#reviews"
+          className="text-orange-500"
+          aria-label={`view all ${2847} reviews`}
+        >
+          2,847 reviews
+        </a>{" "}
+      </p>
+      <p className="inline text-sm">500+ bought in past month</p>
+
       <VariantSelection
         product={product}
         selected_attributes={selected_attributes}
         media_group={media_group}
       />
-      <div className="inline-flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <h4 className="text-sm font-medium">Check delivery services</h4>
-          <input
-            className="rounded-md border border-orange-500 px-4 py-2 text-xs font-medium"
-            placeholder="Enter pincode"
-          />
-          <button className="text-sm font-medium text-orange-500">
-            Change
-          </button>
-        </div>
-        <span className="text-sm font-medium text-gray-500">
-          Deliver by Tomorrow 11pm
-        </span>
-      </div>
-      <div>
-      </div>
-    </div>
+      <CheckDeliveryAvailability />
+      <p className="mt-2 text-sm font-medium">
+        Sold by <strong className="text-orange-500 font-medium">Himang Retails</strong>
+      </p>
+    </section>
   );
 };
 export default ProductInfo;

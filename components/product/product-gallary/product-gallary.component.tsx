@@ -23,7 +23,7 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
     useState<number>(0);
   return (
     <>
-      <div className="relative hidden space-y-4 lg:block">
+      <section className="relative hidden space-y-4 lg:block">
         {/* Main Product View */}
         <div className="flex flex-col gap-9 lg:flex-row">
           {/* Thumbnail Gallery */}
@@ -111,7 +111,7 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };

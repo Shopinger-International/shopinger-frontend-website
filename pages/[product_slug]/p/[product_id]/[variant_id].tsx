@@ -5,7 +5,6 @@ import type { ReactElement } from "react";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
-import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type IMedia from "@/types/media";
 
 // layout
@@ -30,17 +29,14 @@ const getProduct = async (
   product_id: number,
 ): Promise<{
   product: IProduct;
-  visual_mappings: ICategoryAttributeMapping[];
 }> => {
   const {
-    data: { product, visual_mappings },
+    data: { product },
   } = await webAxios.get<{
     success: boolean;
     product: IProduct;
-    visual_mappings: ICategoryAttributeMapping[];
   }>(`/get-product/${product_id}`);
   return {
-    visual_mappings,
     product,
   };
 };
@@ -71,14 +67,9 @@ type IParams = {
 type IProps = {
   product: IProduct;
   variant: IVariant;
-  visual_mappings: ICategoryAttributeMapping[];
 };
 
-const ProductPage: NextPageWithLayout<IProps> = ({
-  product,
-  variant,
-  visual_mappings,
-}) => {
+const ProductPage: NextPageWithLayout<IProps> = ({ product, variant }) => {
   const {
     title,
     brand,
@@ -98,6 +89,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   const main_title = visual_values.length
     ? `${updated_title} in ${visual_values.join(", ")} | Shopinger`
     : `${updated_title} | Shopinger`;
+  console.log("value of main title");
 
   const selected_attributes = variant.variant_attribute_values.reduce<
     Record<string, any>
@@ -181,7 +173,7 @@ export const getStaticPaths = (async () => {
   const products = await getAllProducts();
   const paths = products.flatMap(({ id: product_id, title, variants }) => {
     const product_slug = generateSlug(title);
-    console.log("value of variants",variants);
+    console.log("value of variants", variants);
     return variants.map(({ id: variant_id }) => {
       return {
         params: {
@@ -210,8 +202,7 @@ export const getStaticProps = (async ({ params }) => {
     return { notFound: true };
   }
 
-  let { product, visual_mappings } = await getProduct(product_id);
-  console.log("value of product",product);
+  let { product } = await getProduct(product_id);
 
   if (!product) {
     return { notFound: true };
@@ -225,7 +216,6 @@ export const getStaticProps = (async ({ params }) => {
       variant: product.variants.find(
         (variant) => variant.id == variant_id,
       ) as IVariant,
-      visual_mappings,
     },
     revalidate: 60, // 🔥 enable ISR
   };
