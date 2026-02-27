@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useState, useEffect, Fragment } from "react";
 // types
 import type { FC } from "react";
-import type { IProduct } from "@/types/product";
+import type IProduct from "@/types/product";
 
 // external components
 import {
@@ -149,7 +149,7 @@ const Searchbar: FC = () => {
                         )}
                       >
                         <div className="flex items-center gap-4">
-                          {product.thumbnail ? (
+                          {/* {product.thumbnail ? (
                             <Image
                               width={40}
                               height={40}
@@ -163,7 +163,7 @@ const Searchbar: FC = () => {
                               strokeWidth={1.5}
                             />
                           )}
-                          <span>{product.title}</span>
+                          <span>{product.title}</span> */}
                         </div>
                       </li>
                     )}

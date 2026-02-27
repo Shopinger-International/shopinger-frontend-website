@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 // types
 import type { FC } from "react";
-import type IVariant from "@/types/variant";
 import type IAttributeType from "@/types/attribute";
 import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type IProduct from "@/types/product";
@@ -43,7 +42,7 @@ const VariantSelection: FC<{
     }, {});
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mb-4">
       {Object.values(variant_attributes_values_group)
         .sort((a, b) => {
           // visual attributes first
@@ -60,7 +59,7 @@ const VariantSelection: FC<{
                 )?.label ?? selected_attributes[attribute.code]}
               </span>{" "}
             </h3>
-            <div className="flex items-center gap-3 overflow-x-scroll">
+            <div className="flex items-center gap-3 flex-wrap">
               {Array.from(values).map((value) => {
                 const is_selected =
                   selected_attributes[attribute.code] === value;
@@ -85,7 +84,7 @@ const VariantSelection: FC<{
                     {is_visual ? (
                       <div
                         className={clsx(
-                          "relative h-18 w-16 overflow-hidden rounded-lg border bg-white transition-all duration-200",
+                          "relative h-18 w-18 overflow-hidden rounded-lg border bg-white transition-all duration-200",
                           is_selected
                             ? "border-orange-500 ring-2 ring-orange-200"
                             : "border-neutral-300 hover:border-neutral-400",

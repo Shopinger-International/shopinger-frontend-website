@@ -87,31 +87,17 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     sub_category,
     sub_sub_category,
   } = product;
+
+  const updated_title =
+    !brand || title.includes(brand) ? title : `${brand} ${title}`;
+  const visual_values = variant.variant_attribute_values
+    .filter(({ attribute }) => attribute.is_visual)
+    .map(({ value }) => value);
   const meta_description = generateMetaDescription(description);
-  console.log("value of product", product);
 
-  const visual_variant_attribute_values = variant?.variant_attribute_values
-    .filter(({ attribute }) => attribute.is_visual == true)
-    .sort(({ attribute: attribute1 }, { attribute: attribute2 }) => {
-      const mapping1 = visual_mappings.find(
-        ({ attribute }) => attribute.id == attribute1.id,
-      ) as ICategoryAttributeMapping;
-
-      const mapping2 = visual_mappings.find(
-        ({ attribute }) => attribute.id == attribute2.id,
-      ) as ICategoryAttributeMapping;
-      return (
-        (mapping1.visual_priority as number) -
-        (mapping2.visual_priority as number)
-      );
-    });
-  const variant_visual_attribute_medias =
-    product.variant_visual_attribute_medias
-      .filter(
-        ({ attribute_value }) =>
-          attribute_value == visual_variant_attribute_values?.[0].value,
-      )
-      .map(({ media }) => media);
+  const main_title = visual_values.length
+    ? `${updated_title} in ${visual_values.join(", ")} | Shopinger`
+    : `${updated_title} | Shopinger`;
 
   const selected_attributes = variant.variant_attribute_values.reduce<
     Record<string, any>
@@ -137,25 +123,16 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       return acc;
     }, {});
 
+  console.log("value of main title", main_title, visual_values);
+
   return (
     <>
       <Head>
-        <title>
-          {brand} {title} -{" "}
-          {variant.variant_attribute_values
-            .map(
-              ({ value, attribute }) =>
-                attribute.options?.find(
-                  ({ value: option_value }) => value == option_value,
-                )?.label ?? value,
-            )
-            .join(", ")}{" "}
-          | Shopinger
-        </title>
+        <title>{main_title}</title>
         <meta name="description" content={meta_description} key="desc" />
       </Head>
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
-        <div className="max-w-8xl mx-auto w-full px-4">
+        <div className="mx-auto w-full px-4">
           <nav aria-label="Breadcrumb">
             <ol className="flex items-center gap-2 py-1.5 text-xs text-gray-600">
               {[
@@ -175,7 +152,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           </nav>
         </div>
       </div>
-      <div className="max-w-6xl mx-auto flex w-full flex-col gap-8 px-4 pt-(--header-height) lg:mt-8 lg:flex-row lg:pt-0">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pt-(--header-height) lg:mt-8 lg:flex-row lg:pt-0">
         <ProductGallary
           variant={variant}
           media_group={media_group}
@@ -187,12 +164,12 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           selected_attributes={selected_attributes}
           media_group={media_group}
         />
-        {/* <MobileProductInfo
+        <MobileProductInfo
           product={product}
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           media_group={media_group}
-        /> */}
+        />
       </div>
     </>
   );
@@ -204,6 +181,7 @@ export const getStaticPaths = (async () => {
   const products = await getAllProducts();
   const paths = products.flatMap(({ id: product_id, title, variants }) => {
     const product_slug = generateSlug(title);
+    console.log("value of variants",variants);
     return variants.map(({ id: variant_id }) => {
       return {
         params: {
@@ -233,6 +211,7 @@ export const getStaticProps = (async ({ params }) => {
   }
 
   let { product, visual_mappings } = await getProduct(product_id);
+  console.log("value of product",product);
 
   if (!product) {
     return { notFound: true };

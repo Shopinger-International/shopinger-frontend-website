@@ -37,8 +37,9 @@ const withProductGalleryFunctionality = <
   }: ExtraProps) => {
     const { brand, title, product_medias } = product;
     const { variant_attribute_values } = variant;
-    const updated_title = title.includes(brand) ? title : `${brand} ${title}`;
 
+    const updated_title =
+      !brand || title.includes(brand) ? title : `${brand} ${title}`;
     let variant_medias = variant_attribute_values
       .filter(({ attribute }) => attribute.is_visual)
       .flatMap(
@@ -50,7 +51,9 @@ const withProductGalleryFunctionality = <
       .map(({ value }) => value);
 
     let variant_medias_with_title = (
-      variant_medias.length ? variant_medias : product_medias
+      variant_medias.length
+        ? variant_medias
+        : product_medias.map(({ media }) => media)
     ).map((media, index) => {
       const image_title = visual_values.length
         ? `${updated_title} in ${visual_values.join(", ")} - Image ${index + 1}`
@@ -60,7 +63,7 @@ const withProductGalleryFunctionality = <
         media,
         image_title,
       };
-    }) as IVariantMediaWithTitle[];
+    });
 
     return (
       <BaseComponent
