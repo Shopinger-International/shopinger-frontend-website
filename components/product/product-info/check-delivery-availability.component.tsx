@@ -127,10 +127,10 @@ const CheckDeliveryAvailability: FC = () => {
       {delivery_zone_data && (
         <div
           className={clsx(
-            "w-full space-y-4 rounded-lg  p-5",
+            "w-full space-y-4 rounded-lg p-5",
             delivery_zone_data.is_delivery_available
-              ? "bg-orange-50 border border-orange-200"
-              : "bg-gray-50 border border-gray-200",
+              ? "border border-orange-200 bg-orange-50"
+              : "border border-gray-200 bg-gray-50",
           )}
         >
           {delivery_zone_data.is_delivery_available ? (
@@ -143,7 +143,9 @@ const CheckDeliveryAvailability: FC = () => {
                     <h3 className="font-medium text-neutral-900">
                       Express Delivery
                     </h3>
-                    <span className="font-medium text-orange-600">Free</span>
+                    {!Number(delivery_zone_data.delivery_fee) && (
+                      <span className="font-medium text-orange-600">Free</span>
+                    )}
                   </div>
 
                   <p className="mt-1 text-sm text-neutral-600">
