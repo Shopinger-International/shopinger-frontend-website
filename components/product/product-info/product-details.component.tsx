@@ -87,7 +87,7 @@ const ProductDetails: FC<{
         >
           Top Highlights
         </h3>
-        <div className="grid grid-cols-2 gap-x-8 gap-y-4 border-b border-gray-300 text-sm">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-4 border-b border-gray-300">
           {full_top_highlights.map((item, index) => {
             const is_in_last_row = index >= full_top_highlights.length - 2;
 
@@ -109,7 +109,7 @@ const ProductDetails: FC<{
         >
           About this item
         </h3>
-        <ul className="list-outside list-disc space-y-1.5 pl-5 text-sm text-gray-600">
+        <ul className="list-outside list-disc space-y-1.5 pl-5 text-gray-600">
           {display_features.map((feature, index) => (
             <li key={index}>{feature}</li>
           ))}
@@ -117,11 +117,11 @@ const ProductDetails: FC<{
         {key_features.length > initial_visible && (
           <button
             onClick={() => setShowAll(!show_all)}
-            className="mt-1 text-sm font-medium text-orange-500 hover:underline"
+            className="mt-1 font-medium text-orange-500 hover:underline"
           >
             {show_all
               ? "See less"
-              : `See more (${key_features.length - initial_visible})`}
+              : `See more (${updated_key_features.length - initial_visible})`}
           </button>
         )}
       </section>

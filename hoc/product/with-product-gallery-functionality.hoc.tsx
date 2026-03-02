@@ -39,7 +39,9 @@ const withProductGalleryFunctionality = <
     const { variant_attribute_values } = variant;
 
     const updated_title =
-      !brand || title.includes(brand) ? title : `${brand} ${title}`;
+      !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
+        ? title
+        : `${brand} ${title}`;
     let variant_medias = variant_attribute_values
       .filter(({ attribute }) => attribute.is_visual)
       .flatMap(

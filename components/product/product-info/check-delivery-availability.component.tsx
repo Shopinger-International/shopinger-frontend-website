@@ -31,7 +31,7 @@ const CheckDeliveryAvailability: FC = () => {
       aria-labelledby="delivery-heading"
       className="mb-4 flex items-center gap-2"
     >
-      <h2 id="delivery-heading" className="inline text-sm font-medium">
+      <h2 id="delivery-heading" className="inline font-medium">
         Check Delivery Availability
       </h2>
       <Formik
@@ -55,7 +55,7 @@ const CheckDeliveryAvailability: FC = () => {
             {
               <Tooltip
                 content={
-                  <div className="flex items-start gap-2 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800 shadow-md">
+                  <div className="flex items-start gap-2 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-red-800 shadow-md">
                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
                     <span>{errors["pincode"]}</span>
                   </div>
@@ -71,7 +71,7 @@ const CheckDeliveryAvailability: FC = () => {
                     type="text"
                     value={values["pincode"]}
                     className={clsx(
-                      "rounded-md border px-4 py-2 text-xs font-medium",
+                      "rounded-md border px-4 py-2 font-medium",
                       touched["pincode"] && errors["pincode"]
                         ? "border-2 border-red-600"
                         : "border border-orange-500",
@@ -93,7 +93,7 @@ const CheckDeliveryAvailability: FC = () => {
             )}
             <button
               type="submit"
-              className="cursor-pointer text-sm font-medium text-orange-500"
+              className="cursor-pointer font-medium text-orange-500"
             >
               Check
             </button>

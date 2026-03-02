@@ -14,9 +14,6 @@ import VariantSelection from "@/components/product/variant-selection.component";
 import CheckDeliveryAvailability from "@/components/product/product-info/check-delivery-availability.component";
 import ProductDetails from "@/components/product/product-info/product-details.component";
 
-// helpers
-import { generateDescription } from "@/helpers/product.helper";
-
 type IProps = {
   product: IProduct;
   variant: IVariant;
@@ -32,15 +29,11 @@ const ProductInfo: FC<IProps> = ({
   media_group,
   category_mappings,
 }) => {
-  const {
-    title,
-    brand,
-    sub_sub_category,
-    key_features,
-    product_attribute_values,
-  } = product;
+  const { title, brand, sub_sub_category } = product;
   const updated_title =
-    !brand || title.includes(brand) ? title : `${brand} ${title}`;
+    !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
+      ? title
+      : `${brand} ${title}`;
   const { variant_pricing } = variant;
   const { mrp, selling_price_with_commission } = variant_pricing;
   const discount_percentage = Math.round(
@@ -77,24 +70,24 @@ const ProductInfo: FC<IProps> = ({
         {heading}
       </h1>
       {/** MRP */}
-      <section className="mb-4 flex flex-col text-3xl">
+      <section className="mb-4 flex flex-col">
         <p>
-          <span>₹{selling_price_with_commission} </span>
+          <span className="text-3xl">₹{selling_price_with_commission} </span>
           {!!discount_percentage && (
-            <span className="inline text-base font-medium text-gray-600">
+            <span className="inline font-medium text-gray-600">
               {discount_percentage}% off
             </span>
           )}
         </p>
-        <p className="text-xs">
+        <p>
           <span className="text-gray-600">M.R.P</span>{" "}
-          <span className="text-sm line-through">₹{mrp}</span>
+          <span className="line-through">₹{mrp}</span>
         </p>
         <p className="text-sm">Inclusive of all taxes</p>
       </section>
 
       {/** RATING */}
-      <p className="mb-4 text-sm" aria-label="Product rating and reviews">
+      <p className="mb-4" aria-label="Product rating and reviews">
         <strong className="font-medium">4.6 </strong>{" "}
         <span className="sr-only">out of 5 stars</span>{" "}
         <Star
@@ -109,7 +102,7 @@ const ProductInfo: FC<IProps> = ({
         >
           2,847 reviews
         </a>{" "}
-        <span className="inline text-sm">500+ bought in past month</span>
+        <span className="inline">500+ bought in past month</span>
       </p>
       <VariantSelection
         product={product}
@@ -117,14 +110,11 @@ const ProductInfo: FC<IProps> = ({
         media_group={media_group}
       />
       <CheckDeliveryAvailability />
-      <p className="mb-4 text-sm font-medium">
+      <p className="mb-4 font-medium">
         Sold by{" "}
         <strong className="font-medium text-orange-500">Himang Retails</strong>
       </p>
-      <ProductDetails
-        product={product}
-        category_mappings={category_mappings}
-      />
+      <ProductDetails product={product} category_mappings={category_mappings} />
     </section>
   );
 };

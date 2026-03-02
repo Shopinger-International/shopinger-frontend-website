@@ -89,7 +89,10 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   } = product;
 
   const updated_title =
-    !brand || title.includes(brand) ? title : `${brand} ${title}`;
+    !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
+      ? title
+      : `${brand} ${title}`;
+
   const visual_values = variant.variant_attribute_values
     .filter(({ attribute }) => attribute.is_visual)
     .map(({ value }) => value);
@@ -161,7 +164,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           media_group={media_group}
-          category_mappings = {category_mappings}
+          category_mappings={category_mappings}
         />
         <MobileProductInfo
           product={product}

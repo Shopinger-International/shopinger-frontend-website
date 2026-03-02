@@ -7,7 +7,7 @@ import clsx from "clsx";
 const AttributeInfoCell: FC<{
   name: string;
   value: string;
-  show_border: boolean;
+  show_border?: boolean;
 }> = ({ name, value, show_border = true }) => (
   <div
     className={clsx(
