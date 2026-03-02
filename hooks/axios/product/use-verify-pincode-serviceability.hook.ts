@@ -1,5 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 
+// types
+import type { AxiosError } from "axios";
+
 // lib
 import webAxios from "@/lib/axios/web.lib";
 
@@ -9,10 +12,16 @@ interface VerifyOtpPayload {
 
 interface VerifyOtpResponse {
   message?: string;
+  data: {
+    pincode: string;
+    delivery_fee: number;
+    delivery_time_minutes: number;
+    cod_available: boolean;
+  };
 }
 
 const useVerifyPincodeServiceability = () => {
-  return useMutation<VerifyOtpResponse, Error, VerifyOtpPayload>({
+  return useMutation<VerifyOtpResponse, AxiosError, VerifyOtpPayload>({
     mutationKey: ["verify-login-otp"],
     mutationFn: async ({ pin_code }) => {
       const res = await webAxios.get<VerifyOtpResponse>(

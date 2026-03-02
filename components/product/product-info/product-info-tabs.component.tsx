@@ -152,7 +152,7 @@ const ProductInfoTabs: FC<{
             <Description description={generateDescription(description)} />
           </TabPanel>
           <TabPanel className="focus:outline-none">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-4 border-b border-gray-300">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
               {[
                 {
                   label: "Manufacturer Name",
