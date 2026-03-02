@@ -121,6 +121,7 @@ const CategorySection: FC = () => {
                   if (label == "Quick Order") {
                     return (
                       <Tooltip
+                        placement="bottom"
                         key={label}
                         className="z-50 rounded-xl border border-gray-200 bg-white py-1 font-semibold shadow-lg"
                         content={

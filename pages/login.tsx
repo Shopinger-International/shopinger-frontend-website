@@ -1,6 +1,5 @@
 import Head from "next/head";
 // types
-import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 
 // local components
@@ -15,9 +14,7 @@ const Login: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>
-          Login | Shopinger
-        </title>
+        <title>Login | Shopinger</title>
         <meta
           name="description"
           content="Sign in securely to your account to manage orders, track deliveries, and continue shopping with ease."
@@ -27,6 +24,7 @@ const Login: NextPageWithLayout = () => {
       <div className="relative flex h-screen w-full items-center justify-center bg-[#FFE2D0]">
         <div className="absolute top-6 right-6">
           <Tooltip
+            placement="bottom"
             content={
               <div className="w-max rounded-lg border border-gray-200 bg-white p-3 shadow-md">
                 <p className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-900">
@@ -43,11 +41,8 @@ const Login: NextPageWithLayout = () => {
               </div>
             }
           >
-            {({ ref }) => (
-              <button
-                ref={ref}
-                className="flex items-center justify-between gap-2 rounded-lg bg-orange-500 px-3 py-1.5 text-sm font-medium text-white shadow-md"
-              >
+            {({}) => (
+              <button className="flex items-center justify-between gap-2 rounded-lg bg-orange-500 px-3 py-1.5 text-sm font-medium text-white shadow-md">
                 <MessageCircleQuestionIcon className="size-4 fill-white text-orange-500" />
                 <span>Need Help</span>
               </button>

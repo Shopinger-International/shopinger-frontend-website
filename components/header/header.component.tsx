@@ -125,6 +125,7 @@ const Header: FC<HeaderProps> = () => {
           </button>
           <div className="hidden lg:inline">
             <Tooltip
+              placement="bottom"
               offset_distance={6}
               className="z-50 w-48 rounded-xl border border-neutral-300 bg-white shadow-lg"
               content={
@@ -221,7 +222,11 @@ const Header: FC<HeaderProps> = () => {
             <span>$ 1000</span>
           </Link>
           <div className="hidden lg:inline">
-            <Tooltip content={<AIAssistant />} className="z-100">
+            <Tooltip
+              content={<AIAssistant />}
+              className="z-100"
+              placement="bottom"
+            >
               {({ open }) => (
                 <div className="flex flex-col items-center gap-1">
                   <div className="relative h-5 w-5">
@@ -236,6 +241,7 @@ const Header: FC<HeaderProps> = () => {
             </Tooltip>
           </div>
           <Tooltip
+            placement="bottom"
             className="z-100"
             content={
               <div className="z-50 w-max rounded-xl border border-neutral-300 bg-white py-2 shadow-lg">

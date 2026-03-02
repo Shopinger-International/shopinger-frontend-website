@@ -11,7 +11,6 @@ import AttributeInfoCell from "@/components/product/product-info/attribute-info-
 
 // helpers
 import { capitalizeValue } from "@/helpers/common.helper";
-import clsx from "clsx";
 
 // const
 import { DISPLAY_AREA } from "@/constants/display-area.constant";
@@ -23,25 +22,30 @@ export const getReadableValue = ({
   attribute: IAttributeType;
   value: any;
 }) => {
-  if (attribute.data_type == "enum") {
-    if (attribute.input_type == "multi_select") {
+  if (!value) return "";
+
+  if (attribute.data_type === "enum") {
+    if (attribute.input_type === "multi_select") {
+      if (typeof value !== "string") return "";
+
       return value
         .split(",")
         .map(
           (val: string) =>
             attribute.options?.find(
-              ({ value: option_value }) => val == option_value,
-            )?.label ?? capitalizeValue(value),
+              ({ value: optionValue }) => val === optionValue,
+            )?.label ?? capitalizeValue(val),
         )
         .join(", ");
     }
+
     return (
-      attribute.options?.find(
-        ({ value: option_value }) => option_value == value,
-      )?.label ?? capitalizeValue(value)
+      attribute.options?.find(({ value: optionValue }) => optionValue === value)
+        ?.label ?? capitalizeValue(String(value))
     );
   }
-  return capitalizeValue(value);
+
+  return capitalizeValue(String(value));
 };
 
 const ProductDetails: FC<{
@@ -53,7 +57,6 @@ const ProductDetails: FC<{
     product;
   let updated_key_features = JSON.parse(key_features) as Array<string>;
   const [show_all, setShowAll] = useState(false);
-  console.log(category_mappings);
 
   const display_features = show_all
     ? updated_key_features
@@ -77,6 +80,7 @@ const ProductDetails: FC<{
     })),
     { name: "Country of origin", value: country_of_origin },
   ];
+  console.log("value of data", full_top_highlights);
 
   return (
     <>
@@ -102,22 +106,27 @@ const ProductDetails: FC<{
           })}
         </div>
       </section>
-      <section className="mb-4 space-y-2" aria-labelledby="key-features">
+      <section className="mb-4 space-y-2" aria-labelledby="about-item">
         <h3
           className="text-md mb-4 font-semibold text-gray-900"
-          id="key-features"
+          id="about-item"
         >
           About this item
         </h3>
-        <ul className="list-outside list-disc space-y-1.5 pl-5 text-gray-600">
-          {display_features.map((feature, index) => (
-            <li key={index}>{feature}</li>
-          ))}
-        </ul>
+        <div id="key-features-content">
+          <ul className="list-outside list-disc space-y-1.5 pl-5 text-gray-600">
+            {display_features.map((feature, index) => (
+              <li key={index}>{feature}</li>
+            ))}
+          </ul>
+        </div>
+
         {key_features.length > initial_visible && (
           <button
             onClick={() => setShowAll(!show_all)}
             className="mt-1 font-medium text-orange-500 hover:underline"
+            aria-expanded={show_all}
+            aria-controls="key-features-content"
           >
             {show_all
               ? "See less"
