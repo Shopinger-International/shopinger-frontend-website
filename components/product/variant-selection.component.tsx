@@ -42,7 +42,7 @@ const VariantSelection: FC<{
     }, {});
 
   return (
-    <section className="mb-4 space-y-4" aria-label="Variant Selector">
+    <section className="mb-4 space-y-3" aria-label="Variant Selector">
       {Object.values(variant_attributes_values_group)
         .sort((a, b) => {
           // visual attributes first
@@ -89,7 +89,7 @@ const VariantSelection: FC<{
                     {is_visual ? (
                       <div
                         className={clsx(
-                          "relative h-18 w-18 overflow-hidden rounded-lg border bg-white transition-all duration-200",
+                          "relative h-16 w-16 overflow-hidden rounded-lg border bg-white transition-all duration-200",
                           is_selected
                             ? "border-orange-500 ring-2 ring-orange-200"
                             : "border-neutral-300 hover:border-neutral-400",
@@ -102,6 +102,7 @@ const VariantSelection: FC<{
                               value.toLowerCase()
                             ][0].url
                           }
+                          className="object-cover object-top"
                           fill={true}
                           alt={value}
                         />
@@ -109,7 +110,7 @@ const VariantSelection: FC<{
                     ) : (
                       <span
                         className={clsx(
-                          "inline-block rounded-xl border px-3 py-2.5 font-semibold",
+                          "inline-block rounded-md border px-3 py-2.5 font-semibold",
                           is_selected
                             ? "border-orange-500"
                             : "border-neutral-300",

@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 // types
 import type { FC, ReactElement } from "react";
+import type { Placement } from "@floating-ui/react";
 
 // float react
 import {
@@ -12,6 +13,7 @@ import {
   safePolygon,
   useHover,
   useFocus,
+  useClick,
   useDismiss,
   useRole,
   useInteractions,
@@ -24,12 +26,11 @@ import clsx from "clsx";
 
 type TooltipProps = {
   content: ReactElement;
-  children: (props: {
-    open: boolean;
-    ref: (node: HTMLElement | null) => void;
-  }) => ReactElement;
+  children: (props: { open: boolean }) => ReactElement;
   className?: string;
   offset_distance?: number;
+  placement: Placement;
+  show_tooltip?: boolean;
 };
 
 const Tooltip: FC<TooltipProps> = ({
@@ -37,44 +38,46 @@ const Tooltip: FC<TooltipProps> = ({
   children,
   className,
   offset_distance = 20,
+  placement,
+  show_tooltip = true,
 }) => {
   const [open, setOpen] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
 
-  const { refs, floatingStyles, context, middlewareData, placement } =
-    useFloating({
-      placement: "bottom",
-      open,
-      strategy:"absolute",
-      onOpenChange: setOpen,
-      middleware: [
-        offset(offset_distance),
-        flip(),
-        shift(),
-        arrow({ element: arrow_ref }),
-      ],
-    });
+  const { refs, floatingStyles, context } = useFloating({
+    placement: placement,
+    open,
+    onOpenChange: setOpen,
+    middleware: [
+      offset(offset_distance),
+      flip(),
+      shift(),
+      arrow({ element: arrow_ref }),
+    ],
+  });
 
   const hover = useHover(context, {
+    enabled: show_tooltip,
     handleClose: safePolygon(),
   });
-  const focus = useFocus(context);
-  const dismiss = useDismiss(context);
+  const focus = useFocus(context, {
+    enabled: show_tooltip,
+  });
+  const click = useClick(context, {
+    enabled: show_tooltip,
+  });
+  const dismiss = useDismiss(context, {
+    enabled: show_tooltip,
+  });
   const role = useRole(context, { role: "tooltip" });
 
   const { getReferenceProps, getFloatingProps } = useInteractions([
     hover,
     focus,
     dismiss,
+    click,
     role,
   ]);
-
-  const staticSide = {
-    top: "bottom",
-    right: "left",
-    bottom: "top",
-    left: "right",
-  }[placement.split("-")[0]];
 
   return (
     <>
@@ -83,22 +86,22 @@ const Tooltip: FC<TooltipProps> = ({
         {...getReferenceProps()}
         className="inline-block"
       >
-        {children({ open, ref: refs.setReference })}
+        {children({ open })}
       </span>
 
-      {open && (
+      {show_tooltip && open && (
         <FloatingPortal>
           <div
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            className={clsx("relative", className)}
+            className={clsx("relative z-50", className)}
           >
             <FloatingArrow
               ref={arrow_ref}
               context={context}
-              width={20}
-              height={10}
+              width={18}
+              height={9}
               fill="#fff"
               stroke="#d1d5db"
               strokeWidth={1}

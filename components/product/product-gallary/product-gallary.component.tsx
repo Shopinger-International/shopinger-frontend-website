@@ -43,7 +43,7 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
                   sizes="80px"
                   src={media.url}
                   fill={true}
-                  className="object-contain"
+                  className="object-cover object-top"
                   alt={image_title}
                 />
               </button>

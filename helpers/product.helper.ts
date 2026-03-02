@@ -14,6 +14,15 @@ const generateMetaDescription = (htmlDescription: string) => {
   const trimmed = cleanText.slice(0, maxLength);
   return trimmed.slice(0, trimmed.lastIndexOf(" ")) + "...";
 };
+const generateDescription = (htmlDescription: string): string => {
+  if (!htmlDescription) return "";
+
+  // 1. Remove HTML tags
+  const plainText = htmlDescription.replace(/<[^>]+>/g, "");
+
+  // 2. Normalize spaces
+  return plainText.replace(/\s+/g, " ").trim();
+};
 const generateSlug = (text: string) => {
   return text
     .toLowerCase()
@@ -37,4 +46,9 @@ function getStockStatus(variant_inventory: IVariantInventory) {
   return "in_stock";
 }
 
-export { generateMetaDescription, generateSlug, getStockStatus };
+export {
+  generateMetaDescription,
+  generateDescription,
+  generateSlug,
+  getStockStatus,
+};

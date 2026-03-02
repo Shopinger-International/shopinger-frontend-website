@@ -2,7 +2,7 @@
 import { IAttributeType } from "../types/attribute";
 
 type ICategoryType = "main" | "sub" | "subsub";
-type IDisplayAreaType = "specifications" | "additional info";
+type IDisplayAreaType = "specifications" | "additional info" | "top highlights";
 type IStatus = "added" | "inherited" | "overridden";
 
 type ICategoryAttributeMapping = {

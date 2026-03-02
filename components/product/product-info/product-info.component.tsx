@@ -3,6 +3,7 @@ import type { FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
 // icons
 import { Star } from "lucide-react";
@@ -11,12 +12,17 @@ import { Star } from "lucide-react";
 import Badge from "@/components/product/badge.component";
 import VariantSelection from "@/components/product/variant-selection.component";
 import CheckDeliveryAvailability from "@/components/product/product-info/check-delivery-availability.component";
+import ProductDetails from "@/components/product/product-info/product-details.component";
+
+// helpers
+import { generateDescription } from "@/helpers/product.helper";
 
 type IProps = {
   product: IProduct;
   variant: IVariant;
   selected_attributes: Record<string, any>;
   media_group: IMediaGroup;
+  category_mappings: ICategoryAttributeMapping[];
 };
 
 const ProductInfo: FC<IProps> = ({
@@ -24,8 +30,15 @@ const ProductInfo: FC<IProps> = ({
   variant,
   selected_attributes,
   media_group,
+  category_mappings,
 }) => {
-  const { title, brand, sub_sub_category } = product;
+  const {
+    title,
+    brand,
+    sub_sub_category,
+    key_features,
+    product_attribute_values,
+  } = product;
   const updated_title =
     !brand || title.includes(brand) ? title : `${brand} ${title}`;
   const { variant_pricing } = variant;
@@ -54,7 +67,7 @@ const ProductInfo: FC<IProps> = ({
   const heading = `${updated_title} ${!!nor_visual_variant_attributes.length ? "(" + nor_visual_variant_attributes.join(", ") + ")" : ""} ${!!visual_variant_attributes.length ? " - " + visual_variant_attributes.join(", ") : " "}`;
   return (
     <section aria-labelledby="product-title" className="hidden lg:block">
-      <div className="mb-8 flex gap-2">
+      <div className="mb-4 flex gap-2">
         {brand && <Badge className="bg-[#FFE2D0]">{brand}</Badge>}
         <Badge className="border border-neutral-300 bg-white">
           {sub_sub_category.name}
@@ -64,11 +77,11 @@ const ProductInfo: FC<IProps> = ({
         {heading}
       </h1>
       {/** MRP */}
-      <section className="mb-1 flex flex-col text-3xl">
+      <section className="mb-4 flex flex-col text-3xl">
         <p>
-          <span>₹{selling_price_with_commission}</span>
+          <span>₹{selling_price_with_commission} </span>
           {!!discount_percentage && (
-            <span className="inline rounded-full px-2 py-1 text-sm font-medium">
+            <span className="inline text-base font-medium text-gray-600">
               {discount_percentage}% off
             </span>
           )}
@@ -77,14 +90,11 @@ const ProductInfo: FC<IProps> = ({
           <span className="text-gray-600">M.R.P</span>{" "}
           <span className="text-sm line-through">₹{mrp}</span>
         </p>
+        <p className="text-sm">Inclusive of all taxes</p>
       </section>
-      <p className="mb-2.5 text-sm">Inclusive of all taxes</p>
 
       {/** RATING */}
-      <p
-        className="mb-2.5 inline text-sm"
-        aria-label="Product rating and reviews"
-      >
+      <p className="mb-4 text-sm" aria-label="Product rating and reviews">
         <strong className="font-medium">4.6 </strong>{" "}
         <span className="sr-only">out of 5 stars</span>{" "}
         <Star
@@ -99,18 +109,22 @@ const ProductInfo: FC<IProps> = ({
         >
           2,847 reviews
         </a>{" "}
+        <span className="inline text-sm">500+ bought in past month</span>
       </p>
-      <p className="inline text-sm">500+ bought in past month</p>
-
       <VariantSelection
         product={product}
         selected_attributes={selected_attributes}
         media_group={media_group}
       />
       <CheckDeliveryAvailability />
-      <p className="mt-2 text-sm font-medium">
-        Sold by <strong className="text-orange-500 font-medium">Himang Retails</strong>
+      <p className="mb-4 text-sm font-medium">
+        Sold by{" "}
+        <strong className="font-medium text-orange-500">Himang Retails</strong>
       </p>
+      <ProductDetails
+        product={product}
+        category_mappings={category_mappings}
+      />
     </section>
   );
 };

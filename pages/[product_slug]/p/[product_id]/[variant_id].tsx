@@ -6,6 +6,7 @@ import type { GetStaticPaths, GetStaticProps } from "next";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type IMedia from "@/types/media";
+import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -29,15 +30,18 @@ const getProduct = async (
   product_id: number,
 ): Promise<{
   product: IProduct;
+  category_mappings: ICategoryAttributeMapping[];
 }> => {
   const {
-    data: { product },
+    data: { product, category_mappings },
   } = await webAxios.get<{
     success: boolean;
     product: IProduct;
+    category_mappings: ICategoryAttributeMapping[];
   }>(`/get-product/${product_id}`);
   return {
     product,
+    category_mappings,
   };
 };
 
@@ -66,10 +70,15 @@ type IParams = {
 
 type IProps = {
   product: IProduct;
+  category_mappings: ICategoryAttributeMapping[];
   variant: IVariant;
 };
 
-const ProductPage: NextPageWithLayout<IProps> = ({ product, variant }) => {
+const ProductPage: NextPageWithLayout<IProps> = ({
+  product,
+  category_mappings,
+  variant,
+}) => {
   const {
     title,
     brand,
@@ -89,7 +98,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({ product, variant }) => {
   const main_title = visual_values.length
     ? `${updated_title} in ${visual_values.join(", ")} | Shopinger`
     : `${updated_title} | Shopinger`;
-  console.log("value of main title");
 
   const selected_attributes = variant.variant_attribute_values.reduce<
     Record<string, any>
@@ -114,8 +122,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({ product, variant }) => {
 
       return acc;
     }, {});
-
-  console.log("value of main title", main_title, visual_values);
 
   return (
     <>
@@ -155,6 +161,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({ product, variant }) => {
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           media_group={media_group}
+          category_mappings = {category_mappings}
         />
         <MobileProductInfo
           product={product}
@@ -173,7 +180,6 @@ export const getStaticPaths = (async () => {
   const products = await getAllProducts();
   const paths = products.flatMap(({ id: product_id, title, variants }) => {
     const product_slug = generateSlug(title);
-    console.log("value of variants", variants);
     return variants.map(({ id: variant_id }) => {
       return {
         params: {
@@ -202,7 +208,7 @@ export const getStaticProps = (async ({ params }) => {
     return { notFound: true };
   }
 
-  let { product } = await getProduct(product_id);
+  let { product, category_mappings } = await getProduct(product_id);
 
   if (!product) {
     return { notFound: true };
@@ -210,9 +216,8 @@ export const getStaticProps = (async ({ params }) => {
 
   return {
     props: {
-      product: {
-        ...product,
-      },
+      product,
+      category_mappings,
       variant: product.variants.find(
         (variant) => variant.id == variant_id,
       ) as IVariant,
