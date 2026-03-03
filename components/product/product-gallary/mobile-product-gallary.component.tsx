@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Image from "next/image";
 
 // types
@@ -23,7 +22,7 @@ type IProps = {
 const MobileProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
   return (
     <>
-      <div className="relative space-y-4 lg:hidden">
+      <div className="relative order-2 mb-4 space-y-4 lg:hidden">
         <Swiper
           modules={[Pagination]}
           slidesPerView={1.2}

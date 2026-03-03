@@ -14,7 +14,6 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
-import MobileProductInfo from "@/components/product/product-info/mobile-product-info.component";
 
 // icons
 import { ChevronRight } from "lucide-react";
@@ -160,13 +159,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           product={product}
         />
         <ProductInfo
-          product={product}
-          variant={variant as IVariant}
-          selected_attributes={selected_attributes}
-          media_group={media_group}
-          category_mappings={category_mappings}
-        />
-        <MobileProductInfo
           product={product}
           variant={variant as IVariant}
           selected_attributes={selected_attributes}

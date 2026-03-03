@@ -94,7 +94,7 @@ const ProductDetails: FC<{
   console.log("value of data", full_top_highlights);
 
   return (
-    <>
+    <div className="order-8">
       <ExtendedDisclosure default_open={true} heading="Top Highlights">
         <div className="grid grid-cols-2 gap-x-8 gap-y-4">
           {full_top_highlights.map((item, index) => {
@@ -138,7 +138,7 @@ const ProductDetails: FC<{
           category_mappings={category_mappings}
         />
       </ExtendedDisclosure>
-    </>
+    </div>
   );
 };
 

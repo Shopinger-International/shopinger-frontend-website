@@ -13,6 +13,7 @@ import Badge from "@/components/product/badge.component";
 import VariantSelection from "@/components/product/variant-selection.component";
 import CheckDeliveryAvailability from "@/components/product/product-info/check-delivery-availability.component";
 import ProductDetails from "@/components/product/product-info/product-details.component";
+import MobileProductGallary from "@/components/product/product-gallary/mobile-product-gallary.component";
 
 type IProps = {
   product: IProduct;
@@ -59,20 +60,31 @@ const ProductInfo: FC<IProps> = ({
     );
   const heading = `${updated_title} ${!!nor_visual_variant_attributes.length ? "(" + nor_visual_variant_attributes.join(", ") + ")" : ""} ${!!visual_variant_attributes.length ? " - " + visual_variant_attributes.join(", ") : " "}`;
   return (
-    <section aria-labelledby="product-title" className="hidden lg:block">
-      <div className="mb-4 flex gap-2">
+    <section aria-labelledby="product-title" className="flex flex-col lg:block">
+      <div className="mb-4 hidden gap-2 lg:flex">
         {brand && <Badge className="bg-[#FFE2D0]">{brand}</Badge>}
         <Badge className="border border-neutral-300 bg-white">
           {sub_sub_category.name}
         </Badge>
       </div>
-      <h1 id="product-title" className="mb-3 text-xl font-medium">
+      <h1
+        id="product-title"
+        className="order-1 mb-2 text-sm font-semibold lg:mb-3 lg:text-xl lg:font-medium"
+      >
         {heading}
       </h1>
+
+      <MobileProductGallary
+        variant={variant}
+        media_group={media_group}
+        product={product}
+      />
       {/** MRP */}
-      <section className="mb-4 flex flex-col">
+      <section className="order-4 mb-4 flex flex-col">
         <p>
-          <span className="text-3xl">₹{selling_price_with_commission} </span>
+          <span className="text-2xl lg:text-3xl">
+            ₹{selling_price_with_commission}{" "}
+          </span>
           {!!discount_percentage && (
             <span className="inline font-medium text-gray-600">
               {discount_percentage}% off
@@ -87,7 +99,7 @@ const ProductInfo: FC<IProps> = ({
       </section>
 
       {/** RATING */}
-      <p className="mb-4" aria-label="Product rating and reviews">
+      <p className="order-5 mb-4" aria-label="Product rating and reviews">
         <strong className="font-medium">4.6 </strong>{" "}
         <span className="sr-only">out of 5 stars</span>{" "}
         <Star
@@ -110,7 +122,7 @@ const ProductInfo: FC<IProps> = ({
         media_group={media_group}
       />
       <CheckDeliveryAvailability />
-      <p className="font-medium">
+      <p className="order-6 mb-4 font-medium">
         Sold by{" "}
         <strong className="font-medium text-orange-500">Himang Retails</strong>
       </p>

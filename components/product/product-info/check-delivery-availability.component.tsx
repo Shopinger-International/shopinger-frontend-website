@@ -37,7 +37,7 @@ const CheckDeliveryAvailability: FC = () => {
   return (
     <section
       aria-labelledby="delivery-heading"
-      className="mb-4 space-y-2 lg:space-y-3"
+      className="order-7 mb-4 space-y-2 lg:space-y-3"
     >
       <h2 id="delivery-heading" className="text-sm font-medium lg:text-base">
         Check Delivery Availability

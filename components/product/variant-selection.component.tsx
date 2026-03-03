@@ -43,7 +43,7 @@ const VariantSelection: FC<{
     }, {});
 
   return (
-    <section className="mb-4 space-y-3" aria-label="Variant Selector">
+    <section className="mb-4 space-y-3 order-3" aria-label="Variant Selector">
       {Object.values(variant_attributes_values_group)
         .sort((a, b) => {
           // visual attributes first
