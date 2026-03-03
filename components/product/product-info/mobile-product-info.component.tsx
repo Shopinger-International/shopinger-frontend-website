@@ -1,31 +1,22 @@
-import Link from "next/link";
-import Image from "next/image";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
-
-// icons
-import { Star } from "lucide-react";
+import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
 // local components
-import Badge from "@/components/product/badge.component";
-import IAttributeType from "@/types/attribute";
 import VariantSelection from "@/components/product/variant-selection.component";
 import MobileProductGallary from "@/components/product/product-gallary/mobile-product-gallary.component";
-
-// helpers
-import { generateSlug } from "@/helpers/product.helper";
-
-// clsx
-import clsx from "clsx";
+import CheckDeliveryAvailability from "@/components/product/product-info/check-delivery-availability.component";
+import ProductDetails from "@/components/product/product-info/product-details.component";
 
 type IProps = {
   product: IProduct;
   variant: IVariant;
   selected_attributes: Record<string, any>;
   media_group: IMediaGroup;
+  category_mappings: ICategoryAttributeMapping[];
 };
 
 const MobileProductInfo: FC<IProps> = ({
@@ -33,8 +24,9 @@ const MobileProductInfo: FC<IProps> = ({
   variant,
   selected_attributes,
   media_group,
+  category_mappings,
 }) => {
-  const { title, brand, sub_sub_category } = product;
+  const { title, brand } = product;
   const { variant_pricing } = variant;
   const { mrp, selling_price_with_commission } = variant_pricing;
   const discount_percentage = Math.round(
@@ -46,7 +38,7 @@ const MobileProductInfo: FC<IProps> = ({
     .map(
       ({ value, attribute }) =>
         attribute.options?.find(
-          ({ value: option_value, label }) => option_value == value,
+          ({ value: option_value }) => option_value == value,
         )?.label ?? value,
     );
 
@@ -55,32 +47,10 @@ const MobileProductInfo: FC<IProps> = ({
     .map(
       ({ value, attribute }) =>
         attribute.options?.find(
-          ({ value: option_value, label }) => option_value == value,
+          ({ value: option_value }) => option_value == value,
         )?.label ?? value,
     );
   const heading = `${brand ?? ""} ${title} ${!!nor_visual_variant_attributes.length ? "(" + nor_visual_variant_attributes.join(", ") + ")" : ""} ${!!visual_variant_attributes.length ? " - " + visual_variant_attributes.join(", ") : " "}`;
-
-  type AttributeGroup = {
-    attribute: IAttributeType;
-    values: Set<any>;
-  };
-
-  const variant_attributes_values_group = product.variants
-    .flatMap((v) => v.variant_attribute_values)
-    .reduce<Record<string, AttributeGroup>>((acc, attribute_value) => {
-      const { attribute, value } = attribute_value;
-
-      if (!acc[attribute.code]) {
-        acc[attribute.code] = {
-          attribute,
-          values: new Set(),
-        };
-      }
-
-      acc[attribute.code].values.add(value);
-
-      return acc;
-    }, {});
 
   return (
     <div className="lg:hidden">
@@ -107,6 +77,11 @@ const MobileProductInfo: FC<IProps> = ({
             </span>
           )}
         </div>
+        <CheckDeliveryAvailability />
+        <ProductDetails
+          product={product}
+          category_mappings={category_mappings}
+        />
       </div>
     </div>
   );

@@ -110,7 +110,7 @@ const ProductInfo: FC<IProps> = ({
         media_group={media_group}
       />
       <CheckDeliveryAvailability />
-      <p className="mb-4 font-medium">
+      <p className="font-medium">
         Sold by{" "}
         <strong className="font-medium text-orange-500">Himang Retails</strong>
       </p>

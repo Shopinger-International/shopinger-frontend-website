@@ -25,7 +25,8 @@ const Description: FC<{
       <div
         className={clsx(
           "relative text-gray-600",
-          !show_full_description && "max-h-40 overflow-hidden",
+          !show_full_description &&
+            "max-h-40 overflow-hidden text-sm lg:text-base",
         )}
       >
         {generateDescription(description)}
@@ -37,7 +38,7 @@ const Description: FC<{
 
       <button
         onClick={() => setShowFullDescription((prev) => !prev)}
-        className="mt-2 font-medium text-orange-500 hover:underline"
+        className="mt-2 text-sm font-medium text-orange-500 hover:underline lg:text-base"
       >
         {show_full_description ? "See less" : "See more"}
       </button>
@@ -84,129 +85,107 @@ const ProductInfoTabs: FC<{
     },
     {} as Record<string, typeof product_attribute_values>,
   );
+  const tab_list = [
+    ...Object.keys(grouped_by_display_area).map((item) =>
+      item
+        .split(" ")
+        .map((val) => capitalizeValue(val))
+        .join(" "),
+    ),
+    "Description",
+    "Manufacturer Info",
+  ];
+
   return (
-    <section className="space-y-4">
-      <div className="space-y-1">
-        <h3 className="text-md font-semibold text-gray-900">Product Details</h3>
-        <p className="text-gray-600">
-          {Object.keys(grouped_by_display_area)
-            .map((display_area) => capitalizeValue(display_area))
-            .join(", ")}
-        </p>
-      </div>
-      <TabGroup>
-        <TabList className="no-scrollbar flex gap-2 overflow-x-auto">
-          {Object.keys(grouped_by_display_area).map((tab) => (
-            <Tab
-              key={tab}
-              className={({ selected }) =>
-                clsx(
-                  "shrink-0 rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-600 focus:outline-none",
-                  selected && "bg-orange-500 text-white",
-                )
-              }
-            >
-              {tab
-                .split(" ")
-                .map((val) => capitalizeValue(val))
-                .join(" ")}
-            </Tab>
-          ))}
+    <TabGroup>
+      <TabList className="no-scrollbar flex gap-2 overflow-x-auto">
+        {tab_list.map((tab) => (
           <Tab
+            key={tab}
             className={({ selected }) =>
               clsx(
-                "shrink-0 rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-600 focus:outline-none",
+                "shrink-0 rounded-md border border-gray-300 bg-gray-100 px-2 py-1.5 text-sm text-gray-600 focus:outline-none lg:text-base",
                 selected && "bg-orange-500 text-white",
               )
             }
           >
-            Descriptions
+            {tab}
           </Tab>
-          <Tab
-            className={({ selected }) =>
-              clsx(
-                "shrink-0 rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-600 focus:outline-none",
-                selected && "bg-orange-500 text-white",
-              )
-            }
-          >
-            Manufacture Info
-          </Tab>
-        </TabList>
-        <TabPanels className="mt-4">
-          {Object.keys(grouped_by_display_area).map((display_area) => (
-            <TabPanel key={display_area} className="focus:outline-none">
-              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                {grouped_by_display_area[display_area].map(
-                  ({ attribute, value }) => (
-                    <AttributeInfoCell
-                      name={attribute.name}
-                      value={getReadableValue({ attribute, value })}
-                    />
-                  ),
-                )}
-              </div>
-            </TabPanel>
-          ))}
-          <TabPanel className="focus:outline-none">
-            <Description description={generateDescription(description)} />
-          </TabPanel>
-          <TabPanel className="focus:outline-none">
+        ))}
+      </TabList>
+      <TabPanels className="mt-4">
+        {Object.keys(grouped_by_display_area).map((display_area) => (
+          <TabPanel key={display_area} className="focus:outline-none">
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-              {[
-                {
-                  label: "Manufacturer Name",
-                  value: manufacturer_name,
-                },
-                {
-                  label: "Manufacturer Address",
-                  value: manufacturer_address,
-                },
-                {
-                  label: "Manufacturer Pincode",
-                  value: manufacturer_pincode,
-                },
-                {
-                  label: "Packer Name",
-                  value: packer_name,
-                },
-                {
-                  label: "Packer Address",
-                  value: packer_address,
-                },
-                {
-                  label: "Packer Pincode",
-                  value: packer_pincode,
-                },
-                {
-                  label: "Importer Name",
-                  value: importer_name,
-                },
-                {
-                  label: "Importer Address",
-                  value: importer_address,
-                },
-                {
-                  label: "Importer Pincode",
-                  value: importer_pincode,
-                },
-              ].map(
-                ({ label, value }) =>
-                  value && (
-                    <AttributeInfoCell
-                      name={label
-                        .split("_")
-                        .map((s) => capitalizeValue(s))
-                        .join(" ")}
-                      value={value}
-                    />
-                  ),
+              {grouped_by_display_area[display_area].map(
+                ({ attribute, value }) => (
+                  <AttributeInfoCell
+                    name={attribute.name}
+                    value={getReadableValue({ attribute, value })}
+                  />
+                ),
               )}
             </div>
           </TabPanel>
-        </TabPanels>
-      </TabGroup>
-    </section>
+        ))}
+        <TabPanel className="focus:outline-none">
+          <Description description={generateDescription(description)} />
+        </TabPanel>
+        <TabPanel className="focus:outline-none">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+            {[
+              {
+                label: "Manufacturer Name",
+                value: manufacturer_name,
+              },
+              {
+                label: "Manufacturer Address",
+                value: manufacturer_address,
+              },
+              {
+                label: "Manufacturer Pincode",
+                value: manufacturer_pincode,
+              },
+              {
+                label: "Packer Name",
+                value: packer_name,
+              },
+              {
+                label: "Packer Address",
+                value: packer_address,
+              },
+              {
+                label: "Packer Pincode",
+                value: packer_pincode,
+              },
+              {
+                label: "Importer Name",
+                value: importer_name,
+              },
+              {
+                label: "Importer Address",
+                value: importer_address,
+              },
+              {
+                label: "Importer Pincode",
+                value: importer_pincode,
+              },
+            ].map(
+              ({ label, value }) =>
+                value && (
+                  <AttributeInfoCell
+                    name={label
+                      .split("_")
+                      .map((s) => capitalizeValue(s))
+                      .join(" ")}
+                    value={value}
+                  />
+                ),
+            )}
+          </div>
+        </TabPanel>
+      </TabPanels>
+    </TabGroup>
   );
 };
 

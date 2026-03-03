@@ -35,8 +35,11 @@ const CheckDeliveryAvailability: FC = () => {
   const verify_pincode_serviceability_mutation =
     useVerifyPincodeServiceability();
   return (
-    <section aria-labelledby="delivery-heading" className="mb-4 space-y-3">
-      <h2 id="delivery-heading" className="font-medium">
+    <section
+      aria-labelledby="delivery-heading"
+      className="mb-4 space-y-2 lg:space-y-3"
+    >
+      <h2 id="delivery-heading" className="text-sm font-medium lg:text-base">
         Check Delivery Availability
       </h2>
       <Formik
@@ -94,7 +97,7 @@ const CheckDeliveryAvailability: FC = () => {
                     type="text"
                     value={values["pincode"]}
                     className={clsx(
-                      "w-full rounded-md border px-4 py-2",
+                      "w-full rounded-md border px-3 py-1.5 text-sm lg:px-4 lg:py-2 lg:text-base",
                       touched["pincode"] && errors["pincode"]
                         ? "border-2 border-red-600"
                         : "border border-gray-300",
@@ -111,7 +114,7 @@ const CheckDeliveryAvailability: FC = () => {
 
               <button
                 type="submit"
-                className="cursor-pointer rounded-md bg-orange-500 px-3 py-2 font-medium text-white"
+                className="cursor-pointer rounded-md bg-orange-500 px-3 py-1.5 font-medium text-white lg:py-2"
               >
                 Check
               </button>

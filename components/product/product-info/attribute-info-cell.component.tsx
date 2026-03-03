@@ -15,8 +15,8 @@ const AttributeInfoCell: FC<{
       show_border && "border-b border-gray-200",
     )}
   >
-    <span className="text-gray-600">{name}</span>
-    <span className="text-gray-900">{value}</span>
+    <span className="text-xs text-gray-600 lg:text-sm">{name}</span>
+    <span className="text-sm text-gray-900 lg:text-base">{value}</span>
   </div>
 );
 

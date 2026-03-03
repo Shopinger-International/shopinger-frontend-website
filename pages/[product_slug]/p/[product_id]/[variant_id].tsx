@@ -171,6 +171,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           media_group={media_group}
+          category_mappings={category_mappings}
         />
       </div>
     </>
