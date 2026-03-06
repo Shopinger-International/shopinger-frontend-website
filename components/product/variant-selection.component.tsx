@@ -43,7 +43,7 @@ const VariantSelection: FC<{
     }, {});
 
   return (
-    <section className="mb-4 space-y-3 order-3" aria-label="Variant Selector">
+    <section className="order-3 mb-4 space-y-3" aria-label="Variant Selector">
       {Object.values(variant_attributes_values_group)
         .sort((a, b) => {
           // visual attributes first
@@ -88,6 +88,7 @@ const VariantSelection: FC<{
                 const product_slug = generateSlug(title);
                 return (
                   <Link
+                    scroll={false}
                     href={`/${product_slug}/p/${product_id}/${variant?.id}`}
                     key={`variant-attribute-value-${value}`}
                     aria-current={is_selected ? "page" : undefined}

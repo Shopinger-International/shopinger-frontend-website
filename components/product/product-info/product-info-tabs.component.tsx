@@ -16,6 +16,9 @@ import { capitalizeValue } from "@/helpers/common.helper";
 import { getReadableValue } from "@/components/product/product-info/product-details.component";
 import { generateDescription } from "@/helpers/product.helper";
 
+// consts
+import { DISPLAY_AREA } from "@/constants/display-area.constant";
+
 const Description: FC<{
   description: string;
 }> = ({ description }) => {
@@ -64,34 +67,51 @@ const ProductInfoTabs: FC<{
     importer_pincode,
   } = product;
   const mapped_by_attribute_id = new Map(
-    category_mappings.map((mapping) => [
-      mapping.attribute.id,
-      mapping.display_area,
-    ]),
+    category_mappings.map((mapping) => [mapping.attribute.id, mapping]),
   );
   const grouped_by_display_area = product_attribute_values.reduce(
     (acc, item) => {
-      const displayArea = mapped_by_attribute_id.get(item.attribute.id);
+      const mapping = mapped_by_attribute_id.get(item.attribute.id);
 
-      if (!displayArea) return acc;
+      if (!mapping) return acc;
 
-      if (!acc[displayArea]) {
-        acc[displayArea] = [];
-      }
+      mapping.display_area.forEach((area) => {
+        if (!acc[area]) acc[area] = {};
 
-      acc[displayArea].push(item);
+        const group = mapping.display_group || "General";
+
+        if (!acc[area][group]) acc[area][group] = [];
+
+        acc[area][group].push({
+          attribute: item.attribute,
+          value: item.value,
+          display_order: mapping.display_order,
+        });
+      });
 
       return acc;
     },
-    {} as Record<string, typeof product_attribute_values>,
+    {} as Record<
+      string,
+      Record<
+        string,
+        {
+          attribute: any;
+          value: any;
+          display_order: number;
+        }[]
+      >
+    >,
   );
   const tab_list = [
-    ...Object.keys(grouped_by_display_area).map((item) =>
-      item
-        .split(" ")
-        .map((val) => capitalizeValue(val))
-        .join(" "),
-    ),
+    ...Object.keys(grouped_by_display_area)
+      .filter((area) => area != DISPLAY_AREA.TOP_HIGHLIGHTS)
+      .map((item) =>
+        item
+          .split(" ")
+          .map((val) => capitalizeValue(val))
+          .join(" "),
+      ),
     "Description",
     "Manufacturer Info",
   ];
@@ -114,20 +134,33 @@ const ProductInfoTabs: FC<{
         ))}
       </TabList>
       <TabPanels className="mt-4">
-        {Object.keys(grouped_by_display_area).map((display_area) => (
-          <TabPanel key={display_area} className="focus:outline-none">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-              {grouped_by_display_area[display_area].map(
-                ({ attribute, value }) => (
-                  <AttributeInfoCell
-                    name={attribute.name}
-                    value={getReadableValue({ attribute, value })}
-                  />
+        {Object.keys(grouped_by_display_area)
+          .filter((area) => area != DISPLAY_AREA.TOP_HIGHLIGHTS)
+          .map((display_area) => (
+            <TabPanel key={display_area} className="focus:outline-none">
+              {Object.entries(grouped_by_display_area[display_area]).map(
+                ([group, attributes]) => (
+                  <div key={group} className="mb-6">
+                    <h3 className="mb-3 text-sm font-semibold text-gray-800 lg:text-base">
+                      {group}
+                    </h3>
+
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                      {attributes
+                        .sort((a, b) => a.display_order - b.display_order)
+                        .map(({ attribute, value }) => (
+                          <AttributeInfoCell
+                            key={attribute.id}
+                            name={attribute.name}
+                            value={getReadableValue({ attribute, value })}
+                          />
+                        ))}
+                    </div>
+                  </div>
                 ),
               )}
-            </div>
-          </TabPanel>
-        ))}
+            </TabPanel>
+          ))}
         <TabPanel className="focus:outline-none">
           <Description description={generateDescription(description)} />
         </TabPanel>

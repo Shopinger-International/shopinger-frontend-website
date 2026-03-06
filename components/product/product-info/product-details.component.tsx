@@ -75,7 +75,9 @@ const ProductDetails: FC<{
 
   // top highlights
   const top_highlights_attribute_id = category_mappings
-    .filter((mapping) => mapping.display_area === DISPLAY_AREA.TOP_HIGHLIGHTS)
+    .filter((mapping) =>
+      mapping.display_area.includes(DISPLAY_AREA.TOP_HIGHLIGHTS),
+    )
     .map((mapping) => mapping.attribute.id);
 
   const top_highlights = [

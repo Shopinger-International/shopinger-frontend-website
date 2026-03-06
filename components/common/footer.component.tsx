@@ -36,7 +36,7 @@ const Footer: FC = () => {
     <div className="w-full">
       {/* Footer */}
       <footer className="bg-[#1f1f1f] text-white">
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-3 gap-10 px-4 py-12 md:grid-cols-3 lg:grid-cols-5">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 gap-10 px-4 py-12 md:grid-cols-3 lg:grid-cols-5">
           {/* Dynamic sections */}
           {footer_sections.map(({ title, list }) => (
             <div key={title} className="space-y-3">
@@ -60,7 +60,7 @@ const Footer: FC = () => {
           ))}
 
           {/* Corporate Address */}
-          <div className="col-span-3 space-y-3 lg:col-span-1">
+          <div className="col-span-2 space-y-3 lg:col-span-1">
             <h6 className="lg:text-md font-semibold text-white uppercase">
               Corporate Office Address
             </h6>
@@ -85,7 +85,7 @@ const Footer: FC = () => {
           </div>
 
           {/* Registered Address */}
-          <div className="col-span-3 space-y-3 lg:col-span-1">
+          <div className="col-span-2 space-y-3 lg:col-span-1">
             <h6 className="lg:text-md text-base font-semibold text-white uppercase">
               Registered Office Address
             </h6>

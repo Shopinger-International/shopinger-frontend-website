@@ -13,7 +13,7 @@ type ICategoryAttributeMapping = {
 
   attribute: IAttributeType;
 
-  display_area: IDisplayAreaType;
+  display_area: Array<IDisplayAreaType>;
   display_group: string;
   display_order: number;
   unit_code: string | null;
