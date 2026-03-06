@@ -14,9 +14,10 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
+import Footer from "@/components/common/footer.component";
 
 // icons
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronUp, ArrowUp } from "lucide-react";
 
 // helpers
 import webAxios from "@/lib/axios/web.lib";
@@ -166,6 +167,24 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           category_mappings={category_mappings}
         />
       </div>
+      <section className="flex w-full items-center justify-center bg-linear-to-b from-[#FF6900] to-[#993F00] py-2.5">
+        <button
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            })
+          }
+          className="flex w-full items-center justify-center gap-3 font-semibold text-white"
+          aria-label="Back to top"
+        >
+          <span>Back to top</span>
+          <span className="rounded-full bg-white p-1">
+            <ArrowUp strokeWidth={3} className="size-5 text-orange-500" />
+          </span>
+        </button>
+      </section>
+      <Footer />
     </>
   );
 };

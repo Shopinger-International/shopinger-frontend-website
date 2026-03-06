@@ -1,7 +1,13 @@
 import { useState } from "react";
 // types
-import type { FC } from "react";
+import type {
+  FC,
+  ReactElement,
+  ForwardRefExoticComponent,
+  RefAttributes,
+} from "react";
 import type { AxiosError } from "axios";
+import type { LucideProps } from "lucide-react";
 
 // external component
 import { Formik, Form } from "formik";
@@ -15,7 +21,7 @@ import clsx from "clsx";
 import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pincode-serviceability.hook";
 
 // icons
-import { Truck, CalendarFold } from "lucide-react";
+import { Truck, CalendarFold, Banknote } from "lucide-react";
 
 export const delivery_pincode_schema = z.object({
   pincode: z
@@ -24,7 +30,20 @@ export const delivery_pincode_schema = z.object({
     .min(1, "Pincode is required")
     .regex(/^[1-9][0-9]{5}$/, "Enter a valid 6-digit pincode"),
 });
-
+const DeliverZoneDataRenderer: FC<{
+  children: ReactElement;
+  icon: ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+  >;
+  iconClassName?: string;
+}> = ({ children, icon: Icon, iconClassName }) => {
+  return (
+    <div className="flex items-start gap-2">
+      <Icon className={clsx("mt-1 size-5", iconClassName)} />
+      <div className="flex-1">{children}</div>
+    </div>
+  );
+};
 const CheckDeliveryAvailability: FC = () => {
   const [delivery_zone_data, setDeliveryZoneData] = useState<{
     is_delivery_available: boolean;
@@ -139,9 +158,11 @@ const CheckDeliveryAvailability: FC = () => {
           {delivery_zone_data.is_delivery_available ? (
             <>
               {/* Express Delivery */}
-              <div className="flex items-start gap-2">
-                <Truck className="mt-1 size-5 text-orange-500" />
-                <div className="flex-1">
+              <DeliverZoneDataRenderer
+                icon={Truck}
+                iconClassName="text-orange-500"
+              >
+                <>
                   <div className="flex items-center gap-2">
                     <h3 className="font-medium text-neutral-900">
                       Express Delivery
@@ -157,28 +178,47 @@ const CheckDeliveryAvailability: FC = () => {
                       {delivery_zone_data.deliver_time_in_minutes} min
                     </span>
                   </p>
-                </div>
-              </div>
+                </>
+              </DeliverZoneDataRenderer>
 
+              {/* Cash on Delivery */}
+              {delivery_zone_data.cod_available && (
+                <DeliverZoneDataRenderer
+                  icon={Banknote}
+                  iconClassName="text-orange-500"
+                >
+                  <>
+                    <h3 className="font-medium text-neutral-900">
+                      Cash on Delivery
+                    </h3>
+                    <p className="mt-1 text-sm text-neutral-600">
+                      Available for this order
+                    </p>
+                  </>
+                </DeliverZoneDataRenderer>
+              )}
               {/* Delivery Slot */}
-              <div className="flex items-start gap-2">
-                <CalendarFold className="mt-1 size-5 text-orange-500" />
-                <div>
+              <DeliverZoneDataRenderer
+                icon={CalendarFold}
+                iconClassName="text-orange-500"
+              >
+                <>
                   <h3 className="font-medium text-neutral-900">
                     Delivery Slot
                   </h3>
                   <p className="mt-1 text-sm text-neutral-600">
                     Choose your preferred time slot during checkout
                   </p>
-                </div>
-              </div>
+                </>
+              </DeliverZoneDataRenderer>
             </>
           ) : (
             <>
-              {/* Status */}
-              <div className="flex items-start gap-2">
-                <Truck className="mt-1 size-5 text-neutral-500" />
-                <div className="flex-1">
+              <DeliverZoneDataRenderer
+                icon={Truck}
+                iconClassName="text-neutral-500"
+              >
+                <>
                   <div className="flex items-center gap-2">
                     <h3 className="font-medium text-neutral-900">
                       Delivery Status
@@ -192,21 +232,22 @@ const CheckDeliveryAvailability: FC = () => {
                     This product is currently not deliverable to your selected
                     location.
                   </p>
-                </div>
-              </div>
+                </>
+              </DeliverZoneDataRenderer>
 
-              {/* Optional recovery */}
-              <div className="flex items-start gap-2">
-                <CalendarFold className="mt-1 size-5 text-neutral-500" />
-                <div>
+              <DeliverZoneDataRenderer
+                icon={CalendarFold}
+                iconClassName="text-neutral-500"
+              >
+                <>
                   <h3 className="font-medium text-neutral-900">
                     Try Another Location
                   </h3>
                   <p className="mt-1 text-sm text-neutral-600">
                     Enter a different pincode to check availability.
                   </p>
-                </div>
-              </div>
+                </>
+              </DeliverZoneDataRenderer>
             </>
           )}
         </div>

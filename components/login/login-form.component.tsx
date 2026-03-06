@@ -31,7 +31,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { countries } from "@/data/countries.data";
 
 // icons
-import { ChevronDown, Pencil } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 // hooks
 import useSendOTPMutation from "@/hooks/axios/login/use-send-otp-mutation";
@@ -145,7 +145,12 @@ const LoginForm: FC = () => {
           onSubmit={(values) => {
             setShowOtp(true);
             send_otp_mutation.mutate(
-              { identifier: values.identifier },
+              {
+                identifier: values.identifier,
+                country_code: user_details.country?.code
+                  ? getCallingCode(user_details.country.code as CountryCode)
+                  : undefined,
+              },
               {
                 onSuccess(response) {
                   setUserDetails(values);
@@ -306,12 +311,22 @@ const LoginForm: FC = () => {
                     type="button"
                     disabled={timer > 0}
                     onClick={() => {
-                      send_otp_mutation.mutate(user_details, {
-                        onSuccess() {
-                          setTimer(60);
-                          resetForm();
+                      send_otp_mutation.mutate(
+                        {
+                          identifier: user_details.identifier,
+                          country_code: user_details.country?.code
+                            ? getCallingCode(
+                                user_details.country.code as CountryCode,
+                              )
+                            : undefined,
                         },
-                      });
+                        {
+                          onSuccess() {
+                            setTimer(60);
+                            resetForm();
+                          },
+                        },
+                      );
                     }}
                     className={clsx(
                       "cursor-pointer font-medium text-orange-500 hover:text-orange-600",

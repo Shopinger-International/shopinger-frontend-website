@@ -69,7 +69,7 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
                 }}
               >
                 <Image
-                  sizes="480px"
+                  sizes="512px"
                   fill
                   loading={"eager"}
                   src={

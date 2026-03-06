@@ -37,10 +37,13 @@ const MobileProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
             <SwiperSlide key={index}>
               <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-neutral-300">
                 <Image
+                  sizes="(min-width: 1024px) 10vw, 100vw"
+                  loading={"eager"}
+                  fill
                   src={media.url}
                   alt={image_title}
-                  fill
                   priority={index === 0}
+                  quality={75}
                   className="object-contain"
                 />
               </div>

@@ -14,16 +14,18 @@ type IResponse = {
 
 type IRequestPayload = {
   identifier: string;
+  country_code: string | undefined;
 };
 
 const useSendOTPMutation = () => {
   return useMutation<IResponse, Error, IRequestPayload>({
     mutationKey: ["user-login-and-register-with-otp"],
-    async mutationFn({ identifier }) {
+    async mutationFn({ identifier, country_code }) {
       const { data } = await publicAxios.post<IResponse>(
         "/user-login-and-register-with-otp",
         {
           identifier,
+          country_code,
         },
       );
       return data;
