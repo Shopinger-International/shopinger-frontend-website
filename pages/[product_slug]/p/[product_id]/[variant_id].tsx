@@ -93,11 +93,17 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       ? title
       : `${brand} ${title}`;
 
-  const visual_values = variant.variant_attribute_values
-    .filter(({ attribute }) => attribute.is_visual)
-    .map(({ value }) => value);
   const meta_description = generateMetaDescription(description);
 
+  const visual_values = variant.variant_attribute_values
+    .filter(
+      ({ attribute }) =>
+        category_mappings.find(
+          ({ attribute: mapping_attribute }) =>
+            mapping_attribute.id == attribute.id,
+        )?.is_visual,
+    )
+    .map(({ value }) => value);
   const main_title = visual_values.length
     ? `${updated_title} in ${visual_values.join(", ")} | Shopinger`
     : `${updated_title} | Shopinger`;

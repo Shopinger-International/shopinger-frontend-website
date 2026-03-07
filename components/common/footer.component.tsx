@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+// types
 import type { FC } from "react";
 
 const footer_sections = [
@@ -104,13 +106,50 @@ const Footer: FC = () => {
               CIN: U47912UP2025PTC219935
             </p>
 
-            {/* <div className="flex gap-3 pt-2">
-              <Facebook size={20} />
-              <Linkedin size={20} />
-              <Instagram size={20} />
-              <Twitter size={20} />
-              <Youtube size={20} />
-            </div> */}
+            <div className="flex gap-3 pt-2">
+              <Link href="/">
+                <Image
+                  src="/footer/facebook.svg"
+                  alt="facebook"
+                  width={40}
+                  height={40}
+                />
+              </Link>
+              <Link href="/">
+                <Image
+                  src="/footer/instagram.svg"
+                  alt="instagram"
+                  width={40}
+                  height={40}
+                />
+              </Link>
+              <Link href="/">
+                <Image
+                  src="/footer/twitter.svg"
+                  alt="twitter"
+                  width={40}
+                  height={40}
+                />
+              </Link>
+
+              <Link href="/">
+                <Image
+                  src="/footer/youtube.svg"
+                  alt="twitter"
+                  width={40}
+                  height={40}
+                />
+              </Link>
+
+              <Link href="/">
+                <Image
+                  src="/footer/whatsapp.svg"
+                  alt="whatsapp"
+                  width={40}
+                  height={40}
+                />
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
