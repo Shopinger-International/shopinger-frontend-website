@@ -32,13 +32,19 @@ const footer_sections = [
     ],
   },
 ];
-
+const social_links = [
+  { name: "facebook", href: "/", src: "/footer/facebook.svg" },
+  { name: "instagram", href: "/", src: "/footer/instagram.svg" },
+  { name: "twitter", href: "/", src: "/footer/twitter.svg" },
+  { name: "youtube", href: "/", src: "/footer/youtube.svg" },
+  { name: "whatsapp", href: "/", src: "/footer/whatsapp.svg" },
+];
 const Footer: FC = () => {
   return (
     <div className="w-full">
       {/* Footer */}
-      <footer className="bg-[#1f1f1f] text-white">
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 gap-10 px-4 py-12 md:grid-cols-3 lg:grid-cols-5">
+      <footer className="bg-black text-white">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 gap-8 px-4 py-12 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1.5fr_1.5fr]">
           {/* Dynamic sections */}
           {footer_sections.map(({ title, list }) => (
             <div key={title} className="space-y-3">
@@ -106,49 +112,75 @@ const Footer: FC = () => {
               CIN: U47912UP2025PTC219935
             </p>
 
-            <div className="flex gap-3 pt-2">
-              <Link href="/">
+            <div className="mt-2 flex items-center gap-3">
+              {social_links.map(({ name, href, src }) => (
+                <Link key={name} href={href}>
+                  <Image
+                    src={src}
+                    alt={name}
+                    width={40}
+                    height={40}
+                    className="size-9 lg:size-10"
+                  />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="w-full bg-orange-500 text-white">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-3">
+            {/* Left section */}
+            <div className="flex flex-wrap items-center gap-6">
+              <span className="font-medium">©2025–2026 Shopinger</span>
+
+              <Link
+                href="/sell"
+                className="flex items-center gap-2 font-medium hover:underline"
+              >
                 <Image
-                  src="/footer/facebook.svg"
-                  alt="facebook"
-                  width={40}
-                  height={40}
+                  className="size-4 lg:size-5"
+                  src="/footer/handbag.svg"
+                  alt="seller"
+                  width={16}
+                  height={16}
                 />
-              </Link>
-              <Link href="/">
-                <Image
-                  src="/footer/instagram.svg"
-                  alt="instagram"
-                  width={40}
-                  height={40}
-                />
-              </Link>
-              <Link href="/">
-                <Image
-                  src="/footer/twitter.svg"
-                  alt="twitter"
-                  width={40}
-                  height={40}
-                />
+                Become a Seller
               </Link>
 
-              <Link href="/">
+              <Link
+                href="/advertise"
+                className="flex items-center gap-2 font-medium hover:underline"
+              >
                 <Image
-                  src="/footer/youtube.svg"
-                  alt="twitter"
-                  width={40}
-                  height={40}
+                  className="size-4 lg:size-5"
+                  src="/footer/mike.svg"
+                  alt="advertise"
+                  width={16}
+                  height={16}
                 />
+                Advertise with us
               </Link>
+            </div>
 
-              <Link href="/">
+            {/* Right section */}
+            <div className="flex flex-wrap items-center gap-3">
+              {[
+                "google-pay",
+                "paypal",
+                "visa",
+                "rupay",
+                "cash-on-delivery",
+                "emi-options",
+              ].map((icon) => (
                 <Image
-                  src="/footer/whatsapp.svg"
-                  alt="whatsapp"
+                  key={icon}
+                  src={`/footer/payment-method/${icon}.png`}
+                  alt={icon}
                   width={40}
-                  height={40}
+                  height={24}
+                  className="rounded bg-white p-1 w-auto h-7"
                 />
-              </Link>
+              ))}
             </div>
           </div>
         </div>
