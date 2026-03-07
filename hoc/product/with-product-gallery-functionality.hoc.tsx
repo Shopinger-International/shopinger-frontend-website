@@ -4,6 +4,7 @@ import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type IMedia from "@/types/media";
+import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
 // helpers
 
@@ -20,6 +21,7 @@ interface IWithGalleryControlProps {
   product: IProduct;
   variant: IVariant;
   media_group: IMediaGroup;
+  category_mappings: ICategoryAttributeMapping[];
 }
 
 const withProductGalleryFunctionality = <
@@ -33,6 +35,7 @@ const withProductGalleryFunctionality = <
     product,
     variant,
     media_group,
+    category_mappings,
     ...props
   }: ExtraProps) => {
     const { brand, title, product_medias } = product;
@@ -43,13 +46,25 @@ const withProductGalleryFunctionality = <
         ? title
         : `${brand} ${title}`;
     let variant_medias = variant_attribute_values
-      .filter(({ attribute }) => attribute.is_visual)
+      .filter(
+        ({ attribute }) =>
+          category_mappings.find(
+            ({ attribute: mapping_attribute }) =>
+              mapping_attribute.id == attribute.id,
+          )?.is_visual,
+      )
       .flatMap(
         ({ attribute, value }) =>
           media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
       );
     const visual_values = variant_attribute_values
-      .filter(({ attribute }) => attribute.is_visual)
+      .filter(
+        ({ attribute }) =>
+          category_mappings.find(
+            ({ attribute: mapping_attribute }) =>
+              mapping_attribute.id == attribute.id,
+          )?.is_visual,
+      )
       .map(({ value }) => value);
 
     let variant_medias_with_title = (

@@ -158,6 +158,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant={variant}
           media_group={media_group}
           product={product}
+          category_mappings={category_mappings}
         />
         <ProductInfo
           product={product}

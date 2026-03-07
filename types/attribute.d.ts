@@ -47,7 +47,6 @@ type IAttributeType = {
 
   is_required: boolean;
   variant_capable: boolean;
-  is_visual: boolean;
   is_unit: boolean;
 
   status: "active" | "inactive" | "deprecated";

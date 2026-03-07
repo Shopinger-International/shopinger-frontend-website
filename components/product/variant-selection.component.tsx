@@ -5,6 +5,7 @@ import type { FC } from "react";
 import type IAttributeType from "@/types/attribute";
 import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type IProduct from "@/types/product";
+import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
@@ -20,10 +21,12 @@ const VariantSelection: FC<{
   product: IProduct;
   selected_attributes: Record<string, any>;
   media_group: IMediaGroup;
+  category_mappings: ICategoryAttributeMapping[];
 }> = ({
   product: { id: product_id, title, variants, brand },
   selected_attributes,
   media_group,
+  category_mappings,
 }) => {
   const variant_attributes_values_group = variants
     .flatMap((v) => v.variant_attribute_values)
@@ -47,10 +50,16 @@ const VariantSelection: FC<{
       {Object.values(variant_attributes_values_group)
         .sort((a, b) => {
           // visual attributes first
-          if (a.attribute.is_visual === b.attribute.is_visual) return 0;
-          return a.attribute.is_visual ? -1 : 1;
+          const mapping_a = category_mappings.find(
+            ({ attribute }) => attribute.id == a.attribute.id,
+          );
+          const mapping_b = category_mappings.find(
+            ({ attribute }) => attribute.id == b.attribute.id,
+          );
+          if (mapping_a?.is_visual == mapping_b?.is_visual) return 0;
+          return mapping_a?.is_visual ? -1 : 1;
         })
-        .map(({ attribute: { is_visual, ...attribute }, values }) => (
+        .map(({ attribute, values }) => (
           <div className="space-y-2" key={`variant-attribute-${attribute.id}`}>
             <h3 className="font-bold">
               {attribute.name} <span aria-hidden="true"> : </span>
@@ -96,7 +105,10 @@ const VariantSelection: FC<{
                     role="radio"
                     className="shrink-0 snap-start"
                   >
-                    {is_visual ? (
+                    {category_mappings.find(
+                      ({ attribute: mapping_attribute }) =>
+                        mapping_attribute.id == attribute.id,
+                    )?.is_visual ? (
                       <div
                         className={clsx(
                           "group flex w-24 flex-col overflow-hidden rounded-lg border bg-white transition-all duration-200 lg:w-20",

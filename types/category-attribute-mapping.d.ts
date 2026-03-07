@@ -20,6 +20,7 @@ type ICategoryAttributeMapping = {
 
   is_filterable: boolean;
   is_required: boolean;
+  is_visual:boolean;
   is_variant: boolean;
   is_hidden: boolean;
   show_on_pdp: boolean;

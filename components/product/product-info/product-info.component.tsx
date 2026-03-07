@@ -42,7 +42,13 @@ const ProductInfo: FC<IProps> = ({
   );
 
   const nor_visual_variant_attributes = variant.variant_attribute_values
-    .filter(({ attribute }) => !attribute.is_visual)
+    .filter(
+      ({ attribute }) =>
+        !category_mappings.find(
+          ({ attribute: mapping_attribute }) =>
+            mapping_attribute.id == attribute.id,
+        )?.is_visual,
+    )
     .map(
       ({ value, attribute }) =>
         attribute.options?.find(
@@ -51,7 +57,13 @@ const ProductInfo: FC<IProps> = ({
     );
 
   const visual_variant_attributes = variant.variant_attribute_values
-    .filter(({ attribute }) => attribute.is_visual)
+    .filter(
+      ({ attribute }) =>
+        category_mappings.find(
+          ({ attribute: mapping_attribute }) =>
+            mapping_attribute.id == attribute.id,
+        )?.is_visual,
+    )
     .map(
       ({ value, attribute }) =>
         attribute.options?.find(
@@ -78,6 +90,7 @@ const ProductInfo: FC<IProps> = ({
         variant={variant}
         media_group={media_group}
         product={product}
+        category_mappings={category_mappings}
       />
       {/** MRP */}
       <section className="order-4 mb-4 flex flex-col">
@@ -119,6 +132,7 @@ const ProductInfo: FC<IProps> = ({
       <VariantSelection
         product={product}
         selected_attributes={selected_attributes}
+        category_mappings={category_mappings}
         media_group={media_group}
       />
       <CheckDeliveryAvailability />
