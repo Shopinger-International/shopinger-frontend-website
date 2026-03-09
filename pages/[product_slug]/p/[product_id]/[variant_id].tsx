@@ -14,6 +14,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
+import RelatedProducts from "@/components/product/related-products/related-products.component";
 import Footer from "@/components/common/footer.component";
 
 // icons
@@ -55,6 +56,22 @@ const getAllProducts = async (): Promise<IProduct[]> => {
   return products;
 };
 
+const getRelatedProducts = async (
+  product_id: number,
+): Promise<{
+  related_products: IProduct[];
+}> => {
+  const {
+    data: { related_products },
+  } = await webAxios.get<{
+    success: boolean;
+    related_products: IProduct[];
+  }>(`/get-related-products/${product_id}`);
+  return {
+    related_products,
+  };
+};
+
 export type IMediaGroup = Record<
   number, // attribute_id
   Record<
@@ -72,12 +89,14 @@ type IProps = {
   product: IProduct;
   category_mappings: ICategoryAttributeMapping[];
   variant: IVariant;
+  related_products: IProduct[];
 };
 
 const ProductPage: NextPageWithLayout<IProps> = ({
   product,
   category_mappings,
   variant,
+  related_products,
 }) => {
   const {
     title,
@@ -87,6 +106,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     sub_category,
     sub_sub_category,
   } = product;
+  console.log("value of related products", related_products);
 
   const updated_title =
     !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
@@ -174,6 +194,11 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           category_mappings={category_mappings}
         />
       </div>
+
+      <RelatedProducts
+        related_products={related_products}
+        category_mappings={category_mappings}
+      />
       <section className="flex w-full items-center justify-center bg-linear-to-b from-[#FF6900] to-[#993F00] py-2.5">
         <button
           onClick={() =>
@@ -231,6 +256,8 @@ export const getStaticProps = (async ({ params }) => {
   }
 
   let { product, category_mappings } = await getProduct(product_id);
+  let { related_products } = await getRelatedProducts(product_id);
+  console.log("value of related products", related_products);
 
   if (!product) {
     return { notFound: true };
@@ -243,6 +270,7 @@ export const getStaticProps = (async ({ params }) => {
       variant: product.variants.find(
         (variant) => variant.id == variant_id,
       ) as IVariant,
+      related_products,
     },
     revalidate: 60, // 🔥 enable ISR
   };

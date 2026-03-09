@@ -70,7 +70,6 @@ const CheckDeliveryAvailability: FC = () => {
             },
             {
               onSuccess(data) {
-                console.log("value of data", data);
                 setDeliveryZoneData({
                   is_delivery_available: true,
                   cod_available: data.data.cod_available,

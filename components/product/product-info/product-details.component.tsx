@@ -93,7 +93,6 @@ const ProductDetails: FC<{
     })),
     { name: "Country of origin", value: country_of_origin },
   ];
-  console.log("value of data", full_top_highlights);
 
   return (
     <div className="order-8">

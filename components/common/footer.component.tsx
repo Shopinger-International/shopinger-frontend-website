@@ -43,8 +43,8 @@ const Footer: FC = () => {
   return (
     <div className="w-full">
       {/* Footer */}
-      <footer className="bg-black text-white">
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 gap-8 px-4 py-12 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1.5fr_1.5fr]">
+      <footer className="bg-black text-white text-sm">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 gap-8 px-4 py-8 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1.5fr_1.5fr]">
           {/* Dynamic sections */}
           {footer_sections.map(({ title, list }) => (
             <div key={title} className="space-y-3">
@@ -52,7 +52,7 @@ const Footer: FC = () => {
                 {title}
               </h6>
 
-              <ul className="space-y-3 text-sm lg:text-base">
+              <ul className="space-y-3 text-sm lg:text-sm">
                 {list.map((item) => (
                   <li key={item.href}>
                     <Link
@@ -73,32 +73,32 @@ const Footer: FC = () => {
               Corporate Office Address
             </h6>
 
-            <p className="text-sm font-medium text-white/80 lg:text-base">
+            <p className="text-sm font-medium text-white/80 lg:text-sm">
               Shopinger International Private Limited
               <br />
               Patel Nagar, New Delhi – 110008, India
             </p>
 
-            <p className="text-sm font-medium text-white/80 lg:text-base">
+            <p className="text-sm font-medium text-white/80 lg:text-sm">
               CIN: U47912UP2025PTC219935
             </p>
 
-            <p className="text-sm font-medium text-white/80 lg:text-base">
+            <p className="text-sm font-medium text-white/80 lg:text-sm">
               +91 94157 61434
             </p>
 
-            <p className="text-sm font-medium text-white/80 lg:text-base">
+            <p className="text-sm font-medium text-white/80 lg:text-sm">
               info@shopinger.co.in
             </p>
           </div>
 
           {/* Registered Address */}
           <div className="col-span-2 space-y-3 lg:col-span-1">
-            <h6 className="lg:text-md text-base font-semibold text-white uppercase">
+            <h6 className="lg:text-md text-sm font-semibold text-white uppercase">
               Registered Office Address
             </h6>
 
-            <p className="text-sm text-white/80 lg:text-base">
+            <p className="text-sm text-white/80 lg:text-sm">
               Shopinger International Private Limited
               <br />
               Bharvaliya Bujurg, Near Maurya Complex,
@@ -108,7 +108,7 @@ const Footer: FC = () => {
               Uttar Pradesh – 273015, India
             </p>
 
-            <p className="text-sm text-white/80 lg:text-base">
+            <p className="text-sm text-white/80 lg:text-sm">
               CIN: U47912UP2025PTC219935
             </p>
 
@@ -120,7 +120,7 @@ const Footer: FC = () => {
                     alt={name}
                     width={40}
                     height={40}
-                    className="size-9 lg:size-10"
+                    className="size-6 lg:size-8"
                   />
                 </Link>
               ))}
@@ -178,7 +178,7 @@ const Footer: FC = () => {
                   alt={icon}
                   width={40}
                   height={24}
-                  className="rounded bg-white p-1 w-auto h-7"
+                  className="rounded bg-white p-1 w-auto h-6"
                 />
               ))}
             </div>
