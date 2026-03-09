@@ -119,7 +119,10 @@ const RelatedProducts: FC<IProps> = ({
   });
   return (
     <section className="mb-8">
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
+        <h5 className="font-semibold lg:text-xl">
+          Customer Also view these products
+        </h5>
         {/* Left arrow */}
         <div className="relative">
           {/* Left arrow */}
