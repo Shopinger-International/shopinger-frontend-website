@@ -97,56 +97,66 @@ const ProductDetails: FC<{
   ];
 
   return (
-    <div className="order-8">
-      {!!full_top_highlights.length && (
-        <ExtendedDisclosure default_open={true} heading="Top Highlights">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-            {full_top_highlights.map((item, index) => {
-              const is_in_last_row = index >= full_top_highlights.length - 2;
+    <div className="order-8 flex h-full flex-col">
+      <div className="flex-1 overflow-y-auto">
+        {!!full_top_highlights.length && (
+          <ExtendedDisclosure default_open={true} heading="Top Highlights">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+              {full_top_highlights.map((item, index) => {
+                const is_in_last_row = index >= full_top_highlights.length - 2;
 
-              return (
-                <AttributeInfoCell
-                  key={index}
-                  name={item.name}
-                  value={item.value}
-                  show_border={!is_in_last_row}
-                />
-              );
-            })}
-          </div>
+                return (
+                  <AttributeInfoCell
+                    key={index}
+                    name={item.name}
+                    value={item.value}
+                    show_border={!is_in_last_row}
+                  />
+                );
+              })}
+            </div>
+          </ExtendedDisclosure>
+        )}
+
+        {!!updated_key_features.length && (
+          <ExtendedDisclosure default_open={true} heading="About this item">
+            <div id="key-features-content">
+              <ul className="list-outside list-disc space-y-1.5 pl-5 text-sm text-gray-600 lg:text-base">
+                {display_features.map((feature, index) => (
+                  <li key={index}>{feature}</li>
+                ))}
+              </ul>
+            </div>
+            {updated_key_features.length > initial_visible && (
+              <button
+                onClick={() => setShowAll(!show_all)}
+                className="mt-1 font-medium text-orange-500 hover:underline"
+                aria-expanded={show_all}
+                aria-controls="key-features-content"
+              >
+                {show_all
+                  ? "See less"
+                  : `See more (${updated_key_features.length - initial_visible})`}
+              </button>
+            )}
+          </ExtendedDisclosure>
+        )}
+
+        <ExtendedDisclosure default_open={false} heading="All Details">
+          <ProductInfoTabs
+            product={product}
+            category_mappings={category_mappings}
+          />
         </ExtendedDisclosure>
-      )}
-
-      {!!updated_key_features.length && (
-        <ExtendedDisclosure default_open={true} heading="About this item">
-          <div id="key-features-content">
-            <ul className="list-outside list-disc space-y-1.5 pl-5 text-sm text-gray-600 lg:text-base">
-              {display_features.map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
-            </ul>
-          </div>
-          {updated_key_features.length > initial_visible && (
-            <button
-              onClick={() => setShowAll(!show_all)}
-              className="mt-1 font-medium text-orange-500 hover:underline"
-              aria-expanded={show_all}
-              aria-controls="key-features-content"
-            >
-              {show_all
-                ? "See less"
-                : `See more (${updated_key_features.length - initial_visible})`}
-            </button>
-          )}
-        </ExtendedDisclosure>
-      )}
-
-      <ExtendedDisclosure default_open={false} heading="All Details">
-        <ProductInfoTabs
-          product={product}
-          category_mappings={category_mappings}
-        />
-      </ExtendedDisclosure>
+      </div>
+      <div className="fixed bottom-0 left-0 z-4 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-4 shadow-md lg:sticky lg:border-none lg:px-0 lg:shadow-none">
+        <button className="w-full rounded-md border border-orange-500 bg-white py-2 font-medium text-orange-500">
+          Buy Now
+        </button>
+        <button className="w-full rounded-md bg-orange-500 py-2 font-medium text-white">
+          Add to Cart
+        </button>
+      </div>
     </div>
   );
 };

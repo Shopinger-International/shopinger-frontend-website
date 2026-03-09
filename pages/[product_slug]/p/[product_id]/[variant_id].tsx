@@ -18,7 +18,7 @@ import RelatedProducts from "@/components/product/related-products/related-produ
 import Footer from "@/components/common/footer.component";
 
 // icons
-import { ChevronRight, ChevronUp, ArrowUp } from "lucide-react";
+import { ChevronRight, ArrowUp } from "lucide-react";
 
 // helpers
 import webAxios from "@/lib/axios/web.lib";
@@ -179,7 +179,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           </nav>
         </div>
       </div>
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pt-(--header-height) lg:mt-8 lg:flex-row lg:pt-0">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pt-(--header-height) lg:mt-8 lg:flex-row lg:items-start lg:pt-0">
         <ProductGallary
           variant={variant}
           media_group={media_group}

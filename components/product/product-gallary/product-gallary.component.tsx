@@ -23,7 +23,7 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
     useState<number>(0);
   return (
     <>
-      <section className="relative hidden space-y-4 lg:block">
+      <section className="hidden space-y-4 lg:sticky lg:top-(--header-height) lg:block">
         {/* Main Product View */}
         <div className="flex flex-col gap-9 lg:flex-row">
           {/* Thumbnail Gallery */}
@@ -99,15 +99,6 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
                   />
                 </div>
               )}
-            </div>
-
-            <div className="flex gap-3">
-              <button className="w-full rounded-md border border-orange-500 bg-white py-2.5 text-orange-500">
-                Buy Now
-              </button>
-              <button className="w-full rounded-md bg-orange-500 py-2.5 text-white">
-                Add to Cart
-              </button>
             </div>
           </div>
         </div>
