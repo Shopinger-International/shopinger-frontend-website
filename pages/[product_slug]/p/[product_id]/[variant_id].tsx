@@ -15,7 +15,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
 import RelatedProducts from "@/components/product/related-products/related-products.component";
-import Footer from "@/components/common/footer.component";
+import Footer from "@/components/common/footer/footer.component";
 
 // icons
 import { ChevronRight, ArrowUp } from "lucide-react";
@@ -106,7 +106,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     sub_category,
     sub_sub_category,
   } = product;
-  console.log("value of related products", related_products);
 
   const updated_title =
     !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
@@ -257,7 +256,6 @@ export const getStaticProps = (async ({ params }) => {
 
   let { product, category_mappings } = await getProduct(product_id);
   let { related_products } = await getRelatedProducts(product_id);
-  console.log("value of related products", related_products);
 
   if (!product) {
     return { notFound: true };

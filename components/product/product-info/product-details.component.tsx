@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // types
 import type { FC, ReactNode } from "react";
 import type IAttributeType from "@/types/attribute";
@@ -96,6 +96,25 @@ const ProductDetails: FC<{
       : []),
   ];
 
+  useEffect(() => {
+    const buy_cta_container = document.getElementById("buy-cta-container");
+    if (!buy_cta_container) return;
+
+    const setHeight = () => {
+      document.documentElement.style.setProperty(
+        "--buy-cta-container-height",
+        `${buy_cta_container.offsetHeight}px`,
+      );
+    };
+
+    setHeight();
+
+    const observer = new ResizeObserver(setHeight);
+    observer.observe(buy_cta_container);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="order-8 flex h-full flex-col">
       <div className="flex-1 overflow-y-auto">
@@ -149,7 +168,10 @@ const ProductDetails: FC<{
           />
         </ExtendedDisclosure>
       </div>
-      <div className="fixed bottom-0 left-0 z-4 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-4 shadow-md lg:sticky lg:border-none lg:px-0 lg:shadow-none">
+      <div
+        id="buy-cta-container"
+        className="fixed bottom-0 left-0 z-4 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md lg:sticky lg:border-none lg:px-0 lg:shadow-none"
+      >
         <button className="w-full rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900">
           Add to Cart
         </button>

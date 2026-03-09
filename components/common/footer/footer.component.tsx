@@ -1,0 +1,69 @@
+import Image from "next/image";
+import Link from "next/link";
+// types
+import type { FC } from "react";
+
+// local components
+import FooterLinks from "@/components/common/footer/footer-links.component";
+import FooterAddress from "@/components/common/footer/footer-address.component";
+import FooterBottom from "@/components/common/footer/footer-bottom.component";
+
+// data
+import { payment_methods } from "@/components/common/footer/footer-bottom.component";
+
+const Footer: FC = () => {
+  return (
+    <footer className="mb-(--buy-cta-container-height) w-full bg-black text-sm text-white lg:mb-0">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-2 gap-8 px-4 py-8 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1.5fr_1.5fr]">
+        <FooterLinks />
+        <FooterAddress />
+      </div>
+      <div className="mb-8 flex flex-col space-y-3 px-4 lg:hidden">
+        <div className="flex flex-wrap items-center gap-6">
+          <Link
+            href="/sell"
+            className="flex items-center gap-2 font-medium hover:underline"
+          >
+            <Image
+              className="size-4 lg:size-5"
+              src="/footer/handbag.svg"
+              alt="seller"
+              width={16}
+              height={16}
+            />
+            Become a Seller
+          </Link>
+
+          <Link
+            href="/advertise"
+            className="flex items-center gap-2 font-medium hover:underline"
+          >
+            <Image
+              className="size-4 lg:size-5"
+              src="/footer/mike.svg"
+              alt="advertise"
+              width={16}
+              height={16}
+            />
+            Advertise with us
+          </Link>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          {payment_methods.map((icon) => (
+            <Image
+              key={icon}
+              src={`/footer/payment-method/${icon}.png`}
+              alt={icon}
+              width={40}
+              height={24}
+              className="h-6 w-auto rounded bg-white p-1"
+            />
+          ))}
+        </div>
+      </div>
+      <FooterBottom />
+    </footer>
+  );
+};
+
+export default Footer;
