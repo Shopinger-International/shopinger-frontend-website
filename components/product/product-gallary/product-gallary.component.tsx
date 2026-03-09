@@ -23,7 +23,7 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
     useState<number>(0);
   return (
     <>
-      <section className="hidden space-y-4 lg:sticky lg:top-(--header-height) lg:block">
+      <section className="z-5 hidden space-y-4 lg:sticky lg:top-(--header-height) lg:block">
         {/* Main Product View */}
         <div className="flex flex-col gap-9 lg:flex-row">
           {/* Thumbnail Gallery */}
