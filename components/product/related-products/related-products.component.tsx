@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRef } from "react";
 // types
 import type { FC } from "react";
@@ -21,6 +22,9 @@ import "swiper/css/navigation";
 
 // icons
 import { ChevronLeft, ChevronRight } from "lucide-react";
+
+// helpers
+import { generateSlug } from "@/helpers/product.helper";
 
 type IProps = {
   related_products: IProduct[];
@@ -103,15 +107,16 @@ const RelatedProducts: FC<IProps> = ({
           image_title,
         };
       });
+      const product_slug = generateSlug(product.title);
       return {
         title: main_title,
+        src: `/${product_slug}/p/${product.id}/${variant?.id}`,
         variant_medias_with_title,
         selling_price: variant.variant_pricing.selling_price_with_commission,
         mrp: variant.variant_pricing.mrp,
       };
     });
   });
-  console.log("value of formatted products", formatted_related_products);
   return (
     <section className="mb-8">
       <div className="mx-auto max-w-6xl px-4">
@@ -135,20 +140,22 @@ const RelatedProducts: FC<IProps> = ({
           >
             {formatted_related_products.map(
               (
-                { title, variant_medias_with_title, selling_price, mrp },
+                { title, src, variant_medias_with_title, selling_price, mrp },
                 index,
               ) => (
                 <SwiperSlide
                   key={`related-product-${index}`}
                   className="w-auto!"
                 >
-                  <ProductCard
-                    title={title}
-                    thumbnail={variant_medias_with_title[0].media}
-                    thumbnail_title={variant_medias_with_title[0].image_title}
-                    selling_price={selling_price}
-                    mrp={mrp}
-                  />
+                  <Link href={src}>
+                    <ProductCard
+                      title={title}
+                      thumbnail={variant_medias_with_title[0].media}
+                      thumbnail_title={variant_medias_with_title[0].image_title}
+                      selling_price={selling_price}
+                      mrp={mrp}
+                    />
+                  </Link>
                 </SwiperSlide>
               ),
             )}

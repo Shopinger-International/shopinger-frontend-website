@@ -69,6 +69,18 @@ const ProductInfoTabs: FC<{
   const mapped_by_attribute_id = new Map(
     category_mappings.map((mapping) => [mapping.attribute.id, mapping]),
   );
+
+  const manufacturer_info_exist = !!(
+    manufacturer_name ||
+    manufacturer_address ||
+    manufacturer_pincode ||
+    packer_name ||
+    packer_address ||
+    packer_pincode ||
+    importer_name ||
+    importer_address ||
+    importer_pincode
+  );
   const grouped_by_display_area = product_attribute_values.reduce(
     (acc, item) => {
       const mapping = mapped_by_attribute_id.get(item.attribute.id);
@@ -112,16 +124,19 @@ const ProductInfoTabs: FC<{
           .map((val) => capitalizeValue(val))
           .join(" "),
       ),
-    "Description",
-    "Manufacturer Info",
+    ...(description ? ["Description"] : []),
+    ...(manufacturer_info_exist ? ["Manufacturer Info"] : []),
   ];
 
+  if (!tab_list.length) {
+    return null;
+  }
   return (
     <TabGroup>
       <TabList className="no-scrollbar flex gap-2 overflow-x-auto">
-        {tab_list.map((tab) => (
+        {tab_list.map((tab, index) => (
           <Tab
-            key={tab}
+            key={`${tab}-${index}`}
             className={({ selected }) =>
               clsx(
                 "shrink-0 rounded-md border border-gray-300 bg-gray-100 px-2 py-1.5 text-sm text-gray-600 focus:outline-none lg:text-base",
@@ -164,59 +179,61 @@ const ProductInfoTabs: FC<{
         <TabPanel className="focus:outline-none">
           <Description description={generateDescription(description)} />
         </TabPanel>
-        <TabPanel className="focus:outline-none">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-            {[
-              {
-                label: "Manufacturer Name",
-                value: manufacturer_name,
-              },
-              {
-                label: "Manufacturer Address",
-                value: manufacturer_address,
-              },
-              {
-                label: "Manufacturer Pincode",
-                value: manufacturer_pincode,
-              },
-              {
-                label: "Packer Name",
-                value: packer_name,
-              },
-              {
-                label: "Packer Address",
-                value: packer_address,
-              },
-              {
-                label: "Packer Pincode",
-                value: packer_pincode,
-              },
-              {
-                label: "Importer Name",
-                value: importer_name,
-              },
-              {
-                label: "Importer Address",
-                value: importer_address,
-              },
-              {
-                label: "Importer Pincode",
-                value: importer_pincode,
-              },
-            ].map(
-              ({ label, value }) =>
-                value && (
-                  <AttributeInfoCell
-                    name={label
-                      .split("_")
-                      .map((s) => capitalizeValue(s))
-                      .join(" ")}
-                    value={value}
-                  />
-                ),
-            )}
-          </div>
-        </TabPanel>
+        {manufacturer_info_exist && (
+          <TabPanel className="focus:outline-none">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+              {[
+                {
+                  label: "Manufacturer Name",
+                  value: manufacturer_name,
+                },
+                {
+                  label: "Manufacturer Address",
+                  value: manufacturer_address,
+                },
+                {
+                  label: "Manufacturer Pincode",
+                  value: manufacturer_pincode,
+                },
+                {
+                  label: "Packer Name",
+                  value: packer_name,
+                },
+                {
+                  label: "Packer Address",
+                  value: packer_address,
+                },
+                {
+                  label: "Packer Pincode",
+                  value: packer_pincode,
+                },
+                {
+                  label: "Importer Name",
+                  value: importer_name,
+                },
+                {
+                  label: "Importer Address",
+                  value: importer_address,
+                },
+                {
+                  label: "Importer Pincode",
+                  value: importer_pincode,
+                },
+              ].map(
+                ({ label, value }) =>
+                  value && (
+                    <AttributeInfoCell
+                      name={label
+                        .split("_")
+                        .map((s) => capitalizeValue(s))
+                        .join(" ")}
+                      value={value}
+                    />
+                  ),
+              )}
+            </div>
+          </TabPanel>
+        )}
       </TabPanels>
     </TabGroup>
   );
