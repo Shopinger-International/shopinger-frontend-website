@@ -46,6 +46,23 @@ const getProduct = async (
   };
 };
 
+export const getMappings = async (
+  category_id: number,
+): Promise<{
+  data: Array<ICategoryAttributeMapping>;
+}> => {
+  const response = await webAxios.get(
+    `/list-category-attributes/${category_id}?type=subsub`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  return response.data;
+};
+
 const getAllProducts = async (): Promise<IProduct[]> => {
   const {
     data: { products },
@@ -254,7 +271,10 @@ export const getStaticProps = (async ({ params }) => {
     return { notFound: true };
   }
 
-  let { product, category_mappings } = await getProduct(product_id);
+  let { product } = await getProduct(product_id);
+  let { data: category_mappings } = await getMappings(
+    product.sub_sub_category.id,
+  );
   let { related_products } = await getRelatedProducts(product_id);
 
   if (!product) {
