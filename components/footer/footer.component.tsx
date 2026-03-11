@@ -4,12 +4,12 @@ import Link from "next/link";
 import type { FC } from "react";
 
 // local components
-import FooterLinks from "@/components/common/footer/footer-links.component";
-import FooterAddress from "@/components/common/footer/footer-address.component";
-import FooterBottom from "@/components/common/footer/footer-bottom.component";
+import FooterLinks from "@/components/footer/footer-links.component";
+import FooterAddress from "@/components/footer/footer-address.component";
+import FooterBottom from "@/components/footer/footer-bottom.component";
 
 // data
-import { payment_methods } from "@/components/common/footer/footer-bottom.component";
+import { payment_methods } from "@/components/footer/footer-bottom.component";
 
 const Footer: FC = () => {
   return (

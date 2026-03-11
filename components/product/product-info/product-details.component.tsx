@@ -117,7 +117,7 @@ const ProductDetails: FC<{
 
   return (
     <div className="order-8 flex h-full flex-col">
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1">
         {!!full_top_highlights.length && (
           <ExtendedDisclosure default_open={true} heading="Top Highlights">
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
@@ -167,17 +167,6 @@ const ProductDetails: FC<{
             category_mappings={category_mappings}
           />
         </ExtendedDisclosure>
-      </div>
-      <div
-        id="buy-cta-container"
-        className="fixed bottom-0 left-0 z-4 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md lg:sticky lg:border-none lg:px-0 lg:shadow-none"
-      >
-        <button className="w-full rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900">
-          Add to Cart
-        </button>
-        <button className="w-full rounded-md bg-orange-500 py-2 font-semibold text-white">
-          Buy Now
-        </button>
       </div>
     </div>
   );

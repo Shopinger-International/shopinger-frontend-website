@@ -5,6 +5,7 @@ import type { FC, ReactNode } from "react";
 
 // local components
 import Header from "@/components/header/header.component";
+import Footer from "@/components/footer/footer.component";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800"],
@@ -21,6 +22,7 @@ const MainLayout: FC<{
     >
       <Header />
       <main>{children}</main>
+      <Footer />
     </div>
   );
 };

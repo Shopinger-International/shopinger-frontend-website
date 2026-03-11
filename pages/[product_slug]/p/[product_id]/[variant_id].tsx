@@ -15,7 +15,6 @@ import MainLayout from "@/components/layout/main-layout.component";
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
 import RelatedProducts from "@/components/product/related-products/related-products.component";
-import Footer from "@/components/common/footer/footer.component";
 
 // icons
 import { ChevronRight, ArrowUp } from "lucide-react";
@@ -103,6 +102,8 @@ type IParams = {
 };
 
 type IProps = {
+  product_id: number;
+  variant_id: number;
   product: IProduct;
   category_mappings: ICategoryAttributeMapping[];
   variant: IVariant;
@@ -110,6 +111,8 @@ type IProps = {
 };
 
 const ProductPage: NextPageWithLayout<IProps> = ({
+  product_id,
+  variant_id,
   product,
   category_mappings,
   variant,
@@ -123,7 +126,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     sub_category,
     sub_sub_category,
   } = product;
-
+  const product_slug = generateSlug(title);
   const updated_title =
     !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
       ? title
@@ -173,6 +176,18 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       <Head>
         <title>{main_title}</title>
         <meta name="description" content={meta_description} key="desc" />
+        <meta property="og:site_name" content="Shopinger" />
+        <meta
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}/${product_slug}/p/${product_id}/${variant_id}`}
+        />
+        <meta property="og:type" content="product" />
+        <meta property="og:title" content={main_title} />
+        <meta property="og:description" content={meta_description} />
+        <meta
+          property="og:image"
+          content={product.product_medias[0].media.url}
+        />
       </Head>
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="mx-auto w-full px-4">
@@ -232,7 +247,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           </span>
         </button>
       </section>
-      <Footer />
     </>
   );
 };
@@ -283,6 +297,8 @@ export const getStaticProps = (async ({ params }) => {
 
   return {
     props: {
+      product_id,
+      variant_id,
       product,
       category_mappings,
       variant: product.variants.find(

@@ -141,6 +141,17 @@ const ProductInfo: FC<IProps> = ({
         <strong className="font-medium text-orange-500">Himang Retails</strong>
       </p>
       <ProductDetails product={product} category_mappings={category_mappings} />
+      <div
+        id="buy-cta-container"
+        className="fixed bottom-0 left-0 z-4 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md lg:sticky lg:border-none lg:px-0 lg:shadow-none"
+      >
+        <button className="w-full rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900">
+          Add to Cart
+        </button>
+        <button className="w-full rounded-md bg-orange-500 py-2 font-semibold text-white">
+          Buy Now
+        </button>
+      </div>
     </section>
   );
 };

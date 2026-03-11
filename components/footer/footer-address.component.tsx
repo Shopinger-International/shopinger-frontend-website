@@ -2,7 +2,7 @@
 import type { FC } from "react";
 
 // local components
-import FooterSocial from "@/components/common/footer/footer-social.component";
+import FooterSocial from "@/components/footer/footer-social.component";
 
 const FooterAddress: FC = () => {
   return (
