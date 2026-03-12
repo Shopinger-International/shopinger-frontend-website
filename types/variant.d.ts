@@ -36,8 +36,8 @@ type IVariant = {
   seller_sku: string | null;
   system_sku: string;
   variant_attribute_values: IVariantAttributeValues[];
-  variant_inventory:IVariantInventory;
-  variant_pricing:IVariantPricing;
+  variant_inventory: IVariantInventory;
+  variant_pricing: IVariantPricing;
 };
 export default IVariant;
-export {IVariantInventory}
+export { IVariantInventory, IVariantAttributeValues };

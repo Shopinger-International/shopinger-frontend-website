@@ -116,7 +116,7 @@ const ProductDetails: FC<{
   }, []);
 
   return (
-    <div className="order-8 flex h-full flex-col">
+    <section className="order-8 flex h-full flex-col">
       <div className="flex-1">
         {!!full_top_highlights.length && (
           <ExtendedDisclosure default_open={true} heading="Top Highlights">
@@ -139,6 +139,11 @@ const ProductDetails: FC<{
 
         {!!updated_key_features.length && (
           <ExtendedDisclosure default_open={true} heading="About this item">
+            <div aria-live="polite" className="sr-only">
+              {show_all
+                ? `Showing all ${updated_key_features.length} features`
+                : `Showing first ${initial_visible} features`}
+            </div>
             <div id="key-features-content">
               <ul className="list-outside list-disc space-y-1.5 pl-5 text-sm text-gray-600 lg:text-base">
                 {display_features.map((feature, index) => (
@@ -168,7 +173,7 @@ const ProductDetails: FC<{
           />
         </ExtendedDisclosure>
       </div>
-    </div>
+    </section>
   );
 };
 
@@ -183,23 +188,29 @@ const ExtendedDisclosure: FC<{
     <Disclosure defaultOpen={default_open}>
       {({ open }) => (
         <div className="m-0 border-b border-gray-200 last:border-none">
-          <DisclosureButton
-            className={clsx(
-              "group flex w-full items-center justify-between py-3 text-left text-base font-semibold text-gray-900 transition-colors hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2",
-              open ? "lg:pt-4 lg:pb-3" : "lg:py-4",
-            )}
-          >
-            <span>{heading}</span>
+          <h2>
+            <DisclosureButton
+              className={clsx(
+                "group flex w-full items-center justify-between py-3 text-left text-base font-semibold text-gray-900 transition-colors hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2",
+                open ? "lg:pt-4 lg:pb-3" : "lg:py-4",
+              )}
+            >
+              <span>{heading}</span>
 
-            <span className="flex items-center justify-center rounded-lg bg-gray-100 p-1 transition-colors group-hover:bg-gray-200">
-              <ChevronUpIcon
-                className={clsx(
-                  "size-5 text-gray-500 transition-transform duration-200 ease-in-out",
-                  open && "rotate-180",
-                )}
-              />
-            </span>
-          </DisclosureButton>
+              <span
+                className="flex items-center justify-center rounded-lg bg-gray-100 p-1 transition-colors group-hover:bg-gray-200"
+                aria-hidden={true}
+              >
+                <ChevronUpIcon
+                  aria-hidden={true}
+                  className={clsx(
+                    "size-5 text-gray-500 transition-transform duration-200 ease-in-out",
+                    open && "rotate-180",
+                  )}
+                />
+              </span>
+            </DisclosureButton>
+          </h2>
 
           <DisclosurePanel className="overflow-hidden pb-4 text-gray-600">
             {children}

@@ -94,14 +94,18 @@ const ProductInfo: FC<IProps> = ({
       />
       {/** MRP */}
       <section className="order-4 mb-4 flex flex-col">
+        <h2 className="sr-only">Price</h2>
         <p>
           <span className="text-2xl lg:text-3xl">
             ₹{selling_price_with_commission}{" "}
           </span>
           {!!discount_percentage && (
-            <span className="inline font-medium text-gray-600">
-              {discount_percentage}% off
-            </span>
+            <>
+              <span className="inline font-medium text-gray-600">
+                {discount_percentage}% off
+                <span className="sr-only">discount</span>
+              </span>
+            </>
           )}
         </p>
         <p>
@@ -112,23 +116,27 @@ const ProductInfo: FC<IProps> = ({
       </section>
 
       {/** RATING */}
-      <p className="order-5 mb-4" aria-label="Product rating and reviews">
-        <strong className="font-medium">4.6 </strong>{" "}
-        <span className="sr-only">out of 5 stars</span>{" "}
-        <Star
-          className="inline size-4 fill-amber-300 text-amber-300"
-          aria-hidden="true"
-        />
-        <span aria-hidden="true"> | </span>{" "}
-        <a
-          href="#reviews"
-          className="text-orange-500"
-          aria-label={`view all ${2847} reviews`}
-        >
-          2,847 reviews
-        </a>{" "}
-        <span className="inline">500+ bought in past month</span>
-      </p>
+      <section>
+        <h2 className="sr-only">Product rating</h2>
+        <p className="order-5 mb-4" aria-label="Product rating and reviews">
+          <strong className="font-medium">4.6 </strong>{" "}
+          <span className="sr-only">out of 5 stars</span>{" "}
+          <Star
+            className="inline size-4 fill-amber-300 text-amber-300"
+            aria-hidden="true"
+          />
+          <span aria-hidden="true"> | </span>{" "}
+          <a
+            href="#reviews"
+            className="text-orange-500"
+            aria-label={`view all ${2847} reviews`}
+          >
+            2,847 reviews
+          </a>{" "}
+          <span className="inline">500+ bought in past month</span>
+        </p>
+      </section>
+
       <VariantSelection
         product={product}
         selected_attributes={selected_attributes}

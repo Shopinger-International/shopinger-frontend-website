@@ -17,7 +17,7 @@ import ProductInfo from "@/components/product/product-info/product-info.componen
 import RelatedProducts from "@/components/product/related-products/related-products.component";
 
 // icons
-import { ChevronRight, ArrowUp } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 // helpers
 import webAxios from "@/lib/axios/web.lib";
@@ -230,23 +230,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         related_products={related_products}
         category_mappings={category_mappings}
       />
-      <section className="flex w-full items-center justify-center bg-linear-to-b from-[#FF6900] to-[#993F00] py-2.5">
-        <button
-          onClick={() =>
-            window.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            })
-          }
-          className="flex w-full items-center justify-center gap-3 font-semibold text-white"
-          aria-label="Back to top"
-        >
-          <span>Back to top</span>
-          <span className="rounded-full bg-white p-1">
-            <ArrowUp strokeWidth={3} className="size-5 text-orange-500" />
-          </span>
-        </button>
-      </section>
     </>
   );
 };
@@ -255,6 +238,7 @@ export default ProductPage;
 
 export const getStaticPaths = (async () => {
   const products = await getAllProducts();
+  console.log("value of products",products);
   const paths = products.flatMap(({ id: product_id, title, variants }) => {
     const product_slug = generateSlug(title);
     return variants.map(({ id: variant_id }) => {

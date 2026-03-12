@@ -2,7 +2,7 @@ import { useState } from "react";
 // types
 import type {
   FC,
-  ReactElement,
+  ReactNode,
   ForwardRefExoticComponent,
   RefAttributes,
 } from "react";
@@ -31,7 +31,7 @@ export const delivery_pincode_schema = z.object({
     .regex(/^[1-9][0-9]{5}$/, "Enter a valid 6-digit pincode"),
 });
 const DeliverZoneDataRenderer: FC<{
-  children: ReactElement;
+  children: ReactNode;
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
@@ -39,7 +39,7 @@ const DeliverZoneDataRenderer: FC<{
 }> = ({ children, icon: Icon, iconClassName }) => {
   return (
     <div className="flex items-start gap-2">
-      <Icon className={clsx("mt-1 size-5", iconClassName)} />
+      <Icon className={clsx("mt-1 size-5", iconClassName)} aria-hidden={true} />
       <div className="flex-1">{children}</div>
     </div>
   );
@@ -125,7 +125,11 @@ const CheckDeliveryAvailability: FC = () => {
                     inputMode="numeric"
                     required
                     aria-invalid={!!(touched["pincode"] && errors["pincode"])}
-                    aria-describedby={"pincode-error"}
+                    aria-describedby={
+                      touched.pincode && errors.pincode
+                        ? "pincode-error"
+                        : undefined
+                    }
                   />
                 </div>
               }
@@ -133,8 +137,12 @@ const CheckDeliveryAvailability: FC = () => {
               <button
                 type="submit"
                 className="cursor-pointer rounded-md bg-orange-500 px-3 py-1.5 font-medium text-white lg:py-2"
+                aria-label="Check delivery availability for entered pincode"
+                disabled={verify_pincode_serviceability_mutation.isPending}
               >
-                Check
+                {verify_pincode_serviceability_mutation.isPending
+                  ? "Checking..."
+                  : "Check"}
               </button>
             </Form>
             {touched.pincode && errors.pincode && (
@@ -145,8 +153,16 @@ const CheckDeliveryAvailability: FC = () => {
           </div>
         )}
       </Formik>
+      <div aria-live="polite" className="sr-only">
+        {delivery_zone_data
+          ? delivery_zone_data.is_delivery_available
+            ? `Delivery available. Estimated delivery in ${delivery_zone_data.deliver_time_in_minutes} minutes.`
+            : "Delivery is not available for this pincode."
+          : ""}
+      </div>
       {delivery_zone_data && (
         <div
+          aria-busy={verify_pincode_serviceability_mutation.isPending}
           className={clsx(
             "w-full space-y-4 rounded-lg p-5",
             delivery_zone_data.is_delivery_available
