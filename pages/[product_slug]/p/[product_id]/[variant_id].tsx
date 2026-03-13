@@ -238,7 +238,7 @@ export default ProductPage;
 
 export const getStaticPaths = (async () => {
   const products = await getAllProducts();
-  console.log("value of products",products);
+  console.log("value of products", products);
   const paths = products.flatMap(({ id: product_id, title, variants }) => {
     const product_slug = generateSlug(title);
     return variants.map(({ id: variant_id }) => {
@@ -285,12 +285,12 @@ export const getStaticProps = (async ({ params }) => {
       variant_id,
       product,
       category_mappings,
-      variant: product.variants.find(
+      variant: product.variants?.find(
         (variant) => variant.id == variant_id,
       ) as IVariant,
       related_products,
     },
-    revalidate: 60, // 🔥 enable ISR
+    revalidate: 43200, // 🔥 enable ISR
   };
 }) satisfies GetStaticProps<IProps, IParams>;
 

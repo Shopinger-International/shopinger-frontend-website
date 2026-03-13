@@ -125,7 +125,7 @@ const VariantSelection: FC<{
                           <Image
                             sizes="96px"
                             src={
-                              media_group[attribute.id as number][
+                              media_group[attribute.id as number]?.[
                                 value.toLowerCase()
                               ][0].url
                             }

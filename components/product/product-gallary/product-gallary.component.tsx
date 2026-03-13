@@ -23,7 +23,13 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
     useState<number>(0);
   return (
     <>
-      <section className="z-5 hidden space-y-4 lg:sticky lg:top-(--header-height) lg:block pb-4">
+      <section
+        className="z-5 hidden space-y-4 pb-4 lg:sticky lg:top-(--header-height) lg:block"
+        aria-labelledby="product-gallery-heading"
+      >
+        <h2 id="product-gallery-heading" className="sr-only">
+          Product images
+        </h2>
         {/* Main Product View */}
         <div className="flex flex-col gap-9 lg:flex-row">
           {/* Thumbnail Gallery */}
@@ -31,6 +37,9 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
             {variant_medias_with_title.map(({ media, image_title }, index) => (
               <button
                 key={`product-gallary-${index}`}
+                aria-current={
+                  index === selected_thumbnail_index ? "true" : undefined
+                }
                 className={clsx(
                   "relative h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-md border transition-colors hover:border-orange-500",
                   index == selected_thumbnail_index
@@ -38,6 +47,7 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
                     : "border-neutral-300",
                 )}
                 onClick={() => setSelectedThumbnailIndex(index)}
+                aria-label={`Show image ${index + 1}: ${image_title}`}
               >
                 <Image
                   sizes="80px"
@@ -88,7 +98,10 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
 
               {/* RIGHT - Zoom Panel */}
               {showZoom && (
-                <div className="absolute -right-4 z-100 hidden aspect-square w-120 translate-x-full overflow-hidden rounded-md shadow-lg lg:block">
+                <div
+                  className="absolute -right-4 z-100 hidden aspect-square w-120 translate-x-full overflow-hidden rounded-md shadow-lg lg:block"
+                  aria-hidden={true}
+                >
                   <div
                     className="h-full w-full bg-cover bg-no-repeat"
                     style={{
