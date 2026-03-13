@@ -157,7 +157,7 @@ const RelatedProducts: FC<IProps> = ({
                   key={`related-product-${index}`}
                   className="w-auto!"
                 >
-                  <Link href={src} aria-label={`View Product ${title}`}>
+                  <Link href={src}>
                     <ProductCard
                       title={title}
                       thumbnail={variant_medias_with_title[0].media}
