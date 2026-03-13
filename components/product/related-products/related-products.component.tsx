@@ -56,8 +56,8 @@ const RelatedProducts: FC<IProps> = ({
         )
         .map(({ value }) => value);
       const main_title = visual_values.length
-        ? `${updated_title} in ${visual_values.join(", ")} | Shopinger`
-        : `${updated_title} | Shopinger`;
+        ? `${updated_title} in ${visual_values.join(", ")}`
+        : `${updated_title}`;
 
       const media_group =
         product.variant_visual_attribute_medias.reduce<IMediaGroup>(
@@ -118,20 +118,28 @@ const RelatedProducts: FC<IProps> = ({
     });
   });
   return (
-    <section className="mb-8">
+    <section className="mb-8" aria-labelledby="similar-products">
       <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
-        <h2 className="font-semibold lg:text-xl">Similar Products</h2>
+        <h2 className="font-semibold lg:text-xl" id="similar-products">
+          Similar Products
+        </h2>
         {/* Left arrow */}
-        <div className="relative">
+        <div
+          className="relative"
+          role="region"
+          aria-label="Related Products Region"
+        >
           {/* Left arrow */}
           <button
+            aria-label="Show previous products"
             onClick={() => swiper_ref.current?.slidePrev()}
             className="absolute top-1/2 -left-2 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
           >
-            <ChevronLeft />
+            <ChevronLeft aria-hidden={true} />
           </button>
 
           <Swiper
+            role="list"
             modules={[Navigation]}
             spaceBetween={is_mobile ? 16 : 40}
             slidesPerView={"auto"}
@@ -145,10 +153,11 @@ const RelatedProducts: FC<IProps> = ({
                 index,
               ) => (
                 <SwiperSlide
+                  role="listitem"
                   key={`related-product-${index}`}
                   className="w-auto!"
                 >
-                  <Link href={src}>
+                  <Link href={src} aria-label={`View Product ${title}`}>
                     <ProductCard
                       title={title}
                       thumbnail={variant_medias_with_title[0].media}
@@ -164,10 +173,11 @@ const RelatedProducts: FC<IProps> = ({
 
           {/* Right arrow */}
           <button
+            aria-label="Show more products"
             onClick={() => swiper_ref.current?.slideNext()}
             className="absolute top-1/2 -right-2 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
           >
-            <ChevronRight />
+            <ChevronRight aria-hidden={true} />
           </button>
         </div>
       </div>
