@@ -290,7 +290,7 @@ export const getStaticProps = (async ({ params }) => {
       ) as IVariant,
       related_products,
     },
-    revalidate: 43200, // 🔥 enable ISR
+    revalidate: 43200,  // 🔥 enable ISR
   };
 }) satisfies GetStaticProps<IProps, IParams>;
 
