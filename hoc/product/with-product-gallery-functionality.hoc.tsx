@@ -23,28 +23,21 @@ interface IWithGalleryControlProps {
   media_group: IMediaGroup;
   category_mappings: ICategoryAttributeMapping[];
 }
-
-const withProductGalleryFunctionality = <
-  ExtraProps extends IWithGalleryControlProps,
->(
-  BaseComponent: ComponentType<
-    Omit<ExtraProps, keyof IWithGalleryControlProps> & IInjectedProps
-  >,
+const withProductGalleryFunctionality = <P extends object>(
+  BaseComponent: ComponentType<P & IInjectedProps>,
 ) => {
+  type HocProps = P & IWithGalleryControlProps;
+
   const EnhancedComponent = ({
     product,
     variant,
     media_group,
     category_mappings,
     ...props
-  }: ExtraProps) => {
-    const { brand, title, product_medias } = product;
+  }: HocProps) => {
+    const { product_medias } = product;
     const { variant_attribute_values } = variant;
 
-    const updated_title =
-      !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
-        ? title
-        : `${brand} ${title}`;
     let variant_medias = variant_attribute_values
       .filter(
         ({ attribute }) =>
@@ -73,8 +66,8 @@ const withProductGalleryFunctionality = <
         : product_medias.map(({ media }) => media)
     ).map((media, index) => {
       const image_title = visual_values.length
-        ? `${updated_title} in ${visual_values.join(", ")} - Image ${index + 1}`
-        : `${updated_title} - Image ${index + 1}`;
+        ? `${visual_values.join(", ")} - Image ${index + 1}`
+        : `Image ${index + 1}`;
 
       return {
         media,
@@ -84,7 +77,7 @@ const withProductGalleryFunctionality = <
 
     return (
       <BaseComponent
-        {...(props as Omit<ExtraProps, keyof IWithGalleryControlProps>)}
+        {...(props as P)}
         variant_medias_with_title={variant_medias_with_title}
       />
     );

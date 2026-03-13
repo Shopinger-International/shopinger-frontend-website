@@ -13,9 +13,13 @@ import clsx from "clsx";
 
 type IProps = {
   variant_medias_with_title: IVariantMediaWithTitle[];
+  product_title: string;
 };
 
-const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
+const ProductGallary: FC<IProps> = ({
+  variant_medias_with_title,
+  product_title,
+}) => {
   const [showZoom, setShowZoom] = useState(false);
   const [zoom_position, setZoomPosition] = useState({ x: 0, y: 0 });
 
@@ -47,7 +51,7 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
                     : "border-neutral-300",
                 )}
                 onClick={() => setSelectedThumbnailIndex(index)}
-                aria-label={`Show image ${index + 1}: ${image_title}`}
+                aria-label={`Show ${image_title}`}
               >
                 <Image
                   sizes="80px"
@@ -87,10 +91,10 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
                       .url
                   }
                   className="object-contain object-center"
-                  alt={
+                  alt={`${product_title} ${
                     variant_medias_with_title[selected_thumbnail_index]
                       .image_title
-                  }
+                  }`}
                   priority={true}
                   quality={75}
                 />
@@ -120,4 +124,6 @@ const ProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
   );
 };
 
-export default withProductGalleryFunctionality(ProductGallary);
+export default withProductGalleryFunctionality<
+  Omit<IProps, "variant_medias_with_title">
+>(ProductGallary);

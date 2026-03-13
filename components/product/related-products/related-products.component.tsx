@@ -120,7 +120,7 @@ const RelatedProducts: FC<IProps> = ({
   return (
     <section className="mb-8">
       <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
-        <h5 className="font-semibold lg:text-xl">Similar Products</h5>
+        <h2 className="font-semibold lg:text-xl">Similar Products</h2>
         {/* Left arrow */}
         <div className="relative">
           {/* Left arrow */}
