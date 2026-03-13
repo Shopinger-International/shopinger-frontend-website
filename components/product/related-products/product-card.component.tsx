@@ -19,6 +19,7 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp }) => {
         <Image
           src={thumbnail.url}
           alt=""
+          sizes = {"300px"}
           aria-hidden={true}
           fill={true}
           className="object-contain"

@@ -26,7 +26,7 @@ const Footer: FC = () => {
             })
           }
           className="flex w-full items-center justify-center gap-3 font-semibold text-white"
-          aria-label="Back to top"
+          aria-label="back to top"
         >
           <span>Back to top</span>
           <span className="rounded-full bg-white p-1">
