@@ -116,9 +116,9 @@ const ProductInfo: FC<IProps> = ({
       </section>
 
       {/** RATING */}
-      <section>
+      <section className="order-5">
         <h2 className="sr-only">Product rating</h2>
-        <p className="order-5 mb-4" aria-label="Product rating and reviews">
+        <p className="mb-4" aria-label="Product rating and reviews">
           <strong className="font-medium">4.6 </strong>{" "}
           <span className="sr-only">out of 5 stars</span>{" "}
           <Star
