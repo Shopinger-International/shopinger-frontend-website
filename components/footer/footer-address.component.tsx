@@ -9,9 +9,9 @@ const FooterAddress: FC = () => {
     <>
       {/* Corporate Address */}
       <div className="col-span-2 space-y-3 lg:col-span-1">
-        <h6 className="font-semibold text-white uppercase">
+        <h4 className="font-semibold text-white uppercase">
           Corporate Office Address
-        </h6>
+        </h4>
 
         <address className="text-sm font-medium text-white/80 not-italic">
           Shopinger International Private Limited
@@ -32,9 +32,9 @@ const FooterAddress: FC = () => {
 
       {/* Registered Address */}
       <div className="col-span-2 space-y-3 lg:col-span-1">
-        <h6 className="text-sm font-semibold text-white uppercase">
+        <h4 className="text-sm font-semibold text-white uppercase">
           Registered Office Address
-        </h6>
+        </h4>
 
         <address className="text-sm text-white/80 not-italic">
           Shopinger International Private Limited

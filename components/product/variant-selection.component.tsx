@@ -101,6 +101,7 @@ const VariantSelection: FC<{
                     href={`/${product_slug}/p/${product_id}/${variant?.id}`}
                     key={`variant-attribute-value-${value}`}
                     aria-current={is_selected ? "page" : undefined}
+                    aria-checked={is_selected}
                     aria-label={aria_label}
                     role="radio"
                     className="shrink-0 snap-start"
@@ -147,7 +148,7 @@ const VariantSelection: FC<{
                                 .selling_price_with_commission
                             }
                           </p>
-                          <p className="text-xs text-neutral-400 line-through">
+                          <p className="text-xs text-gray-600 line-through">
                             ₹{variant?.variant_pricing.mrp}
                           </p>
                         </div>

@@ -19,22 +19,20 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp }) => {
         <Image
           src={thumbnail.url}
           alt=""
-          sizes = {"300px"}
+          sizes={"300px"}
           aria-hidden={true}
           fill={true}
           className="object-contain"
         />
       </div>
 
-      <div
-        className="mt-4 flex items-center gap-1 text-sm text-gray-700"
-        aria-label="Rated 4.6 out of 5 stars"
-      >
+      <p className="mt-4 flex items-center gap-1 text-sm text-gray-700">
         <span aria-hidden="true">4.6</span>
         <span aria-hidden="true" className="text-orange-500">
           ★
         </span>
-      </div>
+        <span className="sr-only">out of 5 stars</span>
+      </p>
 
       <div className="my-3 flex justify-center">
         <span aria-hidden="true" className="h-0.5 w-6 bg-pink-500"></span>
@@ -52,15 +50,15 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp }) => {
         </p>
       )}
 
-      <div className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+      <div className="flex items-center gap-2 text-lg  text-gray-900">
         <span
           aria-label={`Original price ₹${mrp}`}
-          className="text-gray-400 line-through"
+          className="text-gray-600 line-through"
         >
           ₹{mrp}
         </span>
 
-        <span aria-label={`Discounted price ₹${selling_price}`}>
+        <span aria-label={`Discounted price ₹${selling_price}`} className="font-semibold">
           ₹{selling_price}
         </span>
       </div>
