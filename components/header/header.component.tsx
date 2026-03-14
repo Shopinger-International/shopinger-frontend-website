@@ -210,7 +210,7 @@ const Header: FC<HeaderProps> = () => {
             </Tooltip>
           </div>
           <Link
-            href="/"
+            href="/cart"
             className="hidden items-center gap-2 font-semibold text-white lg:flex"
           >
             <span className="relative">
