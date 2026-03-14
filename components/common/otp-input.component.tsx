@@ -1,6 +1,6 @@
 // types
 import type { FC } from "react";
-import type { RenderProps, SlotProps } from "input-otp";
+import type { SlotProps } from "input-otp";
 
 // external component
 import { OTPInput as ExternalOTPInput } from "input-otp";
@@ -12,7 +12,7 @@ function Slot(props: SlotProps) {
   return (
     <div
       className={clsx(
-        "text-md relative h-10 w-10 sm:h-12 sm:w-12",
+        "relative h-12 w-full text-lg font-semibold sm:w-full",
         "flex items-center justify-center",
         "rounded-md border border-gray-300",
         "transition-all duration-300",
@@ -46,7 +46,12 @@ const OTPInput: FC<{
       maxLength={maxLength}
       containerClassName={containerClassName}
       render={({ slots }) => (
-        <div className="mx-auto mt-2 flex gap-2">
+        <div
+          className="mx-auto mt-2 grid w-full gap-3"
+          style={{
+            gridTemplateColumns: `repeat(${maxLength}, minmax(0, 1fr))`,
+          }}
+        >
           {slots.map((slot, idx) => (
             <Slot key={idx} {...slot} />
           ))}

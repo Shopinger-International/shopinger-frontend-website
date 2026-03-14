@@ -1,5 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 
+// types
+import type { AxiosError } from "axios";
+
 // lib
 import publicAxios from "@/lib/axios/public.lib";
 
@@ -9,6 +12,7 @@ import { enqueueSnackbar } from "notistack";
 interface VerifyOtpPayload {
   identifier: string;
   otp: string;
+  country_code: string | undefined;
 }
 
 interface VerifyOtpResponse {
@@ -18,12 +22,22 @@ interface VerifyOtpResponse {
 }
 
 const useVerifyLoginOtp = () => {
-  return useMutation<VerifyOtpResponse, Error, VerifyOtpPayload>({
+  return useMutation<
+    VerifyOtpResponse,
+    AxiosError<{
+      message: string;
+    }>,
+    VerifyOtpPayload
+  >({
     mutationKey: ["verify-login-otp"],
-    mutationFn: async ({ identifier, otp }) => {
+    mutationFn: async ({ identifier, otp, country_code }) => {
       const res = await publicAxios.post<VerifyOtpResponse>(
         `/user-verify-login-otp`,
-        new URLSearchParams({ identifier, otp }),
+        new URLSearchParams({
+          identifier,
+          otp,
+          ...(country_code ? { country_code } : {}),
+        }),
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -41,8 +55,7 @@ const useVerifyLoginOtp = () => {
     },
 
     onError(error) {
-      // @ts-ignore
-      enqueueSnackbar(error.response.data.message, {
+      enqueueSnackbar(error.response?.data?.message ?? "Something went wrong", {
         key: "user-verify-login-otp-error",
         variant: "error",
       });

@@ -17,21 +17,26 @@ type IProps = {
 
 const LoginModal: FC<IProps> = ({ open, handleClose }) => {
   return (
-    <Dialog open={open} onClose={() => handleClose()} className="relative z-50">
-      <DialogBackdrop className="fixed inset-0 bg-black/40" />
-      <div className="fixed inset-0 flex w-screen items-center justify-center">
-        <DialogPanel className="relative max-w-lg space-y-4 overflow-hidden rounded-lg border border-gray-300 shadow-lg">
+    <Dialog open={open} onClose={handleClose} className="relative z-50">
+      <DialogBackdrop className="fixed inset-0 bg-black/40 backdrop-blur-xs" />
+
+      {/* container */}
+      <div className="fixed inset-0 flex items-end justify-center lg:items-center">
+        <DialogPanel className="relative max-h-[90vh] w-full rounded-t-2xl bg-white shadow-xl lg:h-auto lg:max-h-[95vh] lg:w-105 lg:rounded-2xl">
           <button
             className="absolute top-4 right-4 z-2 cursor-pointer text-gray-600"
             onClick={handleClose}
           >
             <X />
           </button>
-          <LoginForm />
+
+          <LoginForm
+            is_modal={true}
+            heading_text="Login to complete your shopping"
+          />
         </DialogPanel>
       </div>
     </Dialog>
   );
 };
-
 export default LoginModal;

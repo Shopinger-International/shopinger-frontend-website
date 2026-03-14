@@ -99,7 +99,12 @@ const otp_schema = z.object({
     .length(6, "OTP must be exactly 6 digits"),
 });
 
-const LoginForm: FC = () => {
+type IProps = {
+  is_modal?: boolean;
+  heading_text?: string;
+};
+
+const LoginForm: FC<IProps> = ({ is_modal = false, heading_text }) => {
   const send_otp_mutation = useSendOTPMutation();
   const verify_otp_mutation = useVerifyLoginOtp();
   const router = useRouter();
@@ -119,31 +124,55 @@ const LoginForm: FC = () => {
     return () => clearInterval(interval);
   }, [timer, show_otp]);
   return (
-    <div className="relative flex min-h-136 w-full flex-col items-center space-y-3 bg-white px-6 lg:w-max lg:min-w-108 lg:px-12">
-      <button
-        onClick={() => router.push("/")}
-        className="text-md absolute top-6 right-6 inline-block font-semibold text-orange-500 lg:hidden"
-      >
-        SKIP
-      </button>
-      <div className="relative mt-40 flex size-20 shrink-0 items-center justify-center lg:mt-20">
-        <Image
-          src="/dark-mobile-logo.png"
-          alt="Shopinger – Online Shopping Platform"
-          fill
-          priority
-          className="object-contain"
-        />
-      </div>
+    <div
+      className={clsx(
+        "relative flex w-full flex-col items-center space-y-3 bg-white",
+        is_modal
+          ? "px-6 py-6"
+          : "min-h-136 px-6 lg:w-max lg:min-w-108 lg:px-12",
+      )}
+    >
+      {!is_modal && (
+        <button
+          onClick={() => router.push("/")}
+          className="text-md absolute top-6 right-6 inline-block font-semibold text-orange-500 lg:hidden"
+        >
+          SKIP
+        </button>
+      )}
+      {!is_modal && (
+        <div
+          className={clsx(
+            "relative flex size-20 shrink-0 items-center justify-center",
+            is_modal ? "mt-4" : "mt-40 lg:mt-20",
+          )}
+        >
+          <Image
+            src="/dark-mobile-logo.png"
+            alt="Shopinger – Online Shopping Platform"
+            fill
+            priority
+            className="object-contain"
+          />
+        </div>
+      )}
+
       {/* Heading */}
-      <h2 className="text-xl font-bold">Login or Sign Up</h2>
+      <h2
+        className={clsx(
+          is_modal
+            ? "w-full text-left text-lg font-semibold"
+            : "text-xl font-bold",
+        )}
+      >
+        {heading_text ?? "Login or Sign Up"}
+      </h2>
 
       {!show_otp ? (
         <Formik<IInitialValues>
           initialValues={user_details}
           validate={toFormikValidate(login_validation_schema)}
           onSubmit={(values) => {
-            setShowOtp(true);
             send_otp_mutation.mutate(
               {
                 identifier: values.identifier,
@@ -245,6 +274,9 @@ const LoginForm: FC = () => {
                 {
                   identifier: user_details.identifier,
                   otp: values.otp,
+                  country_code: user_details.country?.code
+                    ? getCallingCode(user_details.country.code as CountryCode)
+                    : undefined,
                 },
                 {
                   onSuccess() {
@@ -255,7 +287,7 @@ const LoginForm: FC = () => {
             }}
           >
             {({ setFieldValue, handleSubmit, resetForm }) => (
-              <Form onSubmit={handleSubmit} className="space-y-3">
+              <Form onSubmit={handleSubmit} className="w-full space-y-3">
                 <Field name="otp">
                   {({ field, meta }: FieldProps<string, IInitialValues>) => (
                     <>
@@ -349,12 +381,14 @@ const LoginForm: FC = () => {
           </Formik>
         </>
       )}
-      <p className="absolute bottom-6 text-sm lg:hidden">
-        Need Help? Call us at{" "}
-        <a href="tel:+919415761434" className="font-medium text-orange-500">
-          +91 9415761434
-        </a>
-      </p>
+      {!is_modal && (
+        <p className="absolute bottom-6 text-sm lg:hidden">
+          Need Help? Call us at{" "}
+          <a href="tel:+919415761434" className="font-medium text-orange-500">
+            +91 9415761434
+          </a>
+        </p>
+      )}
     </div>
   );
 };
