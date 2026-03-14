@@ -171,6 +171,19 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       return acc;
     }, {});
 
+  let variant_medias = variant.variant_attribute_values
+    .filter(
+      ({ attribute }) =>
+        category_mappings.find(
+          ({ attribute: mapping_attribute }) =>
+            mapping_attribute.id == attribute.id,
+        )?.is_visual,
+    )
+    .flatMap(
+      ({ attribute, value }) =>
+        media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
+    );
+
   return (
     <>
       <Head>
@@ -186,8 +199,34 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         <meta property="og:description" content={meta_description} />
         <meta
           property="og:image"
-          content={product.product_medias[0].media.url}
+          content={
+            variant_medias[0]?.url ?? product.product_medias[0].media.url
+          }
         />
+        <meta property="og:image:alt" content={`${main_title}`} />
+
+        {/* TWITTER OPEN GRAPH TAGS */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:url"
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}/${product_slug}/p/${product_id}/${variant_id}`}
+        />
+        <meta name="twitter:title" content={main_title} />
+        <meta name="twitter:description" content={meta_description} />
+        <meta
+          name="twitter:image"
+          content={
+            variant_medias[0]?.url ?? product.product_medias[0].media.url
+          }
+        />
+        <meta
+          name="twitter:image"
+          content={
+            variant_medias[0]?.url ?? product.product_medias[0].media.url
+          }
+        />
+        <meta name="twitter:site" content="@shopinger" />
+        <meta name="twitter:creator" content="@shopinger" />
       </Head>
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="mx-auto w-full px-4">
