@@ -22,7 +22,7 @@ const LoginModal: FC<IProps> = ({ open, handleClose }) => {
 
       {/* container */}
       <div className="fixed inset-0 flex items-end justify-center lg:items-center">
-        <DialogPanel className="relative max-h-[90vh] w-full rounded-t-2xl bg-white shadow-xl lg:h-auto lg:max-h-[95vh] lg:w-105 lg:rounded-2xl">
+        <DialogPanel className="relative max-h-[90vh] w-full overflow-hidden rounded-t-2xl bg-white shadow-xl lg:h-auto lg:max-h-[95vh] lg:w-105 lg:rounded-2xl">
           <button
             className="absolute top-4 right-4 z-2 cursor-pointer text-gray-600"
             onClick={handleClose}
