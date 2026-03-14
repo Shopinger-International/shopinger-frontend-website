@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -39,7 +39,7 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = () => {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const header = document.getElementById("app-header");
     if (!header) return;
 

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { useState } from "react";
 import Head from "next/head";
 
 // layout
@@ -9,6 +11,7 @@ import type IProduct from "@/types/product";
 
 // local components
 import CartItem from "@/components/cart/cart-item.commponent";
+import LoginModal from "@/components/login/login-modal.component";
 
 // react query
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import webAxios from "@/lib/axios/web.lib";
 
 const CartPage: NextPageWithLayout = () => {
+  const [show_login_modal, setShowLoginModal] = useState(false);
   const { data: products = [] } = useQuery({
     queryKey: ["carts-item"],
     async queryFn() {
@@ -41,6 +45,12 @@ const CartPage: NextPageWithLayout = () => {
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+      <LoginModal
+        open={show_login_modal}
+        handleClose={() => {
+          setShowLoginModal(false);
+        }}
+      />
       <section className="w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           {/* Cart header */}
@@ -54,7 +64,7 @@ const CartPage: NextPageWithLayout = () => {
 
           <div className="relative grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* Cart Items */}
-            <div className="col-span-1 rounded-xl border border-gray-200 bg-white p-6 lg:col-span-2 h-min">
+            <div className="col-span-1 h-min rounded-xl border border-gray-200 bg-white p-6 lg:col-span-2">
               <div className="divide-y divide-gray-200">
                 {products.map(({ title, product_medias, variants }, index) => {
                   const variant_attribute_values =
@@ -104,16 +114,17 @@ const CartPage: NextPageWithLayout = () => {
               <button
                 type="button"
                 className="mt-6 w-full rounded-md bg-orange-500 py-3 text-sm font-semibold text-white hover:bg-orange-600"
+                onClick={() => setShowLoginModal(true)}
               >
                 Proceed to Checkout
               </button>
 
-              <button
-                type="button"
-                className="mt-3 w-full rounded-md border border-gray-300 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              <Link
+                href="/"
+                className="mt-3 block w-full rounded-md border border-gray-300 py-3 text-center text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
                 Continue Shopping
-              </button>
+              </Link>
 
               {/* Promo code */}
               <div className="mt-6">
