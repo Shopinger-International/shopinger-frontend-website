@@ -280,7 +280,7 @@ const LoginForm: FC<IProps> = ({ is_modal = false, heading_text }) => {
                 },
                 {
                   onSuccess() {
-                    router.push("/");
+                    !is_modal && router.push("/");
                   },
                 },
               );

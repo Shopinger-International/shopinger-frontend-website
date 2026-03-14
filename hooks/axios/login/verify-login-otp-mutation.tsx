@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 
 // types
 import type { AxiosError } from "axios";
+import type { IUser } from "@/types/user";
 
 // lib
 import publicAxios from "@/lib/axios/public.lib";
@@ -16,9 +17,10 @@ interface VerifyOtpPayload {
 }
 
 interface VerifyOtpResponse {
-  token?: string;
-  user?: any; // replace with IUser if you have it
-  message?: string;
+  token: string;
+  user: IUser; // replace with IUser if you have it
+  success: boolean;
+  message: string;
 }
 
 const useVerifyLoginOtp = () => {
@@ -41,6 +43,7 @@ const useVerifyLoginOtp = () => {
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
+            withCredentials: true,
           },
         },
       );
