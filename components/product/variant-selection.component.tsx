@@ -95,6 +95,9 @@ const VariantSelection: FC<{
                   )?.label ?? value;
                 const aria_label = `${attribute.name} ${readable_value}. Price ${variant?.variant_pricing.selling_price_with_commission}. MRP ${variant?.variant_pricing.mrp}.`;
                 const product_slug = generateSlug(title);
+                if (!variant) {
+                  return null;
+                }
                 return (
                   <Link
                     scroll={false}
