@@ -5,7 +5,7 @@ type Address = {
   name: string;
   address: string;
   phone: string;
-  type?: "home" | "work" | "other";
+  type?: string;
   isDefault?: boolean;
 };
 
