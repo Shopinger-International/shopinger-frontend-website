@@ -15,6 +15,9 @@ import CheckDeliveryAvailability from "@/components/product/product-info/check-d
 import ProductDetails from "@/components/product/product-info/product-details.component";
 import MobileProductGallary from "@/components/product/product-gallary/mobile-product-gallary.component";
 
+// api hooks
+import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
+
 type IProps = {
   product: IProduct;
   variant: IVariant;
@@ -30,6 +33,7 @@ const ProductInfo: FC<IProps> = ({
   media_group,
   category_mappings,
 }) => {
+  const add_to_cart_mutation = useAddToCartMutation();
   const { title, brand, sub_sub_category } = product;
   const updated_title =
     !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
@@ -153,7 +157,16 @@ const ProductInfo: FC<IProps> = ({
         id="buy-cta-container"
         className="fixed bottom-0 left-0 z-4 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md lg:sticky lg:border-none lg:px-0 lg:shadow-none"
       >
-        <button className="w-full rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900">
+        <button
+          onClick={() => {
+            add_to_cart_mutation.mutate({
+              product_id: product.id,
+              variant_id: variant.id,
+              quantity: 1,
+            });
+          }}
+          className="w-full rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900"
+        >
           Add to Cart
         </button>
         <button className="w-full rounded-md bg-orange-500 py-2 font-semibold text-white">
