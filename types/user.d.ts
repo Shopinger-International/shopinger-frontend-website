@@ -1,5 +1,6 @@
 type IUser = {
   id: number;
+  name:string;
   country_code: string;
   dob: string;
   email: string;
@@ -8,4 +9,4 @@ type IUser = {
   role: string;
 };
 
-export {IUser}
+export default IUser;

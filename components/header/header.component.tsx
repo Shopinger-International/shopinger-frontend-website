@@ -34,11 +34,16 @@ import { clsx } from "clsx";
 // data
 import { countries } from "@/data/countries.data";
 
+// hooks
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+
 interface HeaderProps {
   // Add your props here
 }
 
 const Header: FC<HeaderProps> = () => {
+  const { data: user } = useUserDetails();
+  console.log("value of user", user);
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
     if (!header) return;
@@ -124,90 +129,102 @@ const Header: FC<HeaderProps> = () => {
             </span>
           </button>
           <div className="hidden lg:inline">
-            <Tooltip
-              placement="bottom"
-              offset_distance={6}
-              className="z-50 w-48 rounded-xl border border-neutral-300 bg-white shadow-lg"
-              content={
-                <div>
-                  {/* Auth section */}
-                  <div className="flex flex-col gap-3 px-3 py-3">
-                    <Link
-                      href="/login"
-                      className="rounded-lg bg-orange-500 py-2 text-center font-semibold text-white transition hover:bg-orange-600"
-                    >
-                      Login
-                    </Link>
-
-                    <p className="text-sm">
-                      New User?{" "}
+            {user ? (
+              <button
+                className={clsx(
+                  "flex items-center gap-2 rounded-full px-3 py-2 text-white",
+                  "transition hover:bg-white/10 focus:outline-none",
+                )}
+              >
+                <CircleUserRound className="size-6" strokeWidth={1.5} />
+                <span>{user.name}</span>
+              </button>
+            ) : (
+              <Tooltip
+                placement="bottom"
+                offset_distance={6}
+                className="z-50 w-48 rounded-xl border border-neutral-300 bg-white shadow-lg"
+                content={
+                  <div>
+                    {/* Auth section */}
+                    <div className="flex flex-col gap-3 px-3 py-3">
                       <Link
-                        href="/sign-up"
-                        className="font-semibold text-orange-500 hover:underline"
+                        href="/login"
+                        className="rounded-lg bg-orange-500 py-2 text-center font-semibold text-white transition hover:bg-orange-600"
                       >
-                        Sign Up
+                        Login
                       </Link>
-                    </p>
-                  </div>
 
-                  {/* Menu section */}
-                  <div className="border-t border-gray-300">
-                    {[
-                      {
-                        label: "My Profile",
-                        href: "/profile",
-                        icon: User,
-                      },
-                      {
-                        label: "Orders",
-                        href: "/orders",
-                        icon: Handbag,
-                      },
-                      {
-                        label: "Wishlist",
-                        href: "/wishlist",
-                        icon: Heart,
-                      },
-                      {
-                        label: "Rewards",
-                        href: "/rewards",
-                        icon: Gift,
-                      },
-                    ].map(({ label, href, icon: Icon }) => (
-                      <Link
-                        key={label}
-                        href={href}
-                        className={clsx(
-                          "flex items-center gap-3 px-4 py-3 text-sm",
-                          "transition hover:font-semibold hover:text-orange-500",
-                        )}
-                      >
-                        <Icon className="size-5" strokeWidth={1.5} />
-                        <span>{label}</span>
-                      </Link>
-                    ))}
+                      <p className="text-sm">
+                        New User?{" "}
+                        <Link
+                          href="/sign-up"
+                          className="font-semibold text-orange-500 hover:underline"
+                        >
+                          Sign Up
+                        </Link>
+                      </p>
+                    </div>
+
+                    {/* Menu section */}
+                    <div className="border-t border-gray-300">
+                      {[
+                        {
+                          label: "My Profile",
+                          href: "/profile",
+                          icon: User,
+                        },
+                        {
+                          label: "Orders",
+                          href: "/orders",
+                          icon: Handbag,
+                        },
+                        {
+                          label: "Wishlist",
+                          href: "/wishlist",
+                          icon: Heart,
+                        },
+                        {
+                          label: "Rewards",
+                          href: "/rewards",
+                          icon: Gift,
+                        },
+                      ].map(({ label, href, icon: Icon }) => (
+                        <Link
+                          key={label}
+                          href={href}
+                          className={clsx(
+                            "flex items-center gap-3 px-4 py-3 text-sm",
+                            "transition hover:font-semibold hover:text-orange-500",
+                          )}
+                        >
+                          <Icon className="size-5" strokeWidth={1.5} />
+                          <span>{label}</span>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              }
-            >
-              {({ open }) => (
-                <button
-                  className={clsx(
-                    "flex items-center gap-2 rounded-full px-3 py-2 text-white",
-                    "transition hover:bg-white/10 focus:outline-none",
-                  )}
-                >
-                  <CircleUserRound className="size-6" strokeWidth={1.5} />
-                  <span className="font-semibold">Login</span>
-                  <Triangle
+                }
+              >
+                {({ open }) => (
+                  <button
                     className={clsx(
-                      "size-2.5 fill-white transition-transform",
-                      open ? "rotate-0" : "rotate-180",
+                      "flex items-center gap-2 rounded-full px-3 py-2 text-white",
+                      "transition hover:bg-white/10 focus:outline-none",
                     )}
-                  />
-                </button>
-              )}
-            </Tooltip>
+                  >
+                    <CircleUserRound className="size-6" strokeWidth={1.5} />
+                    <span className="font-semibold">Login</span>
+                    <Triangle
+                      className={clsx(
+                        "size-2.5 fill-white transition-transform",
+                        open ? "rotate-0" : "rotate-180",
+                      )}
+                    />
+                  </button>
+                )}
+              </Tooltip>
+            )}
           </div>
           <Link
             href="/cart"

@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 // types
 import type { ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
@@ -10,9 +11,22 @@ import { SnackbarProvider } from "notistack";
 
 // react query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+const ReactQueryDevtools =
+  process.env.NODE_ENV === "development"
+    ? dynamic(
+        () =>
+          import("@tanstack/react-query-devtools").then(
+            (mod) => mod.ReactQueryDevtools,
+          ),
+        { ssr: false },
+      )
+    : () => null;
 
 // local components
-import {SuccessSnackbar,ErrorSnackbar}  from "@/components/common/snackbar.component";
+import {
+  SuccessSnackbar,
+  ErrorSnackbar,
+} from "@/components/common/snackbar.component";
 
 const query_client = new QueryClient();
 
@@ -37,11 +51,12 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         }}
         Components={{
           success: SuccessSnackbar,
-          error:ErrorSnackbar
+          error: ErrorSnackbar,
         }}
       >
         {getLayout(<Component {...pageProps} />)}
       </SnackbarProvider>
+      {process.env.NODE_ENV == "development" && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }

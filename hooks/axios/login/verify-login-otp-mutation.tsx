@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 
 // types
 import type { AxiosError } from "axios";
-import type { IUser } from "@/types/user";
+import type IUser from "@/types/user";
 
 // lib
 import publicAxios from "@/lib/axios/public.lib";
@@ -41,9 +41,9 @@ const useVerifyLoginOtp = () => {
           ...(country_code ? { country_code } : {}),
         }),
         {
+          withCredentials: true,
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
-            withCredentials: true,
           },
         },
       );
