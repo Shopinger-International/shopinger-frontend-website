@@ -11,7 +11,7 @@ const AttributeInfoCell: FC<{
 }> = ({ name, value, show_border = true }) => (
   <div
     className={clsx(
-      "flex flex-col justify-between pb-2",
+      "flex flex-col justify-start gap-1 pb-2",
       show_border && "border-b border-gray-200",
     )}
   >

@@ -46,11 +46,11 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp }) => {
           className="font-sm mb-1.5 font-medium text-orange-500"
           aria-label={`${discount_percentage} percent discount`}
         >
-          ${discount_percentage}% off
+          {discount_percentage}% off
         </p>
       )}
 
-      <div className="flex items-center gap-2 text-lg  text-gray-900">
+      <div className="flex items-center gap-2 text-lg text-gray-900">
         <span
           aria-label={`Original price ₹${mrp}`}
           className="text-gray-600 line-through"
@@ -58,7 +58,10 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp }) => {
           ₹{mrp}
         </span>
 
-        <span aria-label={`Discounted price ₹${selling_price}`} className="font-semibold">
+        <span
+          aria-label={`Discounted price ₹${selling_price}`}
+          className="font-semibold"
+        >
           ₹{selling_price}
         </span>
       </div>
