@@ -21,6 +21,13 @@ import clsx from "clsx";
 // icons
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
+// modules
+import { Zoom } from "swiper/modules";
+
+// css
+import "swiper/css";
+import "swiper/css/zoom";
+
 type IProps = {
   product_title: string;
   variant_medias_with_title: IVariantMediaWithTitle[];
@@ -65,6 +72,7 @@ const ProductGalleryDialog: FC<IProps> = ({
                     key={index}
                     onClick={() => {
                       swiper_ref.current?.slideTo(index);
+                      swiper_ref.current?.zoom.out();
                     }}
                     className={clsx(
                       "relative h-20 w-20 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-300",
@@ -95,6 +103,8 @@ const ProductGalleryDialog: FC<IProps> = ({
                   <ChevronLeft className="size-8" />
                 </button>
                 <SwiperComponent
+                  modules={[Zoom]}
+                  zoom={{ maxRatio: 3, toggle: true }}
                   spaceBetween={10}
                   slidesPerView={1}
                   onSwiper={(swiper) => {
@@ -106,12 +116,12 @@ const ProductGalleryDialog: FC<IProps> = ({
                 >
                   {variant_medias_with_title.map((item, index) => (
                     <SwiperSlide key={index}>
-                      <div className="relative h-full w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-50">
+                      <div className="swiper-zoom-container h-full w-full">
                         <Image
                           src={item.media.url}
                           alt={item.image_title}
                           fill
-                          className="object-contain transition-all duration-500"
+                          className="object-contain"
                         />
                       </div>
                     </SwiperSlide>
