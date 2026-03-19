@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 
 // types
@@ -17,13 +17,6 @@ import { Swiper as SwiperComponent, SwiperSlide } from "swiper/react";
 
 // helpers
 import clsx from "clsx";
-
-// swiper modules
-import { Navigation } from "swiper/modules";
-
-// styles
-import "swiper/css";
-import "swiper/css/navigation";
 
 // icons
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -46,12 +39,6 @@ const ProductGalleryDialog: FC<IProps> = ({
   const [active_index, setActiveIndex] = useState(selected_index);
   const swiper_ref = useRef<Swiper>(null);
 
-  useEffect(() => {
-    if (open && swiper_ref.current) {
-      swiper_ref.current.slideTo(active_index);
-    }
-  }, [active_index, open]);
-
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/60" />
@@ -63,7 +50,7 @@ const ProductGalleryDialog: FC<IProps> = ({
 
             <button
               onClick={handleClose}
-              className="rounded-lg p-2 hover:bg-gray-100"
+              className="cursor-pointer rounded-lg p-2"
             >
               <X className="size-6" />
             </button>
@@ -76,11 +63,13 @@ const ProductGalleryDialog: FC<IProps> = ({
                 return (
                   <button
                     key={index}
-                    onClick={() => setActiveIndex(index)}
+                    onClick={() => {
+                      swiper_ref.current?.slideTo(index);
+                    }}
                     className={clsx(
-                      "relative h-20 w-20 shrink-0 overflow-hidden rounded-lg transition-all duration-300",
+                      "relative h-20 w-20 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-300",
                       is_active
-                        ? "border-2 border-orange-500"
+                        ? "border-3 border-orange-500"
                         : "border border-gray-300",
                     )}
                   >
@@ -101,12 +90,11 @@ const ProductGalleryDialog: FC<IProps> = ({
                 <button
                   onClick={() => swiper_ref.current?.slidePrev()}
                   disabled={active_index <= 0}
-                  className="absolute top-1/2 left-6 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-2 text-white shadow-sm transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300 md:flex"
+                  className="absolute top-1/2 left-6 z-10 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white shadow-sm transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300"
                 >
                   <ChevronLeft className="size-8" />
                 </button>
                 <SwiperComponent
-                  modules={[Navigation]}
                   spaceBetween={10}
                   slidesPerView={1}
                   onSwiper={(swiper) => {
@@ -136,7 +124,7 @@ const ProductGalleryDialog: FC<IProps> = ({
                   disabled={
                     active_index >= variant_medias_with_title.length - 1
                   }
-                  className="absolute top-1/2 right-6 z-10 flex -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-2 text-white shadow-sm transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300"
+                  className="absolute top-1/2 right-6 z-10 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white shadow-sm transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300"
                 >
                   <ChevronRight className="size-8" />
                 </button>
