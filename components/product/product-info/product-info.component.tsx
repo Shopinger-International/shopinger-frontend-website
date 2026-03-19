@@ -112,10 +112,13 @@ const ProductInfo: FC<IProps> = ({
             </>
           )}
         </p>
-        <p>
-          <span className="text-gray-600">M.R.P</span>{" "}
-          <span className="line-through">₹{mrp}</span>
-        </p>
+        {mrp !== selling_price_with_commission && (
+          <p>
+            <span className="text-gray-600">M.R.P</span>{" "}
+            <span className="line-through">₹{mrp}</span>
+          </p>
+        )}
+
         <p className="text-sm">Inclusive of all taxes</p>
       </section>
 

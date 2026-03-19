@@ -27,12 +27,12 @@ const Description: FC<{
     <>
       <div
         className={clsx(
-          "relative text-gray-600",
+          "relative text-gray-600 [&_strong]:font-medium [&_strong]:text-gray-900",
           !show_full_description &&
             "max-h-40 overflow-hidden text-sm lg:text-base",
         )}
       >
-        {generateDescription(description)}
+        <div dangerouslySetInnerHTML={{ __html: description }} />
 
         {!show_full_description && (
           <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-10 bg-linear-to-t from-white to-transparent" />
@@ -128,6 +128,7 @@ const ProductInfoTabs: FC<{
     ...(manufacturer_info_exist ? ["Manufacturer Info"] : []),
   ];
 
+  console.log("value of description", description);
   if (!tab_list.length) {
     return null;
   }
@@ -177,7 +178,7 @@ const ProductInfoTabs: FC<{
             </TabPanel>
           ))}
         <TabPanel className="focus:outline-none">
-          <Description description={generateDescription(description)} />
+          <Description description={description} />
         </TabPanel>
         {manufacturer_info_exist && (
           <TabPanel className="focus:outline-none">
