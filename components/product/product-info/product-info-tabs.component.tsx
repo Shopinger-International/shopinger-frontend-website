@@ -14,7 +14,6 @@ import { Tab, TabGroup, TabPanels, TabPanel, TabList } from "@headlessui/react";
 import clsx from "clsx";
 import { capitalizeValue } from "@/helpers/common.helper";
 import { getReadableValue } from "@/components/product/product-info/product-details.component";
-import { generateDescription } from "@/helpers/product.helper";
 
 // consts
 import { DISPLAY_AREA } from "@/constants/display-area.constant";

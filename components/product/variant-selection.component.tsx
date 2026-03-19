@@ -115,7 +115,7 @@ const VariantSelection: FC<{
                     )?.is_visual ? (
                       <div
                         className={clsx(
-                          "group flex w-24 flex-col overflow-hidden rounded-lg border bg-white transition-all duration-200 lg:w-20",
+                          "group flex h-full w-24 flex-col overflow-hidden rounded-lg border bg-white transition-all duration-200 lg:w-20",
                           is_selected
                             ? "border-orange-500 ring-2 ring-orange-200"
                             : "border-gray-300 hover:border-orange-500",
@@ -151,9 +151,13 @@ const VariantSelection: FC<{
                                 .selling_price_with_commission
                             }
                           </p>
-                          <p className="text-xs text-gray-600 line-through">
-                            ₹{variant?.variant_pricing.mrp}
-                          </p>
+                          {variant.variant_pricing.mrp !==
+                            variant.variant_pricing
+                              .selling_price_with_commission && (
+                            <p className="text-xs text-gray-600 line-through">
+                              ₹{variant?.variant_pricing.mrp}
+                            </p>
+                          )}
                         </div>
                       </div>
                     ) : (
