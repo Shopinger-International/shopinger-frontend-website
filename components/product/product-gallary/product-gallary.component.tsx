@@ -9,7 +9,7 @@ import type { IVariantMediaWithTitle } from "@/hoc/product/with-product-gallery-
 import withProductGalleryFunctionality from "@/hoc/product/with-product-gallery-functionality.hoc";
 
 // local components
-import ProductGalleryDialog from "./product-gallary-dialog.component";
+import ProductGalleryDialog from "@/components/product/product-gallary/product-gallary-dialog.component";
 
 // helpers
 import clsx from "clsx";
@@ -34,6 +34,7 @@ const ProductGallary: FC<IProps> = ({
   return (
     <>
       <ProductGalleryDialog
+        product_title={product_title}
         open={show_full_gallary}
         handleClose={() => setShowFullGallary(false)}
         variant_medias_with_title={variant_medias_with_title}
