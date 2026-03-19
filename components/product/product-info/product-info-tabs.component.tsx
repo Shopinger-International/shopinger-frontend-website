@@ -197,15 +197,15 @@ const ProductInfoTabs: FC<{
                   value: manufacturer_pincode,
                 },
                 {
-                  label: "Packer Name",
+                  label: "Seller/Packer Name",
                   value: packer_name,
                 },
                 {
-                  label: "Packer Address",
+                  label: "Seller/Packer Address",
                   value: packer_address,
                 },
                 {
-                  label: "Packer Pincode",
+                  label: "Seller/Packer Pincode",
                   value: packer_pincode,
                 },
                 {
