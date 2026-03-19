@@ -62,7 +62,7 @@ const ProductGalleryDialog: FC<IProps> = ({
               <X className="size-6" />
             </button>
           </div>
-          <div className="flex h-[80vh] w-full flex-row gap-6">
+          <div className="flex h-[70vh] w-full flex-row gap-6">
             <div className="flex h-full flex-col gap-3 overflow-y-auto">
               {variant_medias_with_title.map((item, index) => {
                 const is_active = index === active_index;
