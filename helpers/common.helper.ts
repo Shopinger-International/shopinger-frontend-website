@@ -32,6 +32,9 @@ const capitalizeValue = (value: string) =>
     .toLowerCase()
     .replace(/\b\w/g, (char) => char.toUpperCase());
 
+const capitalizeFirstLetter = (value: string) =>
+  value.trim().charAt(0).toUpperCase() + value.trim().slice(1).toLowerCase();
+
 const startsWithNumber = (str: string) => /^[0-9]/.test(str);
 
 const getCallingCode = (iso2: CountryCode) => {
@@ -49,11 +52,11 @@ const formatSeconds = (seconds: number) => {
   return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 };
 
-
 export {
   normalizeText,
   toFormikValidate,
   capitalizeValue,
+  capitalizeFirstLetter,
   startsWithNumber,
   getCallingCode,
   formatSeconds,

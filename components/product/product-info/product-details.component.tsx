@@ -18,6 +18,7 @@ import {
 
 // helpers
 import clsx from "clsx";
+import { capitalizeFirstLetter } from "@/helpers/common.helper";
 
 // const
 import { DISPLAY_AREA } from "@/constants/display-area.constant";
@@ -44,14 +45,14 @@ export const getReadableValue = ({
           (val: string) =>
             attribute.options?.find(
               ({ value: optionValue }) => val === optionValue,
-            )?.label ?? val,
+            )?.label ?? capitalizeFirstLetter(val),
         )
         .join(", ");
     }
 
     return (
       attribute.options?.find(({ value: optionValue }) => optionValue === value)
-        ?.label ?? String(value)
+        ?.label ?? capitalizeFirstLetter(String(value))
     );
   }
 
