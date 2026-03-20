@@ -17,7 +17,6 @@ import {
 } from "@headlessui/react";
 
 // helpers
-import { capitalizeValue } from "@/helpers/common.helper";
 import clsx from "clsx";
 
 // const
@@ -45,18 +44,24 @@ export const getReadableValue = ({
           (val: string) =>
             attribute.options?.find(
               ({ value: optionValue }) => val === optionValue,
-            )?.label ?? capitalizeValue(val),
+            )?.label ?? val,
         )
         .join(", ");
     }
 
     return (
       attribute.options?.find(({ value: optionValue }) => optionValue === value)
-        ?.label ?? capitalizeValue(String(value))
+        ?.label ?? String(value)
     );
   }
 
-  return capitalizeValue(String(value));
+  return String(value);
+};
+
+export const DIMENSION_ATTR = {
+  ITEM_LENGTH: "item_length",
+  ITEM_WIDTH: "item_width",
+  ITEM_HEIGHT: "item_height",
 };
 
 const ProductDetails: FC<{
@@ -80,19 +85,47 @@ const ProductDetails: FC<{
     )
     .map((mapping) => mapping.attribute.id);
 
-  const top_highlights = [
+  let top_highlights = [
     ...product_attribute_values.filter(({ attribute }) =>
       top_highlights_attribute_id.includes(attribute.id),
     ),
   ];
+  const product_dimension_attr = top_highlights.filter(({ attribute }) =>
+    ["item_width", "item_height", "item_depth"].includes(attribute.code),
+  );
+
+  const dimension_attr_code = [
+    DIMENSION_ATTR.ITEM_LENGTH,
+    DIMENSION_ATTR.ITEM_WIDTH,
+    DIMENSION_ATTR.ITEM_HEIGHT,
+  ];
+  top_highlights = top_highlights.filter(
+    ({ attribute }) => !dimension_attr_code.includes(attribute.code),
+  );
   const full_top_highlights = [
-    ...(brand ? [{ name: "Brand", value: brand }] : []),
+    ...(brand ? [{ name: "Brand", value: brand, unit: null }] : []),
     ...top_highlights.map(({ attribute, value }) => ({
       name: attribute.name,
       value: getReadableValue({ attribute, value }),
+      unit: attribute.is_unit
+        ? category_mappings.find(
+            (mapping) => mapping.attribute.code == attribute.code,
+          )?.unit_code
+        : null,
     })),
+    ...(dimension_attr_code.every((code) =>
+      product_dimension_attr.some(({ attribute }) => attribute.code == code),
+    )
+      ? [
+          {
+            name: "Product Dimensions (L x W x H)",
+            value: `${product_dimension_attr.find(({ attribute }) => attribute.code == DIMENSION_ATTR.ITEM_LENGTH)?.value} x ${product_dimension_attr.find(({ attribute }) => attribute.code == DIMENSION_ATTR.ITEM_WIDTH)?.value} x ${product_dimension_attr.find(({ attribute }) => attribute.code == DIMENSION_ATTR.ITEM_HEIGHT)?.value}`,
+            unit: null,
+          },
+        ]
+      : []),
     ...(country_of_origin
-      ? [{ name: "Country of origin", value: country_of_origin }]
+      ? [{ name: "Country of origin", value: country_of_origin, unit: null }]
       : []),
   ];
 
@@ -128,7 +161,7 @@ const ProductDetails: FC<{
                   <AttributeInfoCell
                     key={index}
                     name={item.name}
-                    value={item.value}
+                    value={`${item.value}` + (item.unit ? ` ${item.unit}` : "")}
                     show_border={!is_in_last_row}
                   />
                 );

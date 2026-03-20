@@ -17,6 +17,7 @@ import { getReadableValue } from "@/components/product/product-info/product-deta
 
 // consts
 import { DISPLAY_AREA } from "@/constants/display-area.constant";
+import { DIMENSION_ATTR } from "@/components/product/product-info/product-details.component";
 
 const Description: FC<{
   description: string;
@@ -97,6 +98,7 @@ const ProductInfoTabs: FC<{
           attribute: item.attribute,
           value: item.value,
           display_order: mapping.display_order,
+          unit: item.attribute.is_unit ? mapping.unit_code : "",
         });
       });
 
@@ -110,6 +112,7 @@ const ProductInfoTabs: FC<{
           attribute: any;
           value: any;
           display_order: number;
+          unit: string | null;
         }[]
       >
     >,
@@ -127,7 +130,6 @@ const ProductInfoTabs: FC<{
     ...(manufacturer_info_exist ? ["Manufacturer Info"] : []),
   ];
 
-  console.log("value of description", description);
   if (!tab_list.length) {
     return null;
   }
@@ -154,25 +156,53 @@ const ProductInfoTabs: FC<{
           .map((display_area) => (
             <TabPanel key={display_area} className="focus:outline-none">
               {Object.entries(grouped_by_display_area[display_area]).map(
-                ([group, attributes]) => (
-                  <div key={group} className="mb-6">
-                    <h3 className="mb-3 text-sm font-semibold text-gray-800 lg:text-base">
-                      {group}
-                    </h3>
+                ([group, attributes]) => {
+                  const dimension_attr_code = [
+                    DIMENSION_ATTR.ITEM_LENGTH,
+                    DIMENSION_ATTR.ITEM_WIDTH,
+                    DIMENSION_ATTR.ITEM_HEIGHT,
+                  ];
+                  const dimension_attr = attributes.filter(({ attribute }) =>
+                    dimension_attr_code.includes(attribute.code),
+                  );
 
-                    <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                      {attributes
-                        .sort((a, b) => a.display_order - b.display_order)
-                        .map(({ attribute, value }) => (
+                  attributes = attributes.filter(
+                    ({ attribute }) =>
+                      !dimension_attr_code.includes(attribute.code),
+                  );
+                  return (
+                    <div key={group} className="mb-6">
+                      <h3 className="mb-3 text-sm font-semibold text-gray-800 lg:text-base">
+                        {group}
+                      </h3>
+
+                      <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                        {attributes
+                          .sort((a, b) => a.display_order - b.display_order)
+                          .map(({ attribute, value, unit }) => (
+                            <AttributeInfoCell
+                              key={attribute.id}
+                              name={attribute.name}
+                              value={
+                                getReadableValue({ attribute, value }) +
+                                (unit ? ` ${unit}` : "")
+                              }
+                            />
+                          ))}
+                        {dimension_attr_code.every((code) =>
+                          dimension_attr.some(
+                            ({ attribute }) => attribute.code == code,
+                          ),
+                        ) && (
                           <AttributeInfoCell
-                            key={attribute.id}
-                            name={attribute.name}
-                            value={getReadableValue({ attribute, value })}
+                            name="Product Dimensions (L x W x H)"
+                            value={`${dimension_attr.find(({ attribute }) => attribute.code == DIMENSION_ATTR.ITEM_LENGTH)?.value} x ${dimension_attr.find(({ attribute }) => attribute.code == DIMENSION_ATTR.ITEM_WIDTH)?.value} x ${dimension_attr.find(({ attribute }) => attribute.code == DIMENSION_ATTR.ITEM_HEIGHT)?.value}`}
                           />
-                        ))}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ),
+                  );
+                },
               )}
             </TabPanel>
           ))}
