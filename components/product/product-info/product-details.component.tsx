@@ -100,7 +100,11 @@ const ProductDetails: FC<{
     DIMENSION_ATTR.ITEM_HEIGHT,
   ];
   top_highlights = top_highlights.filter(
-    ({ attribute }) => !dimension_attr_code.includes(attribute.code),
+    ({ attribute, value }) =>
+      !dimension_attr_code.includes(attribute.code) &&
+      value !== null &&
+      value !== undefined &&
+      value !== "",
   );
   const full_top_highlights = [
     ...(brand ? [{ name: "Brand", value: brand, unit: null }] : []),

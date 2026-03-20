@@ -167,8 +167,11 @@ const ProductInfoTabs: FC<{
                   );
 
                   attributes = attributes.filter(
-                    ({ attribute }) =>
-                      !dimension_attr_code.includes(attribute.code),
+                    ({ attribute, value }) =>
+                      !dimension_attr_code.includes(attribute.code) &&
+                      value !== null &&
+                      value !== undefined &&
+                      value !== "",
                   );
                   return (
                     <div key={group} className="mb-6">
