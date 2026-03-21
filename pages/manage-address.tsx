@@ -8,7 +8,6 @@ import MainLayout from "@/components/layout/main-layout.component";
 import AddressCard from "@/components/manage-address/address-card.component";
 import AddAddressModal from "@/components/manage-address/add-address-modal/add-address-modal.component";
 
-
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
