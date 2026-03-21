@@ -1,6 +1,9 @@
-import { useState } from "react";
+// types
 import { FC } from "react";
+// icons
 import { X } from "lucide-react";
+
+// external components
 import {
   Dialog,
   DialogTitle,
@@ -8,43 +11,31 @@ import {
   DialogBackdrop,
 } from "@headlessui/react";
 import { Formik, Form } from "formik";
-import { z } from "zod";
-
-// helpers
-import { toFormikValidate } from "@/helpers/common.helper";
 
 // local components
 import AddAddressInput from "./add-address-input.component";
 import LocationPicker from "@/components/common/location-picker/location-picker.component";
 import SelectPlaces from "@/components/common/location-picker/select-places.component";
 
+// helpers
+import { toFormikValidate } from "@/helpers/common.helper";
+import { z } from "zod";
+
+
 export const address_schema = z.object({
   country: z.string(),
-
   full_name: z.string().min(1, "Full name is required"),
-
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
-
   address1: z.string().min(1, "Street address is required"),
-
   address2: z.string().optional(),
-
   landmark: z.string().optional(),
-
   city: z.string().min(1, "City is required"),
-
   state: z.string().min(1, "State is required"),
-
   zip: z.string().min(4, "Zip code is required"),
-
   latitude: z.number().optional(),
-
   longitude: z.number().optional(),
-
   address_type: z.enum(["home", "work", "other"]),
-
   delivery_instructions: z.string().optional(),
-
   is_default: z.boolean(),
 });
 
@@ -58,9 +49,8 @@ type Props = {
 };
 
 const AddAddressModal: FC<Props> = ({ open, onClose }) => {
-  const [zoom, setZoom] = useState(12);
   return (
-    <Dialog open={open} onClose={onClose} className="relative z-50">
+    <Dialog open={open} onClose={() => {}} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -130,12 +120,33 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
                       />
                     </div>
 
-                    {values.latitude && values.longitude && (
-                      <p className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm whitespace-nowrap text-orange-500 shadow-sm">
-                        📍 Lat: {values.latitude.toFixed(5)} | Lng:{" "}
-                        {values.longitude.toFixed(5)}
-                      </p>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!navigator.geolocation) {
+                          alert("Geolocation is not supported by your browser");
+                          return;
+                        }
+
+                        navigator.geolocation.getCurrentPosition(
+                          (pos) => {
+                            const { latitude, longitude } = pos.coords;
+                            setValues((prev) => ({
+                              ...prev,
+                              latitude,
+                              longitude,
+                            }));
+                          },
+                          (err) => {
+                            console.error(err);
+                            alert("Unable to fetch your location");
+                          },
+                        );
+                      }}
+                      className="absolute bottom-6 left-1/2 -translate-x-1/2 cursor-pointer rounded-full bg-white px-5 py-2 text-sm font-semibold text-orange-500 shadow-md"
+                    >
+                      📍 Use Current Location
+                    </button>
                   </div>
 
                   {/* RIGHT: FORM */}

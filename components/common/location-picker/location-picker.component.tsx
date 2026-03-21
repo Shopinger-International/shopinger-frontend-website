@@ -1,10 +1,12 @@
 // https://developers.google.com/maps/documentation/javascript/examples/rgm-autocomplete#maps_rgm_autocomplete-typescript
 // types
-import type { FC } from "react";
+import { useEffect, type FC } from "react";
 
 // external component
-
 import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
+
+// hooks
+import { useMap } from "@vis.gl/react-google-maps";
 
 // const
 const API_KEY = process.env.NEXT_PUBLIC_MAPS_JAVASCRIPT_API_KEY!;
@@ -33,6 +35,7 @@ const LocationPicker: FC<IProps> = ({ position, updatePosition }) => {
         gestureHandling={"greedy"}
         disableDefaultUI={true}
       >
+        <MapUpdater position={position} />
         <AdvancedMarker
           draggable
           position={position}
@@ -61,3 +64,15 @@ const LocationPicker: FC<IProps> = ({ position, updatePosition }) => {
   );
 };
 export default LocationPicker;
+
+const MapUpdater = ({ position }: { position: IChord }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (map) {
+      map.panTo(position); // smooth animation
+    }
+  }, [position, map]);
+
+  return null;
+};

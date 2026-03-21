@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 //types
 import type { FC } from "react";
 
@@ -53,6 +53,8 @@ type IProps = {
 };
 
 const SelectPlaces: FC<IProps> = ({ handleOnChange }) => {
+  const [query, setQuery] = useState("");
+  const [value, setValue] = useState<IOptionType | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const loadOptions = (input_value: string): Promise<IOptionType[]> => {
@@ -81,10 +83,23 @@ const SelectPlaces: FC<IProps> = ({ handleOnChange }) => {
 
   return (
     <AsyncSelect
+      value={value} //
+      inputValue={query}
       cacheOptions
       defaultOptions
       loadOptions={loadOptions}
-      onChange={(val) => handleOnChange(val as IOptionType)}
+      onInputChange={(val, meta) => {
+        if (meta.action === "input-change") {
+          setQuery(val);
+        }
+      }}
+      onChange={(val) => {
+        handleOnChange(val as IOptionType);
+
+        // clear both
+        setValue(null);
+        setQuery("");
+      }}
       components={{ Control: CustomControl, IndicatorSeparator: () => null }}
       loadingMessage={() => "Searching locations..."}
       noOptionsMessage={() => "No locations found"}
