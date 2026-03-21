@@ -15,7 +15,7 @@ import { toFormikValidate } from "@/helpers/common.helper";
 
 // local components
 import AddAddressInput from "./add-address-input.component";
-import LocationPicker from "@/components/common/location-picker.component";
+import LocationPicker from "@/components/common/location-picker/location-picker.component";
 
 export const address_schema = z.object({
   country: z.string(),
@@ -108,13 +108,11 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
                   <div className="sticky top-0 h-full space-y-3">
                     <div className="h-full">
                       <LocationPicker
-                        zoom={zoom}
-                        updateZoom={(zoom) => setZoom(zoom)}
                         position={{
                           lat: values.latitude,
                           lng: values.longitude,
                         }}
-                        onChange={(coords) => {
+                        updatePosition={(coords) => {
                           setFieldValue("latitude", coords.lat);
                           setFieldValue("longitude", coords.lng);
                         }}
