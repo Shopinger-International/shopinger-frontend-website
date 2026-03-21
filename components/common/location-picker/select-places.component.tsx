@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 //types
 import type { FC } from "react";
+import type { IPlace } from "@/types/address";
 
 // external components
 import AsyncSelect from "react-select/async";
@@ -18,14 +19,6 @@ type IOptionType = {
   data: IPlace;
 };
 
-export type IPlace = {
-  formattedAddress: string;
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-};
-
 export const fetchPlaces = async (search_query: string) => {
   if (!search_query) return [];
 
@@ -40,10 +33,12 @@ export const fetchPlaces = async (search_query: string) => {
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": process.env.NEXT_PUBLIC_MAPS_JAVASCRIPT_API_KEY,
-        "X-Goog-FieldMask": "places.formattedAddress,places.location",
+        "X-Goog-FieldMask":
+          "places.formattedAddress,places.location,places.addressComponents",
       },
     },
   );
+  console.log("value of data", data.places);
 
   return data.places;
 };

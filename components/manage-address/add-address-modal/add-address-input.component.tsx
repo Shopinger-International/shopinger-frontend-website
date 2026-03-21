@@ -39,7 +39,7 @@ const AddAddressInput: FC<IProps> = ({
 
           <Field
             as="textarea"
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 disabled:bg-gray-50"
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 disabled:bg-gray-50 text-sm"
             disabled={disabled}
             {...props}
           />
@@ -59,7 +59,7 @@ const AddAddressInput: FC<IProps> = ({
 
           <Field
             type={type}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 disabled:bg-gray-50"
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 disabled:bg-gray-50 text-sm"
             disabled={disabled}
             {...props}
           />

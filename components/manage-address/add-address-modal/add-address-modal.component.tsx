@@ -1,5 +1,7 @@
 // types
 import { FC } from "react";
+import type { IPlace } from "@/types/address";
+
 // icons
 import { X } from "lucide-react";
 
@@ -9,6 +11,8 @@ import {
   DialogTitle,
   DialogPanel,
   DialogBackdrop,
+  Fieldset,
+  Legend,
 } from "@headlessui/react";
 import { Formik, Form } from "formik";
 
@@ -20,25 +24,28 @@ import SelectPlaces from "@/components/common/location-picker/select-places.comp
 // helpers
 import { toFormikValidate } from "@/helpers/common.helper";
 import { z } from "zod";
+import clsx from "clsx";
 
+// icons
+import { Home, Briefcase, MapPin } from "lucide-react";
 
-export const address_schema = z.object({
-  country: z.string(),
+const address_types = [
+  { id: "home", label: "Home", icon: Home },
+  { id: "work", label: "Work", icon: Briefcase },
+  { id: "other", label: "Other", icon: MapPin },
+];
+
+const address_schema = z.object({
   full_name: z.string().min(1, "Full name is required"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  address1: z.string().min(1, "Street address is required"),
-  address2: z.string().optional(),
+  phone: z
+    .string()
+    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number"), // Improved validation
+  building_name: z.string().min(1, "Flat/Building is required"),
   landmark: z.string().optional(),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zip: z.string().min(4, "Zip code is required"),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
+  area: z.string().min(1, "Locality is required"),
   address_type: z.enum(["home", "work", "other"]),
   delivery_instructions: z.string().optional(),
-  is_default: z.boolean(),
 });
-
 export type ICoords = {
   lat: number;
   lng: number;
@@ -47,7 +54,28 @@ type Props = {
   open: boolean;
   onClose: () => void;
 };
+const mapPlaceToForm = (place: IPlace) => {
+  const getComp = (type: string) =>
+    place.addressComponents.find((c) => c.types.includes(type))?.longText || "";
 
+  const city = getComp("locality") || getComp("administrative_area_level_3");
+
+  const sublocality = getComp("sublocality_level_1");
+  const addressLine1 = place.formattedAddress;
+
+  return {
+    address1: addressLine1,
+    address2:
+      sublocality === addressLine1
+        ? getComp("sublocality_level_2")
+        : sublocality,
+    city: city,
+    state: getComp("administrative_area_level_1"),
+    zip: getComp("postal_code"),
+    latitude: place.location.latitude,
+    longitude: place.location.longitude,
+  };
+};
 const AddAddressModal: FC<Props> = ({ open, onClose }) => {
   return (
     <Dialog open={open} onClose={() => {}} className="relative z-50">
@@ -56,7 +84,7 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-full max-w-4xl rounded-2xl bg-white shadow-xl">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-300 px-6 py-4">
+          <div className="flex items-center justify-between border-b border-gray-300 px-6 py-3">
             <DialogTitle className="text-lg font-semibold text-orange-500">
               Add new address
             </DialogTitle>
@@ -71,7 +99,6 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
 
           <Formik
             initialValues={{
-              country: "India",
               full_name: "",
               phone: "",
               address1: "",
@@ -95,7 +122,7 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
           >
             {({ values, setFieldValue, setValues, isSubmitting }) => (
               <Form>
-                <div className="grid h-[70vh] grid-cols-2">
+                <div className="grid h-[60vh] grid-cols-2">
                   <div className="sticky top-0 h-full space-y-3 border-r border-gray-300">
                     <div className="h-full">
                       <div className="absolute top-6 z-3 w-full px-6">
@@ -104,6 +131,7 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
                             setValues((prev) => ({
                               ...prev,
                               ...val.data.location,
+                              ...mapPlaceToForm(val.data),
                             }));
                           }}
                         />
@@ -150,102 +178,82 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
                   </div>
 
                   {/* RIGHT: FORM */}
-                  <div className="h-full space-y-4 overflow-y-auto p-6 py-4">
-                    <AddAddressInput
-                      name="country"
-                      label="Country / Region"
-                      type="text"
-                      disabled
-                    />
+                  <div className="h-full space-y-6 overflow-y-auto p-6 py-4">
+                    <Fieldset className="space-y-2">
+                      <Legend className={"text-sm font-medium"}>
+                        Save Address as <span className="text-red-500">*</span>
+                      </Legend>
+                      <div className="space-y-1.5">
+                        <div className="flex flex-wrap gap-3">
+                          {address_types.map(({ id, label, icon: Icon }) => {
+                            const isActive = values.address_type === id;
+                            return (
+                              <button
+                                key={id}
+                                type="button"
+                                onClick={() =>
+                                  setFieldValue("address_type", id)
+                                }
+                                className={clsx(
+                                  "flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium",
+                                  isActive
+                                    ? "border-orange-500 text-orange-600 shadow-sm ring-1 ring-orange-500"
+                                    : "border-gray-300 text-gray-600",
+                                )}
+                              >
+                                <Icon
+                                  className="size-4"
+                                  strokeWidth={isActive ? 2.5 : 2}
+                                />
+                                {label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                      <AddAddressInput
+                        name="building_name"
+                        placeholder="Flat / House No. / Building Name *"
+                      />
+                      <AddAddressInput
+                        name="landmark"
+                        placeholder="Nearby landmark"
+                      />
+
+                      <AddAddressInput
+                        name="address1"
+                        placeholder="Area / Sector / Locality"
+                        disabled={true}
+                      />
+
+                      {/* Address Type */}
+                    </Fieldset>
+                    <Fieldset className="space-y-2">
+                      <Legend className={"text-sm font-medium"}>
+                        Enter your details for seamless delivery experience
+                      </Legend>
                       <AddAddressInput
                         name="phone"
-                        label="Phone number"
-                        placeholder="Enter phone number"
+                        placeholder="phone number"
                       />
 
                       <AddAddressInput
                         name="full_name"
-                        label="Full name"
-                        placeholder="Enter full name"
+                        placeholder="Your Name"
                       />
-                    </div>
+                    </Fieldset>
 
-                    <AddAddressInput
-                      name="address1"
-                      label="Street address"
-                      placeholder="House no, street name"
-                    />
-
-                    <AddAddressInput
-                      name="address2"
-                      label="Apartment / Suite / Building"
-                      placeholder="Apartment, suite, building"
-                    />
-
-                    <AddAddressInput
-                      name="landmark"
-                      label="Landmark"
-                      placeholder="Nearby landmark"
-                    />
-
-                    <div className="grid grid-cols-3 gap-4">
+                    <Fieldset className={"space-y-2"}>
+                      <Legend className={"text-sm font-medium"}>
+                        Rider Instructions
+                      </Legend>
                       <AddAddressInput
-                        name="city"
-                        label="City"
-                        placeholder="Enter city"
+                        name="delivery_instructions"
+                        type="textarea"
+                        placeholder="Eg. Call before delivery"
                       />
-
-                      <AddAddressInput
-                        name="state"
-                        label="State"
-                        placeholder="Enter state"
-                      />
-
-                      <AddAddressInput
-                        name="zip"
-                        label="Zip code"
-                        placeholder="Enter ZIP / PIN code"
-                      />
-                    </div>
-
-                    {/* Address Type */}
-                    <div className="space-y-2">
-                      <label className="font-medium text-gray-700">
-                        Address type
-                      </label>
-
-                      <div className="flex gap-3">
-                        {["home", "work", "other"].map((type) => (
-                          <button
-                            key={type}
-                            type="button"
-                            onClick={() => setFieldValue("address_type", type)}
-                            className={`rounded-lg border px-4 py-2 text-sm capitalize transition ${
-                              values.address_type === type
-                                ? "border-orange-500 bg-orange-50 text-orange-600"
-                                : "border-gray-300 hover:bg-gray-100"
-                            }`}
-                          >
-                            {type}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <AddAddressInput
-                      name="delivery_instructions"
-                      label="Delivery instructions"
-                      type="textarea"
-                      placeholder="Eg. Call before delivery"
-                    />
-
-                    <AddAddressInput
-                      name="is_default"
-                      label="Use as my default address"
-                      type="checkbox"
-                    />
+                    </Fieldset>
                   </div>
                 </div>
 
