@@ -18,6 +18,7 @@ const useCategories = () => {
       }>("/get-all-category");
       return data.categories;
     },
+    retry: 4,
   });
 };
 

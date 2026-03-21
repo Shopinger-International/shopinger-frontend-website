@@ -12,6 +12,9 @@ import AddAddressModal from "@/components/manage-address/add-address-modal/add-a
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 
+// hooks
+import useGetPlaces from "@/hooks/axios/common/use-get-places.hook";
+
 const addresses = [
   {
     id: "1",

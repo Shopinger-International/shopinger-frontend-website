@@ -16,6 +16,7 @@ import { toFormikValidate } from "@/helpers/common.helper";
 // local components
 import AddAddressInput from "./add-address-input.component";
 import LocationPicker from "@/components/common/location-picker/location-picker.component";
+import SelectPlaces from "@/components/common/location-picker/select-places.component";
 
 export const address_schema = z.object({
   country: z.string(),
@@ -102,11 +103,21 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
               onClose();
             }}
           >
-            {({ values, setFieldValue, isSubmitting }) => (
+            {({ values, setFieldValue, setValues, isSubmitting }) => (
               <Form>
-                <div className="grid h-[70vh] grid-cols-2 gap-6 px-6 py-6">
-                  <div className="sticky top-0 h-full space-y-3">
+                <div className="grid h-[70vh] grid-cols-2">
+                  <div className="sticky top-0 h-full space-y-3 border-r border-gray-300">
                     <div className="h-full">
+                      <div className="absolute top-6 z-3 w-full px-6">
+                        <SelectPlaces
+                          handleOnChange={(val) => {
+                            setValues((prev) => ({
+                              ...prev,
+                              ...val.data.location,
+                            }));
+                          }}
+                        />
+                      </div>
                       <LocationPicker
                         position={{
                           lat: values.latitude,
@@ -120,15 +131,15 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
                     </div>
 
                     {values.latitude && values.longitude && (
-                      <p className="text-xs text-gray-500">
-                        Lat: {values.latitude.toFixed(5)} | Lng:{" "}
+                      <p className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm whitespace-nowrap text-orange-500 shadow-sm">
+                        📍 Lat: {values.latitude.toFixed(5)} | Lng:{" "}
                         {values.longitude.toFixed(5)}
                       </p>
                     )}
                   </div>
 
                   {/* RIGHT: FORM */}
-                  <div className="h-full space-y-4 overflow-y-auto pr-2">
+                  <div className="h-full space-y-4 overflow-y-auto p-6 py-4">
                     <AddAddressInput
                       name="country"
                       label="Country / Region"

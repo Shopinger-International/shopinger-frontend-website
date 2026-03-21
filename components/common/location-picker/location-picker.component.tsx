@@ -1,23 +1,10 @@
 // https://developers.google.com/maps/documentation/javascript/examples/rgm-autocomplete#maps_rgm_autocomplete-typescript
-import { useState, useEffect } from "react";
-
 // types
 import type { FC } from "react";
 
 // external component
 
-import {
-  APIProvider,
-  ControlPosition,
-  MapControl,
-  AdvancedMarker,
-  Map,
-  useMap,
-  useAdvancedMarkerRef,
-} from "@vis.gl/react-google-maps";
-
-// local components
-import PlaceAutocomplete from "@/components/common/location-picker/place-autocomplete.component";
+import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
 
 // const
 const API_KEY = process.env.NEXT_PUBLIC_MAPS_JAVASCRIPT_API_KEY!;
@@ -34,10 +21,6 @@ type IProps = {
 };
 
 const LocationPicker: FC<IProps> = ({ position, updatePosition }) => {
-  const [selectedPlace, setSelectedPlace] =
-    useState<google.maps.places.PlaceResult | null>(null);
-  const [markerRef, marker] = useAdvancedMarkerRef();
-
   return (
     <APIProvider
       apiKey={API_KEY}
@@ -50,23 +33,7 @@ const LocationPicker: FC<IProps> = ({ position, updatePosition }) => {
         gestureHandling={"greedy"}
         disableDefaultUI={true}
       >
-        {/* <AdvancedMarker
-          ref={markerRef}
-          position={position}
-          onDragEnd={(e) => {
-            let lng = e.latLng?.lng();
-            let lat = e.latLng?.lat();
-            lng &&
-              lat &&
-              updatePosition({
-                lat,
-                lng,
-              });
-          }}
-        /> */}
-
         <AdvancedMarker
-          ref={markerRef}
           draggable
           position={position}
           onDragEnd={(e) => {
@@ -90,33 +57,7 @@ const LocationPicker: FC<IProps> = ({ position, updatePosition }) => {
           </div>
         </AdvancedMarker>
       </Map>
-      <MapControl position={ControlPosition.TOP}>
-        <div className="autocomplete-control">
-          <PlaceAutocomplete onPlaceSelect={setSelectedPlace} />
-        </div>
-      </MapControl>
-      <MapHandler place={selectedPlace} marker={marker} />
     </APIProvider>
   );
 };
 export default LocationPicker;
-
-interface MapHandlerProps {
-  place: google.maps.places.PlaceResult | null;
-  marker: google.maps.marker.AdvancedMarkerElement | null;
-}
-
-const MapHandler = ({ place, marker }: MapHandlerProps) => {
-  const map = useMap();
-
-  useEffect(() => {
-    if (!map || !place || !marker) return;
-
-    if (place.geometry?.viewport) {
-      map.fitBounds(place.geometry?.viewport);
-    }
-    marker.position = place.geometry?.location;
-  }, [map, place, marker]);
-
-  return null;
-};

@@ -13,6 +13,7 @@ const useUserDetails = () => {
     queryKey: ["user-details"],
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
+    retry: 4,
     async queryFn() {
       const { data } = await Axios.get<{
         message: string;

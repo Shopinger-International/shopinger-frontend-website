@@ -1,0 +1,106 @@
+import { useRef } from "react";
+//types
+import type { FC } from "react";
+
+// external components
+import AsyncSelect from "react-select/async";
+import { components } from "react-select";
+
+// icons
+import { Search } from "lucide-react";
+
+// helpers
+import axios from "axios";
+
+type IOptionType = {
+  label: string;
+  value: string;
+  data: IPlace;
+};
+
+export type IPlace = {
+  formattedAddress: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+};
+
+export const fetchPlaces = async (search_query: string) => {
+  if (!search_query) return [];
+
+  const { data } = await axios.post<{
+    places: Array<IPlace>;
+  }>(
+    "https://places.googleapis.com/v1/places:searchText",
+    {
+      textQuery: search_query,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": process.env.NEXT_PUBLIC_MAPS_JAVASCRIPT_API_KEY,
+        "X-Goog-FieldMask": "places.formattedAddress,places.location",
+      },
+    },
+  );
+
+  return data.places;
+};
+
+type IProps = {
+  handleOnChange: (option: IOptionType) => void;
+};
+
+const SelectPlaces: FC<IProps> = ({ handleOnChange }) => {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const loadOptions = (input_value: string): Promise<IOptionType[]> => {
+    return new Promise((resolve) => {
+      // clear previous timer
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // set new timer
+      timeoutRef.current = setTimeout(async () => {
+        if (!input_value) return resolve([]);
+
+        const places = await fetchPlaces(input_value);
+
+        const options = places?.map((place) => ({
+          label: place.formattedAddress,
+          value: place.formattedAddress,
+          data: place,
+        }));
+
+        resolve(options);
+      }, 500);
+    });
+  };
+
+  return (
+    <AsyncSelect
+      cacheOptions
+      defaultOptions
+      loadOptions={loadOptions}
+      onChange={(val) => handleOnChange(val as IOptionType)}
+      components={{ Control: CustomControl, IndicatorSeparator: () => null }}
+      loadingMessage={() => "Searching locations..."}
+      noOptionsMessage={() => "No locations found"}
+      placeholder="Search location..."
+    />
+  );
+};
+export default SelectPlaces;
+
+const CustomControl = (props: any) => {
+  return (
+    <components.Control {...props}>
+      <div className="pl-4 text-gray-600">
+        <Search className="size-5 text-gray-400" />
+      </div>
+      {props.children}
+    </components.Control>
+  );
+};
