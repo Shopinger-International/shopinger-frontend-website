@@ -25,6 +25,7 @@ import SelectPlaces from "@/components/common/location-picker/select-places.comp
 import { toFormikValidate } from "@/helpers/common.helper";
 import { z } from "zod";
 import clsx from "clsx";
+import axios from "axios";
 
 const address_types = [
   { id: "home", label: "Home", icon: Home },
@@ -50,9 +51,21 @@ export type ICoords = {
   lng: number;
 };
 
-type Props = {
-  open: boolean;
-  onClose: () => void;
+const getAddressFromCoords = async (
+  lat: number,
+  lng: number,
+): Promise<IPlace> => {
+  const { data } = await axios.get(
+    "https://maps.googleapis.com/maps/api/geocode/json",
+    {
+      params: {
+        latlng: `${lat},${lng}`,
+        key: process.env.NEXT_PUBLIC_GEOCODING_API_KEY,
+      },
+    },
+  );
+
+  return data.results[0]; // most relevant result
 };
 
 const mapPlaceToForm = (place: IPlace) => {
@@ -90,7 +103,46 @@ const mapPlaceToForm = (place: IPlace) => {
   };
 };
 
-const AddAddressModal: FC<Props> = ({ open, onClose }) => {
+const mapGeocodeToForm = (result: any) => {
+  const getComp = (type: string) =>
+    result.address_components.find((c: any) => c.types.includes(type))
+      ?.long_name || "";
+
+  // 1. Gather all "Small Area" components
+  const neighborhood = getComp("neighborhood");
+  const subLoc3 = getComp("sublocality_level_3");
+  const subLoc2 = getComp("sublocality_level_2");
+  const subLoc1 = getComp("sublocality_level_1");
+
+  // 2. Same smart merging logic (your approach preserved)
+  const addressParts = Array.from(
+    new Set([neighborhood, subLoc3, subLoc2, subLoc1]),
+  ).filter(Boolean);
+
+  const addressLine1 = addressParts.join(", ");
+
+  return {
+    // ✅ Same keys as your original function
+    place_id: result.place_id,
+    formatted_address: result.formatted_address,
+
+    address1: addressLine1 || result.formatted_address,
+
+    city: getComp("locality") || getComp("administrative_area_level_3"),
+    state: getComp("administrative_area_level_1"),
+    zip: getComp("postal_code"),
+
+    latitude: result.geometry.location.lat,
+    longitude: result.geometry.location.lng,
+  };
+};
+
+type IProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
   return (
     <Dialog open={open} onClose={() => {}} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
@@ -120,7 +172,7 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
               landmark: "",
 
               place_id: "",
-              formatted_text: "",
+              formatted_address: "",
               address1: "",
               city: "",
               state: "",
@@ -171,11 +223,6 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
                       }}
                     />
 
-                    <p className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded bg-white px-3 py-1 text-xs text-gray-600 shadow">
-                      Lat: {values.latitude.toFixed(5)} | Lng:{" "}
-                      {values.longitude.toFixed(5)}
-                    </p>
-
                     <button
                       type="button"
                       onClick={() => {
@@ -187,17 +234,21 @@ const AddAddressModal: FC<Props> = ({ open, onClose }) => {
                         navigator.geolocation.getCurrentPosition(
                           (pos) => {
                             const { latitude, longitude } = pos.coords;
-
-                            setValues((prev) => ({
-                              ...prev,
-                              latitude,
-                              longitude,
-                            }));
+                            getAddressFromCoords(latitude, longitude).then(
+                              (data) => {
+                                console.log("value fo data",data);
+                                const mapped = mapGeocodeToForm(data);
+                                setValues((prev) => ({
+                                  ...prev,
+                                  ...mapped,
+                                }));
+                              },
+                            );
                           },
                           () => alert("Unable to fetch location"),
                         );
                       }}
-                      className="absolute bottom-16 left-1/2 -translate-x-1/2 rounded-full bg-white px-5 py-2 text-sm font-semibold text-orange-500 shadow-md"
+                      className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-white px-5 py-2 text-sm font-semibold text-orange-500 shadow-md"
                     >
                       📍 Use Current Location
                     </button>

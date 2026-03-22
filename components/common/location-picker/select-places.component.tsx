@@ -33,13 +33,12 @@ export const fetchPlaces = async (search_query: string) => {
     {
       headers: {
         "Content-Type": "application/json",
-        "X-Goog-Api-Key": process.env.NEXT_PUBLIC_MAPS_JAVASCRIPT_API_KEY,
+        "X-Goog-Api-Key": process.env.NEXT_PUBLIC_PLACES_API_KEY,
         "X-Goog-FieldMask":
           "places.id,places.formattedAddress,places.location,places.addressComponents",
       },
     },
   );
-  console.log("value of data", data.places);
 
   return data.places;
 };
