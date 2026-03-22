@@ -11,6 +11,12 @@ import { useMap } from "@vis.gl/react-google-maps";
 // const
 const API_KEY = process.env.NEXT_PUBLIC_MAPS_JAVASCRIPT_API_KEY!;
 const MAP_ID = process.env.NEXT_PUBLIC_MAP_ID;
+const INDIA_BOUNDS = {
+  north: 35.51,
+  south: 6.46,
+  west: 68.12,
+  east: 97.41,
+};
 
 type IChord = {
   lat: number;
@@ -34,6 +40,10 @@ const LocationPicker: FC<IProps> = ({ position, updatePosition }) => {
         defaultCenter={position}
         gestureHandling={"greedy"}
         disableDefaultUI={true}
+        restriction={{
+          latLngBounds: INDIA_BOUNDS,
+          strictBounds: false, // set to true to hard-stop the camera at the borders
+        }}
       >
         <MapUpdater position={position} />
         <AdvancedMarker

@@ -28,13 +28,14 @@ export const fetchPlaces = async (search_query: string) => {
     "https://places.googleapis.com/v1/places:searchText",
     {
       textQuery: search_query,
+      regionCode: "IN",
     },
     {
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": process.env.NEXT_PUBLIC_MAPS_JAVASCRIPT_API_KEY,
         "X-Goog-FieldMask":
-          "places.formattedAddress,places.location,places.addressComponents",
+          "places.id,places.formattedAddress,places.location,places.addressComponents",
       },
     },
   );
