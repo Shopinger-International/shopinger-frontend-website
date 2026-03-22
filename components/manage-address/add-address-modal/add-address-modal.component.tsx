@@ -236,7 +236,7 @@ const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
                             const { latitude, longitude } = pos.coords;
                             getAddressFromCoords(latitude, longitude).then(
                               (data) => {
-                                console.log("value fo data",data);
+                                console.log("value fo data", data);
                                 const mapped = mapGeocodeToForm(data);
                                 setValues((prev) => ({
                                   ...prev,
@@ -248,9 +248,13 @@ const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
                           () => alert("Unable to fetch location"),
                         );
                       }}
-                      className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-white px-5 py-2 text-sm font-semibold text-orange-500 shadow-md"
+                      className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
                     >
-                      📍 Use Current Location
+                      <MapPin
+                        className="size-3.5 text-orange-500"
+                        strokeWidth={2.5}
+                      />
+                      <span>Use Current Location</span>
                     </button>
                   </div>
 
@@ -337,7 +341,7 @@ const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="rounded-md bg-orange-500 px-6 py-2 font-medium text-white hover:bg-orange-600"
+                    className="rounded-md bg-orange-500 px-6 py-2 font-medium text-white shadow-sm hover:bg-orange-600"
                   >
                     {isSubmitting ? "Saving..." : "Add address"}
                   </button>
