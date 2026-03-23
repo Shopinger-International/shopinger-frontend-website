@@ -91,7 +91,7 @@ const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
             }}
           >
             {({ values, setFieldValue, setValues, isSubmitting }) => (
-              <Form className="flex h-[80vh] flex-col">
+              <Form className="flex h-[80vh] flex-col max-h-150">
                 {/* BODY */}
 
                 <div className="flex flex-1 overflow-hidden">
