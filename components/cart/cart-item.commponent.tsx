@@ -10,12 +10,14 @@ type IProps = {
   title: string;
   main_image: string;
   variant_attribute_values: IVariantAttributeValues[];
+  selected_stock: number;
 };
 
 const CartItem: FC<IProps> = ({
   title,
   main_image,
   variant_attribute_values,
+  selected_stock,
 }) => {
   const formated_variant_attribute_value = variant_attribute_values.map(
     ({ attribute, value }) => {
@@ -76,7 +78,7 @@ const CartItem: FC<IProps> = ({
         {/* Quantity + Remove */}
         <div className="flex items-center justify-between pt-1">
           <QuantityStepper
-            quantity={3}
+            quantity={selected_stock}
             onDecrease={() => {}}
             onIncrease={() => {}}
           />

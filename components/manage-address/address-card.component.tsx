@@ -1,44 +1,91 @@
 import { FC } from "react";
+import type { IAddress } from "@/types/address";
 
-type Address = {
-  id: string;
-  name: string;
-  address: string;
-  phone: string;
-  type?: string;
-  isDefault?: boolean;
+// icons
+import { Home, Briefcase, MapPin, Phone } from "lucide-react";
+
+// helpers
+import clsx from "clsx";
+
+const typeIconMap = {
+  home: Home,
+  work: Briefcase,
+  other: MapPin,
 };
 
 type Props = {
-  data: Address;
+  data: IAddress;
   onEdit?: () => void;
   onDelete?: () => void;
 };
-
 const AddressCard: FC<Props> = ({ data, onEdit, onDelete }) => {
+  const TypeIcon = typeIconMap[data.address_type] || MapPin;
   return (
     <div
-      className={`group relative w-sm cursor-pointer space-y-2 rounded-xl border border-gray-300 p-6`}
+      className={clsx(
+        "group relative w-xs cursor-pointer rounded-2xl border p-5",
+        data.is_default
+          ? "border-orange-500 bg-orange-50"
+          : "border-gray-200 hover:border-gray-300",
+      )}
     >
-      {/* NAME + TYPE */}
-      <div className="flex items-center gap-3">
-        <h3 className="text-md font-semibold text-gray-900">{data.name}</h3>
+      {/* TOP SECTION */}
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-2">
+          <TypeIcon className="h-5 w-5 text-gray-500" />
 
-        {data.type && (
-          <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 capitalize">
-            {data.type}
+          <h3 className="text-sm font-semibold text-gray-900">
+            {data.full_name}
+          </h3>
+
+          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 capitalize">
+            {data.address_type}
+          </span>
+        </div>
+
+        {data.is_default && (
+          <span className="rounded-full bg-orange-500 px-2 py-0.5 text-xs font-medium text-white">
+            Default
           </span>
         )}
       </div>
-      <p className="text-sm leading-relaxed">{data.address}</p>
-      <p className="text-sm">{data.phone}</p>
-      <div className="flex items-center gap-4 divide-gray-200 text-sm text-gray-500">
+
+      {/* ADDRESS */}
+      <div className="mt-3 space-y-1 text-sm text-gray-700">
+        <p className="font-medium text-gray-900">
+          {data.house_number}, {data.address1}
+        </p>
+
+        <p>
+          {data.city}, {data.state} - {data.zip}
+        </p>
+
+        {data.landmark && (
+          <p className="text-xs text-gray-500">Near {data.landmark}</p>
+        )}
+      </div>
+
+      {/* DELIVERY NOTE */}
+      {data.delivery_instructions && (
+        <p className="mt-2 text-xs text-gray-500 italic">
+          “{data.delivery_instructions}”
+        </p>
+      )}
+
+      {/* PHONE */}
+      <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
+        <Phone className="h-4 w-4" />
+        {data.phone}
+      </div>
+
+      {/* ACTIONS */}
+      <div className="mt-4 flex items-center gap-4 text-sm">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onEdit?.();
           }}
-          className="flex items-center gap-1 hover:text-gray-700"
+          className="font-medium text-gray-600 hover:text-black"
         >
           Edit
         </button>
@@ -48,19 +95,21 @@ const AddressCard: FC<Props> = ({ data, onEdit, onDelete }) => {
             e.stopPropagation();
             onDelete?.();
           }}
-          className="flex items-center gap-1 text-red-500 hover:text-red-600"
+          className="font-medium text-red-500 hover:text-red-600"
         >
           Delete
         </button>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          className="flex items-center gap-1 hover:text-orange-600"
-        >
-          Set default
-        </button>
+        {!data.is_default && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="font-medium text-orange-500 hover:text-orange-600"
+          >
+            Set as default
+          </button>
+        )}
       </div>
     </div>
   );

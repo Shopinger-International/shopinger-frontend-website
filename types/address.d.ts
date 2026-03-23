@@ -6,7 +6,7 @@ export interface IAddressComponent {
 }
 
 export interface IPlace {
-  id:string;
+  id: string;
   formattedAddress: string;
   location: {
     latitude: number;
@@ -16,33 +16,41 @@ export interface IPlace {
 }
 
 export interface IAddress {
-  id: number;
-  user_id: number;
+  id: string;
+  user_id: string;
 
-  label: string; // home, work, other
+  // Contact info (can differ from user profile)
+  full_name: string;
+  phone: string;
 
-  place_id: number;
+  // Address breakdown
+  house_number: string;
+  street: string;
+  address1: string;
+  landmark: string;
+
+  city: string;
+  state: string;
+  zip: string;
+  country: "India";
+
+  // Google data
+  place_id: string;
   formatted_address: string;
 
+  // Geo
   latitude: number;
   longitude: number;
 
-  house_number: number;
-  floor: number;
-  building: number;
-  street: string;
-  area: string;
-  city: string;
-  state: string;
-  country: string;
-  pincode: string;
+  // Type & labeling
+  address_type: "home" | "work" | "other";
 
-  landmark: string;
+  // Delivery help
+  delivery_instructions?: string;
 
-  instructions: string;
-
-  contact_name: string;
-  contact_number: string;
-
+  // User preference
   is_default: boolean;
+
+  // Lifecycle
+  is_deleted: boolean;
 }

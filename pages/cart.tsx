@@ -4,6 +4,7 @@ import Head from "next/head";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
+
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
@@ -19,20 +20,12 @@ import { useQuery } from "@tanstack/react-query";
 // helpers
 import Axios from "@/lib/axios/private.lib";
 
+// hooks
+import useCart from "@/hooks/axios/cart/use-cart.hook";
+
 const CartPage: NextPageWithLayout = () => {
   const [show_login_modal, setShowLoginModal] = useState(false);
-  const { data: products = [] } = useQuery({
-    queryKey: ["carts-item"],
-    async queryFn() {
-      const {
-        data: { products },
-      } = await Axios.get<{
-        success: boolean;
-        products: IProduct[];
-      }>(`/get-cart`);
-      return products;
-    },
-  });
+  const { data } = useCart();
 
   return (
     <>
@@ -58,7 +51,7 @@ const CartPage: NextPageWithLayout = () => {
             <h1 className="text-xl font-semibold text-gray-900">Your Cart</h1>
 
             <span className="text-sm text-gray-500">
-              {products.length} items
+              {data?.total_items} items
             </span>
           </div>
 
@@ -66,19 +59,21 @@ const CartPage: NextPageWithLayout = () => {
             {/* Cart Items */}
             <div className="col-span-1 h-min rounded-xl border border-gray-200 bg-white p-6 lg:col-span-2">
               <div className="divide-y divide-gray-200">
-                {products.map(({ title, product_medias, variants }, index) => {
-                  const variant_attribute_values =
-                    variants[0].variant_attribute_values;
-
-                  return (
-                    <CartItem
-                      key={index}
-                      title={title}
-                      main_image={product_medias[0].media.url}
-                      variant_attribute_values={variant_attribute_values}
-                    />
-                  );
-                })}
+                {data?.items?.flatMap(
+                  ({ title, product_medias, variants }, index) => {
+                    return variants.map((variant) => (
+                      <CartItem
+                        key={index}
+                        title={title}
+                        main_image={product_medias[0].media.url}
+                        variant_attribute_values={
+                          variant.variant_attribute_values
+                        }
+                        selected_stock={variant.selected_stock}
+                      />
+                    ));
+                  },
+                )}
               </div>
             </div>
 
