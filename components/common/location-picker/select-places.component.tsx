@@ -129,7 +129,7 @@ const SelectPlaces: FC<IProps> = ({ handleOnChange }) => {
             !isDisabled &&
               !isSelected &&
               isFocused &&
-              "bg-orange-100 cursor-pointer",
+              "bg-gray-100 cursor-pointer",
 
             // Default clickable state
             !isDisabled && !isSelected && !isFocused && "cursor-pointer",
