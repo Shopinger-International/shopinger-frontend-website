@@ -17,7 +17,7 @@ import {
 import { Formik, Form } from "formik";
 
 // local
-import AddAddressInput from "./add-address-input.component";
+import AddAddressInput from "@/components/manage-address/add-address-modal/add-address-input.component";
 import LocationPicker from "@/components/common/location-picker/location-picker.component";
 import SelectPlaces from "@/components/common/location-picker/select-places.component";
 
@@ -64,10 +64,17 @@ const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
               phone: "",
               house_number: "",
               landmark: "",
+              place_id: "",
+              formatted_address: "",
               address1: "",
+              city: "",
+              state: "",
+              zip: "",
               latitude: 28.6139,
               longitude: 77.209,
               address_type: "home",
+              delivery_instructions: "",
+              is_default: false,
             }}
             onSubmit={(values) => {
               console.log(values);
@@ -75,7 +82,7 @@ const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
               setShowDrawer(false);
             }}
           >
-            {({ values, setFieldValue, setValues }) => (
+            {({ values, isSubmitting, setFieldValue, setValues }) => (
               <Form className="h-full">
                 <div className="relative h-full w-full">
                   {/* MAP */}
@@ -162,10 +169,17 @@ const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
                           setShowDrawer(false);
                         }}
                       />
-                      <div className="fixed bottom-0 z-40 w-full rounded-t-2xl bg-white shadow-xl">
-                        <div className="max-h-[60vh] overflow-y-auto p-4">
+                      <div className="fixed bottom-0 z-40 w-full rounded-t-2xl border border-gray-300 bg-white shadow-xl">
+                        <div className="relative p-4">
                           <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-gray-300" />
-
+                          {/* Close CTA */}
+                          <button
+                            type="button"
+                            onClick={() => setShowDrawer(false)}
+                            className="absolute top-3 right-3 rounded-full p-2 text-gray-500 hover:bg-gray-100"
+                          >
+                            <X className="size-5" />
+                          </button>
                           <Fieldset className="space-y-3">
                             <Legend className="text-sm font-medium">
                               Save Address as
@@ -214,11 +228,28 @@ const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
                               name="full_name"
                               placeholder="Full Name"
                             />
-
-                            <button className="w-full rounded-md bg-orange-500 py-2 text-white shadow-sm">
-                              Save Address
-                            </button>
                           </Fieldset>
+                        </div>
+                        <div className="shrink-0 space-y-2 border-t border-gray-300 p-4">
+                          {/* Selected Location Hint */}
+                          {values.formatted_address ? (
+                            <p className="text-sm leading-snug font-semibold">
+                              {values.formatted_address}
+                            </p>
+                          ) : (
+                            <div className="text-xs text-gray-400">
+                              Select a location on map to continue
+                            </div>
+                          )}
+
+                          {/* Submit Button */}
+                          <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="w-full rounded-md bg-orange-500 px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
+                          >
+                            {isSubmitting ? "Saving..." : "Add address"}
+                          </button>
                         </div>
                       </div>
                     </>

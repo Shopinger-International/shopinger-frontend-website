@@ -12,6 +12,7 @@ import { Search } from "lucide-react";
 
 // helpers
 import axios from "axios";
+import clsx from "clsx";
 
 type IOptionType = {
   label: string;
@@ -99,6 +100,41 @@ const SelectPlaces: FC<IProps> = ({ handleOnChange }) => {
       loadingMessage={() => "Searching locations..."}
       noOptionsMessage={() => "No locations found"}
       placeholder="Search location..."
+      unstyled
+      classNames={{
+        container: () => "w-full",
+        control: ({ isFocused }) =>
+          clsx(
+            "flex w-full items-center rounded-md border px-4 py-2 bg-white gap-2",
+            isFocused
+              ? "ring-2 ring-orange-500 border-none outline-none"
+              : "border-gray-300",
+          ),
+        valueContainer: () => "flex gap-1 flex-wrap",
+        placeholder: () => "text-gray-400",
+        menu: () => "mt-2 rounded-md border border-gray-300 bg-white shadow-md",
+        menuList: () => "max-h-60 overflow-y-auto py-2",
+        option: ({ isFocused, isSelected, isDisabled }) =>
+          clsx(
+            "px-3 py-3 text-sm transition-colors",
+
+            // Disabled state (always highest priority)
+            isDisabled &&
+              "cursor-not-allowed opacity-50 text-gray-400 bg-transparent",
+
+            // Selected state
+            !isDisabled && isSelected && "bg-orange-500 text-white",
+
+            // Focused state
+            !isDisabled &&
+              !isSelected &&
+              isFocused &&
+              "bg-orange-100 cursor-pointer",
+
+            // Default clickable state
+            !isDisabled && !isSelected && !isFocused && "cursor-pointer",
+          ),
+      }}
     />
   );
 };
@@ -107,7 +143,7 @@ export default SelectPlaces;
 const CustomControl = (props: any) => {
   return (
     <components.Control {...props}>
-      <div className="pl-4 text-gray-600">
+      <div className="text-gray-600">
         <Search className="size-5 text-gray-400" />
       </div>
       {props.children}
