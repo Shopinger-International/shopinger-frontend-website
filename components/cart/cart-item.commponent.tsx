@@ -1,24 +1,31 @@
 import Image from "next/image";
 // types
 import type { FC } from "react";
-import type { IVariantAttributeValues } from "@/types/variant";
+import type IVariant from "@/types/variant";
 
 // local components
 import QuantityStepper from "@/components/common/quantity-stepper.component";
 
+// hooks
+import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
+
 type IProps = {
   title: string;
   main_image: string;
-  variant_attribute_values: IVariantAttributeValues[];
-  selected_stock: number;
+  product_id: number;
+  variant: IVariant & {
+    selected_stock: number;
+  };
 };
 
-const CartItem: FC<IProps> = ({
-  title,
-  main_image,
-  variant_attribute_values,
-  selected_stock,
-}) => {
+const CartItem: FC<IProps> = ({ title, main_image, product_id, variant }) => {
+  const {
+    variant_attribute_values,
+    id: variant_id,
+    selected_stock,
+    variant_pricing,
+  } = variant;
+  const add_to_cart_mutation = useAddToCartMutation();
   const formated_variant_attribute_value = variant_attribute_values.map(
     ({ attribute, value }) => {
       return {
@@ -26,7 +33,7 @@ const CartItem: FC<IProps> = ({
         value:
           attribute.data_type === "enum"
             ? attribute.options?.find(
-                ({ label, value: option_value }) => value == option_value,
+                ({ value: option_value }) => value == option_value,
               )?.label
             : value,
       };
@@ -65,11 +72,11 @@ const CartItem: FC<IProps> = ({
         {/* Price */}
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-gray-900 sm:text-base">
-            ₹799
+            ₹{variant_pricing.selling_price_with_commission}
           </span>
 
           <span className="text-xs text-gray-400 line-through sm:text-sm">
-            ₹999
+            ₹{variant_pricing.mrp}
           </span>
 
           <span className="text-xs font-medium text-green-600">20% OFF</span>
@@ -80,7 +87,13 @@ const CartItem: FC<IProps> = ({
           <QuantityStepper
             quantity={selected_stock}
             onDecrease={() => {}}
-            onIncrease={() => {}}
+            onIncrease={() => {
+              add_to_cart_mutation.mutate({
+                product_id,
+                variant_id,
+                quantity: 1,
+              });
+            }}
           />
 
           <button className="text-xs font-medium text-gray-600 hover:text-red-500">

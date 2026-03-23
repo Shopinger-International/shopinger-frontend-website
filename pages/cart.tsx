@@ -8,17 +8,10 @@ import MainLayout from "@/components/layout/main-layout.component";
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
-import type IProduct from "@/types/product";
 
 // local components
 import CartItem from "@/components/cart/cart-item.commponent";
 import LoginModal from "@/components/login/login-modal.component";
-
-// react query
-import { useQuery } from "@tanstack/react-query";
-
-// helpers
-import Axios from "@/lib/axios/private.lib";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
@@ -60,16 +53,17 @@ const CartPage: NextPageWithLayout = () => {
             <div className="col-span-1 h-min rounded-xl border border-gray-200 bg-white p-6 lg:col-span-2">
               <div className="divide-y divide-gray-200">
                 {data?.items?.flatMap(
-                  ({ title, product_medias, variants }, index) => {
+                  (
+                    { title, product_medias, variants, id: product_id },
+                    index,
+                  ) => {
                     return variants.map((variant) => (
                       <CartItem
+                        product_id={product_id}
                         key={index}
                         title={title}
                         main_image={product_medias[0].media.url}
-                        variant_attribute_values={
-                          variant.variant_attribute_values
-                        }
-                        selected_stock={variant.selected_stock}
+                        variant = {variant}
                       />
                     ));
                   },
@@ -86,7 +80,9 @@ const CartPage: NextPageWithLayout = () => {
               <div className="mt-6 space-y-4 text-sm text-gray-600">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-medium text-gray-900">₹1997</span>
+                  <span className="font-medium text-gray-900">
+                    ₹{data?.sub_total}
+                  </span>
                 </div>
 
                 <div className="flex justify-between">

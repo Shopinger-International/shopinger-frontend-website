@@ -1,11 +1,14 @@
 // react query
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // types
 import type { AxiosError } from "axios";
 
 // lib
 import Axios from "@/lib/axios/private.lib";
+
+// helpers
+import { enqueueSnackbar } from "notistack";
 
 type IRequest = {
   product_id: number;
@@ -20,6 +23,7 @@ type IResponse = {
 };
 
 const useAddToCartMutation = () => {
+  const query_client = useQueryClient();
   return useMutation<IResponse, AxiosError, IRequest>({
     async mutationFn(payload) {
       const { data } = await Axios.post<{
@@ -28,6 +32,23 @@ const useAddToCartMutation = () => {
         success: boolean;
       }>("/add-to-cart", payload);
       return data.data;
+    },
+
+    onSuccess(response) {
+      query_client.invalidateQueries({
+        queryKey:["carts"]
+      })
+      enqueueSnackbar(response.message, {
+        key: "add-to-cart-success",
+        variant: "success",
+      });
+    },
+    onError(error) {
+      // @ts-ignore
+      enqueueSnackbar(error.response.data.message, {
+        key: "add-to-cart-error",
+        variant: "error",
+      });
     },
   });
 };
