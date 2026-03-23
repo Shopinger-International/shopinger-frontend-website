@@ -1,17 +1,35 @@
 import { useState } from "react";
 import Head from "next/head";
+import dynamic from "next/dynamic";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
 
 // local components
 import AddressCard from "@/components/manage-address/address-card.component";
-import AddAddressModal from "@/components/manage-address/add-address-modal/add-address-modal.component";
-import MobileAddressModal from "@/components/manage-address/add-address-modal/mobile-location-picker-dialog.component";
+
+const AddAddressModal = dynamic(
+  () =>
+    import("@/components/manage-address/add-address-modal/add-address-modal.component"),
+  {
+    ssr: false,
+  },
+);
+
+const MobileAddressModal = dynamic(
+  () =>
+    import("@/components/manage-address/add-address-modal/mobile-location-picker-dialog.component"),
+  {
+    ssr: false,
+  },
+);
 
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
+
+// hooks
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
 const addresses = [
   {
@@ -34,6 +52,7 @@ const addresses = [
 
 const ManageAddress: NextPageWithLayout = () => {
   const [show_address_modal, setShowAddressModal] = useState(false);
+  const is_mobile = useIsMobile();
   return (
     <>
       <Head>
@@ -46,14 +65,17 @@ const ManageAddress: NextPageWithLayout = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Head>
       <section className="min-h-screen w-full py-4">
-        {/* <AddAddressModal
-          open={show_address_modal}
-          onClose={() => setShowAddressModal(false)}
-        /> */}
-        <MobileAddressModal
-          open={show_address_modal}
-          onClose={() => setShowAddressModal(false)}
-        />
+        {is_mobile ? (
+          <MobileAddressModal
+            open={show_address_modal}
+            onClose={() => setShowAddressModal(false)}
+          />
+        ) : (
+          <AddAddressModal
+            open={show_address_modal}
+            onClose={() => setShowAddressModal(false)}
+          />
+        )}
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           <div className="mb-6 flex items-center justify-between">
             <h1 className="text-xl font-semibold text-gray-900">

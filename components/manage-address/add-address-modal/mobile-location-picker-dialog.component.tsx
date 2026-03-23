@@ -72,6 +72,7 @@ const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
             onSubmit={(values) => {
               console.log(values);
               onClose();
+              setShowDrawer(false);
             }}
           >
             {({ values, setFieldValue, setValues }) => (
@@ -214,7 +215,7 @@ const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
                               placeholder="Full Name"
                             />
 
-                            <button className="w-full rounded-md bg-orange-500 py-2 text-white">
+                            <button className="w-full rounded-md bg-orange-500 py-2 text-white shadow-sm">
                               Save Address
                             </button>
                           </Fieldset>
