@@ -36,7 +36,7 @@ const LocationPicker: FC<IProps> = ({ position, updatePosition }) => {
     >
       <Map
         mapId={MAP_ID}
-        defaultZoom={12}
+        defaultZoom={16}
         defaultCenter={position}
         gestureHandling={"greedy"}
         disableDefaultUI={true}

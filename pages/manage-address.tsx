@@ -7,13 +7,11 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import AddressCard from "@/components/manage-address/address-card.component";
 import AddAddressModal from "@/components/manage-address/add-address-modal/add-address-modal.component";
+import MobileAddressModal from "@/components/manage-address/add-address-modal/mobile-location-picker-dialog.component";
 
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
-
-// hooks
-import useGetPlaces from "@/hooks/axios/common/use-get-places.hook";
 
 const addresses = [
   {
@@ -48,7 +46,11 @@ const ManageAddress: NextPageWithLayout = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Head>
       <section className="min-h-screen w-full py-4">
-        <AddAddressModal
+        {/* <AddAddressModal
+          open={show_address_modal}
+          onClose={() => setShowAddressModal(false)}
+        /> */}
+        <MobileAddressModal
           open={show_address_modal}
           onClose={() => setShowAddressModal(false)}
         />
