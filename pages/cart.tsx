@@ -17,7 +17,7 @@ import LoginModal from "@/components/login/login-modal.component";
 import { useQuery } from "@tanstack/react-query";
 
 // helpers
-import webAxios from "@/lib/axios/web.lib";
+import Axios from "@/lib/axios/private.lib";
 
 const CartPage: NextPageWithLayout = () => {
   const [show_login_modal, setShowLoginModal] = useState(false);
@@ -26,10 +26,10 @@ const CartPage: NextPageWithLayout = () => {
     async queryFn() {
       const {
         data: { products },
-      } = await webAxios.get<{
+      } = await Axios.get<{
         success: boolean;
         products: IProduct[];
-      }>(`/get-all-products`);
+      }>(`/get-cart`);
       return products;
     },
   });
