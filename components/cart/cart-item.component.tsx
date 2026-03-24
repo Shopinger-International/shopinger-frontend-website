@@ -173,7 +173,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
           </div>
         </div>
       </div>
-      <div className="sm:hidden items-center gap-3 mt-4 flex-end flex">
+      <div className="sm:hidden items-center gap-3 mt-4 justify-between flex">
         {/* Quantity Stepper */}
         <QuantityStepper
           quantity={selected_stock}
