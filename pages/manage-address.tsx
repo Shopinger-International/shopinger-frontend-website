@@ -145,7 +145,7 @@ const ManageAddress: NextPageWithLayout = () => {
           <div className="flex flex-wrap gap-6">
             <button
               onClick={() => setShowAddressModal(true)}
-              className="w-xs rounded-2xl border-2 border-dashed border-gray-300 p-6 text-gray-500 transition hover:border-orange-500 hover:text-orange-500"
+              className="min-h-50 w-full rounded-2xl border-2 border-dashed border-gray-300 p-6 text-gray-600 hover:border-orange-500 hover:text-orange-500 md:w-xs"
             >
               <div className="flex h-full flex-col items-center justify-center gap-2">
                 <span className="text-3xl font-light">+</span>

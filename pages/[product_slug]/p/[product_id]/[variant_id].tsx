@@ -26,6 +26,9 @@ import {
   generateSlug,
 } from "@/helpers/product.helper";
 
+// hooks
+import { getMappings } from "@/hooks/axios/common/use-category-mappings.hook";
+
 const getProduct = async (
   product_id: number,
 ): Promise<{
@@ -43,23 +46,6 @@ const getProduct = async (
     product,
     category_mappings,
   };
-};
-
-export const getMappings = async (
-  category_id: number,
-): Promise<{
-  data: Array<ICategoryAttributeMapping>;
-}> => {
-  const response = await webAxios.get(
-    `/list-category-attributes/${category_id}?type=subsub`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  );
-
-  return response.data;
 };
 
 const getAllProducts = async (): Promise<IProduct[]> => {
@@ -309,9 +295,7 @@ export const getStaticProps = (async ({ params }) => {
   }
 
   let { product } = await getProduct(product_id);
-  let { data: category_mappings } = await getMappings(
-    product.sub_sub_category.id,
-  );
+  let category_mappings = await getMappings(product.sub_sub_category.id);
   let { related_products } = await getRelatedProducts(product_id);
 
   if (!product) {

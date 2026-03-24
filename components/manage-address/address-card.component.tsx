@@ -23,16 +23,13 @@ const AddressCard: FC<Props> = ({ data, onEdit, onDelete }) => {
   return (
     <div
       className={clsx(
-        "group relative w-xs cursor-pointer rounded-2xl border p-5",
-        data.is_default
-          ? "border-orange-500 bg-orange-50"
-          : "border-gray-200 hover:border-gray-300",
+        "group relative w-full md:w-xs cursor-pointer rounded-xl border p-6",
+        data.is_default ? "border-2 border-orange-500" : "border-gray-300",
       )}
     >
-      {/* TOP SECTION */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <TypeIcon className="h-5 w-5 text-gray-500" />
+          <TypeIcon className="h-5 w-5 text-orange-500" />
 
           <h3 className="text-sm font-semibold text-gray-900">
             {data.full_name}
@@ -51,7 +48,7 @@ const AddressCard: FC<Props> = ({ data, onEdit, onDelete }) => {
       </div>
 
       {/* ADDRESS */}
-      <div className="mt-3 space-y-1 text-sm text-gray-700">
+      <div className="mt-3 space-y-1 text-sm text-gray-900">
         <p className="font-medium text-gray-900">
           {data.house_number}, {data.address1}
         </p>
@@ -61,19 +58,19 @@ const AddressCard: FC<Props> = ({ data, onEdit, onDelete }) => {
         </p>
 
         {data.landmark && (
-          <p className="text-xs text-gray-500">Near {data.landmark}</p>
+          <p className="text-xs text-gray-600">Near {data.landmark}</p>
         )}
       </div>
 
       {/* DELIVERY NOTE */}
       {data.delivery_instructions && (
-        <p className="mt-2 text-xs text-gray-500 italic">
+        <p className="mt-2 text-xs text-gray-600 italic">
           “{data.delivery_instructions}”
         </p>
       )}
 
       {/* PHONE */}
-      <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
+      <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
         <Phone className="h-4 w-4" />
         {data.phone}
       </div>
@@ -95,7 +92,7 @@ const AddressCard: FC<Props> = ({ data, onEdit, onDelete }) => {
             e.stopPropagation();
             onDelete?.();
           }}
-          className="font-medium text-red-500 hover:text-red-600"
+          className="font-medium text-gray-600 hover:text-black"
         >
           Delete
         </button>
@@ -105,7 +102,7 @@ const AddressCard: FC<Props> = ({ data, onEdit, onDelete }) => {
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="font-medium text-orange-500 hover:text-orange-600"
+            className="font-medium text-gray-600 hover:text-black"
           >
             Set as default
           </button>
