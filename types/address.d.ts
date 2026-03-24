@@ -16,8 +16,8 @@ export interface IPlace {
 }
 
 export interface IAddress {
-  id: string;
-  user_id: string;
+  id: number;
+  user_id: number;
 
   // Contact info (can differ from user profile)
   full_name: string;

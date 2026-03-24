@@ -13,19 +13,48 @@ const typeIconMap = {
   other: MapPin,
 };
 
-type Props = {
+type IBaseProps = {
   data: IAddress;
   onEdit?: () => void;
   onDelete?: () => void;
 };
-const AddressCard: FC<Props> = ({ data, onEdit, onDelete }) => {
+
+type IWithSelection = {
+  show_selected: true;
+  selected_address_id: number | null;
+  updateSelectedAddress: (address_id: number) => void;
+};
+
+type IWithoutSelection = {
+  show_selected: false;
+  selected_address_id?: never;
+  updateSelectedAddress?: never;
+};
+
+type IProps = IBaseProps & (IWithSelection | IWithoutSelection);
+const AddressCard: FC<IProps> = ({
+  data,
+  onEdit,
+  onDelete,
+  show_selected,
+  selected_address_id,
+  updateSelectedAddress,
+}) => {
   const TypeIcon = typeIconMap[data.address_type] || MapPin;
+  console.log(
+    "value of selected address id",
+    selected_address_id,
+    show_selected,
+  );
   return (
     <div
       className={clsx(
-        "group relative w-full md:w-xs cursor-pointer rounded-xl border p-6",
-        data.is_default ? "border-2 border-orange-500" : "border-gray-300",
+        "group relative w-full cursor-pointer rounded-xl border bg-white p-6 md:w-xs",
+        show_selected && data.id == selected_address_id
+          ? "border-2 border-orange-500"
+          : "border-gray-300",
       )}
+      onClick={() => updateSelectedAddress?.(data.id)}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">

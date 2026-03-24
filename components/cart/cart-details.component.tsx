@@ -1,9 +1,11 @@
+import { useRouter } from "next/router";
 import Link from "next/link";
 // types
 import type { FC } from "react";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // local components
 import CartItem from "@/components/cart/cart-item.component";
@@ -12,12 +14,12 @@ import CartItem from "@/components/cart/cart-item.component";
 import clsx from "clsx";
 
 type IProps = {
-    handleShowLoginModal:()=>void;
-}
+  handleShowLoginModal: () => void;
+};
 
-const CartDetails: FC<IProps> = ({
-    handleShowLoginModal
-}) => {
+const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
+  const router = useRouter();
+  const user_detail = useUserDetails();
   const { data } = useCart();
   return (
     <div className="relative grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -79,15 +81,17 @@ const CartDetails: FC<IProps> = ({
         {/* CTA */}
         <button
           type="button"
-          className="mt-4 w-full rounded-md bg-orange-500 py-2 font-medium text-white"
-          onClick={handleShowLoginModal}
+          className="mt-4 w-full rounded-md bg-orange-500 py-2 font-medium text-white cursor-pointer"
+          onClick={() =>
+            user_detail ? router.push("/checkout") : handleShowLoginModal()
+          }
         >
           Proceed to Checkout
         </button>
 
         <Link
           href="/"
-          className="mt-3 flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-2 font-medium text-gray-900"
+          className="mt-3 flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-2 font-medium text-gray-900 cursor-pointer"
         >
           Continue Shopping
         </Link>
