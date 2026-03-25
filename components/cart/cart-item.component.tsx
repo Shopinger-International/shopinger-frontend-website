@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -34,7 +35,6 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
     sub_sub_category_id,
   } = product;
   const { data: category_mappings } = useCategoryMappings(sub_sub_category_id);
-  console.log("value of category mappings", category_mappings);
   const {
     variant_attribute_values,
     id: variant_id,
@@ -57,38 +57,46 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
     },
   );
 
-  const media_group = variant_visual_attribute_medias.reduce<IMediaGroup>(
-    (acc, item) => {
-      const { attribute_id, attribute_value } = item;
-      const updated_attribute_value = attribute_value.toLowerCase();
+  const variant_medias = useMemo(() => {
+    const media_group = variant_visual_attribute_medias.reduce<IMediaGroup>(
+      (acc, item) => {
+        const { attribute_id, attribute_value } = item;
+        const updated_attribute_value = attribute_value.toLowerCase();
 
-      if (!acc[attribute_id]) {
-        acc[attribute_id] = {};
-      }
+        if (!acc[attribute_id]) {
+          acc[attribute_id] = {};
+        }
 
-      if (!acc[attribute_id][updated_attribute_value]) {
-        acc[attribute_id][updated_attribute_value] = [];
-      }
+        if (!acc[attribute_id][updated_attribute_value]) {
+          acc[attribute_id][updated_attribute_value] = [];
+        }
 
-      acc[attribute_id][updated_attribute_value].push(item.media);
+        acc[attribute_id][updated_attribute_value].push(item.media);
 
-      return acc;
-    },
-    {},
-  );
-
-  let variant_medias = variant.variant_attribute_values
-    .filter(
-      ({ attribute }) =>
-        category_mappings?.find(
-          ({ attribute: mapping_attribute }) =>
-            mapping_attribute.id == attribute.id,
-        )?.is_visual,
-    )
-    .flatMap(
-      ({ attribute, value }) =>
-        media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
+        return acc;
+      },
+      {},
     );
+
+    let variant_medias = variant_attribute_values
+      .filter(
+        ({ attribute }) =>
+          category_mappings?.find(
+            ({ attribute: mapping_attribute }) =>
+              mapping_attribute.id == attribute.id,
+          )?.is_visual,
+      )
+      .flatMap(
+        ({ attribute, value }) =>
+          media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
+      );
+
+    return variant_medias;
+  }, [
+    variant_attribute_values.length,
+    category_mappings?.length,
+    variant_visual_attribute_medias.length,
+  ]);
 
   return (
     <div className="border-b border-gray-300 p-6">
@@ -173,7 +181,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
           </div>
         </div>
       </div>
-      <div className="sm:hidden items-center gap-3 mt-4 justify-between flex">
+      <div className="mt-4 flex items-center justify-between gap-3 sm:hidden">
         {/* Quantity Stepper */}
         <QuantityStepper
           quantity={selected_stock}
