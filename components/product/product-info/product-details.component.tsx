@@ -91,15 +91,16 @@ const ProductDetails: FC<{
       top_highlights_attribute_id.includes(attribute.id),
     ),
   ];
-  const product_dimension_attr = top_highlights.filter(({ attribute }) =>
-    ["item_width", "item_height", "item_depth"].includes(attribute.code),
-  );
 
   const dimension_attr_code = [
     DIMENSION_ATTR.ITEM_LENGTH,
     DIMENSION_ATTR.ITEM_WIDTH,
     DIMENSION_ATTR.ITEM_HEIGHT,
   ];
+  const product_dimension_attr = top_highlights.filter(({ attribute }) =>
+    dimension_attr_code.includes(attribute.code),
+  );
+
   top_highlights = top_highlights.filter(
     ({ attribute, value }) =>
       !dimension_attr_code.includes(attribute.code) &&
