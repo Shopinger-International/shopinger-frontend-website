@@ -11,9 +11,7 @@ import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant
 import QuantityStepper from "@/components/common/quantity-stepper.component";
 
 // hooks
-import useCartItemIncreaseMutation from "@/hooks/axios/cart/use-cart-item-increase-mutation.hook";
-import useCartItemDecreaseMutation from "@/hooks/axios/cart/use-cart-item-decrease-mutation.hook";
-import useCartItemRemoveMutation from "@/hooks/axios/cart/use-cart-item-remove-mutation.hook";
+import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
 import useCategoryMappings from "@/hooks/axios/common/use-category-mappings.hook";
 
 // icons
@@ -29,7 +27,7 @@ type IProps = {
   };
 };
 
-const CartItem: FC<IProps> = ({ product, variant }) => {
+const OrderItem: FC<IProps> = ({ product, variant }) => {
   const {
     title,
     variant_visual_attribute_medias,
@@ -44,9 +42,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
     variant_pricing,
   } = variant;
   const product_slug = generateSlug(title);
-  const cart_item_increase_mutation = useCartItemIncreaseMutation();
-  const cart_item_decrease_mutation = useCartItemDecreaseMutation();
-  const cart_item_remove_mutation = useCartItemRemoveMutation();
+  const add_to_cart_mutation = useAddToCartMutation();
   const formated_variant_attribute_value = variant_attribute_values.map(
     ({ attribute, value }) => {
       return {
@@ -103,7 +99,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
   ]);
 
   return (
-    <div className="border-b border-gray-300 p-6">
+    <div className="rounded-xl border border-gray-300 bg-white p-6">
       <div className="flex gap-4">
         {/* IMAGE */}
 
@@ -122,13 +118,13 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
         </div>
 
         {/* CONTENT */}
-        <div className="flex flex-1 flex-col justify-between">
+        <div className="flex flex-1 flex-col justify-between space-y-1">
           {/* TOP */}
-          <h4 className="line-clamp-2 text-sm font-semibold">{title}</h4>
+          <h4 className="line-clamp-2 font-medium">{title}</h4>
 
           {!!formated_variant_attribute_value.length && (
             <>
-              <p className="mt-1 text-xs font-medium text-gray-600">
+              <p className="text-sm font-medium text-gray-600">
                 {formated_variant_attribute_value
                   .map(({ name, value }) => `${name}: ${value}`)
                   .join(", ")}
@@ -137,98 +133,26 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
           )}
 
           {/* BOTTOM */}
-          <div className="mt-3 flex items-center justify-between">
+          <div className="flex items-center justify-between">
             {/* PRICE BLOCK */}
             <div className="flex flex-col">
               {/* PRICE ROW */}
               <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold text-gray-900">
+                <span className="text-lg font-semibold text-orange-500">
                   ₹
                   {variant_pricing.selling_price_with_commission *
                     selected_stock}
                 </span>
-
-                <span className="text-sm text-gray-600 line-through">
-                  ₹{variant_pricing.mrp * selected_stock}
-                </span>
-
-                <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-600">
-                  20% OFF
+                <span className="size-1.5 rounded-full bg-orange-500"></span>
+                <span className="font-semibold text-gray-900">
+                  Qty: {selected_stock}
                 </span>
               </div>
-
-              {/* STOCK */}
-              <p className="mt-1 text-xs font-medium text-orange-500">
-                Only 3 left
-              </p>
-            </div>
-
-            <div className="hidden items-center gap-3 sm:flex">
-              {/* Quantity Stepper */}
-              <QuantityStepper
-                quantity={selected_stock}
-                show_increase_disabled={cart_item_increase_mutation.isPending}
-                show_decrease_disabled={cart_item_decrease_mutation.isPending}
-                onDecrease={() => {
-                  cart_item_decrease_mutation.mutate({
-                    variant_id,
-                  });
-                }}
-                onIncrease={() => {
-                  cart_item_increase_mutation.mutate({
-                    variant_id,
-                  });
-                }}
-              />
-
-              {/* Remove Button */}
-              <button
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:bg-gray-50 disabled:text-gray-300 disabled:cursor-not-allowed"
-                disabled={cart_item_remove_mutation.isPending}
-                onClick={() =>
-                  cart_item_remove_mutation.mutate({
-                    variant_id,
-                  })
-                }
-              >
-                <X size={18} />
-              </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-4 flex items-center justify-between gap-3 sm:hidden">
-        {/* Quantity Stepper */}
-        <QuantityStepper
-          show_increase_disabled={cart_item_increase_mutation.isPending}
-          show_decrease_disabled={cart_item_decrease_mutation.isPending}
-          quantity={selected_stock}
-          onDecrease={() => {
-            cart_item_decrease_mutation.mutate({
-              variant_id,
-            });
-          }}
-          onIncrease={() => {
-            cart_item_increase_mutation.mutate({
-              variant_id,
-            });
-          }}
-        />
-
-        {/* Remove Button */}
-        <button
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:bg-gray-50 disabled:text-gray-300 disabled:cursor-not-allowed"
-          disabled={cart_item_remove_mutation.isPending}
-          onClick={() =>
-            cart_item_remove_mutation.mutate({
-              variant_id,
-            })
-          }
-        >
-          <X size={18} />
-        </button>
-      </div>
     </div>
   );
 };
-export default CartItem;
+export default OrderItem;

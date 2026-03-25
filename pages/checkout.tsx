@@ -25,11 +25,11 @@ const steps = [
     title: "Order Summary",
     description: "Review items, quantities, and total price",
   },
-  {
-    id: 3,
-    title: "Payment",
-    description: "Choose a payment method and complete your order",
-  },
+  // {
+  //   id: 3,
+  //   title: "Payment",
+  //   description: "Choose a payment method and complete your order",
+  // },
 ];
 const CheckoutPage: NextPageWithLayout = () => {
   const [selected_step, setSelectedStep] = useState(1);

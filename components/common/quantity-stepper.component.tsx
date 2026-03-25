@@ -3,17 +3,25 @@ import { Minus, Plus } from "lucide-react";
 
 type IProps = {
   quantity: number;
+  show_increase_disabled: boolean;
+  show_decrease_disabled: boolean;
   onIncrease: () => void;
   onDecrease: () => void;
 };
 
-const QuantityStepper: FC<IProps> = ({ quantity, onIncrease, onDecrease }) => {
+const QuantityStepper: FC<IProps> = ({
+  quantity,
+  show_increase_disabled,
+  show_decrease_disabled,
+  onIncrease,
+  onDecrease,
+}) => {
   return (
     <div className="flex items-center overflow-hidden rounded-md border border-gray-300 bg-white">
       {/* Decrease */}
       <button
         onClick={onDecrease}
-        disabled={quantity === 1}
+        disabled={quantity === 1 || show_decrease_disabled}
         className="flex h-10 w-10 items-center justify-center text-gray-600 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
       >
         <Minus size={16} />
@@ -26,6 +34,7 @@ const QuantityStepper: FC<IProps> = ({ quantity, onIncrease, onDecrease }) => {
 
       {/* Increase */}
       <button
+        disabled={show_increase_disabled}
         onClick={onIncrease}
         className="flex h-10 w-10 items-center justify-center text-gray-600 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
       >

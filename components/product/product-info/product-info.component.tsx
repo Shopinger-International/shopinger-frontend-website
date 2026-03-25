@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -33,6 +34,7 @@ const ProductInfo: FC<IProps> = ({
   media_group,
   category_mappings,
 }) => {
+  const router = useRouter();
   const add_to_cart_mutation = useAddToCartMutation();
   const { title, brand, sub_sub_category } = product;
   const updated_title =
@@ -162,17 +164,20 @@ const ProductInfo: FC<IProps> = ({
       >
         <button
           onClick={() => {
-            add_to_cart_mutation.mutate({
-              product_id: product.id,
-              variant_id: variant.id,
-              quantity: 1,
-            });
+            add_to_cart_mutation.isSuccess
+              ? router.push("/cart")
+              : add_to_cart_mutation.mutate({
+                  product_id: product.id,
+                  variant_id: variant.id,
+                  quantity: 1,
+                });
           }}
-          className="w-full rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900"
+          disabled={add_to_cart_mutation.isPending}
+          className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-600"
         >
-          Add to Cart
+          {add_to_cart_mutation.isSuccess ? "View Cart" : "Add to cart"}
         </button>
-        <button className="w-full rounded-md bg-orange-500 py-2 font-semibold text-white">
+        <button className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white">
           Buy Now
         </button>
       </div>
