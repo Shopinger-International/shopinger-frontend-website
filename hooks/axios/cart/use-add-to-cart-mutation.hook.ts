@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 // react query
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -23,6 +24,7 @@ type IResponse = {
 };
 
 const useAddToCartMutation = () => {
+  const router = useRouter();
   const query_client = useQueryClient();
   return useMutation<IResponse, AxiosError, IRequest>({
     async mutationFn(payload) {
@@ -36,11 +38,13 @@ const useAddToCartMutation = () => {
 
     onSuccess(response) {
       query_client.invalidateQueries({
-        queryKey:["carts"]
-      })
+        queryKey: ["carts"],
+      });
       enqueueSnackbar(response.message, {
         key: "add-to-cart-success",
         variant: "success",
+        action_label: "View Cart",
+        onActionClick: () => router.push("/cart"),
       });
     },
     onError(error) {

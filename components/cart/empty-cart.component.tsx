@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 
+// hooks
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+
 const EmptyCart = () => {
+  const { data: user_detail } = useUserDetails();
   return (
     <div className="flex flex-col items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-16 text-center">
       {/* Icon */}
@@ -31,12 +35,14 @@ const EmptyCart = () => {
         </Link>
 
         {/* Secondary CTA */}
-        <Link
-          href="/login"
-          className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:scale-95"
-        >
-          Login / Sign Up
-        </Link>
+        {!user_detail && (
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:scale-95"
+          >
+            Login / Sign Up
+          </Link>
+        )}
       </div>
     </div>
   );

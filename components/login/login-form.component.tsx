@@ -102,9 +102,14 @@ const otp_schema = z.object({
 type IProps = {
   is_modal?: boolean;
   heading_text?: string;
+  handleOnSuccess?: () => void;
 };
 
-const LoginForm: FC<IProps> = ({ is_modal = false, heading_text }) => {
+const LoginForm: FC<IProps> = ({
+  is_modal = false,
+  heading_text,
+  handleOnSuccess,
+}) => {
   const send_otp_mutation = useSendOTPMutation();
   const verify_otp_mutation = useVerifyLoginOtp();
   const router = useRouter();
@@ -281,6 +286,7 @@ const LoginForm: FC<IProps> = ({ is_modal = false, heading_text }) => {
                 {
                   onSuccess() {
                     !is_modal && router.push("/");
+                    handleOnSuccess?.();
                   },
                 },
               );

@@ -19,13 +19,13 @@ type IProps = {
 
 const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
   const router = useRouter();
-  const user_detail = useUserDetails();
-  const { data } = useCart();
+  const { data: user_detail } = useUserDetails();
+  const { data: cart } = useCart();
   return (
     <div className="relative grid grid-cols-1 gap-8 lg:grid-cols-3">
       {/* Cart Items */}
       <div className="col-span-1 h-min rounded-xl border border-gray-300 bg-white lg:col-span-2">
-        {data?.items?.flatMap(({ variants, ...product }, index) => {
+        {cart?.items?.flatMap(({ variants, ...product }, index) => {
           return variants.map((variant) => (
             <CartItem
               product={product}
@@ -44,15 +44,15 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
           {[
             {
               label: "Subtotal",
-              value: `₹${data?.sub_total}`,
+              value: `₹${cart?.sub_total}`,
             },
             {
               label: "Discount",
-              value: `₹${data?.sub_total}`,
+              value: `₹${cart?.sub_total}`,
             },
             {
               label: "Shipping",
-              value: `₹${data?.sub_total}`,
+              value: `₹${cart?.sub_total}`,
             },
           ].map(({ label, value }) => (
             <div className="flex items-center justify-between">
@@ -81,7 +81,7 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
         {/* CTA */}
         <button
           type="button"
-          className="mt-4 w-full rounded-md bg-orange-500 py-2 font-medium text-white cursor-pointer"
+          className="mt-4 w-full cursor-pointer rounded-md bg-orange-500 py-2 font-medium text-white"
           onClick={() =>
             user_detail ? router.push("/checkout") : handleShowLoginModal()
           }
@@ -91,7 +91,7 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
 
         <Link
           href="/"
-          className="mt-3 flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-2 font-medium text-gray-900 cursor-pointer"
+          className="mt-3 flex w-full cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white py-2 font-medium text-gray-900"
         >
           Continue Shopping
         </Link>
