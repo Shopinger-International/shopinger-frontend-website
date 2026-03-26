@@ -1,3 +1,4 @@
+export type IAddressType = "HOME" | "WORK" | "OTHER";
 export interface IAddressComponent {
   longText: string;
   shortText: string;
@@ -25,14 +26,12 @@ export interface IAddress {
 
   // Address breakdown
   house_number: string;
-  street: string;
-  address1: string;
+  area: string;
   landmark: string;
 
   city: string;
   state: string;
-  zip: string;
-  country: "India";
+  pincode: string;
 
   // Google data
   place_id: string;
@@ -43,7 +42,7 @@ export interface IAddress {
   longitude: number;
 
   // Type & labeling
-  address_type: "home" | "work" | "other";
+  address_type: IAddressType;
 
   // Delivery help
   delivery_instructions?: string;

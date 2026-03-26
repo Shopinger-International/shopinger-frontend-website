@@ -35,7 +35,37 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
           ));
         })}
       </div>
+
       <div className="h-max rounded-xl border border-gray-300 bg-white p-6 lg:sticky lg:top-(--header-height)">
+        {/* DELIVERY INFO */}
+        <div className="mb-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-gray-600">Deliver to</h3>
+
+            <button
+              className="text-sm font-semibold text-orange-500"
+              onClick={() => {
+                if (!user_detail) return handleShowLoginModal();
+                router.push("/address"); // or open address modal
+              }}
+            >
+              {user_detail ? "Change" : "Add"}
+            </button>
+          </div>
+
+          <div className="mt-1 text-sm text-gray-900">
+            {user_detail?.address ? (
+              <p className="line-clamp-2">{user_detail.address}</p>
+            ) : (
+              <p className="text-gray-400">No address added</p>
+            )}
+          </div>
+
+          <div className="mt-1 text-xs font-medium text-green-600">
+            Delivery in 10–15 mins
+          </div>
+        </div>
+
         {/* HEADER */}
         <h3 className="font-semibold text-orange-500">Order Summary</h3>
 
@@ -60,7 +90,7 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
               <span
                 className={clsx(
                   "font-semibold",
-                  label == "Discount" ? "text-orange-500" : "text-gray-900",
+                  label === "Discount" ? "text-orange-500" : "text-gray-900",
                 )}
               >
                 {value}
@@ -76,19 +106,26 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-gray-600">Total</span>
           <span className="text-lg font-semibold text-gray-900">
-            ₹{cart?.total_amount}
+            ₹
+            {(cart?.total_amount || 0) -
+              (cart?.total_discount || 0) +
+              (cart?.charges ?? 50)}
           </span>
         </div>
 
         {/* CTA */}
         <button
           type="button"
-          className="mt-4 w-full cursor-pointer rounded-md bg-orange-500 py-2 font-medium text-white"
-          onClick={() =>
-            user_detail ? router.push("/checkout") : handleShowLoginModal()
-          }
+          className="mt-4 w-full cursor-pointer rounded-md bg-orange-500 py-3 text-lg font-semibold text-white"
+          onClick={() => {
+            if (!user_detail) return handleShowLoginModal();
+            router.push("/payment");
+          }}
         >
-          Proceed to Checkout
+          Pay ₹
+          {(cart?.total_amount || 0) -
+            (cart?.total_discount || 0) +
+            (cart?.charges ?? 50)}
         </button>
 
         <Link

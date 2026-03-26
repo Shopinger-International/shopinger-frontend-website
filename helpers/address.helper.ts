@@ -27,11 +27,11 @@ export const mapPlaceToForm = (place: IPlace) => {
     formatted_address: place.formattedAddress,
 
     // If the combined parts are empty, use the full formatted string as a safe fallback
-    address1: addressLine1 || place.formattedAddress,
+    area: addressLine1 || place.formattedAddress,
 
     city: getComp("locality") || getComp("administrative_area_level_3"),
     state: getComp("administrative_area_level_1"),
-    zip: getComp("postal_code"),
+    pincode: getComp("postal_code"),
 
     latitude: place.location.latitude,
     longitude: place.location.longitude,
@@ -61,11 +61,11 @@ export const mapGeocodeToForm = (result: any) => {
     place_id: result.place_id,
     formatted_address: result.formatted_address,
 
-    address1: addressLine1 || result.formatted_address,
+    area: addressLine1 || result.formatted_address,
 
     city: getComp("locality") || getComp("administrative_area_level_3"),
     state: getComp("administrative_area_level_1"),
-    zip: getComp("postal_code"),
+    pincode: getComp("postal_code"),
 
     latitude: result.geometry.location.lat,
     longitude: result.geometry.location.lng,

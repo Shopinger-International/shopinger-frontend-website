@@ -7,54 +7,28 @@ import { Home, Briefcase, MapPin, Phone } from "lucide-react";
 // helpers
 import clsx from "clsx";
 
+// hooks
+import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
+
 const typeIconMap = {
-  home: Home,
-  work: Briefcase,
-  other: MapPin,
+  HOME: Home,
+  WORK: Briefcase,
+  OTHER: MapPin,
 };
 
-type IBaseProps = {
+type IProps = {
   data: IAddress;
-  onEdit?: () => void;
+  onEdit?: (data: IAddress) => void;
   onDelete?: () => void;
 };
-
-type IWithSelection = {
-  show_selected: true;
-  selected_address_id: number | null;
-  updateSelectedAddress: (address_id: number) => void;
-};
-
-type IWithoutSelection = {
-  show_selected: false;
-  selected_address_id?: never;
-  updateSelectedAddress?: never;
-};
-
-type IProps = IBaseProps & (IWithSelection | IWithoutSelection);
-const AddressCard: FC<IProps> = ({
-  data,
-  onEdit,
-  onDelete,
-  show_selected,
-  selected_address_id,
-  updateSelectedAddress,
-}) => {
+const AddressCard: FC<IProps> = ({ data, onEdit }) => {
+  const delete_address_mutation = useDeleteAddressMutation();
   const TypeIcon = typeIconMap[data.address_type] || MapPin;
-  console.log(
-    "value of selected address id",
-    selected_address_id,
-    show_selected,
-  );
   return (
     <div
       className={clsx(
-        "group relative w-full cursor-pointer rounded-xl border bg-white p-6 md:w-xs",
-        show_selected && data.id == selected_address_id
-          ? "border-2 border-orange-500"
-          : "border-gray-300",
+        "group relative w-full cursor-pointer rounded-xl border border-gray-300 bg-white p-6 md:w-xs",
       )}
-      onClick={() => updateSelectedAddress?.(data.id)}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
@@ -79,11 +53,11 @@ const AddressCard: FC<IProps> = ({
       {/* ADDRESS */}
       <div className="mt-3 space-y-1 text-sm text-gray-900">
         <p className="font-medium text-gray-900">
-          {data.house_number}, {data.address1}
+          {data.house_number}, {data.area}
         </p>
 
         <p>
-          {data.city}, {data.state} - {data.zip}
+          {data.city}, {data.state} - {data.pincode}
         </p>
 
         {data.landmark && (
@@ -109,19 +83,22 @@ const AddressCard: FC<IProps> = ({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onEdit?.();
+            onEdit?.(data);
           }}
-          className="font-medium text-gray-600 hover:text-black"
+          className="cursor-pointer font-medium text-gray-600 hover:text-black"
         >
           Edit
         </button>
 
         <button
+          type="button"
           onClick={(e) => {
-            e.stopPropagation();
-            onDelete?.();
+            delete_address_mutation.mutate({
+              address_id: data.id,
+            });
           }}
-          className="font-medium text-gray-600 hover:text-black"
+          disabled={delete_address_mutation.isPending}
+          className="cursor-pointer font-medium text-gray-600 hover:text-black disabled:text-gray-300"
         >
           Delete
         </button>

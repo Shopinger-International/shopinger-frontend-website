@@ -1,5 +1,6 @@
 // types
 import { FC } from "react";
+import type { IAddress } from "@/types/address";
 
 // icons
 import { X, Home, Briefcase, MapPin } from "lucide-react";
@@ -15,7 +16,7 @@ import {
 import { Formik, Form } from "formik";
 
 // local components
-import AddAddressInput from "./add-address-input.component";
+import AddAddressInput from "@/components/manage-address/add-address-modal/add-address-input.component";
 import LocationPicker from "@/components/common/location-picker/location-picker.component";
 import SelectPlaces from "@/components/common/location-picker/select-places.component";
 import Switch from "@/components/common/switch.component";
@@ -30,10 +31,17 @@ import {
 import { z } from "zod";
 import clsx from "clsx";
 
+// hooks
+import useCreateAddressMutation from "@/hooks/axios/address/use-create-address-mutation.hook";
+import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
+
+// const
+import { ADDRESS_TYPE } from "@/constants/display-area.constant";
+
 const address_types = [
-  { id: "home", label: "Home", icon: Home },
-  { id: "work", label: "Work", icon: Briefcase },
-  { id: "other", label: "Other", icon: MapPin },
+  { id: ADDRESS_TYPE.HOME, label: "Home", icon: Home },
+  { id: ADDRESS_TYPE.WORK, label: "Work", icon: Briefcase },
+  { id: ADDRESS_TYPE.OTHER, label: "Other", icon: MapPin },
 ];
 
 const address_schema = z.object({
@@ -45,7 +53,11 @@ const address_schema = z.object({
   house_number: z.string().min(1, "House / Flat No. is required"),
 
   landmark: z.string().optional(),
-  address_type: z.enum(["home", "work", "other"]),
+  address_type: z.enum([
+    ADDRESS_TYPE.HOME,
+    ADDRESS_TYPE.WORK,
+    ADDRESS_TYPE.OTHER,
+  ]),
   delivery_instructions: z.string().optional(),
 });
 
@@ -56,42 +68,68 @@ export type ICoords = {
 
 type IProps = {
   open: boolean;
+  initial_data: IAddress | null;
   onClose: () => void;
 };
 
-const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
+const AddAddressModal: FC<IProps> = ({ open, initial_data, onClose }) => {
+  const create_address_mutation = useCreateAddressMutation();
+  const update_address_mutation = useUpdateAddressMutation();
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-full max-w-4xl overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-xl">
-          <Formik
-            initialValues={{
-              full_name: "",
-              phone: "",
-              house_number: "",
-              landmark: "",
-              place_id: "",
-              formatted_address: "",
-              address1: "",
-              city: "",
-              state: "",
-              zip: "",
-              latitude: 28.6139,
-              longitude: 77.209,
-              address_type: "home",
-              delivery_instructions: "",
-              is_default: false,
-            }}
+          <Formik<Omit<IAddress, "id" | "user_id" | "is_deleted">>
+            initialValues={
+              initial_data ?? {
+                full_name: "",
+                phone: "",
+                house_number: "",
+                landmark: "",
+                place_id: "",
+                formatted_address: "",
+                area: "",
+                city: "",
+                state: "",
+                pincode: "",
+                latitude: 28.6139,
+                longitude: 77.209,
+                address_type: ADDRESS_TYPE.HOME,
+                delivery_instructions: "",
+                is_default: false,
+              }
+            }
             validate={toFormikValidate(address_schema)}
             onSubmit={(values) => {
-              console.log(values);
-              onClose();
+              console.log("value of values", values);
+              initial_data
+                ? update_address_mutation.mutate(
+                    {
+                      address_id: initial_data.id,
+                      payload: values,
+                    },
+                    {
+                      onSuccess() {
+                        onClose();
+                      },
+                    },
+                  )
+                : create_address_mutation.mutate(
+                    {
+                      ...values,
+                    },
+                    {
+                      onSuccess() {
+                        onClose();
+                      },
+                    },
+                  );
             }}
           >
-            {({ values, setFieldValue, setValues, isSubmitting }) => (
-              <Form className="flex h-[80vh] flex-col max-h-150">
+            {({ values, setFieldValue, setValues }) => (
+              <Form className="flex h-[80vh] max-h-150 flex-col">
                 {/* BODY */}
 
                 <div className="flex flex-1 overflow-hidden">
@@ -146,7 +184,6 @@ const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
                               const { latitude, longitude } = pos.coords;
                               getAddressFromCoords(latitude, longitude).then(
                                 (data) => {
-                                  console.log("value fo data", data);
                                   const mapped = mapGeocodeToForm(data);
                                   setValues((prev) => ({
                                     ...prev,
@@ -170,7 +207,7 @@ const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
                     {/* RIGHT HEADER ONLY */}
                     <div className="flex shrink-0 items-center justify-between border-b border-gray-300 px-6 py-3">
                       <h2 className="text-lg font-semibold text-orange-500">
-                        Add new address
+                        {initial_data ? "Update Address" : "Add new address"}
                       </h2>
 
                       <button
@@ -225,7 +262,7 @@ const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
                           placeholder="Nearby landmark (optional)"
                         />
                         <AddAddressInput
-                          name="address1"
+                          name="area"
                           placeholder="Area / Locality"
                           disabled
                         />
@@ -283,10 +320,19 @@ const AddAddressModal: FC<IProps> = ({ open, onClose }) => {
                       {/* Submit Button */}
                       <button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={
+                          create_address_mutation.isPending ||
+                          update_address_mutation.isPending
+                        }
                         className="w-full rounded-md bg-orange-500 px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
                       >
-                        {isSubmitting ? "Saving..." : "Add address"}
+                        {update_address_mutation.isPending
+                          ? "Updating..."
+                          : create_address_mutation.isPending
+                            ? "Saving..."
+                            : initial_data
+                              ? "Update Address"
+                              : "Add Address"}
                       </button>
                     </div>
                   </div>
