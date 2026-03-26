@@ -28,7 +28,7 @@ const useCartItemDecreaseMutation = () => {
         message: string;
         data: any;
         success: boolean;
-      }>("/cart-decrease", payload);
+      }>("/cart-item-quantity-decrease", payload);
       return data;
     },
 
@@ -37,14 +37,15 @@ const useCartItemDecreaseMutation = () => {
         queryKey: ["carts"],
       });
       enqueueSnackbar(response.message, {
-        key: "cart-decrease-success",
+        key: "cart-item-quantity-decrease-success",
         variant: "success",
       });
     },
     onError(error) {
+      console.log("value of error", error);
       // @ts-ignore
       enqueueSnackbar(error.response.data.message, {
-        key: "cart-decrease-error",
+        key: "cart-item-quantity-decrease-error",
         variant: "error",
       });
     },

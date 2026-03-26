@@ -1,3 +1,4 @@
+import { useState } from "react";
 import dynamic from "next/dynamic";
 // types
 import type { ReactElement, ReactNode } from "react";
@@ -10,7 +11,13 @@ import type { AppProps } from "next/app";
 import { SnackbarProvider } from "notistack";
 
 // react query
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  HydrationBoundary,
+} from "@tanstack/react-query";
+// _app.jsx
+
 const ReactQueryDevtools =
   process.env.NODE_ENV === "development"
     ? dynamic(
@@ -28,8 +35,6 @@ import {
   ErrorSnackbar,
 } from "@/components/common/snackbar.component";
 
-const query_client = new QueryClient();
-
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
@@ -39,24 +44,30 @@ type AppPropsWithLayout = AppProps & {
 };
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
+  const [query_client] = useState(() => new QueryClient());
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <QueryClientProvider client={query_client}>
-      <SnackbarProvider
-        autoHideDuration={3000}
-        anchorOrigin={{
-          horizontal: "right",
-          vertical: "bottom",
-        }}
-        Components={{
-          success: SuccessSnackbar,
-          error: ErrorSnackbar,
-        }}
-      >
-        {getLayout(<Component {...pageProps} />)}
-      </SnackbarProvider>
-      {process.env.NODE_ENV == "development" && <ReactQueryDevtools initialIsOpen={false} />}
+      <HydrationBoundary state={pageProps.dehydratedState}>
+        <SnackbarProvider
+          autoHideDuration={3000}
+          anchorOrigin={{
+            horizontal: "right",
+            vertical: "bottom",
+          }}
+          Components={{
+            success: SuccessSnackbar,
+            error: ErrorSnackbar,
+          }}
+        >
+          {getLayout(<Component {...pageProps} />)}
+        </SnackbarProvider>
+      </HydrationBoundary>
+
+      {process.env.NODE_ENV == "development" && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
     </QueryClientProvider>
   );
 }

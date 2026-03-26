@@ -7,6 +7,7 @@ export type ICart = {
       selected_stock: number;
     })[];
   })[];
-  sub_total: number;
+  total_amount: number;
+  total_discount: number;
   total_items: number;
 };

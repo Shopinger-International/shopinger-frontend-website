@@ -37,22 +37,22 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
       </div>
       <div className="h-max rounded-xl border border-gray-300 bg-white p-6 lg:sticky lg:top-(--header-height)">
         {/* HEADER */}
-        <h3 className="font-semibold text-gray-900">Order Summary</h3>
+        <h3 className="font-semibold text-orange-500">Order Summary</h3>
 
         {/* PRICE BREAKDOWN */}
         <div className="mt-4 space-y-3 text-sm font-medium text-gray-600">
           {[
             {
               label: "Subtotal",
-              value: `₹${cart?.sub_total}`,
+              value: `₹${cart?.total_amount}`,
             },
             {
               label: "Discount",
-              value: `₹${cart?.sub_total}`,
+              value: `- ₹${cart?.total_discount}`,
             },
             {
               label: "Shipping",
-              value: `₹${cart?.sub_total}`,
+              value: `₹${cart?.charges ?? 50}`,
             },
           ].map(({ label, value }) => (
             <div className="flex items-center justify-between">
@@ -75,7 +75,9 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
         {/* TOTAL */}
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-gray-600">Total</span>
-          <span className="text-lg font-semibold text-gray-900">₹1837</span>
+          <span className="text-lg font-semibold text-gray-900">
+            ₹{cart?.total_amount}
+          </span>
         </div>
 
         {/* CTA */}

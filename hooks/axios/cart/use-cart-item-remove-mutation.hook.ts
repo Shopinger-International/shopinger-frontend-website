@@ -28,7 +28,7 @@ const useCartItemRemoveMutation = () => {
         message: string;
         data: any;
         success: boolean;
-      }>("/cart-delete", payload);
+      }>("/remove-cart-item", payload);
       return data;
     },
 
@@ -37,14 +37,14 @@ const useCartItemRemoveMutation = () => {
         queryKey: ["carts"],
       });
       enqueueSnackbar(response.message, {
-        key: "cart-item-remove-success",
+        key: "remove-cart-item-success",
         variant: "success",
       });
     },
     onError(error) {
       // @ts-ignore
       enqueueSnackbar(error.response.data.message, {
-        key: "cart-item-remove-error",
+        key: "remove-cart-item-error",
         variant: "error",
       });
     },

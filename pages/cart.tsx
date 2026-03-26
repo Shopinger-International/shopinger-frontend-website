@@ -2,12 +2,14 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import Head from "next/head";
 
-// layout
-import MainLayout from "@/components/layout/main-layout.component";
-
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
+import type { GetServerSideProps } from "next";
+import type { DehydratedState } from "@tanstack/react-query";
+
+// layout
+import MainLayout from "@/components/layout/main-layout.component";
 
 // local components
 import CartDetails from "@/components/cart/cart-details.component";
@@ -18,13 +20,16 @@ import LoginModal from "@/components/login/login-modal.component";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 
 // helpers
+import { getCart, IResponse } from "@/hooks/axios/cart/use-cart.hook";
+
+// react query
+import { QueryClient, dehydrate } from "@tanstack/react-query";
 
 const CartPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [show_login_modal, setShowLoginModal] = useState(false);
-  const { data, isPending } = useCart();
+  const { data } = useCart();
 
-  if (isPending) return null;
   return (
     <>
       <Head>
@@ -81,6 +86,33 @@ const CartPage: NextPageWithLayout = () => {
 
 export default CartPage;
 
+// export const getServerSideProps = (async (context) => {
+//   const cookie = context.req.headers.cookie || "";
+//   const cart_details = await getCart(cookie);
+//   return { props: { cart_details } };
+// }) satisfies GetServerSideProps<{ cart_details: IResponse }>;
+type Props = {
+  dehydratedState: DehydratedState;
+};
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context,
+) => {
+  const cookie = context.req.headers.cookie ?? "";
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery<IResponse>({
+    queryKey: ["carts"],
+    queryFn: async () => {
+      return await getCart(cookie);
+    },
+  });
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+};
 CartPage.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;
 };
