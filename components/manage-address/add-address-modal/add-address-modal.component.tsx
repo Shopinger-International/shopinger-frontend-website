@@ -103,7 +103,6 @@ const AddAddressModal: FC<IProps> = ({ open, initial_data, onClose }) => {
             }
             validate={toFormikValidate(address_schema)}
             onSubmit={(values) => {
-              console.log("value of values", values);
               initial_data
                 ? update_address_mutation.mutate(
                     {

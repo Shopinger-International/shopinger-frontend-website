@@ -9,6 +9,7 @@ import clsx from "clsx";
 
 // hooks
 import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
+import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
 
 const typeIconMap = {
   HOME: Home,
@@ -23,6 +24,7 @@ type IProps = {
 };
 const AddressCard: FC<IProps> = ({ data, onEdit }) => {
   const delete_address_mutation = useDeleteAddressMutation();
+  const update_address_mutation = useUpdateAddressMutation();
   const TypeIcon = typeIconMap[data.address_type] || MapPin;
   return (
     <div
@@ -90,25 +92,34 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
           Edit
         </button>
 
-        <button
-          type="button"
-          onClick={(e) => {
-            delete_address_mutation.mutate({
-              address_id: data.id,
-            });
-          }}
-          disabled={delete_address_mutation.isPending}
-          className="cursor-pointer font-medium text-gray-600 hover:text-black disabled:text-gray-300"
-        >
-          Delete
-        </button>
+        {!data.is_default && (
+          <button
+            type="button"
+            onClick={(e) => {
+              delete_address_mutation.mutate({
+                address_id: data.id,
+              });
+            }}
+            disabled={delete_address_mutation.isPending}
+            className="cursor-pointer font-medium text-gray-600 hover:text-black disabled:text-gray-300"
+          >
+            Delete
+          </button>
+        )}
 
         {!data.is_default && (
           <button
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={() => {
+              update_address_mutation.mutate({
+                address_id: data.id,
+                payload: {
+                  ...data,
+                  is_default: true,
+                },
+              });
             }}
-            className="font-medium text-gray-600 hover:text-black"
+            disabled={update_address_mutation.isPending}
+            className="font-medium text-gray-600 hover:text-black disabled:text-gray-600"
           >
             Set as default
           </button>

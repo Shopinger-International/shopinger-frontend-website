@@ -1,6 +1,7 @@
 import { useState } from "react";
 // types
 import { FC } from "react";
+import type { IAddress } from "@/types/address";
 
 // icons
 import { X, Home, Briefcase, MapPin } from "lucide-react";
@@ -29,17 +30,27 @@ import {
   getAddressFromCoords,
 } from "@/helpers/address.helper";
 
+// const
+import { ADDRESS_TYPE } from "@/constants/display-area.constant";
+
+// hooks
+import useCreateAddressMutation from "@/hooks/axios/address/use-create-address-mutation.hook";
+import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
+
 const address_types = [
   { id: "home", label: "Home", icon: Home },
   { id: "work", label: "Work", icon: Briefcase },
   { id: "other", label: "Other", icon: MapPin },
 ];
 
-const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
-  open,
-  onClose,
-}) => {
+const MobileAddressModal: FC<{
+  open: boolean;
+  onClose: () => void;
+  initial_data: IAddress | null;
+}> = ({ open, onClose, initial_data }) => {
   const [show_drawer, setShowDrawer] = useState(false);
+  const create_address_mutation = useCreateAddressMutation();
+  const update_address_mutation = useUpdateAddressMutation();
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
@@ -59,27 +70,48 @@ const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
             </button>
           </div>
           <Formik
-            initialValues={{
-              full_name: "",
-              phone: "",
-              house_number: "",
-              landmark: "",
-              place_id: "",
-              formatted_address: "",
-              address1: "",
-              city: "",
-              state: "",
-              zip: "",
-              latitude: 28.6139,
-              longitude: 77.209,
-              address_type: "home",
-              delivery_instructions: "",
-              is_default: false,
-            }}
+            initialValues={
+              initial_data ?? {
+                full_name: "",
+                phone: "",
+                house_number: "",
+                landmark: "",
+                place_id: "",
+                formatted_address: "",
+                area: "",
+                city: "",
+                state: "",
+                pincode: "",
+                latitude: 28.6139,
+                longitude: 77.209,
+                address_type: ADDRESS_TYPE.HOME,
+                delivery_instructions: "",
+                is_default: false,
+              }
+            }
             onSubmit={(values) => {
-              console.log(values);
-              onClose();
-              setShowDrawer(false);
+              initial_data
+                ? update_address_mutation.mutate(
+                    {
+                      address_id: initial_data.id,
+                      payload: values,
+                    },
+                    {
+                      onSuccess() {
+                        onClose();
+                      },
+                    },
+                  )
+                : create_address_mutation.mutate(
+                    {
+                      ...values,
+                    },
+                    {
+                      onSuccess() {
+                        onClose();
+                      },
+                    },
+                  );
             }}
           >
             {({ values, isSubmitting, setFieldValue, setValues }) => (
@@ -220,7 +252,7 @@ const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
                               placeholder="Landmark"
                             />
                             <AddAddressInput
-                              name="address1"
+                              name="area"
                               placeholder="Area"
                             />
                             <AddAddressInput name="phone" placeholder="Phone" />
@@ -245,10 +277,19 @@ const MobileAddressModal: FC<{ open: boolean; onClose: () => void }> = ({
                           {/* Submit Button */}
                           <button
                             type="submit"
-                            disabled={isSubmitting}
+                            disabled={
+                              create_address_mutation.isPending ||
+                              update_address_mutation.isPending
+                            }
                             className="w-full rounded-md bg-orange-500 px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
                           >
-                            {isSubmitting ? "Saving..." : "Add address"}
+                            {update_address_mutation.isPending
+                              ? "Updating..."
+                              : create_address_mutation.isPending
+                                ? "Saving..."
+                                : initial_data
+                                  ? "Update Address"
+                                  : "Add Address"}
                           </button>
                         </div>
                       </div>
