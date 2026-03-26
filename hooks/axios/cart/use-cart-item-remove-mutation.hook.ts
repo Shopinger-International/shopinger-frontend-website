@@ -37,14 +37,14 @@ const useCartItemRemoveMutation = () => {
         queryKey: ["carts"],
       });
       enqueueSnackbar(response.message, {
-        key: "remove-cart-item-success",
+        key: `remove-cart-item-success-${Date.now()}`,
         variant: "success",
       });
     },
     onError(error) {
       // @ts-ignore
       enqueueSnackbar(error.response.data.message, {
-        key: "remove-cart-item-error",
+        key: `remove-cart-item-error-${Date.now()}`,
         variant: "error",
       });
     },

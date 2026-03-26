@@ -55,7 +55,7 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
               value: `₹${cart?.charges ?? 50}`,
             },
           ].map(({ label, value }) => (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between" key={label}>
               <span>{label}</span>
               <span
                 className={clsx(

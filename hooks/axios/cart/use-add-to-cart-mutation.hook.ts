@@ -41,7 +41,7 @@ const useAddToCartMutation = () => {
         queryKey: ["carts"],
       });
       enqueueSnackbar(response.message, {
-        key: "add-to-cart-success",
+        key: `add-to-cart-success-${Date.now()}`,
         variant: "success",
         action_label: "View Cart",
         onActionClick: () => router.push("/cart"),
@@ -50,7 +50,7 @@ const useAddToCartMutation = () => {
     onError(error) {
       // @ts-ignore
       enqueueSnackbar(error.response.data.message, {
-        key: "add-to-cart-error",
+        key: `add-to-cart-error-${Date.now()}`,
         variant: "error",
       });
     },

@@ -37,14 +37,14 @@ const useCartItemIncreaseMutation = () => {
         queryKey: ["carts"],
       });
       enqueueSnackbar(response.message, {
-        key: "cart-item-quantity-increase-success",
+        key: `cart-item-quantity-increase-success-${Date.now()}`,
         variant: "success",
       });
     },
     onError(error) {
       // @ts-ignore
       enqueueSnackbar(error.response.data.message, {
-        key: "cart-item-quantity-increase-error",
+        key: `cart-item-quantity-increase-error-${Date.now()}`,
         variant: "error",
       });
     },

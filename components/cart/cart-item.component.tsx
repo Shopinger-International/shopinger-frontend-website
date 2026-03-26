@@ -166,12 +166,12 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
           )}
 
           {/* BOTTOM */}
-          <div className="mt-3 flex items-center justify-between">
+          <div className="mt-2 sm:mt-3 flex items-center justify-between">
             {/* PRICE BLOCK */}
             <div className="flex flex-col">
               {/* PRICE ROW */}
               <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold text-gray-900">
+                <span className="font-semibold text-gray-900 sm:text-lg">
                   ₹{selling_price_with_commission * selected_stock}
                 </span>
 
@@ -236,7 +236,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
           </div>
         </div>
       </div>
-      <div className="mt-4 flex items-center justify-between gap-3 sm:hidden">
+      <div className="mt-3 flex items-center justify-between gap-3 sm:hidden">
         {/* Quantity Stepper */}
         <QuantityStepper
           show_increase_disabled={
