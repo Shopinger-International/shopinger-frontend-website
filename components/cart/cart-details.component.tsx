@@ -24,7 +24,7 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
   return (
     <div className="relative grid grid-cols-1 gap-8 lg:grid-cols-3">
       {/* Cart Items */}
-      <div className="col-span-1 h-min rounded-xl border border-gray-300 bg-white lg:col-span-2">
+      <div className="col-span-1 h-min overflow-hidden rounded-xl border border-gray-300 bg-white lg:col-span-2">
         {cart?.items?.flatMap(({ variants, ...product }, index) => {
           return variants.map((variant) => (
             <CartItem
