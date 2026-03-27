@@ -62,15 +62,6 @@ const CartPage: NextPageWithLayout = () => {
 
           {!!data?.total_items ? (
             <>
-              <div className="mb-6 flex items-center justify-between">
-                <h1 className="text-xl font-semibold text-gray-900">
-                  Your Cart
-                </h1>
-
-                <span className="text-sm text-gray-500">
-                  {data?.total_items} items
-                </span>
-              </div>
               <CartDetails
                 handleShowLoginModal={() => setShowLoginModal(true)}
               />
