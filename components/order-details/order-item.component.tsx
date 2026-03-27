@@ -7,15 +7,9 @@ import type IVariant from "@/types/variant";
 import type IProduct from "@/types/product";
 import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
-// local components
-import QuantityStepper from "@/components/common/quantity-stepper.component";
-
 // hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
 import useCategoryMappings from "@/hooks/axios/common/use-category-mappings.hook";
-
-// icons
-import { X } from "lucide-react";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
@@ -99,11 +93,11 @@ const OrderItem: FC<IProps> = ({ product, variant }) => {
   ]);
 
   return (
-    <div className="rounded-xl border border-gray-300 bg-white p-6">
+    <div className="rounded-xl border border-gray-300 bg-white p-4">
       <div className="flex gap-4">
         {/* IMAGE */}
 
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
           <Link href={`/${product_slug}/p/${product_id}/${variant.id}`}>
             <Image
               src={
@@ -120,11 +114,11 @@ const OrderItem: FC<IProps> = ({ product, variant }) => {
         {/* CONTENT */}
         <div className="flex flex-1 flex-col justify-between space-y-1">
           {/* TOP */}
-          <h4 className="line-clamp-2 font-medium">{title}</h4>
+          <h4 className="line-clamp-1 text-sm font-medium">{title}</h4>
 
           {!!formated_variant_attribute_value.length && (
             <>
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-xs font-medium text-gray-600">
                 {formated_variant_attribute_value
                   .map(({ name, value }) => `${name}: ${value}`)
                   .join(", ")}
@@ -132,23 +126,13 @@ const OrderItem: FC<IProps> = ({ product, variant }) => {
             </>
           )}
 
-          {/* BOTTOM */}
-          <div className="flex items-center justify-between">
-            {/* PRICE BLOCK */}
-            <div className="flex flex-col">
-              {/* PRICE ROW */}
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold text-orange-500">
-                  ₹
-                  {variant_pricing.selling_price_with_commission *
-                    selected_stock}
-                </span>
-                <span className="size-1.5 rounded-full bg-orange-500"></span>
-                <span className="font-semibold text-gray-900">
-                  Qty: {selected_stock}
-                </span>
-              </div>
-            </div>
+          {/* PRICE ROW */}
+          <div className="flex items-center gap-2 text-sm">
+            <span className="font-medium text-gray-900">
+              ₹{variant_pricing.selling_price_with_commission} x{" "}
+            </span>
+
+            {variant.selected_stock}
           </div>
         </div>
       </div>

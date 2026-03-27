@@ -166,7 +166,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
           )}
 
           {/* BOTTOM */}
-          <div className="mt-2 sm:mt-3 flex items-center justify-between">
+          <div className="mt-2 flex items-center justify-between sm:mt-3">
             {/* PRICE BLOCK */}
             <div className="flex flex-col">
               {/* PRICE ROW */}
@@ -179,7 +179,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
                   ₹{mrp * selected_stock}
                 </span>
 
-                {discount_percentage && (
+                {!!discount_percentage && (
                   <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-600">
                     {discount_percentage}% OFF
                   </span>

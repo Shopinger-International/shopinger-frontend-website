@@ -5,7 +5,8 @@ import axios from "axios";
 
 export const mapPlaceToForm = (place: IPlace) => {
   const getComp = (type: string) =>
-    place.addressComponents.find((c) => c.types.includes(type))?.longText || "";
+    place.addressComponents.find((c) => c.types?.includes(type))?.longText ||
+    "";
 
   // 1. Gather all "Small Area" components
   const neighborhood = getComp("neighborhood");

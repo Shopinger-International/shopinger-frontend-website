@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Head from "next/head";
 
 // layout
@@ -9,50 +8,14 @@ import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 
 // local components
-import LoginModal from "@/components/login/login-modal.component";
 import OrderItem from "@/components/order-details/order-item.component";
-import OrderTimeline from "@/components/order-details/order-timeline.component";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 
 // helpers
 
-const steps = [
-  {
-    id: 1,
-    title: "Order Placed",
-    description: "Your order has been placed",
-    date: "25 Mar, 10:30 AM",
-    status: "completed",
-  },
-  {
-    id: 2,
-    title: "Order Confirmed",
-    description: "Seller confirmed your order",
-    date: "25 Mar, 11:00 AM",
-    status: "completed",
-  },
-  {
-    id: 3,
-    title: "Shipped",
-    description: "Package left the warehouse",
-    status: "current",
-  },
-  {
-    id: 4,
-    title: "Out for Delivery",
-    status: "upcoming",
-  },
-  {
-    id: 5,
-    title: "Delivered",
-    status: "upcoming",
-  },
-];
-
 const OrderDetailPage: NextPageWithLayout = () => {
-  const [show_login_modal, setShowLoginModal] = useState(false);
   const { data, isPending } = useCart();
 
   if (isPending) return null;
@@ -67,12 +30,6 @@ const OrderDetailPage: NextPageWithLayout = () => {
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
-      <LoginModal
-        open={show_login_modal}
-        handleClose={() => {
-          setShowLoginModal(false);
-        }}
-      />
       <section className="w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           <h1 className="text-xl font-semibold">Order Details</h1>
@@ -84,7 +41,9 @@ const OrderDetailPage: NextPageWithLayout = () => {
             </span>
           </p>
           <section className="mt-4 space-y-4">
-            <h2 className="font-semibold text-gray-900"> Items</h2>
+            <h2 className="font-semibold text-gray-900">
+              {data?.items.length} items in this order
+            </h2>
 
             <div className="relative grid grid-cols-1 gap-8 lg:grid-cols-3">
               <div className="col-span-1 space-y-4 lg:col-span-2">
@@ -99,10 +58,6 @@ const OrderDetailPage: NextPageWithLayout = () => {
                     ));
                   })}
                 </div>
-                <h2 className="font-semibold text-gray-900">
-                  Delivery by Mon, 01 Dec
-                </h2>
-                <OrderTimeline steps={steps} />;
               </div>
             </div>
           </section>
