@@ -1,5 +1,72 @@
 @import "tailwindcss";
 
+:root {
+  --header-height: 120px; /* adjust to match your header */
+}
+@media (max-width: 1024px) {
+  :root {
+    --header-height: 150px;
+  }
+}
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-bg-primary: #ff740a;
+  --color-text-primary: #353535;
+}
+
+@theme {
+  --width-8xl: 96rem;
+  --max-width-8xl: 96rem;
+}
+
+/* Hide scrollbar but keep scrolling */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+/* Pagination wrapper */
+.swiper-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Custom bullet base */
+.custom-bullet {
+  width: 20px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #e5e7eb;
+  opacity: 1;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Active bullet */
+.custom-bullet-active {
+  background-color: #f97316;
+  width: 40px;
+}
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

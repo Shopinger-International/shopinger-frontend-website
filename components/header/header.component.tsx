@@ -43,7 +43,6 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = () => {
   const { data: user } = useUserDetails();
-  console.log("value of user", user);
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
     if (!header) return;

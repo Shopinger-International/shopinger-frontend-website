@@ -7,18 +7,31 @@ import type { AxiosError } from "axios";
 // react query
 import { useQuery } from "@tanstack/react-query";
 
-type IResponse = {
+export type IResponse = {
   data: IAddress[];
   success: boolean;
+};
+
+export const getUserAddresses = async (cookie?: string) => {
+  const { data } = await Axios.get<IResponse>(`/get-user-addresses`, {
+    headers: cookie
+      ? {
+          cookie,
+        }
+      : {},
+  });
+
+  return data.data;
 };
 
 const useUserAddresses = () => {
   return useQuery<IAddress[], AxiosError>({
     queryKey: ["user-addresses"],
     async queryFn() {
-      const { data } = await Axios.get<IResponse>("/get-user-addresses");
-      return data.data;
+      const user_addresses = await getUserAddresses();
+      return user_addresses;
     },
+    staleTime: 1000 * 60 * 5,
     select(data) {
       return data.map((item) => ({
         ...item,

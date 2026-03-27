@@ -1,12 +1,21 @@
 import Head from "next/head";
 
+// types
+import type { ReactElement } from "react";
+import type { NextPageWithLayout } from "@/pages/_app";
+import type { GetServerSideProps } from "next";
+import type { DehydratedState } from "@tanstack/react-query";
+
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
 import AddressDetail from "@/components/manage-address/addresses-detail.component";
 
-// types
-import type { ReactElement } from "react";
-import type { NextPageWithLayout } from "@/pages/_app";
+// react query
+import { QueryClient, dehydrate } from "@tanstack/react-query";
+
+// helpers
+import { getUserAddresses } from "@/hooks/axios/address/use-user-addresses.hook";
+import { IAddress } from "@/types/address";
 
 const ManageAddress: NextPageWithLayout = () => {
   return (
@@ -43,6 +52,29 @@ const ManageAddress: NextPageWithLayout = () => {
 };
 
 export default ManageAddress;
+
+type Props = {
+  dehydratedState: DehydratedState;
+};
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context,
+) => {
+  const cookie = context.req.headers.cookie ?? "";
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery<IAddress[]>({
+    queryKey: ["user-addresses"],
+    queryFn: async () => {
+      return await getUserAddresses(cookie);
+    },
+  });
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+};
 
 ManageAddress.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;

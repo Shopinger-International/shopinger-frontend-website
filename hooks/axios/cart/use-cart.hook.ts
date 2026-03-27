@@ -35,6 +35,7 @@ const useCart = () => {
       const cart_details = await getCart();
       return cart_details;
     },
+    staleTime: 1000 * 60 * 5,
   });
 };
 
