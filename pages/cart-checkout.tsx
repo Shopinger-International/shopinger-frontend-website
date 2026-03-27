@@ -25,7 +25,7 @@ import { getCart, IResponse } from "@/hooks/axios/cart/use-cart.hook";
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
 
-const CartPage: NextPageWithLayout = () => {
+const CartCheckoutPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [show_login_modal, setShowLoginModal] = useState(false);
   const { data } = useCart();
@@ -75,7 +75,7 @@ const CartPage: NextPageWithLayout = () => {
   );
 };
 
-export default CartPage;
+export default CartCheckoutPage;
 
 // export const getServerSideProps = (async (context) => {
 //   const cookie = context.req.headers.cookie || "";
@@ -104,6 +104,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     },
   };
 };
-CartPage.getLayout = function getLayout(page: ReactElement) {
+CartCheckoutPage.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;
 };

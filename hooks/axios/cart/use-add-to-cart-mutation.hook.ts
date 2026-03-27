@@ -44,7 +44,7 @@ const useAddToCartMutation = () => {
         key: `add-to-cart-success-${Date.now()}`,
         variant: "success",
         action_label: "View Cart",
-        onActionClick: () => router.push("/cart"),
+        onActionClick: () => router.push("/cart-checkout"),
       });
     },
     onError(error) {

@@ -226,7 +226,7 @@ const Header: FC<HeaderProps> = () => {
             )}
           </div>
           <Link
-            href="/cart"
+            href="/cart-checkout"
             className="hidden items-center gap-2 font-semibold text-white lg:flex"
           >
             <span className="relative">
