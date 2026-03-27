@@ -53,16 +53,13 @@ const SidebarDrawer: FC<SidebarDrawerProps> = ({
           <TransitionChild
             as={Fragment}
             enter="transform transition ease-in-out duration-300"
-            // Mobile: slide from bottom (translate-y)
-            // Desktop: slide from left (sm:-translate-x)
             enterFrom="translate-y-full sm:translate-y-0 sm:-translate-x-full"
             enterTo="translate-y-0 sm:translate-x-0"
             leave="transform transition ease-in-out duration-300"
             leaveFrom="translate-y-0 sm:translate-x-0"
             leaveTo="translate-y-full sm:translate-y-0 sm:-translate-x-full"
           >
-            <DialogPanel className="relative flex w-full flex-col rounded-t-2xl bg-white py-6 shadow-xl sm:h-full sm:max-w-sm sm:rounded-none">
-              {/* Close Button */}
+            <DialogPanel className="relative flex h-full w-full flex-col bg-white py-6 shadow-xl sm:max-w-sm">
               <button
                 type="button"
                 onClick={handleClose}
@@ -75,18 +72,7 @@ const SidebarDrawer: FC<SidebarDrawerProps> = ({
               <DialogTitle className="mb-2 px-6 text-lg font-bold">
                 {title}
               </DialogTitle>
-
-              {/* Scrollable content */}
-              <div className="max-h-[80vh] flex-1 overflow-y-auto px-6 sm:max-h-none">
-                {children}
-              </div>
-
-              {/* Bottom action */}
-              <div className="mt-4 px-6">
-                <button className="w-full rounded-lg bg-orange-500 py-2 font-semibold text-white hover:bg-orange-600">
-                  Add New Address
-                </button>
-              </div>
+              {children}
             </DialogPanel>
           </TransitionChild>
         </div>

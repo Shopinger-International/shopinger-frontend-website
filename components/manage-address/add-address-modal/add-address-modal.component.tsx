@@ -75,11 +75,17 @@ export type ICoords = {
 
 type IProps = {
   open: boolean;
-  initial_data: IAddress | null;
+  initial_data?: IAddress | null;
   onClose: () => void;
+  handleOnSuccess?: (data: IAddress) => void;
 };
 
-const AddAddressModal: FC<IProps> = ({ open, initial_data, onClose }) => {
+const AddAddressModal: FC<IProps> = ({
+  open,
+  initial_data,
+  onClose,
+  handleOnSuccess,
+}) => {
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
   return (
@@ -117,8 +123,9 @@ const AddAddressModal: FC<IProps> = ({ open, initial_data, onClose }) => {
                       payload: values,
                     },
                     {
-                      onSuccess() {
+                      onSuccess({ data }) {
                         onClose();
+                        handleOnSuccess?.(data);
                       },
                     },
                   )
@@ -127,8 +134,9 @@ const AddAddressModal: FC<IProps> = ({ open, initial_data, onClose }) => {
                       ...values,
                     },
                     {
-                      onSuccess() {
+                      onSuccess({ data }) {
                         onClose();
+                        handleOnSuccess?.(data);
                       },
                     },
                   );

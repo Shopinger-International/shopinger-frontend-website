@@ -46,8 +46,9 @@ const address_types = [
 const MobileAddressModal: FC<{
   open: boolean;
   onClose: () => void;
-  initial_data: IAddress | null;
-}> = ({ open, onClose, initial_data }) => {
+  initial_data?: IAddress | null;
+  handleOnSuccess?: (data: IAddress) => void;
+}> = ({ open, onClose, initial_data, handleOnSuccess }) => {
   const [show_drawer, setShowDrawer] = useState(false);
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
@@ -97,8 +98,9 @@ const MobileAddressModal: FC<{
                       payload: values,
                     },
                     {
-                      onSuccess() {
+                      onSuccess({ data }) {
                         onClose();
+                        handleOnSuccess?.(data);
                       },
                     },
                   )
@@ -107,8 +109,9 @@ const MobileAddressModal: FC<{
                       ...values,
                     },
                     {
-                      onSuccess() {
+                      onSuccess({ data }) {
                         onClose();
+                        handleOnSuccess?.(data);
                       },
                     },
                   );
@@ -251,10 +254,7 @@ const MobileAddressModal: FC<{
                               name="landmark"
                               placeholder="Landmark"
                             />
-                            <AddAddressInput
-                              name="area"
-                              placeholder="Area"
-                            />
+                            <AddAddressInput name="area" placeholder="Area" />
                             <AddAddressInput name="phone" placeholder="Phone" />
                             <AddAddressInput
                               name="full_name"

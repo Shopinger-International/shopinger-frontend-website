@@ -1,28 +1,36 @@
+// types
 import type { FC } from "react";
 import type { IAddress } from "@/types/address";
+
+// icons
 import { MapPin } from "lucide-react";
+
+// helpers
 import clsx from "clsx";
-import { typeIconMap } from "../manage-address/address-card.component";
+
+// const
+import { typeIconMap } from "@/components/manage-address/address-card.component";
 
 type AddressRowProps = {
   address: IAddress;
   onClick?: (address: IAddress) => void;
-  isSelected?: boolean;
+  is_selected?: boolean;
 };
 
-const AddressRow: FC<AddressRowProps> = ({ address, onClick, isSelected }) => {
+const AddressRow: FC<AddressRowProps> = ({ address, onClick, is_selected }) => {
   const TypeIcon = typeIconMap[address.address_type] || MapPin;
 
   return (
     <div
       className={clsx(
         "flex cursor-pointer items-start gap-4 rounded-lg border px-4 py-3 transition-colors duration-200",
-        isSelected ? "border-orange-500 bg-orange-50" : "border-transparent",
-        "hover:bg-gray-100 active:bg-orange-100",
+        is_selected
+          ? "border-orange-500 bg-orange-50"
+          : "border-transparent hover:bg-gray-100 active:bg-orange-100",
       )}
       onClick={() => onClick?.(address)}
       role="button"
-      aria-pressed={isSelected}
+      aria-pressed={is_selected}
     >
       {/* Address icon */}
       <div className="mt-1 shrink-0">
@@ -31,17 +39,17 @@ const AddressRow: FC<AddressRowProps> = ({ address, onClick, isSelected }) => {
 
       {/* Address info */}
       <div className="min-w-0 flex-1">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-row items-center justify-between gap-1">
           <p className="text-sm font-semibold">{address.full_name}</p>
           {address.is_default && (
-            <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-800">
+            <span className="rounded-full border border-orange-500 bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-500">
               Default
             </span>
           )}
         </div>
 
         <p className="text-sm text-gray-600">{address.area}</p>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-600">
           {address.city}, {address.state} - {address.pincode}
         </p>
       </div>
