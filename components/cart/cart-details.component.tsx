@@ -35,19 +35,29 @@ import { IAddress } from "@/types/address";
 
 // hooks
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
+import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
 
 type IProps = {
   handleShowLoginModal: () => void;
 };
 
 const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
+  const delete_address_mutation = useDeleteAddressMutation();
+  const update_address_mutation = useUpdateAddressMutation();
   const [is_address_drawer_open, setIsAddressDrawerOpen] = useState(false);
   const { data: cart } = useCart();
   const { data: user_addresses = [] } = useUserAddresses();
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(
     null,
   );
-  const [show_address_modal, setShowAddressModal] = useState(false);
+  const [address_modal_state, setAddressModalState] = useState<{
+    open: boolean;
+    data: IAddress | null;
+  }>({
+    open: false,
+    data: null,
+  });
   const is_mobile = useIsMobile();
 
   useEffect(() => {
@@ -76,6 +86,17 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
                   setSelectedAddress(address);
                   setIsAddressDrawerOpen(false);
                 }}
+                onDelete={(data) => {
+                  delete_address_mutation.mutate({
+                    address_id: data.id,
+                  });
+                }}
+                onEdit={(data) => {
+                  setAddressModalState({
+                    open: true,
+                    data,
+                  });
+                }}
               />
             ))}
           </div>
@@ -83,7 +104,12 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
         <div className="mt-4 px-6">
           <button
             className="w-full rounded-lg bg-orange-500 py-2 font-semibold text-white hover:bg-orange-600"
-            onClick={() => setShowAddressModal(true)}
+            onClick={() =>
+              setAddressModalState({
+                open: true,
+                data: null,
+              })
+            }
           >
             Add New Address
           </button>
@@ -91,8 +117,14 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
       </SidebarDrawer>
       {is_mobile ? (
         <MobileAddressModal
-          open={show_address_modal}
-          onClose={() => setShowAddressModal(false)}
+          open={address_modal_state.open}
+          onClose={() =>
+            setAddressModalState({
+              open: false,
+              data: null,
+            })
+          }
+          initial_data={address_modal_state.data}
           handleOnSuccess={(address) => {
             setSelectedAddress(address);
             setIsAddressDrawerOpen(false);
@@ -100,8 +132,14 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
         />
       ) : (
         <AddAddressModal
-          open={show_address_modal}
-          onClose={() => setShowAddressModal(false)}
+          open={address_modal_state.open}
+          onClose={() =>
+            setAddressModalState({
+              open: false,
+              data: null,
+            })
+          }
+          initial_data={address_modal_state.data}
           handleOnSuccess={(address) => {
             setSelectedAddress(address);
             setIsAddressDrawerOpen(false);
