@@ -12,9 +12,7 @@ import { capitalizeFirstLetter } from "@/helpers/common.helper";
 import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
 import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
 
-
-
-const typeIconMap = {
+export const typeIconMap = {
   HOME: Home,
   WORK: Briefcase,
   OTHER: MapPin,
