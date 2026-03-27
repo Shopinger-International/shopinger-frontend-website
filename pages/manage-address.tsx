@@ -12,12 +12,20 @@ const ManageAddress: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Your Cart | Shopinger</title>
+        <title>Manage Addresses | Shopinger</title>
+
         <meta
           name="description"
-          content="Review the items in your cart, update quantities, and proceed to checkout securely on Shopinger."
+          content="Add, edit, or remove your saved delivery addresses. Manage your shipping details securely for faster checkout on Shopinger."
           key="desc"
         />
+
+        <meta
+          name="keywords"
+          content="manage addresses, delivery address, shipping details, user addresses, Shopinger account"
+        />
+
+        {/* Prevent indexing since it's a private user page */}
         <meta name="robots" content="noindex, nofollow" />
       </Head>
       <section className="min-h-screen w-full py-4">

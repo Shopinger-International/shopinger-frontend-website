@@ -2,6 +2,7 @@ import Axios from "@/lib/axios/private.lib";
 
 // types
 import type { IAddress } from "@/types/address";
+import type { IFormAddressType } from "@/components/manage-address/add-address-modal/add-address-modal.component";
 import type { AxiosError } from "axios";
 
 // react query
@@ -22,11 +23,7 @@ type IErrorResponse = {
 
 const useCreateAddressMutation = () => {
   const query_client = useQueryClient();
-  return useMutation<
-    IResponse,
-    AxiosError<IErrorResponse>,
-    Omit<IAddress, "id" | "user_id" | "is_deleted">
-  >({
+  return useMutation<IResponse, AxiosError<IErrorResponse>, IFormAddressType>({
     async mutationFn(payload) {
       const { data } = await Axios.post<IResponse>(
         "/add-user-address",

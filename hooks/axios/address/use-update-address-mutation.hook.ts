@@ -1,6 +1,7 @@
 import Axios from "@/lib/axios/private.lib";
 
 // types
+import type { IFormAddressType } from "@/components/manage-address/add-address-modal/add-address-modal.component";
 import type { IAddress } from "@/types/address";
 import type { AxiosError } from "axios";
 
@@ -27,7 +28,7 @@ const useUpdateAddressMutation = () => {
     AxiosError<IErrorResponse>,
     {
       address_id: number;
-      payload: Omit<IAddress, "id" | "user_id" | "is_deleted">;
+      payload: IFormAddressType;
     }
   >({
     async mutationFn({ address_id, payload }) {

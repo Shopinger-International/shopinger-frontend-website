@@ -6,10 +6,13 @@ import { Home, Briefcase, MapPin, Phone } from "lucide-react";
 
 // helpers
 import clsx from "clsx";
+import { capitalizeFirstLetter } from "@/helpers/common.helper";
 
 // hooks
 import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
 import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
+
+
 
 const typeIconMap = {
   HOME: Home,
@@ -29,10 +32,10 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
   return (
     <div
       className={clsx(
-        "group relative w-full cursor-pointer rounded-xl border border-gray-300 bg-white p-6 md:w-xs",
+        "w-full cursor-pointer rounded-xl border border-gray-300 bg-white p-6 md:w-xs",
       )}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex justify-between">
         <div className="flex items-center gap-2">
           <TypeIcon className="h-5 w-5 text-orange-500" />
 
@@ -40,13 +43,13 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
             {data.full_name}
           </h3>
 
-          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 capitalize">
-            {data.address_type}
+          <span className="rounded-full border border-gray-300 bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+            {capitalizeFirstLetter(data.address_type)}
           </span>
         </div>
 
         {data.is_default && (
-          <span className="rounded-full bg-orange-500 px-2 py-0.5 text-xs font-medium text-white">
+          <span className="flex items-center justify-between rounded-full bg-orange-500 px-2 py-0.5 text-xs font-medium text-white">
             Default
           </span>
         )}
@@ -81,13 +84,13 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
       </div>
 
       {/* ACTIONS */}
-      <div className="mt-4 flex items-center gap-4 text-sm">
+      <div className="mt-5 flex items-center gap-2 transition-opacity duration-200">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onEdit?.(data);
           }}
-          className="cursor-pointer font-medium text-gray-600 hover:text-black"
+          className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100"
         >
           Edit
         </button>
@@ -96,12 +99,13 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
           <button
             type="button"
             onClick={(e) => {
+              e.stopPropagation();
               delete_address_mutation.mutate({
                 address_id: data.id,
               });
             }}
             disabled={delete_address_mutation.isPending}
-            className="cursor-pointer font-medium text-gray-600 hover:text-black disabled:text-gray-300"
+            className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
           >
             Delete
           </button>
@@ -109,7 +113,8 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
 
         {!data.is_default && (
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               update_address_mutation.mutate({
                 address_id: data.id,
                 payload: {
@@ -119,7 +124,7 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
               });
             }}
             disabled={update_address_mutation.isPending}
-            className="font-medium text-gray-600 hover:text-black disabled:text-gray-600"
+            className="ml-auto text-xs font-medium text-orange-600 hover:underline disabled:opacity-50"
           >
             Set as default
           </button>

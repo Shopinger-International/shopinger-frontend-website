@@ -61,6 +61,13 @@ const address_schema = z.object({
   delivery_instructions: z.string().optional(),
 });
 
+export type IFormAddressType = Omit<
+  IAddress,
+  "id" | "user_id" | "is_deleted" | "latitude" | "longitude"
+> & {
+  latitude: number | null;
+  longitude: number | null;
+};
 export type ICoords = {
   lat: number;
   lng: number;
@@ -81,7 +88,7 @@ const AddAddressModal: FC<IProps> = ({ open, initial_data, onClose }) => {
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-full max-w-4xl overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-xl">
-          <Formik<Omit<IAddress, "id" | "user_id" | "is_deleted">>
+          <Formik<IFormAddressType>
             initialValues={
               initial_data ?? {
                 full_name: "",
@@ -94,8 +101,8 @@ const AddAddressModal: FC<IProps> = ({ open, initial_data, onClose }) => {
                 city: "",
                 state: "",
                 pincode: "",
-                latitude: 28.6139,
-                longitude: 77.209,
+                latitude: null,
+                longitude: null,
                 address_type: ADDRESS_TYPE.HOME,
                 delivery_instructions: "",
                 is_default: false,
