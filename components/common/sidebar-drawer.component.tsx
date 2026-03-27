@@ -44,11 +44,6 @@ const SidebarDrawer: FC<SidebarDrawerProps> = ({
           <div className="fixed inset-0 bg-black/30" />
         </TransitionChild>
 
-        {/* Container Logic:
-            - items-end: aligns to bottom on mobile
-            - sm:items-stretch: spans full height on desktop
-            - sm:justify-start: pins to left on desktop
-        */}
         <div className="fixed inset-0 flex items-end justify-center sm:items-stretch sm:justify-start">
           <TransitionChild
             as={Fragment}
@@ -69,7 +64,7 @@ const SidebarDrawer: FC<SidebarDrawerProps> = ({
                 <X className="size-4" />
               </button>
 
-              <DialogTitle className="mb-2 px-6 text-lg font-bold">
+              <DialogTitle className="mb-4 px-6 text-lg font-bold">
                 {title}
               </DialogTitle>
               {children}

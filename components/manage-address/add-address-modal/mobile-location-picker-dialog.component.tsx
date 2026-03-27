@@ -117,7 +117,7 @@ const MobileAddressModal: FC<{
                   );
             }}
           >
-            {({ values, isSubmitting, setFieldValue, setValues }) => (
+            {({ values, setFieldValue, setValues }) => (
               <Form className="h-full">
                 <div className="relative h-full w-full">
                   {/* MAP */}
@@ -184,7 +184,16 @@ const MobileAddressModal: FC<{
                     />
                     <span>Use Current Location</span>
                   </button>
-                  <div className="fixed bottom-0 z-30 w-full border-t border-gray-300 bg-white p-4 shadow-sm">
+                  <div className="fixed bottom-0 z-30 w-full space-y-2 border-t border-gray-300 bg-white p-4 shadow-sm">
+                    {values.formatted_address ? (
+                      <p className="text-sm leading-snug font-semibold">
+                        {values.formatted_address}
+                      </p>
+                    ) : (
+                      <div className="text-xs text-gray-400">
+                        Select a location on map to continue
+                      </div>
+                    )}
                     <button
                       type="button"
                       className="w-full rounded-md bg-orange-500 py-2 font-semibold text-white shadow-sm"
