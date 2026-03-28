@@ -36,6 +36,7 @@ import { countries } from "@/data/countries.data";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+import useCart from "@/hooks/axios/cart/use-cart.hook";
 
 interface HeaderProps {
   // Add your props here
@@ -43,6 +44,10 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = () => {
   const { data: user } = useUserDetails();
+  const user_address = user?.user_addresses.find(
+    (address) => address.is_default,
+  );
+  const { data: cart_details } = useCart();
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
     if (!header) return;
@@ -104,12 +109,36 @@ const Header: FC<HeaderProps> = () => {
           >
             Seller
           </Link> */}
-          <button className="hidden lg:inline-block">
+          <button
+            className="hidden cursor-pointer rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:inline-block"
+            aria-label={
+              user_address
+                ? `Update delivery location. Current location: ${user_address.state} ${user_address.pincode}`
+                : "Add delivery location"
+            }
+          >
             <div className="flex gap-2">
-              <MapPin className="mt-1 size-6 text-white" />
+              <MapPin className="mt-1 size-6 text-white" aria-hidden={true} />
               <div className="flex flex-col items-start text-white">
-                <span className="text-xs">Delivering to Delhi 110001</span>
-                <span className="text-sm font-semibold">Update Location</span>
+                {user_address ? (
+                  <>
+                    <span className="text-xs">
+                      Delivering to {user_address.state} {user_address.pincode}
+                    </span>
+                    <span className="text-sm font-semibold">
+                      Update Location
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-xs">
+                      No delivery address selected
+                    </span>
+                    <span className="text-sm font-semibold">
+                      Add your location
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </button>
@@ -131,12 +160,12 @@ const Header: FC<HeaderProps> = () => {
             {user ? (
               <button
                 className={clsx(
-                  "flex items-center gap-2 rounded-full px-3 py-2 text-white",
+                  "flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-white",
                   "transition hover:bg-white/10 focus:outline-none",
                 )}
               >
-                <CircleUserRound className="size-6" strokeWidth={1.5} />
-                <span>{user.name}</span>
+                <CircleUserRound className="size-6" />
+                <span className="max-w-28 truncate">{user.name}</span>
               </button>
             ) : (
               <Tooltip
@@ -197,7 +226,7 @@ const Header: FC<HeaderProps> = () => {
                             "transition hover:font-semibold hover:text-orange-500",
                           )}
                         >
-                          <Icon className="size-5" strokeWidth={1.5} />
+                          <Icon className="size-5" />
                           <span>{label}</span>
                         </Link>
                       ))}
@@ -227,15 +256,21 @@ const Header: FC<HeaderProps> = () => {
           </div>
           <Link
             href="/cart-checkout"
-            className="hidden items-center gap-2 font-semibold text-white lg:flex"
+            className="hidden items-center gap-2 font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
+            aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
           >
             <span className="relative">
-              <span className="absolute left-1/2 -translate-x-1/3 -translate-y-1/3 font-bold">
-                2
+              <span
+                className="absolute left-1/2 -translate-x-1/3 -translate-y-1/3 font-bold"
+                aria-hidden="true"
+              >
+                {cart_details?.items.length ?? 0}
               </span>
-              <Cart width={30} height={23} />
+
+              <Cart width={30} height={23} aria-hidden="true" />
             </span>
-            <span>$ 1000</span>
+
+            <span aria-hidden="true">₹{cart_details?.total_amount}</span>
           </Link>
           <div className="hidden lg:inline">
             <Tooltip
