@@ -41,27 +41,27 @@ const SidebarDrawer: FC<SidebarDrawerProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/30" />
+          <div className="fixed inset-0 bg-black/40" />
         </TransitionChild>
 
-        <div className="fixed inset-0 flex items-end justify-center sm:items-stretch sm:justify-start">
+        <div className="fixed inset-0 flex items-end justify-center sm:items-stretch sm:justify-end">
           <TransitionChild
             as={Fragment}
             enter="transform transition ease-in-out duration-300"
-            enterFrom="translate-y-full sm:translate-y-0 sm:-translate-x-full"
+            enterFrom="translate-y-full sm:translate-y-0 sm:translate-x-full"
             enterTo="translate-y-0 sm:translate-x-0"
             leave="transform transition ease-in-out duration-300"
             leaveFrom="translate-y-0 sm:translate-x-0"
-            leaveTo="translate-y-full sm:translate-y-0 sm:-translate-x-full"
+            leaveTo="translate-y-full sm:translate-y-0 sm:translate-x-full"
           >
-            <DialogPanel className="relative flex h-full w-full flex-col bg-white py-6 shadow-xl sm:max-w-sm">
+            <DialogPanel className="relative flex h-full w-full flex-col border-l border-gray-300 bg-white pt-6 shadow-xl sm:max-w-sm">
               <button
                 type="button"
                 onClick={handleClose}
                 className="absolute top-4 right-4 shrink-0 rounded-md p-2 transition hover:bg-gray-200"
                 aria-label="Close"
               >
-                <X className="size-4" />
+                <X className="size-6 sm:size-5" />
               </button>
 
               <DialogTitle className="mb-4 px-6 text-lg font-bold">

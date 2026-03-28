@@ -32,7 +32,7 @@ const AddressRow: FC<AddressRowProps> = ({
         "flex cursor-pointer items-start justify-between gap-3 rounded-lg border px-4 py-3 transition-colors duration-200",
         is_selected
           ? "border-orange-500 bg-orange-50"
-          : "border-transparent hover:bg-gray-100 active:bg-orange-100",
+          : "border-transparent hover:bg-orange-50",
       )}
       onClick={() => onClick?.(address)}
       role="button"
@@ -62,7 +62,6 @@ const AddressRow: FC<AddressRowProps> = ({
         </div>
       </div>
 
-      {/* Right - 3 dot menu */}
       <Menu as="div" className="relative">
         <MenuButton
           className="rounded-md p-2 text-gray-600 hover:bg-gray-200"
