@@ -8,6 +8,26 @@ import type IUser from "@/types/user";
 // lib
 import Axios from "@/lib/axios/private.lib";
 
+/**
+ * Accepting cookie because on ssr no cookies
+ * are passed with credientials
+ */
+export const getUser = async (cookie?: string) => {
+  const { data } = await Axios.get<{
+    data: IUser;
+    success: boolean;
+    message: string;
+  }>(`/get-user-details`, {
+    headers: cookie
+      ? {
+          cookie,
+        }
+      : {},
+  });
+
+  return data.data;
+};
+
 const useUserDetails = () => {
   return useQuery<IUser, AxiosError>({
     queryKey: ["user-details"],
@@ -15,12 +35,8 @@ const useUserDetails = () => {
     gcTime: 30 * 60 * 1000,
     retry: 4,
     async queryFn() {
-      const { data } = await Axios.get<{
-        message: string;
-        data: any;
-        success: boolean;
-      }>("/get-user-details");
-      return data.data;
+      const user_details = await getUser();
+      return user_details;
     },
   });
 };

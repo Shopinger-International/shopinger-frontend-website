@@ -19,8 +19,8 @@ import LoginModal from "@/components/login/login-modal.component";
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 
-// helpers
-import { getCart, IResponse } from "@/hooks/axios/cart/use-cart.hook";
+// lib
+import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
 
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
@@ -77,11 +77,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
 
 export default CartCheckoutPage;
 
-// export const getServerSideProps = (async (context) => {
-//   const cookie = context.req.headers.cookie || "";
-//   const cart_details = await getCart(cookie);
-//   return { props: { cart_details } };
-// }) satisfies GetServerSideProps<{ cart_details: IResponse }>;
 type Props = {
   dehydratedState: DehydratedState;
 };
@@ -91,13 +86,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const cookie = context.req.headers.cookie ?? "";
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery<IResponse>({
-    queryKey: ["carts"],
-    queryFn: async () => {
-      return await getCart(cookie);
-    },
-  });
-
+  await prefetchCommonData(queryClient, cookie);
   return {
     props: {
       dehydratedState: dehydrate(queryClient),

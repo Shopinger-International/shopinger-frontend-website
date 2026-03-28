@@ -44,7 +44,7 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = () => {
   const { data: user } = useUserDetails();
-  const user_address = user?.user_addresses.find(
+  const user_address = user?.user_addresses?.find(
     (address) => address.is_default,
   );
   const { data: cart_details } = useCart();
@@ -165,7 +165,7 @@ const Header: FC<HeaderProps> = () => {
                 )}
               >
                 <CircleUserRound className="size-6" />
-                <span className="max-w-28 truncate">{user.name}</span>
+                <span className="max-w-28 truncate">{user.name??"My Account"}</span>
               </button>
             ) : (
               <Tooltip

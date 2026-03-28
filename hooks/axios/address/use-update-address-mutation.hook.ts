@@ -42,6 +42,10 @@ const useUpdateAddressMutation = () => {
       query_client.invalidateQueries({
         queryKey: ["user-addresses"],
       });
+
+      query_client.invalidateQueries({
+        queryKey: ["user-details"],
+      });
       enqueueSnackbar(data.message, {
         key: `address-updated-success-${Date.now()}`,
         variant: "success",

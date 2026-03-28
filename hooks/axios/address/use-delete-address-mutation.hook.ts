@@ -37,6 +37,9 @@ const useDeleteAddressMutation = () => {
       query_client.invalidateQueries({
         queryKey: ["user-addresses"],
       });
+      query_client.invalidateQueries({
+        queryKey: ["user-details"],
+      });
       enqueueSnackbar(data.message, {
         key: `delete-address-success-${Date.now()}`,
         variant: "success",
