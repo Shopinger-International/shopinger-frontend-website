@@ -93,11 +93,11 @@ const OrderItem: FC<IProps> = ({ product, variant }) => {
   ]);
 
   return (
-    <div className="rounded-xl border border-gray-300 bg-white p-4">
+    <div className="rounded-xl bg-white">
       <div className="flex gap-4">
         {/* IMAGE */}
 
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
           <Link href={`/${product_slug}/p/${product_id}/${variant.id}`}>
             <Image
               src={
@@ -112,7 +112,7 @@ const OrderItem: FC<IProps> = ({ product, variant }) => {
         </div>
 
         {/* CONTENT */}
-        <div className="flex flex-1 flex-col justify-between space-y-1">
+        <div className="flex flex-1 flex-col space-y-1">
           {/* TOP */}
           <h4 className="line-clamp-1 text-sm font-medium">{title}</h4>
 
