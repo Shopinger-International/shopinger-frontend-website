@@ -23,6 +23,7 @@ const useCategories = () => {
       const categories = await getCategory();
       return categories;
     },
+    staleTime: 15 * 60 * 1000,
     retry: 4,
   });
 };
