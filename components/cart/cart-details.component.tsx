@@ -13,6 +13,7 @@ import CartItem from "@/components/cart/cart-item.component";
 import SidebarDrawer from "@/components/common/sidebar-drawer.component";
 import AddressRow from "@/components/cart/address-row.component";
 import CartSummary from "@/components/cart/cart-summary.component";
+import HelpSection from "@/components/common/help-section.component";
 
 const AddAddressModal = dynamic(
   () =>
@@ -144,7 +145,7 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
           }}
         />
       )}
-      <div className="relative grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="relative grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Left Section */}
         <div className="col-span-1 space-y-4 lg:col-span-2">
           {/* Address Bar */}
@@ -168,12 +169,20 @@ const CartDetails: FC<IProps> = ({ handleShowLoginModal }) => {
         </div>
 
         {/* Summary */}
-        <CartSummary
-          handleShowLoginModal={handleShowLoginModal}
-          total_amount={cart?.total_amount ?? 0}
-          total_discount={cart?.total_discount ?? 0}
-          charges={50}
-        />
+        <div className="flex flex-col gap-4 lg:sticky lg:top-(--header-height)">
+          <CartSummary
+            handleShowLoginModal={handleShowLoginModal}
+            total_amount={cart?.total_amount ?? 0}
+            total_discount={cart?.total_discount ?? 0}
+            charges={50}
+          />
+          <HelpSection
+            title={"Need help completing your order?"}
+            description={
+              "Facing issues with payment, address, or checkout? We’re here to help."
+            }
+          />
+        </div>
       </div>
     </>
   );

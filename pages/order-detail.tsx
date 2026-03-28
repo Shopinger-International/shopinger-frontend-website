@@ -11,6 +11,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import OrderItem from "@/components/order-details/order-item.component";
 import BillSummary from "@/components/order-details/bill-summary.component";
 import OrderSummary from "@/components/order-details/order-summary.component";
+import HelpSection from "@/components/common/help-section.component";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
@@ -54,9 +55,9 @@ const OrderDetailPage: NextPageWithLayout = () => {
           </div>
 
           {/* Main Layout */}
-          <section className="mt-4 grid grid-cols-1 gap-5 lg:grid-cols-3">
+          <section className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* LEFT SECTION */}
-            <div className="space-y-5 lg:col-span-2">
+            <div className="space-y-4 lg:col-span-2">
               {/* Order Status */}
               <div className="rounded-xl border border-gray-300 bg-white p-6">
                 <h2 className="mb-4 font-semibold text-gray-900">
@@ -133,6 +134,8 @@ const OrderDetailPage: NextPageWithLayout = () => {
                         product={product}
                         variant={variant}
                         key={`cart-item-${variant.id}`}
+                        is_delivered={true}
+                        is_reviewed={false}
                       />
                     )),
                   )}
@@ -141,11 +144,17 @@ const OrderDetailPage: NextPageWithLayout = () => {
             </div>
 
             {/* RIGHT SECTION (SUMMARY CARD) */}
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-4">
               <BillSummary
                 total_amount={1499}
                 total_discount={200}
                 charges={50}
+              />
+              <HelpSection
+                title={"Need help with this order?"}
+                description={
+                  "Get support for delivery, returns, or any issues with your order."
+                }
               />
             </div>
           </section>

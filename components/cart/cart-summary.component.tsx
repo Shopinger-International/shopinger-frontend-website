@@ -25,7 +25,7 @@ const CartSummary: FC<IProps> = ({
   const router = useRouter();
   const { data: user_detail } = useUserDetails();
   return (
-    <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6 lg:sticky lg:top-(--header-height)">
+    <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6">
       <h3 className="font-bold text-gray-900">Order Summary</h3>
 
       <div className="space-y-4 text-sm">

@@ -8,7 +8,6 @@ import type IProduct from "@/types/product";
 import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // hooks
-import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
 import useCategoryMappings from "@/hooks/axios/common/use-category-mappings.hook";
 
 // helpers
@@ -19,9 +18,16 @@ type IProps = {
   variant: IVariant & {
     selected_stock: number;
   };
+  is_delivered: boolean;
+  is_reviewed: boolean;
 };
 
-const OrderItem: FC<IProps> = ({ product, variant }) => {
+const OrderItem: FC<IProps> = ({
+  product,
+  variant,
+  is_delivered,
+  is_reviewed,
+}) => {
   const {
     title,
     variant_visual_attribute_medias,
@@ -29,14 +35,8 @@ const OrderItem: FC<IProps> = ({ product, variant }) => {
     sub_sub_category_id,
   } = product;
   const { data: category_mappings } = useCategoryMappings(sub_sub_category_id);
-  const {
-    variant_attribute_values,
-    id: variant_id,
-    selected_stock,
-    variant_pricing,
-  } = variant;
+  const { variant_attribute_values, selected_stock, variant_pricing } = variant;
   const product_slug = generateSlug(title);
-  const add_to_cart_mutation = useAddToCartMutation();
   const formated_variant_attribute_value = variant_attribute_values.map(
     ({ attribute, value }) => {
       return {
@@ -95,8 +95,6 @@ const OrderItem: FC<IProps> = ({ product, variant }) => {
   return (
     <div className="rounded-xl bg-white">
       <div className="flex gap-4">
-        {/* IMAGE */}
-
         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
           <Link href={`/${product_slug}/p/${product_id}/${variant.id}`}>
             <Image
@@ -132,8 +130,15 @@ const OrderItem: FC<IProps> = ({ product, variant }) => {
               ₹{variant_pricing.selling_price_with_commission} x{" "}
             </span>
 
-            {variant.selected_stock}
+            {selected_stock}
           </div>
+          {is_delivered && (
+            <div>
+              <button className="cursor-pointer text-xs font-medium text-orange-600 hover:underline">
+                {is_reviewed ? "View your review" : "Write a review"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
