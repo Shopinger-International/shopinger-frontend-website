@@ -20,6 +20,7 @@ type IProps = {
   };
   is_delivered: boolean;
   is_reviewed: boolean;
+  handleShowReviewModal: () => void;
 };
 
 const OrderItem: FC<IProps> = ({
@@ -27,6 +28,7 @@ const OrderItem: FC<IProps> = ({
   variant,
   is_delivered,
   is_reviewed,
+  handleShowReviewModal,
 }) => {
   const {
     title,
@@ -35,7 +37,12 @@ const OrderItem: FC<IProps> = ({
     sub_sub_category_id,
   } = product;
   const { data: category_mappings } = useCategoryMappings(sub_sub_category_id);
-  const { variant_attribute_values, selected_stock, variant_pricing } = variant;
+  const {
+    id: variant_id,
+    variant_attribute_values,
+    selected_stock,
+    variant_pricing,
+  } = variant;
   const product_slug = generateSlug(title);
   const formated_variant_attribute_value = variant_attribute_values.map(
     ({ attribute, value }) => {
@@ -96,7 +103,7 @@ const OrderItem: FC<IProps> = ({
     <div className="rounded-xl bg-white">
       <div className="flex gap-4">
         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
-          <Link href={`/${product_slug}/p/${product_id}/${variant.id}`}>
+          <Link href={`/${product_slug}/p/${product_id}/${variant_id}`}>
             <Image
               src={
                 variant_medias[0]?.url ?? product.product_medias[0].media.url
@@ -134,7 +141,10 @@ const OrderItem: FC<IProps> = ({
           </div>
           {is_delivered && (
             <div>
-              <button className="cursor-pointer text-xs font-medium text-orange-600 hover:underline">
+              <button
+                className="cursor-pointer text-xs font-medium text-orange-600 hover:underline"
+                onClick={() => !is_reviewed && handleShowReviewModal()}
+              >
                 {is_reviewed ? "View your review" : "Write a review"}
               </button>
             </div>

@@ -76,15 +76,15 @@ const AddressRow: FC<AddressRowProps> = ({
         >
           {/* Edit */}
           <MenuItem>
-            {({ active }) => (
+            {({ focus }) => (
               <button
                 className={clsx(
                   "flex w-full items-center gap-2 px-3 py-2 text-sm",
-                  active && "bg-gray-100",
+                  focus && "bg-gray-100",
                 )}
                 onClick={() => onEdit?.(address)}
               >
-                <Pencil className="h-4 w-4" />
+                <Pencil className="size-4" />
                 Edit
               </button>
             )}
@@ -100,7 +100,7 @@ const AddressRow: FC<AddressRowProps> = ({
                 )}
                 onClick={() => onDelete?.(address)}
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="size-4" />
                 Delete
               </button>
             )}

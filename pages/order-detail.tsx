@@ -1,3 +1,4 @@
+import { useState, createContext } from "react";
 import Head from "next/head";
 
 // layout
@@ -6,12 +7,14 @@ import MainLayout from "@/components/layout/main-layout.component";
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
+import type IProduct from "@/types/product";
 
 // local components
 import OrderItem from "@/components/order-details/order-item.component";
 import BillSummary from "@/components/order-details/bill-summary.component";
 import OrderSummary from "@/components/order-details/order-summary.component";
 import HelpSection from "@/components/common/help-section.component";
+import ReviewModal from "@/components/common/review/review-modal.component";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
@@ -29,8 +32,18 @@ const steps = [
   { label: "Delivered", icon: CheckCircle, status: "upcoming" },
 ];
 
+// context
+type IBaseReviewType = {
+  open: boolean;
+  product: Omit<IProduct, "variants"> | null;
+};
+
 const OrderDetailPage: NextPageWithLayout = () => {
   const { data, isPending } = useCart();
+  const [review_modal_state, setReviewModalState] = useState<IBaseReviewType>({
+    open: false,
+    product: null,
+  });
 
   if (isPending) return null;
   return (
@@ -44,6 +57,17 @@ const OrderDetailPage: NextPageWithLayout = () => {
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+      <ReviewModal
+        product={review_modal_state.product}
+        is_open={review_modal_state.open}
+        onClose={() =>
+          setReviewModalState({
+            open: false,
+            product: null,
+          })
+        }
+      />
+
       <section className="w-full bg-gray-50 py-6">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           {/* Header */}
@@ -136,6 +160,12 @@ const OrderDetailPage: NextPageWithLayout = () => {
                         key={`cart-item-${variant.id}`}
                         is_delivered={true}
                         is_reviewed={false}
+                        handleShowReviewModal={() =>
+                          setReviewModalState({
+                            open: true,
+                            product,
+                          })
+                        }
                       />
                     )),
                   )}
