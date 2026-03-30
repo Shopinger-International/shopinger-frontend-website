@@ -1,7 +1,11 @@
-import type { FC } from "react";
+import Image from "next/image";
+import { useMemo } from "react";
 // types
+import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type { FC } from "react";
 import type { FieldProps } from "formik";
 import type IProduct from "@/types/product";
+import type IVariant from "@/types/variant";
 
 // external components
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -16,6 +20,7 @@ import "@smastrom/react-rating/style.css";
 
 // api hooks
 import useReviewGeneratorMutation from "@/hooks/axios/review/review-generator-mutation.hook";
+import useCategoryMappings from "@/hooks/axios/common/use-category-mappings.hook";
 
 const rating_labels = [
   "Very poor",
@@ -31,13 +36,63 @@ type IInitialValues = {
   description: string;
 };
 type IProps = {
-  product: Omit<IProduct, "variants"> | null;
+  product: Omit<IProduct, "variants">;
+  variant: IVariant;
   is_open: boolean;
   onClose: () => void;
 };
 
-const ReviewModal: FC<IProps> = ({ product, is_open, onClose }) => {
+const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
+  const {
+    title,
+    variant_visual_attribute_medias,
+    id: product_id,
+    sub_sub_category_id,
+  } = product;
   const review_generator_mutation = useReviewGeneratorMutation();
+  const { data: category_mappings } = useCategoryMappings(sub_sub_category_id);
+  const { variant_attribute_values } = variant;
+  const variant_medias = useMemo(() => {
+    const media_group = variant_visual_attribute_medias.reduce<IMediaGroup>(
+      (acc, item) => {
+        const { attribute_id, attribute_value } = item;
+        const updated_attribute_value = attribute_value.toLowerCase();
+
+        if (!acc[attribute_id]) {
+          acc[attribute_id] = {};
+        }
+
+        if (!acc[attribute_id][updated_attribute_value]) {
+          acc[attribute_id][updated_attribute_value] = [];
+        }
+
+        acc[attribute_id][updated_attribute_value].push(item.media);
+
+        return acc;
+      },
+      {},
+    );
+
+    let variant_medias = variant_attribute_values
+      .filter(
+        ({ attribute }) =>
+          category_mappings?.find(
+            ({ attribute: mapping_attribute }) =>
+              mapping_attribute.id == attribute.id,
+          )?.is_visual,
+      )
+      .flatMap(
+        ({ attribute, value }) =>
+          media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
+      );
+
+    return variant_medias;
+  }, [
+    variant_attribute_values.length,
+    category_mappings?.length,
+    variant_visual_attribute_medias.length,
+  ]);
+  console.log("value of variant medias", variant_medias);
   return (
     <Dialog as="div" className="relative z-50" onClose={onClose} open={is_open}>
       {/* Overlay */}
@@ -47,16 +102,34 @@ const ReviewModal: FC<IProps> = ({ product, is_open, onClose }) => {
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-full max-w-lg rounded-2xl border border-gray-300 bg-white p-6 shadow-2xl backdrop-blur-xl">
           {/* Header */}
+          {/* Header */}
           <div className="mb-4 flex items-start justify-between">
-            <div className="flex flex-col gap-1">
-              <DialogTitle className="text-xl font-semibold text-gray-900">
-                Write a Review
-              </DialogTitle>
-              <p className="text-sm text-gray-600">
-                Share your experience with this product
-              </p>
+            <div className="flex items-start gap-4">
+              {/* Product Image */}
+              <div className="relative size-16 shrink-0 rounded-lg border border-gray-300">
+                <Image
+                  src={
+                    variant_medias[0]?.url ??
+                    product.product_medias[0].media.url
+                  }
+                  fill={true}
+                  alt={title}
+                  className="border object-contain"
+                />
+              </div>
+
+              {/* Title + Subtitle */}
+              <div className="flex flex-col gap-1">
+                <DialogTitle className="line-clamp-2 font-semibold text-gray-900">
+                  {title}
+                </DialogTitle>
+                <p className="text-sm text-gray-600">
+                  Share your experience with this product
+                </p>
+              </div>
             </div>
 
+            {/* Close button */}
             <button
               onClick={onClose}
               className="rounded-md p-2 hover:bg-gray-100"

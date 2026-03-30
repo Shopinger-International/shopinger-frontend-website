@@ -8,6 +8,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type IProduct from "@/types/product";
+import type IVariant from "@/types/variant";
 
 // local components
 import OrderItem from "@/components/order-details/order-item.component";
@@ -36,6 +37,7 @@ const steps = [
 type IBaseReviewType = {
   open: boolean;
   product: Omit<IProduct, "variants"> | null;
+  variant: IVariant | null;
 };
 
 const OrderDetailPage: NextPageWithLayout = () => {
@@ -43,6 +45,7 @@ const OrderDetailPage: NextPageWithLayout = () => {
   const [review_modal_state, setReviewModalState] = useState<IBaseReviewType>({
     open: false,
     product: null,
+    variant: null,
   });
 
   if (isPending) return null;
@@ -57,16 +60,20 @@ const OrderDetailPage: NextPageWithLayout = () => {
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
-      <ReviewModal
-        product={review_modal_state.product}
-        is_open={review_modal_state.open}
-        onClose={() =>
-          setReviewModalState({
-            open: false,
-            product: null,
-          })
-        }
-      />
+      {review_modal_state.variant && review_modal_state.product && (
+        <ReviewModal
+          product={review_modal_state.product}
+          variant={review_modal_state.variant}
+          is_open={review_modal_state.open}
+          onClose={() =>
+            setReviewModalState({
+              open: false,
+              product: null,
+              variant: null,
+            })
+          }
+        />
+      )}
 
       <section className="w-full bg-gray-50 py-6">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
@@ -164,6 +171,7 @@ const OrderDetailPage: NextPageWithLayout = () => {
                           setReviewModalState({
                             open: true,
                             product,
+                            variant,
                           })
                         }
                       />

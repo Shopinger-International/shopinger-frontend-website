@@ -56,8 +56,8 @@ export default async function handler(
       - 1 → unhappy
 
       Constraints:
-      - Title: max 8 words
-      - Description: 2-3 sentences
+      - Title: max 3 words
+      - Description: max 8-15 words
       - No markdown or backticks
 
       Return ONLY valid JSON:
