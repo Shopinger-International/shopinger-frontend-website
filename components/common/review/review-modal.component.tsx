@@ -97,7 +97,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
           {/* Header */}
           <div className="flex items-start justify-between border-b border-gray-300 px-6 py-4">
             <div className="flex items-start gap-4">
-              <div className="relative size-16 shrink-0 rounded-lg border border-gray-300">
+              <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border border-gray-300">
                 <Image
                   src={
                     variant_medias[0]?.url ??
@@ -178,10 +178,12 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                             }}
                           />
 
+                          {/* Loading */}
                           {review_generator_mutation.isPending && (
-                            <span className="animate-pulse text-sm text-gray-500">
-                              Generating review...
-                            </span>
+                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-orange-400 border-t-transparent" />
+                              Writing review...
+                            </div>
                           )}
 
                           {field.value > 0 &&
