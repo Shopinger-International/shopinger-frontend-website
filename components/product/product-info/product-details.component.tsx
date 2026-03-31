@@ -9,6 +9,13 @@ import IProduct from "@/types/product";
 import ProductInfoTabs from "@/components/product/product-info/product-info-tabs.component";
 import AttributeInfoCell from "@/components/product/product-info/attribute-info-cell.component";
 
+const ProductReview = dynamic(
+  () => import("@/components/product/product-info/review/product-review.component"),
+  {
+    ssr: false,
+  },
+);
+
 // external components
 import {
   Disclosure,
@@ -25,6 +32,7 @@ import { DISPLAY_AREA } from "@/constants/display-area.constant";
 
 // icons
 import { ChevronUpIcon } from "lucide-react";
+import dynamic from "next/dynamic";
 
 export const getReadableValue = ({
   attribute,
@@ -210,6 +218,9 @@ const ProductDetails: FC<{
             product={product}
             category_mappings={category_mappings}
           />
+        </ExtendedDisclosure>
+        <ExtendedDisclosure default_open={true} heading="Customer Reviews">
+          <ProductReview />
         </ExtendedDisclosure>
       </div>
     </section>

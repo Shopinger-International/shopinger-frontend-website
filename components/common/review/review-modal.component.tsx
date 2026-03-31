@@ -95,9 +95,9 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-2xl border border-gray-300 bg-white shadow-2xl">
           {/* Header */}
-          <div className="flex items-start justify-between border-b border-gray-300 px-6 py-4">
+          <div className="flex items-start justify-between border-b border-gray-300 px-4 py-4 sm:px-6">
             <div className="flex items-start gap-4">
-              <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border border-gray-300">
+              <div className="relative size-14 shrink-0 overflow-hidden rounded-lg border border-gray-300 sm:size-16">
                 <Image
                   src={
                     variant_medias[0]?.url ??
@@ -109,11 +109,11 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                 />
               </div>
 
-              <div className="flex flex-col gap-1">
-                <DialogTitle className="line-clamp-2 font-semibold text-gray-900">
+              <div className="flex flex-col gap-0.5 sm:gap-1">
+                <DialogTitle className="line-clamp-1 text-sm font-semibold text-gray-900 sm:line-clamp-2 sm:text-base">
                   {title}
                 </DialogTitle>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs text-gray-600 sm:text-sm">
                   Share your experience with this product
                 </p>
               </div>
@@ -142,7 +142,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
             {({ values, setValues }) => (
               <Form className="flex flex-1 flex-col overflow-hidden">
                 {/* Scrollable Content */}
-                <div className="flex-1 space-y-6 overflow-y-auto px-6 py-3">
+                <div className="flex-1 space-y-6 overflow-y-auto px-4 py-3 sm:px-6">
                   {/* Rating */}
                   <Field name="rating">
                     {({ field, form }: FieldProps<number, IInitialValues>) => (
@@ -345,7 +345,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                 </div>
 
                 {/* Footer (Sticky) */}
-                <div className="flex items-center justify-end gap-3 border-t border-gray-300 px-6 py-3">
+                <div className="flex items-center justify-end gap-3 border-t border-gray-300 px-4 py-3 sm:px-6">
                   <button
                     type="button"
                     onClick={onClose}
