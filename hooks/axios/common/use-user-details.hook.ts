@@ -32,8 +32,6 @@ const useUserDetails = () => {
   return useQuery<IUser, AxiosError>({
     queryKey: ["user-details"],
     staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    retry: 4,
     async queryFn() {
       const user_details = await getUser();
       return user_details;

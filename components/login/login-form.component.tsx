@@ -34,7 +34,7 @@ import { countries } from "@/data/countries.data";
 import { ChevronDown } from "lucide-react";
 
 // hooks
-import useSendOTPMutation from "@/hooks/axios/login/use-send-otp-mutation";
+import useSendOTPMutation from "@/hooks/axios/login/send-otp-mutation.hook";
 import useVerifyLoginOtp from "@/hooks/axios/login/verify-login-otp-mutation";
 
 export type IInitialValues = {
