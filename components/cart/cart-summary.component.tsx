@@ -2,15 +2,18 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 // types
 import type { FC } from "react";
+import type { IAddress } from "@/types/address";
 
 // helpers
 import clsx from "clsx";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+import useCartCheckoutMutation from "@/hooks/axios/cart/use-cart-checkout-mutation.hook";
 
 type IProps = {
   handleShowLoginModal: () => void;
+  selected_address: IAddress | null;
   total_amount: number;
   total_discount: number;
   charges: number;
@@ -18,11 +21,13 @@ type IProps = {
 
 const CartSummary: FC<IProps> = ({
   handleShowLoginModal,
+  selected_address,
   total_amount,
   total_discount,
   charges,
 }) => {
   const router = useRouter();
+  const cart_checkout_mutation = useCartCheckoutMutation();
   const { data: user_detail } = useUserDetails();
   return (
     <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6">
@@ -92,7 +97,11 @@ const CartSummary: FC<IProps> = ({
           className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white"
           onClick={() => {
             if (!user_detail) return handleShowLoginModal();
-            router.push("/payment");
+            // router.push("/payment");
+            selected_address &&
+              cart_checkout_mutation.mutate({
+                address_id: selected_address.id,
+              });
           }}
         >
           <span className="relative z-10">Proceed to Pay</span>
