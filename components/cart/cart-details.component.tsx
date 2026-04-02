@@ -67,6 +67,7 @@ const CartDetails: FC<IProps> = ({
             }}
             total_amount={cart?.total_amount ?? 0}
             total_discount={cart?.total_discount ?? 0}
+            total_items={cart?.total_items ?? 0}
             charges={50}
             selected_address={selected_address}
           />

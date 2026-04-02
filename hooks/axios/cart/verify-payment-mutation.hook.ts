@@ -1,5 +1,5 @@
 // react query
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 // types
 import type { AxiosError } from "axios";
@@ -11,39 +11,38 @@ import Axios from "@/lib/axios/private.lib";
 import { enqueueSnackbar } from "notistack";
 
 type IRequest = {
-  address_id: number;
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+  amount: number;
+  currency: string;
 };
 
 type IResponse = {
-  order_id: number;
-  reservation_id: string;
-  reused: boolean;
+  message: string;
 };
 
-const useCartCheckoutMutation = () => {
-  const query_client = useQueryClient();
+const useVerifyPaymentMutation = () => {
   return useMutation<IResponse, AxiosError, IRequest>({
     async mutationFn(payload) {
       const { data } = await Axios.post<{
         message: string;
-        data: any;
+        data: IResponse;
         success: boolean;
-      }>("/checkout", payload);
+      }>("/verify-payment", payload);
       return data.data;
     },
-    onSuccess() {
-      query_client.invalidateQueries({
-        queryKey: ["carts"],
-      });
+    onSuccess(response) {
+      console.log("value of response", response);
     },
     onError(error) {
       // @ts-ignore
       enqueueSnackbar(error.response.data.message, {
-        key: `cart-checkout-${Date.now()}`,
+        key: `create-razorpay-order-error-${Date.now()}`,
         variant: "error",
       });
     },
   });
 };
 
-export default useCartCheckoutMutation;
+export default useVerifyPaymentMutation;

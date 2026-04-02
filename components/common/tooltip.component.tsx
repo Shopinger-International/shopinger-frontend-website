@@ -25,7 +25,7 @@ import {
 import clsx from "clsx";
 
 type TooltipProps = {
-  content: ReactElement;
+  content: ({ handleClose }: { handleClose: () => void }) => ReactElement;
   children: (props: { open: boolean }) => ReactElement;
   className?: string;
   offset_distance?: number;
@@ -110,7 +110,7 @@ const Tooltip: FC<TooltipProps> = ({
                 filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
               }}
             />
-            {content}
+            {content({ handleClose: () => setOpen(false) })}
           </div>
         </FloatingPortal>
       )}

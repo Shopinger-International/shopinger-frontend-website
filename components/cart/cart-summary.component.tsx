@@ -1,3 +1,4 @@
+// https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/integration-steps/#123-checkout-options
 import { useRouter } from "next/router";
 import Link from "next/link";
 // types
@@ -10,13 +11,25 @@ import clsx from "clsx";
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCartCheckoutMutation from "@/hooks/axios/cart/use-cart-checkout-mutation.hook";
+import useCreateRazorpayOrderMutation from "@/hooks/axios/cart/create-razorpay-order-mutation.hook";
+import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation.hook";
 
 type IProps = {
   handleShowLoginModal: () => void;
   selected_address: IAddress | null;
   total_amount: number;
   total_discount: number;
+  total_items: number;
   charges: number;
+};
+const loadRazorpay = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
 };
 
 const CartSummary: FC<IProps> = ({
@@ -24,11 +37,72 @@ const CartSummary: FC<IProps> = ({
   selected_address,
   total_amount,
   total_discount,
+  total_items,
   charges,
 }) => {
   const router = useRouter();
   const cart_checkout_mutation = useCartCheckoutMutation();
+  const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
+  const verify_payment_mutation = useVerifyPaymentMutation();
   const { data: user_detail } = useUserDetails();
+  const handlePayment = async ({
+    order_id,
+    amount,
+    currency,
+  }: {
+    order_id: number;
+    amount: number;
+    currency: string;
+  }) => {
+    const isLoaded = await loadRazorpay();
+
+    if (!isLoaded) {
+      alert("Razorpay SDK failed to load");
+      return;
+    }
+
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAYKEY_ID,
+      amount: amount,
+      currency: currency,
+      name: "Shopinger",
+      image: `https://seller.shopinger.co.in/assets/mobile-logo-8hlwYxTF.jpg`,
+      order_id: order_id,
+      description: `Cart Checkout - ${total_items}`,
+      remember_customer: true,
+      handler: function (response: {
+        razorpay_payment_id: string;
+        razorpay_order_id: string;
+        razorpay_signature: string;
+      }) {
+        verify_payment_mutation.mutate({
+          ...response,
+          amount,
+          currency,
+        });
+      },
+
+      prefill: {
+        name: "Ashish Prajapati",
+        email: "flutechants@gmail.com",
+        contact: user_detail?.phone,
+      },
+
+      notes: {
+        address: selected_address?.formatted_address,
+      },
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+
+    rzp.on("payment.failed", function (response: any) {
+      alert(response.error.description);
+      console.log("value of error", response.error);
+    });
+
+    rzp.open();
+  };
+
   return (
     <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6">
       <h3 className="font-bold text-gray-900">Order Summary</h3>
@@ -99,9 +173,25 @@ const CartSummary: FC<IProps> = ({
             if (!user_detail) return handleShowLoginModal();
             // router.push("/payment");
             selected_address &&
-              cart_checkout_mutation.mutate({
-                address_id: selected_address.id,
-              });
+              cart_checkout_mutation.mutate(
+                {
+                  address_id: selected_address.id,
+                },
+                {
+                  onSuccess(data) {
+                    create_razorpay_order_mutation.mutate(
+                      {
+                        order_id: data.order_id,
+                      },
+                      {
+                        onSuccess(data) {
+                          handlePayment(data);
+                        },
+                      },
+                    );
+                  },
+                },
+              );
           }}
         >
           <span className="relative z-10">Proceed to Pay</span>

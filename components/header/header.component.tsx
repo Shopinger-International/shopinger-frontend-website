@@ -165,7 +165,7 @@ const Header: FC = () => {
           </Link>
           <div className="hidden lg:inline">
             <Tooltip
-              content={<AIAssistant />}
+              content={() => <AIAssistant />}
               className="z-100"
               placement="bottom"
             >
@@ -185,7 +185,7 @@ const Header: FC = () => {
           <Tooltip
             placement="bottom"
             className="z-100"
-            content={
+            content={({ handleClose }) => (
               <div className="z-50 w-max rounded-xl border border-neutral-300 bg-white py-2 shadow-sm">
                 {[
                   {
@@ -217,7 +217,7 @@ const Header: FC = () => {
                   </Link>
                 ))}
               </div>
-            }
+            )}
           >
             {({ open }) => (
               <button>

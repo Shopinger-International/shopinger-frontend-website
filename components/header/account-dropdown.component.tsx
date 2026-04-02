@@ -11,6 +11,7 @@ import {
   Triangle,
   User,
   Handbag,
+  MapPin,
   Heart,
   Gift,
   LogOut,
@@ -33,10 +34,14 @@ const AccountDropdown: FC = () => {
         placement="bottom"
         offset_distance={6}
         className="z-50 w-52 overflow-hidden rounded-xl border border-neutral-300 bg-white shadow-lg"
-        content={
+        content={({ handleClose }) => (
           <div>
             {/* Auth section */}
-            {!user_details && (
+            {user_details ? (
+              <div className="flex flex-col gap-3 px-3 py-3">
+                <p className="text-sm font-semibold">My Account </p>
+              </div>
+            ) : (
               <div className="flex flex-col gap-3 px-3 py-3">
                 <Link
                   href="/login"
@@ -48,7 +53,7 @@ const AccountDropdown: FC = () => {
                 <p className="text-sm">
                   New User?{" "}
                   <Link
-                    href="/sign-up"
+                    href="/login"
                     className="font-semibold text-orange-500 hover:underline"
                   >
                     Sign Up
@@ -57,7 +62,7 @@ const AccountDropdown: FC = () => {
               </div>
             )}
             {/* Menu section */}
-            <div className={clsx(!user_details && "border-t border-gray-300")}>
+            <div className={"border-t border-gray-300"}>
               {[
                 {
                   label: "My Profile",
@@ -70,14 +75,14 @@ const AccountDropdown: FC = () => {
                   icon: Handbag,
                 },
                 {
+                  label: "Saved Addresses",
+                  href: "/manage-address",
+                  icon: MapPin,
+                },
+                {
                   label: "Wishlist",
                   href: "/wishlist",
                   icon: Heart,
-                },
-                {
-                  label: "Rewards",
-                  href: "/rewards",
-                  icon: Gift,
                 },
               ].map(({ label, href, icon: Icon }) => (
                 <Link
@@ -95,19 +100,10 @@ const AccountDropdown: FC = () => {
             </div>
             {user_details && (
               <div className="border-t border-gray-300">
-                <Link
-                  href={"/help"}
-                  className={clsx(
-                    "flex items-center gap-3 px-4 py-3 text-sm",
-                    "transition hover:bg-orange-500 hover:text-white",
-                  )}
-                >
-                  <MessageSquare className="size-5" />
-                  <span>Help Center</span>
-                </Link>
                 <button
                   onClick={() => {
                     logout_mutation.mutate();
+                    handleClose();
                   }}
                   className={clsx(
                     "flex w-full items-center gap-3 px-4 py-3 text-sm",
@@ -120,7 +116,7 @@ const AccountDropdown: FC = () => {
               </div>
             )}
           </div>
-        }
+        )}
       >
         {({ open }) =>
           user_details ? (

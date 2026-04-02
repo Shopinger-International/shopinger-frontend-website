@@ -47,6 +47,9 @@ import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
 
+// icons
+import { MapPin } from "lucide-react";
+
 export type IAddressModalState = {
   open: boolean;
   data: IAddress | null;
@@ -155,29 +158,52 @@ const CartCheckoutPage: NextPageWithLayout = () => {
         title={"Change Address"}
       >
         <div className="flex-1 overflow-y-auto px-6">
-          <div className="space-y-2">
-            {user_addresses.map((address) => (
-              <AddressRow
-                key={`address-row-${address.id}`}
-                address={address}
-                is_selected={address.id == selected_address?.id}
-                onClick={() => {
-                  setSelectedAddress(address);
-                  setIsAddressDrawerOpen(false);
-                }}
-                onDelete={(data) => {
-                  delete_address_mutation.mutate({
-                    address_id: data.id,
-                  });
-                }}
-                onEdit={(data) => {
-                  setAddressModalState({
-                    open: true,
-                    data,
-                  });
-                }}
-              />
-            ))}
+          <div className="space-y-2 h-full">
+            {user_addresses.length === 0 ? (
+              <div className="flex h-full flex-col items-center justify-center px-6 py-10 text-center">
+                {/* Icon */}
+                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-orange-50">
+                  <MapPin className="h-5 w-5 text-orange-500" />
+                </div>
+
+                {/* Title */}
+                <h3 className="text-base font-semibold text-gray-800">
+                  No addresses yet
+                </h3>
+
+                {/* Subtitle */}
+                <p className="mt-1 max-w-xs text-sm text-gray-500">
+                  Add an address to make checkout faster and easier.
+                </p>
+
+                {/* CTA (important) */}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {user_addresses.map((address) => (
+                  <AddressRow
+                    key={`address-row-${address.id}`}
+                    address={address}
+                    is_selected={address.id == selected_address?.id}
+                    onClick={() => {
+                      setSelectedAddress(address);
+                      setIsAddressDrawerOpen(false);
+                    }}
+                    onDelete={(data) => {
+                      delete_address_mutation.mutate({
+                        address_id: data.id,
+                      });
+                    }}
+                    onEdit={(data) => {
+                      setAddressModalState({
+                        open: true,
+                        data,
+                      });
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-4 border-t border-gray-300 px-6 py-4 shadow-sm">

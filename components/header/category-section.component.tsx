@@ -124,7 +124,7 @@ const CategorySection: FC = () => {
                         placement="bottom"
                         key={label}
                         className="z-50 rounded-xl border border-gray-200 bg-white py-1 font-semibold shadow-lg"
-                        content={
+                        content={() => (
                           <div className="space-y-1 px-3 py-1.5">
                             <p className="tracking-wide text-orange-500">
                               Call us now to order
@@ -138,7 +138,7 @@ const CategorySection: FC = () => {
                               </span>
                             </div>
                           </div>
-                        }
+                        )}
                       >
                         {({ open }) => (
                           <Link
