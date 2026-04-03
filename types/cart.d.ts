@@ -11,5 +11,6 @@ export type ICart = {
   })[];
   total_amount: number;
   total_discount: number;
+  sub_total: number;
   total_items: number;
 };

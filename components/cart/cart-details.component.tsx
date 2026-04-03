@@ -65,6 +65,7 @@ const CartDetails: FC<IProps> = ({
             handleShowLoginModal={() => {
               handleShowLoginModal("checkout");
             }}
+            sub_total={cart?.sub_total ?? 0}
             total_amount={cart?.total_amount ?? 0}
             total_discount={cart?.total_discount ?? 0}
             total_items={cart?.total_items ?? 0}

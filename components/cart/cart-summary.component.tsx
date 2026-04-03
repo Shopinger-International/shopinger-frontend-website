@@ -6,6 +6,7 @@ import type { IAddress } from "@/types/address";
 
 // helpers
 import clsx from "clsx";
+import { enqueueSnackbar } from "notistack";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
@@ -16,6 +17,7 @@ import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation
 type IProps = {
   handleShowLoginModal: () => void;
   selected_address: IAddress | null;
+  sub_total: number;
   total_amount: number;
   total_discount: number;
   total_items: number;
@@ -34,6 +36,7 @@ const loadRazorpay = () => {
 const CartSummary: FC<IProps> = ({
   handleShowLoginModal,
   selected_address,
+  sub_total,
   total_amount,
   total_discount,
   total_items,
@@ -108,20 +111,17 @@ const CartSummary: FC<IProps> = ({
         {[
           {
             label: "Subtotal",
-            value: `₹${total_amount}`,
-            bold: false,
+            value: `₹${sub_total}`,
           },
           {
             label: "Discount",
             value: `- ₹${total_discount}`,
-            bold: true,
           },
           {
             label: "Shipping",
             value: charges ? `₹${charges}` : "FREE",
-            bold: false,
           },
-        ].map(({ label, value, bold }) => (
+        ].map(({ label, value }) => (
           <div className="flex items-center justify-between" key={label}>
             <span className="font-medium text-gray-600">{label}</span>
             <span
@@ -153,9 +153,7 @@ const CartSummary: FC<IProps> = ({
           <div className="text-right">
             <span className="mr-1 text-sm font-semibold text-gray-600">₹</span>
             <span className="text-3xl font-bold tracking-tight text-gray-900">
-              {(total_amount - total_discount + charges).toLocaleString(
-                "en-IN",
-              )}
+              {total_amount.toLocaleString("en-IN")}
             </span>
           </div>
         </div>
@@ -168,27 +166,32 @@ const CartSummary: FC<IProps> = ({
           className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white"
           onClick={() => {
             if (!user_detail) return handleShowLoginModal();
-            // router.push("/payment");
-            selected_address &&
-              cart_checkout_mutation.mutate(
-                {
-                  address_id: selected_address.id,
-                },
-                {
-                  onSuccess(data) {
-                    create_razorpay_order_mutation.mutate(
-                      {
-                        order_id: data.order_id,
+            if (!selected_address) {
+              enqueueSnackbar("Please select an address", {
+                key: `select-address-${Date.now()}`,
+                variant: "error",
+              });
+              return;
+            }
+            cart_checkout_mutation.mutate(
+              {
+                address_id: selected_address.id,
+              },
+              {
+                onSuccess(data) {
+                  create_razorpay_order_mutation.mutate(
+                    {
+                      order_id: data.order_id,
+                    },
+                    {
+                      onSuccess(data) {
+                        handlePayment(data);
                       },
-                      {
-                        onSuccess(data) {
-                          handlePayment(data);
-                        },
-                      },
-                    );
-                  },
+                    },
+                  );
                 },
-              );
+              },
+            );
           }}
         >
           <span className="relative z-10">Proceed to Pay</span>
