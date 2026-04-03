@@ -1,4 +1,3 @@
-// https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/integration-steps/#123-checkout-options
 import { useRouter } from "next/router";
 import Link from "next/link";
 // types
@@ -65,8 +64,6 @@ const CartSummary: FC<IProps> = ({
       key: process.env.NEXT_PUBLIC_RAZORPAYKEY_ID,
       amount: amount,
       currency: currency,
-      name: "Shopinger",
-      image: `https://seller.shopinger.co.in/assets/mobile-logo-8hlwYxTF.jpg`,
       order_id: order_id,
       description: `Cart Checkout - ${total_items}`,
       remember_customer: true,

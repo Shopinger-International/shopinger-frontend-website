@@ -155,7 +155,7 @@ const Header: FC = () => {
                 className="absolute left-1/2 -translate-x-1/3 -translate-y-1/3 font-bold"
                 aria-hidden="true"
               >
-                {cart_details?.items.length ?? 0}
+                {cart_details?.total_items ?? 0}
               </span>
 
               <Cart width={30} height={23} aria-hidden="true" />
