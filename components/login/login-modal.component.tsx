@@ -33,7 +33,7 @@ const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
 
           <LoginForm
             is_modal={true}
-            heading_text="Login to complete your shopping"
+            heading_text="Login to complete your order"
             handleOnSuccess={() => {
               handleOnSuccess();
             }}
