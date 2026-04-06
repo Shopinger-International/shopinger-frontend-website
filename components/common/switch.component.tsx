@@ -31,7 +31,7 @@ const Switch: FC<IProps> = ({ label, description, name, disabled = false }) => {
         checked={values[name]}
         onChange={(value) => setFieldValue(name, value)}
         className={clsx(
-          "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition",
+          "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition disabled:bg-orange-300",
           values[name] ? "bg-orange-500" : "bg-gray-300",
         )}
       >

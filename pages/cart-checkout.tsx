@@ -53,9 +53,9 @@ import { MapPin } from "lucide-react";
 export type IAddressModalState = {
   open: boolean;
   data: IAddress | null;
+  action_type?: "checkout";
 };
 const CartCheckoutPage: NextPageWithLayout = () => {
-  const router = useRouter();
   const { data: user_addresses = [] } = useUserAddresses();
   const delete_address_mutation = useDeleteAddressMutation();
   const is_mobile = useIsMobile();
@@ -104,14 +104,8 @@ const CartCheckoutPage: NextPageWithLayout = () => {
           });
         }}
         handleOnSuccess={() => {
-          /**
-           * Redirecting user to checkout page because,
-           * this only shows when user click on checkout,
-           * so once successfull login he would like to got
-           * checkout page
-           */
           if (login_modal_state.action_type == "checkout") {
-            router.push("/checkout");
+            setIsAddressDrawerOpen(true);
           } else if (login_modal_state.action_type == "change_address") {
             setIsAddressDrawerOpen(true);
           }
@@ -158,7 +152,7 @@ const CartCheckoutPage: NextPageWithLayout = () => {
         title={"Change Address"}
       >
         <div className="flex-1 overflow-y-auto px-6">
-          <div className="space-y-2 h-full">
+          <div className="h-full space-y-2">
             {user_addresses.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center px-6 py-10 text-center">
                 {/* Icon */}

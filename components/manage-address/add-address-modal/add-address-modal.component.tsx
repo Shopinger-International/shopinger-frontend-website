@@ -34,7 +34,7 @@ import clsx from "clsx";
 // hooks
 import useCreateAddressMutation from "@/hooks/axios/address/use-create-address-mutation.hook";
 import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
-
+import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 // const
 import { ADDRESS_TYPE } from "@/constants/display-area.constant";
 
@@ -86,6 +86,7 @@ const AddAddressModal: FC<IProps> = ({
   onClose,
   handleOnSuccess,
 }) => {
+  const { data: user_addresses = [] } = useUserAddresses();
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
   return (
@@ -111,7 +112,7 @@ const AddAddressModal: FC<IProps> = ({
                 longitude: null,
                 address_type: ADDRESS_TYPE.HOME,
                 delivery_instructions: "",
-                is_default: false,
+                is_default: user_addresses.length == 0 ? true : false,
               }
             }
             validate={toFormikValidate(address_schema)}
@@ -314,6 +315,7 @@ const AddAddressModal: FC<IProps> = ({
                           label="Set as default address"
                           description="This will be used for all future orders by default"
                           name="is_default"
+                          disabled={user_addresses.length == 0 ? true : false}
                         />
                       </Fieldset>
                     </div>

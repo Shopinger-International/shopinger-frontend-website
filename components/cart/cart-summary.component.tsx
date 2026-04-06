@@ -7,6 +7,7 @@ import type { IAddress } from "@/types/address";
 // helpers
 import clsx from "clsx";
 import { enqueueSnackbar } from "notistack";
+import { handlePayment } from "@/helpers/payment.helper";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
@@ -16,6 +17,7 @@ import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation
 
 type IProps = {
   handleShowLoginModal: () => void;
+  handleShowAddresDrawer: () => void;
   selected_address: IAddress | null;
   sub_total: number;
   total_amount: number;
@@ -23,18 +25,10 @@ type IProps = {
   total_items: number;
   charges: number;
 };
-const loadRazorpay = () => {
-  return new Promise((resolve) => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
-};
 
 const CartSummary: FC<IProps> = ({
   handleShowLoginModal,
+  handleShowAddresDrawer,
   selected_address,
   sub_total,
   total_amount,
@@ -47,62 +41,6 @@ const CartSummary: FC<IProps> = ({
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
   const verify_payment_mutation = useVerifyPaymentMutation();
   const { data: user_detail } = useUserDetails();
-  const handlePayment = async ({
-    order_id,
-    amount,
-    currency,
-  }: {
-    order_id: number;
-    amount: number;
-    currency: string;
-  }) => {
-    const isLoaded = await loadRazorpay();
-
-    if (!isLoaded) {
-      alert("Razorpay SDK failed to load");
-      return;
-    }
-
-    const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAYKEY_ID,
-      amount: amount,
-      currency: currency,
-      order_id: order_id,
-      description: `Cart Checkout - ${total_items}`,
-      remember_customer: true,
-      handler: function (response: {
-        razorpay_payment_id: string;
-        razorpay_order_id: string;
-        razorpay_signature: string;
-      }) {
-        verify_payment_mutation.mutate({
-          ...response,
-          amount,
-          currency,
-        });
-      },
-
-      prefill: {
-        name: "Ashish Prajapati",
-        email: "flutechants@gmail.com",
-        contact: user_detail?.phone,
-      },
-
-      notes: {
-        address: selected_address?.formatted_address,
-      },
-    };
-
-    const rzp = new (window as any).Razorpay(options);
-
-    rzp.on("payment.failed", function (response: any) {
-      alert(response.error.description);
-      console.log("value of error", response.error);
-    });
-
-    rzp.open();
-  };
-
   return (
     <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6">
       <h3 className="font-bold text-gray-900">Order Summary</h3>
@@ -167,10 +105,7 @@ const CartSummary: FC<IProps> = ({
           onClick={() => {
             if (!user_detail) return handleShowLoginModal();
             if (!selected_address) {
-              enqueueSnackbar("Please select an address", {
-                key: `select-address-${Date.now()}`,
-                variant: "error",
-              });
+              handleShowAddresDrawer();
               return;
             }
             cart_checkout_mutation.mutate(
@@ -185,7 +120,19 @@ const CartSummary: FC<IProps> = ({
                     },
                     {
                       onSuccess(data) {
-                        handlePayment(data);
+                        handlePayment({
+                          ...data,
+                          selected_address,
+                          total_items,
+                          user_phone: user_detail.phone,
+                          successHandler(response) {
+                            verify_payment_mutation.mutate({
+                              ...response,
+                              amount: data.amount,
+                              currency: data.currency,
+                            });
+                          },
+                        });
                       },
                     },
                   );
