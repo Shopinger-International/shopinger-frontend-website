@@ -5,10 +5,12 @@ import Head from "next/head";
 import MainLayout from "@/components/layout/main-layout.component";
 
 // types
+import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
+import type IOrder from "@/types/order";
 
 // local components
 import OrderItem from "@/components/order-details/order-item.component";
@@ -18,20 +20,19 @@ import HelpSection from "@/components/common/help-section.component";
 import ReviewModal from "@/components/common/review/review-modal.component";
 
 // hooks
-import useCart from "@/hooks/axios/cart/use-cart.hook";
-import useGetOrders from "@/hooks/axios/order/use-get-order.hook";
 
 // icon
 import { Package, CreditCard, Truck, CheckCircle } from "lucide-react";
 
 // helpers
 import clsx from "clsx";
+import webAxios from "@/lib/axios/web.lib";
+import { formateDate } from "@/helpers/common.helper";
 
 const steps = [
-  { label: "Placed", icon: Package, status: "done" },
-  { label: "Paid", icon: CreditCard, status: "done" },
-  { label: "Shipped", icon: Truck, status: "current" },
-  { label: "Delivered", icon: CheckCircle, status: "upcoming" },
+  { label: "Confirmed", icon: CreditCard, status: "CONFIRMED" },
+  { label: "Shipped", icon: Truck, status: "SHIPPED" },
+  { label: "Delivered", icon: CheckCircle, status: "DELIVERED" },
 ];
 
 // context
@@ -41,17 +42,35 @@ type IBaseReviewType = {
   variant: IVariant | null;
 };
 
-const OrderDetailPage: NextPageWithLayout = () => {
-  const { data: orders = [] } = useGetOrders();
-  const { data, isPending } = useCart();
+const getOrderDetail = async (
+  order_id: number,
+  cookie: string,
+): Promise<IOrder> => {
+  const {
+    data: { order },
+  } = await webAxios.get<{
+    success: boolean;
+    order: IOrder;
+  }>(`/get-order/${order_id}`, {
+    headers: cookie
+      ? {
+          cookie,
+        }
+      : {},
+  });
+  return order;
+};
+
+const OrderDetailPage: NextPageWithLayout<{
+  order: IOrder;
+}> = ({ order }) => {
   const [review_modal_state, setReviewModalState] = useState<IBaseReviewType>({
     open: false,
     product: null,
     variant: null,
   });
+  const order_status_history = order.order_status_history;
 
-  console.log("value of orders",orders);
-  if (isPending) return null;
   return (
     <>
       <Head>
@@ -101,6 +120,10 @@ const OrderDetailPage: NextPageWithLayout = () => {
                 <div className="flex items-center justify-between">
                   {steps.map((step, index) => {
                     const Icon = step.icon;
+                    const order_status_date = order_status_history.find(
+                      (status_history) =>
+                        status_history.to_status == step.status,
+                    )?.created_at;
 
                     return (
                       <div
@@ -111,7 +134,7 @@ const OrderDetailPage: NextPageWithLayout = () => {
                           <div
                             className={clsx(
                               "absolute top-5 left-1/2 h-0.5 w-full",
-                              steps[index].status == "done"
+                              steps[index].status == order.status
                                 ? "bg-orange-500"
                                 : "bg-gray-300",
                             )}
@@ -120,7 +143,7 @@ const OrderDetailPage: NextPageWithLayout = () => {
 
                         <div
                           className={`z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-                            step.status === "done"
+                            step.status === order.status
                               ? "border-orange-500 bg-orange-500 text-white"
                               : step.status === "current"
                                 ? "scale-110 border-orange-500 bg-white text-orange-500 shadow-md"
@@ -144,10 +167,12 @@ const OrderDetailPage: NextPageWithLayout = () => {
                         {/* Optional date */}
                         <span
                           className={`text-xs text-gray-600 ${
-                            step.status === "upcoming" ? "invisible" : ""
+                            order_status_date ? "" : "invisible"
                           }`}
                         >
-                          12 Feb
+                          {order_status_date &&
+                            formateDate(order_status_date) &&
+                            ""}
                         </span>
                       </div>
                     );
@@ -158,27 +183,29 @@ const OrderDetailPage: NextPageWithLayout = () => {
               {/* Order Items */}
               <div className="rounded-xl border border-gray-300 bg-white p-6">
                 <h2 className="mb-4 font-semibold text-gray-900">
-                  {data?.items.length} items in this order
+                  {order?.order_items.length} items in this order
                 </h2>
 
                 <div className="space-y-4">
-                  {data?.items?.flatMap(({ variants, ...product }) =>
-                    variants.map((variant) => (
-                      <OrderItem
-                        product={product}
-                        variant={variant}
-                        key={`cart-item-${variant.id}`}
-                        is_delivered={true}
-                        is_reviewed={false}
-                        handleShowReviewModal={() =>
-                          setReviewModalState({
-                            open: true,
-                            product,
-                            variant,
-                          })
-                        }
-                      />
-                    )),
+                  {order?.order_items?.flatMap(
+                    ({ quantity, item: { variants, ...product } }) =>
+                      variants.map((variant) => (
+                        <OrderItem
+                          quantity={quantity}
+                          product={product}
+                          variant={variant}
+                          key={`cart-item-${variant.id}`}
+                          is_delivered={true}
+                          is_reviewed={false}
+                          handleShowReviewModal={() =>
+                            setReviewModalState({
+                              open: true,
+                              product,
+                              variant,
+                            })
+                          }
+                        />
+                      )),
                   )}
                 </div>
               </div>
@@ -187,8 +214,8 @@ const OrderDetailPage: NextPageWithLayout = () => {
             {/* RIGHT SECTION (SUMMARY CARD) */}
             <div className="flex flex-col gap-4">
               <BillSummary
-                total_amount={1499}
-                total_discount={200}
+                total_amount={order.total_amount}
+                total_discount={order.discount}
                 charges={50}
               />
               <HelpSection
@@ -206,6 +233,13 @@ const OrderDetailPage: NextPageWithLayout = () => {
 };
 
 export default OrderDetailPage;
+
+export const getServerSideProps = (async (context) => {
+  // Fetch data from external API
+  const cookie = context.req.headers.cookie ?? "";
+  const order = await getOrderDetail(1, cookie);
+  return { props: { order } };
+}) satisfies GetServerSideProps<{ order: IOrder }>;
 
 OrderDetailPage.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;

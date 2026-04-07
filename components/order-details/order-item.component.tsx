@@ -15,11 +15,10 @@ import { generateSlug } from "@/helpers/product.helper";
 
 type IProps = {
   product: Omit<IProduct, "variants">;
-  variant: IVariant & {
-    selected_stock: number;
-  };
+  variant: IVariant;
   is_delivered: boolean;
   is_reviewed: boolean;
+  quantity: number;
   handleShowReviewModal: () => void;
 };
 
@@ -28,6 +27,7 @@ const OrderItem: FC<IProps> = ({
   variant,
   is_delivered,
   is_reviewed,
+  quantity,
   handleShowReviewModal,
 }) => {
   const {
@@ -37,12 +37,7 @@ const OrderItem: FC<IProps> = ({
     sub_sub_category_id,
   } = product;
   const { data: category_mappings } = useCategoryMappings(sub_sub_category_id);
-  const {
-    id: variant_id,
-    variant_attribute_values,
-    selected_stock,
-    variant_pricing,
-  } = variant;
+  const { id: variant_id, variant_attribute_values, variant_pricing } = variant;
   const product_slug = generateSlug(title);
   const formated_variant_attribute_value = variant_attribute_values.map(
     ({ attribute, value }) => {
@@ -137,7 +132,7 @@ const OrderItem: FC<IProps> = ({
               ₹{variant_pricing.selling_price_with_commission} x{" "}
             </span>
 
-            {selected_stock}
+            {quantity}
           </div>
           {is_delivered && (
             <div>
