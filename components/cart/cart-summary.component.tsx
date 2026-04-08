@@ -6,7 +6,6 @@ import type { IAddress } from "@/types/address";
 
 // helpers
 import clsx from "clsx";
-import { enqueueSnackbar } from "notistack";
 import { handlePayment } from "@/helpers/payment.helper";
 
 // hooks
@@ -126,11 +125,20 @@ const CartSummary: FC<IProps> = ({
                           total_items,
                           user_phone: user_detail.phone,
                           successHandler(response) {
-                            verify_payment_mutation.mutate({
-                              ...response,
-                              amount: data.amount,
-                              currency: data.currency,
-                            });
+                            verify_payment_mutation.mutate(
+                              {
+                                ...response,
+                                amount: data.amount,
+                                currency: data.currency,
+                              },
+                              {
+                                onSuccess(response) {
+                                  router.push(
+                                    `/order-detail/${response.order.id}`,
+                                  );
+                                },
+                              },
+                            );
                           },
                         });
                       },

@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 
 // types
 import type { AxiosError } from "axios";
+import type IOrder from "@/types/order";
 
 // lib
 import Axios from "@/lib/axios/private.lib";
@@ -19,7 +20,7 @@ type IRequest = {
 };
 
 type IResponse = {
-  message: string;
+  order: IOrder;
 };
 
 const useVerifyPaymentMutation = () => {
