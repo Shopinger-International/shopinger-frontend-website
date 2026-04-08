@@ -79,6 +79,7 @@ const SelectPlaces: FC<IProps> = ({ handleOnChange }) => {
 
   return (
     <AsyncSelect
+      autoFocus={true}
       value={value} //
       inputValue={query}
       cacheOptions

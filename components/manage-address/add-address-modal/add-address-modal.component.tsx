@@ -143,218 +143,255 @@ const AddAddressModal: FC<IProps> = ({
                   );
             }}
           >
-            {({ values, setFieldValue, setValues }) => (
-              <Form className="flex h-[80vh] max-h-150 flex-col">
-                {/* BODY */}
+            {({ values, setFieldValue, setValues }) => {
+              const is_location_selected =
+                values.latitude !== null && values.longitude !== null;
+              return (
+                <Form className="flex h-[80vh] max-h-150 flex-col">
+                  {/* BODY */}
 
-                <div className="flex flex-1 overflow-hidden">
-                  {/* LEFT - MAP */}
-                  <div className="relative w-1/2 border-r border-gray-300">
-                    {/* Search */}
-                    <div className="absolute top-4 right-0 left-0 z-10 px-4">
-                      <SelectPlaces
-                        handleOnChange={(val) => {
-                          const mapped = mapPlaceToForm(val.data);
+                  <div className="flex flex-1 overflow-hidden">
+                    {/* LEFT - MAP */}
+                    <div className="relative w-1/2 border-r border-gray-300">
+                      {/* Search */}
+                      <div className="absolute top-4 right-0 left-0 z-10 px-4">
+                        <SelectPlaces
+                          handleOnChange={(val) => {
+                            const mapped = mapPlaceToForm(val.data);
 
-                          setValues((prev) => ({
-                            ...prev,
-                            ...mapped,
-                            latitude: val.data.location.latitude,
-                            longitude: val.data.location.longitude,
-                          }));
-                        }}
-                      />
-                    </div>
+                            setValues((prev) => ({
+                              ...prev,
+                              ...mapped,
+                              latitude: val.data.location.latitude,
+                              longitude: val.data.location.longitude,
+                            }));
+                          }}
+                        />
+                      </div>
 
-                    {/* Map */}
-                    <div className="h-full w-full">
-                      <LocationPicker
-                        position={{
-                          lat: values.latitude,
-                          lng: values.longitude,
-                        }}
-                        updatePosition={(coords) => {
-                          setValues((prev) => ({
-                            ...prev,
-                            latitude: coords.lat,
-                            longitude: coords.lng,
-                          }));
-                        }}
-                      />
-                    </div>
+                      {/* Map */}
+                      <div className="h-full w-full">
+                        <LocationPicker
+                          position={{
+                            lat: values.latitude,
+                            lng: values.longitude,
+                          }}
+                          updatePosition={(coords) => {
+                            setValues((prev) => ({
+                              ...prev,
+                              latitude: coords.lat,
+                              longitude: coords.lng,
+                            }));
+                          }}
+                        />
+                      </div>
 
-                    {/* Current location button */}
-                    <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2">
-                      <button
-                        type="button"
-                        className="flex items-center gap-1 rounded-full border bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
-                        onClick={() => {
-                          if (!navigator.geolocation) {
-                            alert("Geolocation is not supported");
-                            return;
-                          }
+                      {/* Current location button */}
+                      <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2">
+                        <button
+                          type="button"
+                          className="flex items-center gap-1 rounded-full border bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
+                          onClick={() => {
+                            if (!navigator.geolocation) {
+                              alert("Geolocation is not supported");
+                              return;
+                            }
 
-                          navigator.geolocation.getCurrentPosition(
-                            (pos) => {
-                              const { latitude, longitude } = pos.coords;
-                              getAddressFromCoords(latitude, longitude).then(
-                                (data) => {
-                                  const mapped = mapGeocodeToForm(data);
-                                  setValues((prev) => ({
-                                    ...prev,
-                                    ...mapped,
-                                  }));
-                                },
-                              );
-                            },
-                            () => alert("Unable to fetch location"),
-                          );
-                        }}
-                      >
-                        <MapPin className="size-3.5" />
-                        Use Current Location
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* RIGHT - FORM */}
-                  <div className="flex w-1/2 flex-col">
-                    {/* RIGHT HEADER ONLY */}
-                    <div className="flex shrink-0 items-center justify-between border-b border-gray-300 px-6 py-3">
-                      <h2 className="text-lg font-semibold text-orange-500">
-                        {initial_data ? "Update Address" : "Add new address"}
-                      </h2>
-
-                      <button
-                        type="button"
-                        onClick={onClose}
-                        className="rounded-lg p-2 hover:bg-gray-100"
-                      >
-                        <X size={18} />
-                      </button>
-                    </div>
-
-                    {/* SCROLLABLE FORM */}
-                    <div className="flex-1 space-y-6 overflow-y-auto px-6 py-4">
-                      {/* Address Type */}
-                      <Fieldset className="space-y-2">
-                        <Legend className="text-sm font-medium">
-                          Save Address as{" "}
-                          <span className="text-red-500">*</span>
-                        </Legend>
-
-                        <div className="flex gap-3">
-                          {address_types.map(({ id, label, icon: Icon }) => {
-                            const isActive = values.address_type === id;
-
-                            return (
-                              <button
-                                key={id}
-                                type="button"
-                                onClick={() =>
-                                  setFieldValue("address_type", id)
-                                }
-                                className={clsx(
-                                  "flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium",
-                                  isActive
-                                    ? "border-orange-500 text-orange-600 ring-1 ring-orange-500"
-                                    : "border-gray-300 text-gray-600",
-                                )}
-                              >
-                                <Icon className="size-4" />
-                                {label}
-                              </button>
+                            navigator.geolocation.getCurrentPosition(
+                              (pos) => {
+                                const { latitude, longitude } = pos.coords;
+                                getAddressFromCoords(latitude, longitude).then(
+                                  (data) => {
+                                    const mapped = mapGeocodeToForm(data);
+                                    setValues((prev) => ({
+                                      ...prev,
+                                      ...mapped,
+                                    }));
+                                  },
+                                );
+                              },
+                              () => alert("Unable to fetch location"),
                             );
-                          })}
-                        </div>
-
-                        <AddAddressInput
-                          name="house_number"
-                          placeholder="Flat / House No. *"
-                        />
-                        <AddAddressInput
-                          name="landmark"
-                          placeholder="Nearby landmark (optional)"
-                        />
-                        <AddAddressInput
-                          name="area"
-                          placeholder="Area / Locality"
-                          disabled
-                        />
-                      </Fieldset>
-
-                      {/* Contact */}
-                      <Fieldset className="space-y-2">
-                        <Legend className="text-sm font-medium">
-                          Contact Details
-                        </Legend>
-
-                        <AddAddressInput
-                          name="phone"
-                          placeholder="Phone number"
-                        />
-                        <AddAddressInput
-                          name="full_name"
-                          placeholder="Full Name"
-                        />
-                      </Fieldset>
-
-                      {/* Instructions */}
-                      <Fieldset className="space-y-2">
-                        <Legend className="text-sm font-medium">
-                          Delivery Instructions
-                        </Legend>
-
-                        <AddAddressInput
-                          name="delivery_instructions"
-                          type="textarea"
-                          placeholder="Eg. Call before delivery (Optional)"
-                        />
-
-                        <Switch
-                          label="Set as default address"
-                          description="This will be used for all future orders by default"
-                          name="is_default"
-                          disabled={user_addresses.length == 0 ? true : false}
-                        />
-                      </Fieldset>
+                          }}
+                        >
+                          <MapPin className="size-3.5" />
+                          Use Current Location
+                        </button>
+                      </div>
                     </div>
 
-                    {/* FOOTER */}
-                    <div className="shrink-0 space-y-2 border-t border-gray-300 p-4">
-                      {/* Selected Location Hint */}
-                      {values.formatted_address ? (
-                        <p className="text-sm leading-snug font-semibold">
-                          {values.formatted_address}
-                        </p>
-                      ) : (
-                        <div className="text-xs text-gray-400">
-                          Select a location on map to continue
+                    {/* RIGHT - FORM */}
+                    <div className="relative flex w-1/2 flex-col">
+                      {/* Overlay */}
+                      {!is_location_selected && (
+                        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-linear-to-br from-orange-50 via-white to-orange-100 backdrop-blur-sm">
+                          <button
+                            type="button"
+                            onClick={onClose}
+                            className="absolute top-4 right-4 rounded-lg p-2 hover:bg-gray-100"
+                          >
+                            <X className="size-5" />
+                          </button>
+                          {/* Icon */}
+                          <div className="mb-4 flex items-center justify-center rounded-full bg-orange-100 p-4 shadow-sm">
+                            <MapPin className="size-6 text-orange-500" />
+                          </div>
+
+                          {/* Heading */}
+                          <h3 className="text-lg font-semibold text-gray-800">
+                            Add your delivery location
+                          </h3>
+
+                          {/* Subtext */}
+                          <p className="mt-1 max-w-xs text-center text-sm text-gray-500">
+                            Start by searching your address or dropping a pin on
+                            the map
+                          </p>
+
+                          {/* Hint */}
+                          <div className="mt-4 rounded-full bg-orange-500/10 px-4 py-1.5 text-xs font-medium text-orange-600">
+                            Step 1 of 2
+                          </div>
                         </div>
                       )}
 
-                      {/* Submit Button */}
-                      <button
-                        type="submit"
-                        disabled={
-                          create_address_mutation.isPending ||
-                          update_address_mutation.isPending
-                        }
-                        className="w-full rounded-md bg-orange-500 px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
-                      >
-                        {update_address_mutation.isPending
-                          ? "Updating..."
-                          : create_address_mutation.isPending
-                            ? "Saving..."
-                            : initial_data
-                              ? "Update Address"
-                              : "Add Address"}
-                      </button>
+                      {/* RIGHT HEADER ONLY */}
+                      <div className="flex shrink-0 items-center justify-between border-b border-gray-300 px-6 py-3">
+                        <h2 className="text-lg font-semibold text-orange-500">
+                          {initial_data ? "Update Address" : "Add new address"}
+                        </h2>
+
+                        <button
+                          type="button"
+                          onClick={onClose}
+                          className="rounded-lg p-2 hover:bg-gray-100"
+                        >
+                          <X size={18} />
+                        </button>
+                      </div>
+
+                      {/* SCROLLABLE FORM */}
+                      <div className="flex-1 space-y-6 overflow-y-auto px-6 py-4">
+                        {/* Address Type */}
+                        <Fieldset className="space-y-2">
+                          <Legend className="text-sm font-medium">
+                            Save Address as{" "}
+                            <span className="text-red-500">*</span>
+                          </Legend>
+
+                          <div className="flex gap-3">
+                            {address_types.map(({ id, label, icon: Icon }) => {
+                              const isActive = values.address_type === id;
+
+                              return (
+                                <button
+                                  key={id}
+                                  type="button"
+                                  onClick={() =>
+                                    setFieldValue("address_type", id)
+                                  }
+                                  className={clsx(
+                                    "flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium",
+                                    isActive
+                                      ? "border-orange-500 text-orange-600 ring-1 ring-orange-500"
+                                      : "border-gray-300 text-gray-600",
+                                  )}
+                                >
+                                  <Icon className="size-4" />
+                                  {label}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          <AddAddressInput
+                            name="house_number"
+                            placeholder="Flat / House No. *"
+                          />
+                          <AddAddressInput
+                            name="landmark"
+                            placeholder="Nearby landmark (optional)"
+                          />
+                          <AddAddressInput
+                            name="area"
+                            placeholder="Area / Locality"
+                            disabled
+                          />
+                        </Fieldset>
+
+                        {/* Contact */}
+                        <Fieldset className="space-y-2">
+                          <Legend className="text-sm font-medium">
+                            Contact Details
+                          </Legend>
+
+                          <AddAddressInput
+                            name="phone"
+                            placeholder="Phone number"
+                          />
+                          <AddAddressInput
+                            name="full_name"
+                            placeholder="Full Name"
+                          />
+                        </Fieldset>
+
+                        {/* Instructions */}
+                        <Fieldset className="space-y-2">
+                          <Legend className="text-sm font-medium">
+                            Delivery Instructions
+                          </Legend>
+
+                          <AddAddressInput
+                            name="delivery_instructions"
+                            type="textarea"
+                            placeholder="Eg. Call before delivery (Optional)"
+                          />
+
+                          <Switch
+                            label="Set as default address"
+                            description="This will be used for all future orders by default"
+                            name="is_default"
+                            disabled={user_addresses.length == 0 ? true : false}
+                          />
+                        </Fieldset>
+                      </div>
+
+                      {/* FOOTER */}
+                      <div className="shrink-0 space-y-2 border-t border-gray-300 p-4">
+                        {/* Selected Location Hint */}
+                        {values.formatted_address ? (
+                          <p className="text-sm leading-snug font-semibold">
+                            {values.formatted_address}
+                          </p>
+                        ) : (
+                          <div className="text-xs text-gray-400">
+                            Select a location on map to continue
+                          </div>
+                        )}
+
+                        {/* Submit Button */}
+                        <button
+                          type="submit"
+                          disabled={
+                            create_address_mutation.isPending ||
+                            update_address_mutation.isPending
+                          }
+                          className="w-full rounded-md bg-orange-500 px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
+                        >
+                          {update_address_mutation.isPending
+                            ? "Updating..."
+                            : create_address_mutation.isPending
+                              ? "Saving..."
+                              : initial_data
+                                ? "Update Address"
+                                : "Add Address"}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Form>
-            )}
+                </Form>
+              );
+            }}
           </Formik>
         </DialogPanel>
       </div>
