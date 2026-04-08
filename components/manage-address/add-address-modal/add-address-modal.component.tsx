@@ -1,6 +1,8 @@
+import { useRef } from "react";
 // types
 import { FC } from "react";
 import type { IAddress } from "@/types/address";
+import type { SelectInstance } from "react-select";
 
 // icons
 import { X, Home, Briefcase, MapPin } from "lucide-react";
@@ -86,6 +88,7 @@ const AddAddressModal: FC<IProps> = ({
   onClose,
   handleOnSuccess,
 }) => {
+  const select_places_ref = useRef<SelectInstance>(null);
   const { data: user_addresses = [] } = useUserAddresses();
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
@@ -156,6 +159,7 @@ const AddAddressModal: FC<IProps> = ({
                       {/* Search */}
                       <div className="absolute top-4 right-0 left-0 z-10 px-4">
                         <SelectPlaces
+                          ref={select_places_ref}
                           handleOnChange={(val) => {
                             const mapped = mapPlaceToForm(val.data);
 
@@ -190,7 +194,7 @@ const AddAddressModal: FC<IProps> = ({
                       <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2">
                         <button
                           type="button"
-                          className="flex items-center gap-1 rounded-full border bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
+                          className="flex items-center gap-1 rounded-full border bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm hover:bg-orange-50"
                           onClick={() => {
                             if (!navigator.geolocation) {
                               alert("Geolocation is not supported");
@@ -244,8 +248,7 @@ const AddAddressModal: FC<IProps> = ({
 
                           {/* Subtext */}
                           <p className="mt-1 max-w-xs text-center text-sm text-gray-500">
-                            Start by searching your address or dropping a pin on
-                            the map
+                            Start by searching your address the map
                           </p>
 
                           {/* Hint */}
@@ -315,7 +318,10 @@ const AddAddressModal: FC<IProps> = ({
                           <AddAddressInput
                             name="area"
                             placeholder="Area / Locality"
-                            disabled
+                            read_only={true}
+                            handleOnClick={() => {
+                              select_places_ref.current?.focus();
+                            }}
                           />
                         </Fieldset>
 

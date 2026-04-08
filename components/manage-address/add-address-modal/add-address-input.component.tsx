@@ -4,6 +4,9 @@ import type { FC } from "react";
 // external components
 import { Field, ErrorMessage } from "formik";
 
+// helpers
+import clsx from "clsx";
+
 type IProps = {
   name: string;
   type?: string;
@@ -12,6 +15,8 @@ type IProps = {
   options?: string[];
   helper?: string;
   disabled?: boolean;
+  read_only?: boolean;
+  handleOnClick?: () => void;
 };
 
 const AddAddressInput: FC<IProps> = ({
@@ -20,6 +25,8 @@ const AddAddressInput: FC<IProps> = ({
   options,
   helper,
   disabled = false,
+  read_only = false,
+  handleOnClick,
   ...props
 }) => {
   switch (type) {
@@ -59,8 +66,13 @@ const AddAddressInput: FC<IProps> = ({
 
           <Field
             type={type}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-orange-500 disabled:bg-gray-50"
+            className={clsx(
+              "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-orange-500 disabled:bg-gray-50",
+              read_only && "bg-gray-50",
+            )}
+            onClick={handleOnClick}
             disabled={disabled}
+            readOnly={read_only}
             {...props}
           />
 

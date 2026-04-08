@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 //types
-import type { FC } from "react";
+import type { SelectInstance } from "react-select";
+import type { FC, Ref } from "react";
 import type { IPlace } from "@/types/address";
 
 // external components
@@ -45,10 +46,11 @@ export const fetchPlaces = async (search_query: string) => {
 };
 
 type IProps = {
+  ref: Ref<SelectInstance>;
   handleOnChange: (option: IOptionType) => void;
 };
 
-const SelectPlaces: FC<IProps> = ({ handleOnChange }) => {
+const SelectPlaces: FC<IProps> = ({ ref, handleOnChange }) => {
   const [query, setQuery] = useState("");
   const [value, setValue] = useState<IOptionType | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -79,6 +81,7 @@ const SelectPlaces: FC<IProps> = ({ handleOnChange }) => {
 
   return (
     <AsyncSelect
+      ref={ref}
       autoFocus={true}
       value={value} //
       inputValue={query}
@@ -108,7 +111,7 @@ const SelectPlaces: FC<IProps> = ({ handleOnChange }) => {
           clsx(
             "flex w-full items-center rounded-md border px-4 py-2 bg-white gap-2",
             isFocused
-              ? "ring-2 ring-orange-500 border-none outline-none"
+              ? "ring-2 ring-orange-500 border-none outline-none scale-[1.03] shadow-lg"
               : "border-gray-300",
           ),
         valueContainer: () => "flex gap-1 flex-wrap",
