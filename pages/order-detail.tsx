@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState } from "react";
 import Head from "next/head";
 
 // layout
@@ -50,7 +50,6 @@ const OrderDetailPage: NextPageWithLayout = () => {
     variant: null,
   });
 
-  console.log("value of orders",orders);
   if (isPending) return null;
   return (
     <>
