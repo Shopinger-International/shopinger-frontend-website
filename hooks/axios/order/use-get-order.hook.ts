@@ -1,14 +1,14 @@
 import Axios from "@/lib/axios/private.lib";
 
 // types
-import type { IAddress } from "@/types/address";
+import type IOrder from "@/types/order";
 import type { AxiosError } from "axios";
 
 // react query
 import { useQuery } from "@tanstack/react-query";
 
 export type IResponse = {
-  data: IAddress[];
+  data: IOrder[];
   success: boolean;
 };
 
@@ -25,10 +25,11 @@ export const getUserOrders = async (cookie?: string) => {
 };
 
 const useGetOrders = () => {
-  return useQuery<IAddress[], AxiosError>({
+  return useQuery<IOrder[], AxiosError>({
     queryKey: ["orders"],
     async queryFn() {
       const user_orders = await getUserOrders();
+      console.log("value of user orders", user_orders);
       return user_orders;
     },
     staleTime: 1000 * 60 * 5,

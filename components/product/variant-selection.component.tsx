@@ -98,6 +98,7 @@ const VariantSelection: FC<{
                 if (!variant) {
                   return null;
                 }
+
                 return (
                   <Link
                     scroll={false}
@@ -131,14 +132,13 @@ const VariantSelection: FC<{
                             src={
                               media_group[attribute.id as number]?.[
                                 value.toLowerCase()
-                              ][0].url
+                              ]?.[0].url
                             }
                             fill
                             alt={value}
                             className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
                           />
                         </div>
-
                         <div className="w-full space-y-1 p-2 text-xs">
                           <p className="truncate font-medium text-neutral-800 lg:hidden">
                             {capitalizeValue(value)}

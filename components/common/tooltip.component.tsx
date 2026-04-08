@@ -6,6 +6,7 @@ import type { Placement } from "@floating-ui/react";
 // float react
 import {
   useFloating,
+  autoUpdate,
   offset,
   flip,
   shift,
@@ -48,6 +49,7 @@ const Tooltip: FC<TooltipProps> = ({
     placement: placement,
     open,
     onOpenChange: setOpen,
+    whileElementsMounted: autoUpdate,
     middleware: [
       offset(offset_distance),
       flip(),

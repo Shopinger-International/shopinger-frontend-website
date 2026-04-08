@@ -1,5 +1,5 @@
 // react query
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // types
 import type { AxiosError } from "axios";
@@ -24,6 +24,7 @@ type IResponse = {
 };
 
 const useVerifyPaymentMutation = () => {
+  const query_client = useQueryClient();
   return useMutation<IResponse, AxiosError, IRequest>({
     async mutationFn(payload) {
       const { data } = await Axios.post<{
@@ -34,6 +35,9 @@ const useVerifyPaymentMutation = () => {
       return data.data;
     },
     onSuccess(response) {
+      query_client.invalidateQueries({
+        queryKey: ["carts"],
+      });
       console.log("value of response", response);
     },
     onError(error) {

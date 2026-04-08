@@ -1,11 +1,11 @@
-import { useState, createContext } from "react";
+import { useState } from "react";
 import Head from "next/head";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
 
 // types
-import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type IProduct from "@/types/product";
@@ -22,7 +22,7 @@ import ReviewModal from "@/components/common/review/review-modal.component";
 // hooks
 
 // icon
-import { Package, CreditCard, Truck, CheckCircle } from "lucide-react";
+import { CreditCard, Truck, CheckCircle } from "lucide-react";
 
 // helpers
 import clsx from "clsx";
@@ -70,6 +70,7 @@ const OrderDetailPage: NextPageWithLayout<{
     variant: null,
   });
   const order_status_history = order.order_status_history;
+  console.log("value of order",order);
 
   return (
     <>
