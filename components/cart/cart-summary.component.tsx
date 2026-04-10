@@ -3,6 +3,7 @@ import Link from "next/link";
 // types
 import type { FC } from "react";
 import type { IAddress } from "@/types/address";
+import type IOrder from "@/types/order";
 
 // helpers
 import clsx from "clsx";
@@ -17,6 +18,7 @@ import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation
 type IProps = {
   handleShowLoginModal: () => void;
   handleShowAddresDrawer: () => void;
+  handleOnSuccess: (order: IOrder) => void;
   selected_address: IAddress | null;
   sub_total: number;
   total_amount: number;
@@ -28,6 +30,7 @@ type IProps = {
 const CartSummary: FC<IProps> = ({
   handleShowLoginModal,
   handleShowAddresDrawer,
+  handleOnSuccess,
   selected_address,
   sub_total,
   total_amount,
@@ -133,9 +136,7 @@ const CartSummary: FC<IProps> = ({
                               },
                               {
                                 onSuccess(response) {
-                                  router.push(
-                                    `/order-detail/${response.order.id}`,
-                                  );
+                                  handleOnSuccess(response.order);
                                 },
                               },
                             );

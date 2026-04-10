@@ -19,7 +19,7 @@ type IRequest = {
   currency: string;
 };
 
-type IResponse = {
+export type IResponse = {
   order: IOrder;
 };
 

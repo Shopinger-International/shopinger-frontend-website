@@ -1,5 +1,7 @@
+import { useState } from "react";
 // types
 import type { FC } from "react";
+import type IOrder from "@/types/order";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
@@ -10,6 +12,7 @@ import AddressBar from "@/components/cart/address-bar.component";
 import CartItem from "@/components/cart/cart-item.component";
 import CartSummary from "@/components/cart/cart-summary.component";
 import HelpSection from "@/components/common/help-section.component";
+import OrderSuccessfulModal from "@/components/cart/order-successful-modal.component";
 
 // helpers
 import { IAddress } from "@/types/address";
@@ -25,11 +28,26 @@ const CartDetails: FC<IProps> = ({
   handleShowLoginModal,
   handleAddressDrawerState,
 }) => {
+  const [order_success_modal_state, setOrderSuccessModalState] = useState<{
+    open: boolean;
+    order?: IOrder;
+  }>({
+    open: false,
+  });
   const { data: user_detail } = useUserDetails();
   const { data: cart } = useCart();
 
   return (
     <>
+      <OrderSuccessfulModal
+        is_open={order_success_modal_state.open}
+        order_id={order_success_modal_state.order?.id}
+        onClose={() =>
+          setOrderSuccessModalState({
+            open: false,
+          })
+        }
+      />
       <div className="relative grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Left Section */}
         <div className="col-span-1 space-y-4 lg:col-span-2">
@@ -74,6 +92,12 @@ const CartDetails: FC<IProps> = ({
             total_items={cart?.total_items ?? 0}
             charges={50}
             selected_address={selected_address}
+            handleOnSuccess={(order) => {
+              setOrderSuccessModalState({
+                open: true,
+                order,
+              });
+            }}
           />
           <HelpSection
             title={"Need help completing your order?"}
