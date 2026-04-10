@@ -21,33 +21,20 @@ type IProps = {
   selected_address: IAddress | null;
   handleAddressDrawerState: (open: boolean) => void;
   handleShowLoginModal: (action_type: "checkout" | "change_address") => void;
+  handleOrderSuccess: (order: IOrder) => void;
 };
 
 const CartDetails: FC<IProps> = ({
   selected_address,
   handleShowLoginModal,
   handleAddressDrawerState,
+  handleOrderSuccess,
 }) => {
-  const [order_success_modal_state, setOrderSuccessModalState] = useState<{
-    open: boolean;
-    order?: IOrder;
-  }>({
-    open: false,
-  });
   const { data: user_detail } = useUserDetails();
   const { data: cart } = useCart();
 
   return (
     <>
-      <OrderSuccessfulModal
-        is_open={order_success_modal_state.open}
-        order_id={order_success_modal_state.order?.id}
-        onClose={() =>
-          setOrderSuccessModalState({
-            open: false,
-          })
-        }
-      />
       <div className="relative grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Left Section */}
         <div className="col-span-1 space-y-4 lg:col-span-2">
@@ -92,12 +79,7 @@ const CartDetails: FC<IProps> = ({
             total_items={cart?.total_items ?? 0}
             charges={50}
             selected_address={selected_address}
-            handleOnSuccess={(order) => {
-              setOrderSuccessModalState({
-                open: true,
-                order,
-              });
-            }}
+            handleOrderSuccess={handleOrderSuccess}
           />
           <HelpSection
             title={"Need help completing your order?"}

@@ -8,6 +8,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import type { GetServerSideProps } from "next";
 import type { DehydratedState } from "@tanstack/react-query";
 import type { IAddress } from "@/types/address";
+import type IOrder from "@/types/order";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -25,6 +26,7 @@ const AddAddressModal = dynamic(
     ssr: false,
   },
 );
+import OrderSuccessfulModal from "@/components/cart/order-successful-modal.component";
 
 const MobileAddressModal = dynamic(
   () =>
@@ -74,6 +76,13 @@ const CartCheckoutPage: NextPageWithLayout = () => {
       open: false,
       data: null,
     });
+
+  const [order_success_modal_state, setOrderSuccessModalState] = useState<{
+    open: boolean;
+    order?: IOrder;
+  }>({
+    open: false,
+  });
   const { data } = useCart();
 
   useEffect(() => {
@@ -95,6 +104,16 @@ const CartCheckoutPage: NextPageWithLayout = () => {
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+
+      <OrderSuccessfulModal
+        is_open={order_success_modal_state.open}
+        order_id={order_success_modal_state.order?.id}
+        onClose={() =>
+          setOrderSuccessModalState({
+            open: false,
+          })
+        }
+      />
       <LoginModal
         open={login_modal_state.open}
         handleClose={() => {
@@ -230,6 +249,12 @@ const CartCheckoutPage: NextPageWithLayout = () => {
                     action_type,
                   })
                 }
+                handleOrderSuccess={(order) => {
+                  setOrderSuccessModalState({
+                    open: true,
+                    order,
+                  });
+                }}
               />
             </>
           ) : (

@@ -18,7 +18,7 @@ import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation
 type IProps = {
   handleShowLoginModal: () => void;
   handleShowAddresDrawer: () => void;
-  handleOnSuccess: (order: IOrder) => void;
+  handleOrderSuccess: (order: IOrder) => void;
   selected_address: IAddress | null;
   sub_total: number;
   total_amount: number;
@@ -30,7 +30,7 @@ type IProps = {
 const CartSummary: FC<IProps> = ({
   handleShowLoginModal,
   handleShowAddresDrawer,
-  handleOnSuccess,
+  handleOrderSuccess,
   selected_address,
   sub_total,
   total_amount,
@@ -136,7 +136,7 @@ const CartSummary: FC<IProps> = ({
                               },
                               {
                                 onSuccess(response) {
-                                  handleOnSuccess(response.order);
+                                  handleOrderSuccess(response.order);
                                 },
                               },
                             );
