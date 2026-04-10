@@ -1,4 +1,6 @@
+// types
 import type { IAddress } from "@/types/address";
+
 const loadRazorpay = () => {
   return new Promise((resolve) => {
     const script = document.createElement("script");
@@ -23,7 +25,7 @@ const handlePayment = async ({
   currency: string;
   selected_address: IAddress;
   total_items: number;
-  user_phone:string;
+  user_phone: string;
   successHandler: (response: {
     razorpay_payment_id: string;
     razorpay_order_id: string;
@@ -59,7 +61,6 @@ const handlePayment = async ({
   const rzp = new (window as any).Razorpay(options);
 
   rzp.on("payment.failed", function (response: any) {
-    alert(response.error.description);
     console.log("value of error", response.error);
   });
 
