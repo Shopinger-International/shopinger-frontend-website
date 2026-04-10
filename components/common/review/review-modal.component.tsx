@@ -153,7 +153,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                           <Rating
                             style={{ maxWidth: 140 }}
                             value={field.value || 0}
-                            onChange={(val) => {
+                            onChange={(val:any) => {
                               form.setFieldValue(field.name, val);
 
                               review_generator_mutation.mutate(

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 // types
 import { FC } from "react";
 import type { IAddress } from "@/types/address";
+import type { SelectInstance } from "react-select";
 
 // icons
 import { X, Home, Briefcase, MapPin } from "lucide-react";
@@ -49,6 +50,7 @@ const MobileAddressModal: FC<{
   initial_data?: IAddress | null;
   handleOnSuccess?: (data: IAddress) => void;
 }> = ({ open, onClose, initial_data, handleOnSuccess }) => {
+  const select_places_ref = useRef<SelectInstance>(null);
   const [show_drawer, setShowDrawer] = useState(false);
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
@@ -137,6 +139,7 @@ const MobileAddressModal: FC<{
                   {/* SEARCH */}
                   <div className="absolute top-4 z-20 w-full px-4">
                     <SelectPlaces
+                      ref={select_places_ref}
                       handleOnChange={(val) => {
                         const mapped = mapPlaceToForm(val.data);
 
@@ -263,7 +266,14 @@ const MobileAddressModal: FC<{
                               name="landmark"
                               placeholder="Landmark"
                             />
-                            <AddAddressInput name="area" placeholder="Area" />
+                            <AddAddressInput
+                              name="area"
+                              placeholder="Area / Locality"
+                              handleOnClick={() => {
+                                select_places_ref.current?.focus();
+                                setShowDrawer(false);
+                              }}
+                            />
                             <AddAddressInput name="phone" placeholder="Phone" />
                             <AddAddressInput
                               name="full_name"
