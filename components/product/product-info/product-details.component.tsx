@@ -10,7 +10,8 @@ import ProductInfoTabs from "@/components/product/product-info/product-info-tabs
 import AttributeInfoCell from "@/components/product/product-info/attribute-info-cell.component";
 
 const ProductReview = dynamic(
-  () => import("@/components/product/product-info/review/product-review.component"),
+  () =>
+    import("@/components/product/product-info/review/product-review.component"),
   {
     ssr: false,
   },
@@ -219,9 +220,9 @@ const ProductDetails: FC<{
             category_mappings={category_mappings}
           />
         </ExtendedDisclosure>
-        <ExtendedDisclosure default_open={true} heading="Customer Reviews">
+        {/* <ExtendedDisclosure default_open={true} heading="Customer Reviews">
           <ProductReview />
-        </ExtendedDisclosure>
+        </ExtendedDisclosure> */}
       </div>
     </section>
   );
