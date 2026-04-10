@@ -25,6 +25,7 @@ type IProps = {
   selected_attributes: Record<string, any>;
   media_group: IMediaGroup;
   category_mappings: ICategoryAttributeMapping[];
+  is_product_available: boolean;
 };
 
 const ProductInfo: FC<IProps> = ({
@@ -33,6 +34,7 @@ const ProductInfo: FC<IProps> = ({
   selected_attributes,
   media_group,
   category_mappings,
+  is_product_available,
 }) => {
   const router = useRouter();
   const add_to_cart_mutation = useAddToCartMutation();
@@ -170,12 +172,15 @@ const ProductInfo: FC<IProps> = ({
               quantity: 1,
             });
           }}
-          disabled={add_to_cart_mutation.isPending}
+          disabled={add_to_cart_mutation.isPending || !is_product_available}
           className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-600"
         >
           Add to cart
         </button>
-        <button className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white">
+        <button
+          className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white"
+          disabled={!is_product_available}
+        >
           Buy Now
         </button>
       </div>

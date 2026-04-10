@@ -70,7 +70,6 @@ const OrderDetailPage: NextPageWithLayout<{
     variant: null,
   });
   const order_status_history = order.order_status_history;
-  console.log("value of order",order);
 
   return (
     <>
@@ -238,7 +237,8 @@ export default OrderDetailPage;
 export const getServerSideProps = (async (context) => {
   // Fetch data from external API
   const cookie = context.req.headers.cookie ?? "";
-  const order = await getOrderDetail(1, cookie);
+  const { order_id } = context.params as { order_id: string };
+  const order = await getOrderDetail(Number(order_id), cookie);
   return { props: { order } };
 }) satisfies GetServerSideProps<{ order: IOrder }>;
 

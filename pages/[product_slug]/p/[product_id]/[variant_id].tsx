@@ -28,6 +28,7 @@ import {
 
 // hooks
 import { getMappings } from "@/hooks/axios/common/use-category-mappings.hook";
+import { useProductAvailability } from "@/hooks/axios/product/use-get-product-availbility.hook";
 
 const getProduct = async (
   product_id: number,
@@ -104,6 +105,10 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   variant,
   related_products,
 }) => {
+  const { data: availbility_data } = useProductAvailability(
+    product_id,
+    variant_id,
+  );
   const {
     title,
     brand,
@@ -244,6 +249,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           product_title={updated_title}
         />
         <ProductInfo
+          is_product_available={!!availbility_data?.available_stock}
           product={product}
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
