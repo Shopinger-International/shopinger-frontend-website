@@ -73,7 +73,7 @@ const OrderHistoryProduct: FC<IProps> = ({ product, variant, quantity }) => {
 
   return (
     <div className="flex items-center gap-4">
-      <div className="h-16 w-16 overflow-hidden rounded-md bg-gray-100 p-1 relative">
+      <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100 p-1">
         <Link href={`/${product_slug}/p/${product_id}/${variant_id}`}>
           <Image
             src={variant_medias[0]?.url ?? product.product_medias[0].media.url}
@@ -85,7 +85,7 @@ const OrderHistoryProduct: FC<IProps> = ({ product, variant, quantity }) => {
         </Link>
       </div>
       <div>
-        <h4 className=" text-sm font-medium">{title}</h4>
+        <h4 className="line-clamp-1 text-sm font-medium">{title}</h4>
         <p className="mt-1 text-xs text-slate-600">Qty: {quantity}</p>
       </div>
     </div>

@@ -100,12 +100,31 @@ const OrderDetailPage: NextPageWithLayout<{
       <section className="w-full bg-gray-50 py-6">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           {/* Header */}
-          <div className="rounded-xl border border-gray-300 bg-white p-5">
-            <h1 className="text-lg font-semibold text-gray-900">
-              Order ID: 171-6754116-9353937
-            </h1>
-            <p className="mt-1 text-sm text-gray-600">Placed on 12 Feb 2026</p>
+          <div className="flex justify-between rounded-xl border border-gray-300 bg-white p-5">
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900">
+                Order ID: 171-6754116-9353937
+              </h1>
+              <p className="mt-1 text-sm text-gray-600">
+                Placed on 12 Feb 2026
+              </p>
+            </div>
+            {/* ACTIONS */}
+            <div className="flex items-center gap-3">
+              {order.status === "CONFIRMED" && (
+                <button
+                  onClick={() => {
+                    // TODO: replace with modal / API call
+                    console.log("Cancel order clicked");
+                  }}
+                  className="rounded-md border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50"
+                >
+                  Cancel Order
+                </button>
+              )}
+            </div>
           </div>
+          {/* ACTIONS */}
 
           {/* Main Layout */}
           <section className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">

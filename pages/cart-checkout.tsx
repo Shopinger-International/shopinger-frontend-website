@@ -108,6 +108,7 @@ const CartCheckoutPage: NextPageWithLayout = () => {
       <OrderSuccessfulModal
         is_open={order_success_modal_state.open}
         order_id={order_success_modal_state.order?.id}
+        total_amount={order_success_modal_state.order?.total_amount}
         onClose={() =>
           setOrderSuccessModalState({
             open: false,
