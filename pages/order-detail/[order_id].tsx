@@ -18,6 +18,7 @@ import BillSummary from "@/components/order-details/bill-summary.component";
 import OrderSummary from "@/components/order-details/order-summary.component";
 import HelpSection from "@/components/common/help-section.component";
 import ReviewModal from "@/components/common/review/review-modal.component";
+import CancelOrderModal from "@/components/order-details/cancel-order.component";
 
 // hooks
 
@@ -69,6 +70,11 @@ const OrderDetailPage: NextPageWithLayout<{
     product: null,
     variant: null,
   });
+  const [cancel_order_modal_state, setCancelOrderModalState] = useState<{
+    open: boolean;
+  }>({
+    open: false,
+  });
   const order_status_history = order.order_status_history;
 
   return (
@@ -96,6 +102,16 @@ const OrderDetailPage: NextPageWithLayout<{
           }
         />
       )}
+      <CancelOrderModal
+        is_open={cancel_order_modal_state.open}
+        order={order}
+        onClose={() =>
+          setCancelOrderModalState({
+            open: true,
+          })
+        }
+        onConfirm={() => {}}
+      />
 
       <section className="w-full bg-gray-50 py-6">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
@@ -115,7 +131,9 @@ const OrderDetailPage: NextPageWithLayout<{
                 <button
                   onClick={() => {
                     // TODO: replace with modal / API call
-                    console.log("Cancel order clicked");
+                    setCancelOrderModalState({
+                      open: true,
+                    });
                   }}
                   className="rounded-md border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50"
                 >

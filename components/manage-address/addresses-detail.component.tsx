@@ -6,68 +6,27 @@ import type { IAddress } from "@/types/address";
 
 // local components
 import AddressCard from "@/components/manage-address/address-card.component";
-const AddAddressModal = dynamic(
-  () =>
-    import("@/components/manage-address/add-address-modal/add-address-modal.component"),
-  {
-    ssr: false,
-  },
-);
-
-const MobileAddressModal = dynamic(
-  () =>
-    import("@/components/manage-address/add-address-modal/mobile-location-picker-dialog.component"),
-  {
-    ssr: false,
-  },
-);
-
 // hooks
-import useIsMobile from "@/hooks/common/use-is-mobile.hook";
-import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
-const AddressDetail: FC = () => {
-  const { data: addresses = [] } = useUserAddresses();
-  const [address_modal_state, setAddressModalState] = useState<{
-    open: boolean;
-    data: IAddress | null;
-  }>({
-    open: false,
-    data: null,
-  });
-  const is_mobile = useIsMobile();
+type IProps = {
+  showLoginModal: (action_type: "add_address") => void;
+  handleAddressModalState: (open: boolean, data: IAddress | null) => void;
+};
+
+const AddressDetail: FC<IProps> = ({
+  showLoginModal,
+  handleAddressModalState,
+}) => {
+  const { data: user_detail } = useUserDetails();
   return (
     <>
-      {is_mobile ? (
-        <MobileAddressModal
-          open={address_modal_state.open}
-          initial_data={address_modal_state.data}
-          onClose={() =>
-            setAddressModalState({
-              open: false,
-              data: null,
-            })
-          }
-        />
-      ) : (
-        <AddAddressModal
-          open={address_modal_state.open}
-          initial_data={address_modal_state.data}
-          onClose={() =>
-            setAddressModalState({
-              open: false,
-              data: null,
-            })
-          }
-        />
-      )}
       <section className="flex flex-wrap gap-6">
         <button
           onClick={() =>
-            setAddressModalState({
-              open: true,
-              data: null,
-            })
+            user_detail
+              ? handleAddressModalState(true, null)
+              : showLoginModal("add_address")
           }
           className="min-h-50 w-full rounded-2xl border-2 border-dashed border-gray-300 p-6 text-gray-600 hover:border-orange-500 hover:text-orange-500 md:w-xs"
         >
@@ -76,15 +35,12 @@ const AddressDetail: FC = () => {
             <span className="text-sm font-medium">Add New Address</span>
           </div>
         </button>
-        {addresses.map((address) => (
+        {user_detail?.user_addresses.map((address) => (
           <AddressCard
             key={address.id}
             data={address}
             onEdit={(data: IAddress) => {
-              setAddressModalState({
-                data,
-                open: true,
-              });
+              handleAddressModalState(true, data);
             }}
           />
         ))}

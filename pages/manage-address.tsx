@@ -1,3 +1,5 @@
+import dynamic from "next/dynamic";
+import { useState } from "react";
 import Head from "next/head";
 
 // types
@@ -10,6 +12,24 @@ import type { DehydratedState } from "@tanstack/react-query";
 import MainLayout from "@/components/layout/main-layout.component";
 import AddressDetail from "@/components/manage-address/addresses-detail.component";
 
+// local components
+import LoginModal from "@/components/login/login-modal.component";
+const AddAddressModal = dynamic(
+  () =>
+    import("@/components/manage-address/add-address-modal/add-address-modal.component"),
+  {
+    ssr: false,
+  },
+);
+
+const MobileAddressModal = dynamic(
+  () =>
+    import("@/components/manage-address/add-address-modal/mobile-location-picker-dialog.component"),
+  {
+    ssr: false,
+  },
+);
+
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
 
@@ -17,7 +37,24 @@ import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { getUserAddresses } from "@/hooks/axios/address/use-user-addresses.hook";
 import { IAddress } from "@/types/address";
 
+// hooks
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+
 const ManageAddress: NextPageWithLayout = () => {
+  const [login_modal_state, setLoginModalState] = useState<{
+    open: boolean;
+    action_type?: "add_address";
+  }>({
+    open: false,
+  });
+  const [address_modal_state, setAddressModalState] = useState<{
+    open: boolean;
+    data: IAddress | null;
+  }>({
+    open: false,
+    data: null,
+  });
+  const is_mobile = useIsMobile();
   return (
     <>
       <Head>
@@ -37,6 +74,46 @@ const ManageAddress: NextPageWithLayout = () => {
         {/* Prevent indexing since it's a private user page */}
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+      <LoginModal
+        open={login_modal_state.open}
+        handleClose={() => {
+          setLoginModalState({
+            open: false,
+          });
+        }}
+        handleOnSuccess={() => {
+          if (login_modal_state.action_type == "add_address") {
+            setAddressModalState({
+              open: true,
+              data: null,
+            });
+          }
+        }}
+      />
+
+      {is_mobile ? (
+        <MobileAddressModal
+          open={address_modal_state.open}
+          initial_data={address_modal_state.data}
+          onClose={() =>
+            setAddressModalState({
+              open: false,
+              data: null,
+            })
+          }
+        />
+      ) : (
+        <AddAddressModal
+          open={address_modal_state.open}
+          initial_data={address_modal_state.data}
+          onClose={() =>
+            setAddressModalState({
+              open: false,
+              data: null,
+            })
+          }
+        />
+      )}
       <section className="min-h-screen w-full py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           <div className="mb-6 flex items-center justify-between">
@@ -44,7 +121,20 @@ const ManageAddress: NextPageWithLayout = () => {
               Your Addresses
             </h1>
           </div>
-          <AddressDetail />
+          <AddressDetail
+            handleAddressModalState={(open, data) =>
+              setAddressModalState({
+                open,
+                data,
+              })
+            }
+            showLoginModal={(action_type: "add_address") =>
+              setLoginModalState({
+                open: true,
+                action_type,
+              })
+            }
+          />
         </div>
       </section>
     </>
