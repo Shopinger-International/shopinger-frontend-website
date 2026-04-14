@@ -110,6 +110,7 @@ const ManageAddress: NextPageWithLayout = () => {
         <MobileAddressModal
           open={address_modal_state.open}
           initial_data={address_modal_state.data}
+          handleLogin={openLoginModal}
           onClose={() =>
             setAddressModalState({
               open: false,

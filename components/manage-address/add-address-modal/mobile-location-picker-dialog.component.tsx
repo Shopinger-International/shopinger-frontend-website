@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 // types
 import { FC } from "react";
 import type { IAddress } from "@/types/address";
 import type { SelectInstance } from "react-select";
+import type IUser from "@/types/user";
 
 // icons
 import { X, Home, Briefcase, MapPin } from "lucide-react";
@@ -22,6 +23,7 @@ import { Formik, Form } from "formik";
 import AddAddressInput from "@/components/manage-address/add-address-modal/add-address-input.component";
 import LocationPicker from "@/components/common/location-picker/location-picker.component";
 import SelectPlaces from "@/components/common/location-picker/select-places.component";
+import Switch from "@/components/common/switch.component";
 
 // helpers
 import clsx from "clsx";
@@ -37,23 +39,64 @@ import { ADDRESS_TYPE } from "@/constants/display-area.constant";
 // hooks
 import useCreateAddressMutation from "@/hooks/axios/address/use-create-address-mutation.hook";
 import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 const address_types = [
-  { id: "home", label: "Home", icon: Home },
-  { id: "work", label: "Work", icon: Briefcase },
-  { id: "other", label: "Other", icon: MapPin },
+  { id: "home", label: "Home", icon: Home, value: ADDRESS_TYPE.HOME },
+  { id: "work", label: "Work", icon: Briefcase, value: ADDRESS_TYPE.WORK },
+  { id: "other", label: "Other", icon: MapPin, value: ADDRESS_TYPE.OTHER },
 ];
 
-const MobileAddressModal: FC<{
+export type IFormAddressType = Omit<
+  IAddress,
+  "id" | "user_id" | "is_deleted" | "latitude" | "longitude"
+> & {
+  latitude: number | null;
+  longitude: number | null;
+};
+
+type IProps = {
   open: boolean;
-  onClose: () => void;
   initial_data?: IAddress | null;
+  onClose: () => void;
   handleOnSuccess?: (data: IAddress) => void;
-}> = ({ open, onClose, initial_data, handleOnSuccess }) => {
+  handleLogin?: () => Promise<IUser>;
+};
+
+const MobileAddressModal: FC<IProps> = ({
+  open,
+  onClose,
+  initial_data,
+  handleOnSuccess,
+  handleLogin,
+}) => {
+  const { data: user_detail } = useUserDetails();
+  const user_addresses = user_detail?.user_addresses ?? [];
   const select_places_ref = useRef<SelectInstance>(null);
   const [show_drawer, setShowDrawer] = useState(false);
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
+  const { id: address_id, ...initial_values } = initial_data ?? {};
+
+  useLayoutEffect(() => {
+    const form_footer = document.getElementById("form-footer");
+    if (!form_footer) return;
+
+    const setHeight = () => {
+      document.documentElement.style.setProperty(
+        "--form-footer-height",
+        `${form_footer.offsetHeight + 16}px`,
+      );
+    };
+
+    setHeight();
+
+    const observer = new ResizeObserver(setHeight);
+    observer.observe(form_footer);
+
+    return () => observer.disconnect();
+  }, [show_drawer]);
+
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
@@ -72,27 +115,41 @@ const MobileAddressModal: FC<{
               <X size={18} />
             </button>
           </div>
-          <Formik
+          <Formik<IFormAddressType>
             initialValues={
-              initial_data ?? {
-                full_name: "",
-                phone: "",
-                house_number: "",
-                landmark: "",
-                place_id: "",
-                formatted_address: "",
-                area: "",
-                city: "",
-                state: "",
-                pincode: "",
-                latitude: 28.6139,
-                longitude: 77.209,
-                address_type: ADDRESS_TYPE.HOME,
-                delivery_instructions: "",
-                is_default: false,
-              }
+              initial_data
+                ? ({
+                    ...initial_values,
+                    delivery_instructions:
+                      initial_data.delivery_instructions ?? "",
+                  } as Omit<IAddress, "id">)
+                : {
+                    full_name: "",
+                    phone: "",
+                    house_number: "",
+                    landmark: "",
+                    place_id: "",
+                    formatted_address: "",
+                    area: "",
+                    city: "",
+                    state: "",
+                    pincode: "",
+                    latitude: null,
+                    longitude: null,
+                    address_type: ADDRESS_TYPE.HOME,
+                    delivery_instructions: "",
+                    is_default: user_addresses.length == 0 ? true : false,
+                  }
             }
-            onSubmit={(values) => {
+            onSubmit={async (values) => {
+              let user = user_detail;
+
+              if (!user_detail) {
+                user = await handleLogin?.();
+                if (!user) {
+                  return;
+                }
+              }
               initial_data
                 ? update_address_mutation.mutate(
                     {
@@ -179,7 +236,7 @@ const MobileAddressModal: FC<{
                         () => alert("Unable to fetch location"),
                       );
                     }}
-                    className="absolute bottom-36 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
+                    className="absolute bottom-42 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
                   >
                     <MapPin
                       className="size-3.5 text-orange-500"
@@ -216,8 +273,8 @@ const MobileAddressModal: FC<{
                           setShowDrawer(false);
                         }}
                       />
-                      <div className="fixed bottom-0 z-40 w-full rounded-t-2xl border border-gray-300 bg-white shadow-xl">
-                        <div className="relative p-4">
+                      <div className="fixed bottom-0 z-40 max-h-[80vh] w-full overflow-y-auto rounded-t-2xl border border-gray-300 bg-white shadow-xl">
+                        <div className="relative space-y-6 p-4 pb-(--form-footer-height)">
                           <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-gray-300" />
                           {/* Close CTA */}
                           <button
@@ -234,14 +291,15 @@ const MobileAddressModal: FC<{
 
                             <div className="flex gap-2">
                               {address_types.map(
-                                ({ id, label, icon: Icon }) => {
-                                  const isActive = values.address_type === id;
+                                ({ id, label, icon: Icon, value }) => {
+                                  const isActive =
+                                    values.address_type === value;
                                   return (
                                     <button
                                       key={id}
                                       type="button"
                                       onClick={() =>
-                                        setFieldValue("address_type", id)
+                                        setFieldValue("address_type", value)
                                       }
                                       className={clsx(
                                         "flex items-center gap-2 rounded-lg border px-3 py-1 text-sm",
@@ -280,8 +338,31 @@ const MobileAddressModal: FC<{
                               placeholder="Full Name"
                             />
                           </Fieldset>
+                          <Fieldset className="space-y-2">
+                            <Legend className="text-sm font-medium">
+                              Delivery Instructions
+                            </Legend>
+
+                            <AddAddressInput
+                              name="delivery_instructions"
+                              type="textarea"
+                              placeholder="Eg. Call before delivery (Optional)"
+                            />
+
+                            <Switch
+                              label="Set as default address"
+                              description="This will be used for all future orders by default"
+                              name="is_default"
+                              disabled={
+                                user_addresses.length == 0 ? true : false
+                              }
+                            />
+                          </Fieldset>
                         </div>
-                        <div className="shrink-0 space-y-2 border-t border-gray-300 p-4">
+                        <div
+                          id="form-footer"
+                          className="fixed bottom-0 shrink-0 space-y-2 border-t border-gray-300 bg-white p-4"
+                        >
                           {/* Selected Location Hint */}
                           {values.formatted_address ? (
                             <p className="text-sm leading-snug font-semibold">
