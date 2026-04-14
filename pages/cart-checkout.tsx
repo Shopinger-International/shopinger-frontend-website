@@ -84,6 +84,7 @@ const CartCheckoutPage: NextPageWithLayout = () => {
     open: false,
   });
   const { data } = useCart();
+  console.log("value fo data",data);
 
   useEffect(() => {
     const default_address = user_addresses.find(
@@ -93,6 +94,7 @@ const CartCheckoutPage: NextPageWithLayout = () => {
       setSelectedAddress(default_address);
     }
   }, [user_addresses.length]);
+
   return (
     <>
       <Head>

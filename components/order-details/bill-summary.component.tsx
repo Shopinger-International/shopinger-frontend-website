@@ -9,11 +9,17 @@ import { FileText } from "lucide-react";
 
 type IProps = {
   total_amount: number;
+  sub_total: number;
   total_discount: number;
   charges: number;
 };
 
-const BillSummary: FC<IProps> = ({ total_amount, total_discount, charges }) => {
+const BillSummary: FC<IProps> = ({
+  total_amount,
+  sub_total,
+  total_discount,
+  charges,
+}) => {
   return (
     <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6">
       <h3 className="font-bold text-gray-900">Bill Summary</h3>
@@ -22,7 +28,7 @@ const BillSummary: FC<IProps> = ({ total_amount, total_discount, charges }) => {
         {[
           {
             label: "Subtotal",
-            value: `₹${total_amount}`,
+            value: `₹${sub_total}`,
             bold: false,
           },
           {
@@ -67,9 +73,7 @@ const BillSummary: FC<IProps> = ({ total_amount, total_discount, charges }) => {
           <div className="text-right">
             <span className="mr-1 text-sm font-semibold text-gray-600">₹</span>
             <span className="text-3xl font-bold tracking-tight text-gray-900">
-              {(total_amount - total_discount + charges).toLocaleString(
-                "en-IN",
-              )}
+              {total_amount.toLocaleString("en-IN")}
             </span>
           </div>
         </div>

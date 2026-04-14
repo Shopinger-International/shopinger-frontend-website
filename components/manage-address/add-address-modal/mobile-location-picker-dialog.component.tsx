@@ -361,7 +361,7 @@ const MobileAddressModal: FC<IProps> = ({
                         </div>
                         <div
                           id="form-footer"
-                          className="fixed bottom-0 shrink-0 space-y-2 border-t border-gray-300 bg-white p-4"
+                          className="fixed bottom-0 shrink-0 space-y-2 border-t border-gray-300 bg-white p-4 w-full"
                         >
                           {/* Selected Location Hint */}
                           {values.formatted_address ? (

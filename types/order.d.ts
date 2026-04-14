@@ -19,6 +19,7 @@ type IOrder = {
   id: string;
   status: string;
   payment_status: string;
+  sub_total:number;
   total_amount: number;
   gst: number;
   discount: number;

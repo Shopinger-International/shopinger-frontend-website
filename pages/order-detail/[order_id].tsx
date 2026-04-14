@@ -76,6 +76,7 @@ const OrderDetailPage: NextPageWithLayout<{
     open: false,
   });
   const order_status_history = order.order_status_history;
+  console.log("value of order", order);
 
   return (
     <>
@@ -251,6 +252,7 @@ const OrderDetailPage: NextPageWithLayout<{
             {/* RIGHT SECTION (SUMMARY CARD) */}
             <div className="flex flex-col gap-4">
               <BillSummary
+                sub_total={order.sub_total}
                 total_amount={order.total_amount}
                 total_discount={order.discount}
                 charges={50}
