@@ -222,7 +222,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
 
               {/* Remove Button */}
               <button
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
+                className="flex size-10 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
                 disabled={cart_item_remove_mutation.isPending}
                 onClick={() =>
                   cart_item_remove_mutation.mutate({
@@ -259,7 +259,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
 
         {/* Remove Button */}
         <button
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
+          className="flex size-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
           disabled={cart_item_remove_mutation.isPending}
           onClick={() =>
             cart_item_remove_mutation.mutate({

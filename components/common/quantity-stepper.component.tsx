@@ -22,13 +22,13 @@ const QuantityStepper: FC<IProps> = ({
       <button
         onClick={onDecrease}
         disabled={quantity === 1 || show_decrease_disabled}
-        className="flex h-10 w-10 items-center justify-center text-gray-600 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex size-9 items-center justify-center text-gray-600 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 sm:size-10"
       >
         <Minus size={16} />
       </button>
 
       {/* Quantity */}
-      <span className="flex h-10 min-w-10 items-center justify-center border-x border-gray-200 text-sm font-semibold text-gray-900">
+      <span className="flex size-9 items-center justify-center border-x border-gray-200 text-sm font-semibold text-gray-900 sm:size-10">
         {quantity}
       </span>
 
@@ -36,7 +36,7 @@ const QuantityStepper: FC<IProps> = ({
       <button
         disabled={show_increase_disabled}
         onClick={onIncrease}
-        className="flex h-10 w-10 items-center justify-center text-gray-600 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex size-9 items-center justify-center text-gray-600 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 sm:size-10"
       >
         <Plus size={16} />
       </button>
