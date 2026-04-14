@@ -92,6 +92,7 @@ const AddAddressModal: FC<IProps> = ({
   const { data: user_addresses = [] } = useUserAddresses();
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
+  const { id: address_id, ...initial_values } = initial_data ?? {};
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
@@ -100,23 +101,29 @@ const AddAddressModal: FC<IProps> = ({
         <DialogPanel className="w-full max-w-4xl overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-xl">
           <Formik<IFormAddressType>
             initialValues={
-              initial_data ?? {
-                full_name: "",
-                phone: "",
-                house_number: "",
-                landmark: "",
-                place_id: "",
-                formatted_address: "",
-                area: "",
-                city: "",
-                state: "",
-                pincode: "",
-                latitude: null,
-                longitude: null,
-                address_type: ADDRESS_TYPE.HOME,
-                delivery_instructions: "",
-                is_default: user_addresses.length == 0 ? true : false,
-              }
+              initial_data
+                ? ({
+                    ...initial_values,
+                    delivery_instructions:
+                      initial_data.delivery_instructions ?? "",
+                  } as Omit<IAddress, "id">)
+                : {
+                    full_name: "",
+                    phone: "",
+                    house_number: "",
+                    landmark: "",
+                    place_id: "",
+                    formatted_address: "",
+                    area: "",
+                    city: "",
+                    state: "",
+                    pincode: "",
+                    latitude: null,
+                    longitude: null,
+                    address_type: ADDRESS_TYPE.HOME,
+                    delivery_instructions: "",
+                    is_default: user_addresses.length == 0 ? true : false,
+                  }
             }
             validate={toFormikValidate(address_schema)}
             onSubmit={(values) => {
