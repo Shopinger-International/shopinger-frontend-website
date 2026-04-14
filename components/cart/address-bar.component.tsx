@@ -20,11 +20,12 @@ const AddressBar: FC<AddressBarProps> = ({
   return (
     <div
       className={clsx(
-        "flex items-center justify-between rounded-xl border border-gray-300 bg-white p-4",
+        "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+        "rounded-xl border border-gray-300 bg-white p-3 sm:p-4",
       )}
     >
       <div className="flex items-start gap-3">
-        <MapPin className="mt-1 size-5 text-orange-500" />
+        <MapPin className="mt-1 size-5 shrink-0 text-orange-500" />
 
         <div className="space-y-1">
           <p className="text-sm font-semibold text-gray-900">
@@ -38,8 +39,9 @@ const AddressBar: FC<AddressBarProps> = ({
           </p>
         </div>
       </div>
+
       <button
-        className="cursor-pointer rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm"
+        className="w-full cursor-pointer rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition active:scale-[0.98] sm:w-auto"
         onClick={handleShowAddressDrawer}
       >
         Change
