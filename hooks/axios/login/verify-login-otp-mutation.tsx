@@ -56,6 +56,10 @@ const useVerifyLoginOtp = (anchorOrigin?: SnackbarOrigin) => {
       query_client.invalidateQueries({
         queryKey: ["user-details"],
       });
+
+      query_client.invalidateQueries({
+        queryKey: ["user-addresses"],
+      });
       enqueueSnackbar(response.message, {
         key: "user-verify-login-otp-success",
         variant: "success",

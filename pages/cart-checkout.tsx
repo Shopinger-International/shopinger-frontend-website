@@ -117,15 +117,24 @@ const CartCheckoutPage: NextPageWithLayout = () => {
       />
       <LoginModal
         open={login_modal_state.open}
+        anchorOrigin={
+          login_modal_state.action_type == "change_address"
+            ? {
+                horizontal: "left",
+                vertical: "bottom",
+              }
+            : {
+                horizontal: "right",
+                vertical: "bottom",
+              }
+        }
         handleClose={() => {
           setLoginModalState({
             open: false,
           });
         }}
         handleOnSuccess={() => {
-          if (login_modal_state.action_type == "checkout") {
-            setIsAddressDrawerOpen(true);
-          } else if (login_modal_state.action_type == "change_address") {
+          if (login_modal_state.action_type == "change_address") {
             setIsAddressDrawerOpen(true);
           }
           setLoginModalState({
