@@ -1,6 +1,7 @@
 // types
 import type { FC } from "react";
 import type IUser from "@/types/user";
+import type { SnackbarOrigin } from "notistack";
 
 // icons
 import { X } from "lucide-react";
@@ -13,11 +14,20 @@ import LoginForm from "@/components/login/login-form.component";
 
 type IProps = {
   open: boolean;
+  anchorOrigin?: SnackbarOrigin;
   handleClose: () => void;
   handleOnSuccess: (user: IUser) => void;
 };
 
-const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
+const LoginModal: FC<IProps> = ({
+  open,
+  anchorOrigin = {
+    horizontal:"right",
+    vertical:"bottom"
+  },
+  handleClose,
+  handleOnSuccess,
+}) => {
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40 backdrop-blur-xs" />
@@ -33,10 +43,7 @@ const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
           </button>
 
           <LoginForm
-            anchorOrigin={{
-              horizontal: "left",
-              vertical: "bottom",
-            }}
+            anchorOrigin={anchorOrigin}
             is_modal={true}
             heading_text="Login to complete your order"
             handleOnSuccess={(user) => {
