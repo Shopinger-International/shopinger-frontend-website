@@ -1,5 +1,3 @@
-import dynamic from "next/dynamic";
-import { useState } from "react";
 // types
 import type { FC } from "react";
 import type { IAddress } from "@/types/address";
@@ -10,12 +8,10 @@ import AddressCard from "@/components/manage-address/address-card.component";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 type IProps = {
-  showLoginModal: (action_type: "add_address") => void;
   handleAddressModalState: (open: boolean, data: IAddress | null) => void;
 };
 
 const AddressDetail: FC<IProps> = ({
-  showLoginModal,
   handleAddressModalState,
 }) => {
   const { data: user_detail } = useUserDetails();
@@ -23,11 +19,7 @@ const AddressDetail: FC<IProps> = ({
     <>
       <section className="flex flex-wrap gap-6">
         <button
-          onClick={() =>
-            user_detail
-              ? handleAddressModalState(true, null)
-              : showLoginModal("add_address")
-          }
+          onClick={() => handleAddressModalState(true, null)}
           className="min-h-50 w-full rounded-2xl border-2 border-dashed border-gray-300 p-6 text-gray-600 hover:border-orange-500 hover:text-orange-500 md:w-xs"
         >
           <div className="flex h-full flex-col items-center justify-center gap-2">

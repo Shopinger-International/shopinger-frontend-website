@@ -1,5 +1,6 @@
 // types
 import type { FC } from "react";
+import type IUser from "@/types/user";
 
 // icons
 import { X } from "lucide-react";
@@ -13,7 +14,7 @@ import LoginForm from "@/components/login/login-form.component";
 type IProps = {
   open: boolean;
   handleClose: () => void;
-  handleOnSuccess: () => void;
+  handleOnSuccess: (user: IUser) => void;
 };
 
 const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
@@ -38,8 +39,8 @@ const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
             }}
             is_modal={true}
             heading_text="Login to complete your order"
-            handleOnSuccess={() => {
-              handleOnSuccess();
+            handleOnSuccess={(user) => {
+              handleOnSuccess(user);
             }}
           />
         </DialogPanel>

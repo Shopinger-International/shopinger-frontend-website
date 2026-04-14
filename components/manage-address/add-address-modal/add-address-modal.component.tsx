@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { FC } from "react";
 import type { IAddress } from "@/types/address";
 import type { SelectInstance } from "react-select";
+import type IUser from "@/types/user";
 
 // icons
 import { X, Home, Briefcase, MapPin } from "lucide-react";
@@ -36,7 +37,7 @@ import clsx from "clsx";
 // hooks
 import useCreateAddressMutation from "@/hooks/axios/address/use-create-address-mutation.hook";
 import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
-import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 // const
 import { ADDRESS_TYPE } from "@/constants/display-area.constant";
 
@@ -80,6 +81,7 @@ type IProps = {
   initial_data?: IAddress | null;
   onClose: () => void;
   handleOnSuccess?: (data: IAddress) => void;
+  handleLogin?: () => Promise<IUser>;
 };
 
 const AddAddressModal: FC<IProps> = ({
@@ -87,9 +89,11 @@ const AddAddressModal: FC<IProps> = ({
   initial_data,
   onClose,
   handleOnSuccess,
+  handleLogin,
 }) => {
   const select_places_ref = useRef<SelectInstance>(null);
-  const { data: user_addresses = [] } = useUserAddresses();
+  const { data: user_detail } = useUserDetails();
+  const user_addresses = user_detail?.user_addresses ?? [];
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
   const { id: address_id, ...initial_values } = initial_data ?? {};
@@ -126,7 +130,15 @@ const AddAddressModal: FC<IProps> = ({
                   }
             }
             validate={toFormikValidate(address_schema)}
-            onSubmit={(values) => {
+            onSubmit={async (values) => {
+              let user = user_detail;
+
+              if (!user_detail) {
+                user = await handleLogin?.();
+                if (!user) {
+                  return;
+                }
+              }
               initial_data
                 ? update_address_mutation.mutate(
                     {

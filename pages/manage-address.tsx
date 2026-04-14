@@ -7,6 +7,7 @@ import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { GetServerSideProps } from "next";
 import type { DehydratedState } from "@tanstack/react-query";
+import type IUser from "@/types/user";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -44,6 +45,8 @@ const ManageAddress: NextPageWithLayout = () => {
   const [login_modal_state, setLoginModalState] = useState<{
     open: boolean;
     action_type?: "add_address";
+    onSuccess?: (value: any) => void;
+    onCancel?: () => void;
   }>({
     open: false,
   });
@@ -55,6 +58,19 @@ const ManageAddress: NextPageWithLayout = () => {
     data: null,
   });
   const is_mobile = useIsMobile();
+  const openLoginModal = () => {
+    return new Promise<IUser>((resolve, reject) => {
+      setLoginModalState({
+        open: true,
+        onSuccess: (user: IUser) => {
+          resolve(user);
+        },
+        onCancel: () => {
+          reject();
+        },
+      });
+    });
+  };
   return (
     <>
       <Head>
@@ -77,17 +93,16 @@ const ManageAddress: NextPageWithLayout = () => {
       <LoginModal
         open={login_modal_state.open}
         handleClose={() => {
+          login_modal_state.onCancel?.();
           setLoginModalState({
             open: false,
           });
         }}
-        handleOnSuccess={() => {
-          if (login_modal_state.action_type == "add_address") {
-            setAddressModalState({
-              open: true,
-              data: null,
-            });
-          }
+        handleOnSuccess={(user) => {
+          login_modal_state.onSuccess?.(user);
+          setLoginModalState({
+            open: false,
+          });
         }}
       />
 
@@ -106,6 +121,7 @@ const ManageAddress: NextPageWithLayout = () => {
         <AddAddressModal
           open={address_modal_state.open}
           initial_data={address_modal_state.data}
+          handleLogin={openLoginModal}
           onClose={() =>
             setAddressModalState({
               open: false,
@@ -126,12 +142,6 @@ const ManageAddress: NextPageWithLayout = () => {
               setAddressModalState({
                 open,
                 data,
-              })
-            }
-            showLoginModal={(action_type: "add_address") =>
-              setLoginModalState({
-                open: true,
-                action_type,
               })
             }
           />

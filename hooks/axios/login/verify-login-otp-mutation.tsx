@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // types
 import type { AxiosError } from "axios";
@@ -24,7 +24,8 @@ interface VerifyOtpResponse {
   message: string;
 }
 
-const useVerifyLoginOtp = (anchorOrigin?:SnackbarOrigin) => {
+const useVerifyLoginOtp = (anchorOrigin?: SnackbarOrigin) => {
+  const query_client = useQueryClient();
   return useMutation<
     VerifyOtpResponse,
     AxiosError<{
@@ -52,6 +53,9 @@ const useVerifyLoginOtp = (anchorOrigin?:SnackbarOrigin) => {
       return res.data;
     },
     onSuccess(response) {
+      query_client.invalidateQueries({
+        queryKey: ["user-details"],
+      });
       enqueueSnackbar(response.message, {
         key: "user-verify-login-otp-success",
         variant: "success",

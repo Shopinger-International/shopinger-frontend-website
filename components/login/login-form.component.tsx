@@ -8,6 +8,7 @@ import type { FieldProps } from "formik";
 import type { Country } from "@/data/countries.data";
 import type { CountryCode } from "libphonenumber-js";
 import type { SnackbarOrigin } from "notistack";
+import type IUser from "@/types/user";
 
 // external components
 import { Formik, Form, Field } from "formik";
@@ -103,7 +104,7 @@ const otp_schema = z.object({
 type IProps = {
   is_modal?: boolean;
   heading_text?: string;
-  handleOnSuccess?: () => void;
+  handleOnSuccess?: (user: IUser) => void;
   anchorOrigin?: SnackbarOrigin;
 };
 
@@ -287,9 +288,9 @@ const LoginForm: FC<IProps> = ({
                     : undefined,
                 },
                 {
-                  onSuccess() {
+                  onSuccess(response) {
                     !is_modal && router.push("/");
-                    handleOnSuccess?.();
+                    handleOnSuccess?.(response.user);
                   },
                 },
               );
