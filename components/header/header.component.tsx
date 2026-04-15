@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useContext } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -34,10 +34,15 @@ import { countries } from "@/data/countries.data";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 
+// context
+import { AddressDrawerState } from "@/context";
+
 const Header: FC = () => {
+  const { address_id, is_modal_open, updateState } =
+    useContext(AddressDrawerState);
   const { data: user_details } = useUserDetails();
   const user_address = user_details?.user_addresses?.find(
-    (address) => address.is_default,
+    (address) => address.id == address_id,
   );
   const { data: cart_details } = useCart();
   useLayoutEffect(() => {
@@ -96,6 +101,13 @@ const Header: FC = () => {
         {/* RIGHT: Actions */}
         <div className="order-2 -mr-3 flex items-center justify-end gap-6 lg:order-3 lg:-mr-8">
           <button
+            onClick={() =>
+              updateState?.({
+                address_id,
+                is_modal_open,
+                open: true,
+              })
+            }
             className="hidden cursor-pointer rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:inline-block"
             aria-label={
               user_address

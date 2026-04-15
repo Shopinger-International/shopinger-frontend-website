@@ -10,7 +10,7 @@ import type IOrder from "@/types/order";
 import clsx from "clsx";
 
 // local components
-import OrderItem from "./order-item.component";
+import CancelOrderItem from "./cancel-order-item.component";
 
 type CancelReason =
   | "ORDER_BY_MISTAKE"
@@ -100,13 +100,10 @@ export default function CancelOrderModal({
                   const variant = product.variants[0];
 
                   return (
-                    <OrderItem
+                    <CancelOrderItem
                       product={product}
                       variant={variant}
-                      quantity={2}
-                      is_delivered={false}
-                      is_reviewed={false}
-                      handleShowReviewModal={() => {}}
+                      quantity={item.quantity}
                     />
                   );
                 })}

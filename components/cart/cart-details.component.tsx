@@ -12,7 +12,6 @@ import AddressBar from "@/components/cart/address-bar.component";
 import CartItem from "@/components/cart/cart-item.component";
 import CartSummary from "@/components/cart/cart-summary.component";
 import HelpSection from "@/components/common/help-section.component";
-import OrderSuccessfulModal from "@/components/cart/order-successful-modal.component";
 
 // helpers
 import { IAddress } from "@/types/address";

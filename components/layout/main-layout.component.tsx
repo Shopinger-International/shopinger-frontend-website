@@ -1,11 +1,38 @@
+import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { useState } from "react";
+import { useContext } from "react";
 // types
 import type { FC, ReactNode } from "react";
 
 // local components
 import Header from "@/components/header/header.component";
 import Footer from "@/components/footer/footer.component";
+import SelectAddressDrawer from "@/components/common/select-address-drawer.component";
+
+// hooks
+import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
+
+const AddAddressModal = dynamic(
+  () =>
+    import("@/components/manage-address/add-address-modal/add-address-modal.component"),
+  {
+    ssr: false,
+  },
+);
+
+const MobileAddressModal = dynamic(
+  () =>
+    import("@/components/manage-address/add-address-modal/mobile-location-picker-dialog.component"),
+  {
+    ssr: false,
+  },
+);
+
+// hooks
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+
+// context
+import { AddressDrawerState } from "@/context";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800"],
@@ -16,12 +43,58 @@ const poppins = Poppins({
 const MainLayout: FC<{
   children: ReactNode;
 }> = ({ children }) => {
+  const { is_open, is_modal_open, address_id, updateState } =
+    useContext(AddressDrawerState);
+  const is_mobile = useIsMobile();
+  const { data: user_addresses = [] } = useUserAddresses();
   return (
     <div
       className={`${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900`}
     >
       <Header />
-      <main>{children}</main>
+      <main>
+        {is_mobile ? (
+          <MobileAddressModal
+            open={is_modal_open}
+            onClose={() =>
+              updateState?.({
+                open: is_open,
+                is_modal_open: false,
+                address_id,
+              })
+            }
+            initial_data={null}
+            handleOnSuccess={(address) => {
+              updateState?.({
+                open: false,
+                is_modal_open: false,
+                address_id: address.id,
+              });
+            }}
+          />
+        ) : (
+          <AddAddressModal
+            open={is_modal_open}
+            onClose={() =>
+              updateState?.({
+                open: is_open,
+                is_modal_open: false,
+                address_id,
+              })
+            }
+            initial_data={null}
+            handleOnSuccess={(address) => {
+              updateState?.({
+                open: false,
+                is_modal_open: false,
+                address_id: address.id,
+              });
+            }}
+          />
+        )}
+        <SelectAddressDrawer />
+        {children}
+      </main>
       <Footer />
     </div>
   );

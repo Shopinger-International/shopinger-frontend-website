@@ -7,8 +7,9 @@ import type { NextPage } from "next";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
-// notistack
+// provider
 import { SnackbarProvider } from "notistack";
+import SelectedAddressProvider from "@/provider/selected-address-provider.component";
 
 // react query
 import {
@@ -16,7 +17,6 @@ import {
   QueryClientProvider,
   HydrationBoundary,
 } from "@tanstack/react-query";
-// _app.jsx
 
 const ReactQueryDevtools =
   process.env.NODE_ENV === "development"
@@ -61,7 +61,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
             error: ErrorSnackbar,
           }}
         >
-          {getLayout(<Component {...pageProps} />)}
+          <SelectedAddressProvider>
+            {getLayout(<Component {...pageProps} />)}
+          </SelectedAddressProvider>
         </SnackbarProvider>
       </HydrationBoundary>
 
