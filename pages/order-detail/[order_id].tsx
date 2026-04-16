@@ -108,7 +108,7 @@ const OrderDetailPage: NextPageWithLayout<{
         order={order}
         onClose={() =>
           setCancelOrderModalState({
-            open: true,
+            open: false,
           })
         }
         onConfirm={() => {}}

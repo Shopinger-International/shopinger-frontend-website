@@ -16,7 +16,7 @@ type IOrderStatusHistory = {
   to_status: string;
 };
 type IOrder = {
-  id: string;
+  id: number;
   status: string;
   payment_status: string;
   sub_total:number;

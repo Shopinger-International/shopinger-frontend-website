@@ -11,6 +11,9 @@ import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant
 // external component
 import { Checkbox } from "@headlessui/react";
 
+// local components
+import QuantityStepper from "@/components/common/quantity-stepper.component";
+
 // hooks
 import useCategoryMappings from "@/hooks/axios/common/use-category-mappings.hook";
 
@@ -21,54 +24,63 @@ type IProps = {
   product: Omit<IProduct, "variants">;
   variant: IVariant;
   quantity: number;
+  is_selected: boolean;
+  selected_quantity: number;
+  onToggle: () => void;
+  onQuantityChange: (qty: number) => void;
 };
 
-const CancelOrderItem: FC<IProps> = ({ product, variant, quantity }) => {
+const CancelOrderItem: FC<IProps> = ({
+  product,
+  variant,
+  quantity,
+  is_selected,
+  selected_quantity,
+  onToggle,
+  onQuantityChange,
+}) => {
   const {
     title,
     variant_visual_attribute_medias,
     id: product_id,
     sub_sub_category_id,
   } = product;
+
   const { data: category_mappings } = useCategoryMappings(sub_sub_category_id);
+
   const { id: variant_id, variant_attribute_values, variant_pricing } = variant;
+
   const product_slug = generateSlug(title);
+
   const formated_variant_attribute_value = variant_attribute_values.map(
-    ({ attribute, value }) => {
-      return {
-        name: attribute.name,
-        value:
-          attribute.data_type === "enum"
-            ? attribute.options?.find(
-                ({ value: option_value }) => value == option_value,
-              )?.label
-            : value,
-      };
-    },
+    ({ attribute, value }) => ({
+      name: attribute.name,
+      value:
+        attribute.data_type === "enum"
+          ? attribute.options?.find(
+              ({ value: option_value }) => value == option_value,
+            )?.label
+          : value,
+    }),
   );
 
   const variant_medias = useMemo(() => {
     const media_group = variant_visual_attribute_medias.reduce<IMediaGroup>(
       (acc, item) => {
         const { attribute_id, attribute_value } = item;
-        const updated_attribute_value = attribute_value.toLowerCase();
+        const updated_value = attribute_value.toLowerCase();
 
-        if (!acc[attribute_id]) {
-          acc[attribute_id] = {};
-        }
+        if (!acc[attribute_id]) acc[attribute_id] = {};
+        if (!acc[attribute_id][updated_value])
+          acc[attribute_id][updated_value] = [];
 
-        if (!acc[attribute_id][updated_attribute_value]) {
-          acc[attribute_id][updated_attribute_value] = [];
-        }
-
-        acc[attribute_id][updated_attribute_value].push(item.media);
-
+        acc[attribute_id][updated_value].push(item.media);
         return acc;
       },
       {},
     );
 
-    let variant_medias = variant_attribute_values
+    return variant_attribute_values
       .filter(
         ({ attribute }) =>
           category_mappings?.find(
@@ -80,28 +92,33 @@ const CancelOrderItem: FC<IProps> = ({ product, variant, quantity }) => {
         ({ attribute, value }) =>
           media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
       );
-
-    return variant_medias;
   }, [
-    variant_attribute_values.length,
-    category_mappings?.length,
-    variant_visual_attribute_medias.length,
+    variant_attribute_values,
+    category_mappings,
+    variant_visual_attribute_medias,
   ]);
-
+  console.log("value of selected quantity", selected_quantity);
   return (
-    <div className="rounded-xl bg-white">
-      <div className="flex items-center gap-2">
+    <div
+      className={clsx(
+        "rounded-xl border p-3 transition",
+        is_selected ? "border-orange-500 bg-orange-50" : "border-gray-200",
+      )}
+    >
+      <div className="flex items-start gap-3">
+        {/* CHECKBOX */}
         <Checkbox
-          checked={true}
-          onChange={() => {}}
+          checked={is_selected}
+          onChange={onToggle}
           className={clsx(
-            "mt-1 flex h-5 w-5 items-center justify-center rounded border shrink-0",
-            true ? "border-orange-500 bg-orange-500" : "border-gray-300 bg-white",
+            "mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded border",
+            is_selected
+              ? "border-orange-500 bg-orange-500"
+              : "border-gray-300 bg-white",
           )}
         >
-          {/* CHECK ICON */}
           <svg
-            className={clsx("h-3 w-3 text-white", !true && "hidden")}
+            className={clsx("h-3 w-3 text-white", !is_selected && "hidden")}
             viewBox="0 0 14 14"
             fill="none"
           >
@@ -115,7 +132,9 @@ const CancelOrderItem: FC<IProps> = ({ product, variant, quantity }) => {
           </svg>
         </Checkbox>
 
-        <div className="flex gap-4">
+        {/* CONTENT */}
+        <div className="flex flex-1 gap-4">
+          {/* IMAGE */}
           <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
             <Link href={`/${product_slug}/p/${product_id}/${variant_id}`}>
               <Image
@@ -130,28 +149,41 @@ const CancelOrderItem: FC<IProps> = ({ product, variant, quantity }) => {
             </Link>
           </div>
 
-          {/* CONTENT */}
+          {/* INFO */}
           <div className="flex flex-1 flex-col space-y-1">
-            {/* TOP */}
+            {/* TITLE */}
             <h4 className="line-clamp-1 text-sm font-medium">{title}</h4>
 
             {!!formated_variant_attribute_value.length && (
-              <>
-                <p className="text-xs font-medium text-gray-600">
-                  {formated_variant_attribute_value
-                    .map(({ name, value }) => `${name}: ${value}`)
-                    .join(", ")}
-                </p>
-              </>
+              <p className="text-xs font-medium text-gray-600">
+                {formated_variant_attribute_value
+                  .map(({ name, value }) => `${name}: ${value}`)
+                  .join(", ")}
+              </p>
             )}
 
             {/* PRICE ROW */}
-            <div className="flex items-center gap-2 text-sm">
-              <span className="font-medium text-gray-900">
-                ₹{variant_pricing.selling_price_with_commission} x{" "}
-              </span>
+            <div className="text-sm text-gray-900">
+              ₹{variant_pricing.selling_price_with_commission} ×{" "}
+              {is_selected ? selected_quantity : quantity}
+            </div>
 
-              {quantity}
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-gray-400">Cancel quantity</p>
+              <QuantityStepper
+                size="small"
+                show_decrease_disabled={!is_selected || selected_quantity <= 0}
+                show_increase_disabled={
+                  !is_selected || selected_quantity >= quantity
+                }
+                quantity={selected_quantity}
+                onDecrease={() => {
+                  onQuantityChange(selected_quantity - 1);
+                }}
+                onIncrease={() => {
+                  onQuantityChange(selected_quantity + 1);
+                }}
+              />
             </div>
           </div>
         </div>
@@ -159,4 +191,5 @@ const CancelOrderItem: FC<IProps> = ({ product, variant, quantity }) => {
     </div>
   );
 };
+
 export default CancelOrderItem;
