@@ -1,3 +1,5 @@
+// types
+import type { ICancelReason } from "@/types/order";
 // external components
 import {
   Dialog,
@@ -13,14 +15,8 @@ import type IOrder from "@/types/order";
 import CancelOrderItem from "@/components/order-details/cancel-order-item.component";
 import SelectInput from "../common/select-input.component";
 
-// helpers
-
-type CancelReason =
-  | "ORDER_BY_MISTAKE"
-  | "FOUND_BETTER_PRICE"
-  | "DELAYED_DELIVERY"
-  | "CHANGE_OF_MIND"
-  | "OTHER";
+// hooks
+import useCancelOrderMutation from "@/hooks/axios/order/use-cancel-order-mutation.hook";
 
 type Props = {
   is_open: boolean;
@@ -28,11 +24,11 @@ type Props = {
   onClose: () => void;
   onConfirm: (data: {
     items: { id: number; quantity: number }[];
-    reason: CancelReason;
+    reason: ICancelReason;
   }) => void;
 };
 
-const reasons: { label: string; value: CancelReason }[] = [
+const reasons: { label: string; value: ICancelReason }[] = [
   { label: "Ordered by mistake", value: "ORDER_BY_MISTAKE" },
   { label: "Found better price", value: "FOUND_BETTER_PRICE" },
   { label: "Delivery taking too long", value: "DELAYED_DELIVERY" },
@@ -41,10 +37,11 @@ const reasons: { label: string; value: CancelReason }[] = [
 ];
 
 export default function CancelOrderModal({ is_open, order, onClose }: Props) {
+  const cancel_order_mutation = useCancelOrderMutation();
   const [selected_items, setSelectedItems] = useState<
-    { variant_id: number; quantity: number }[]
+    { item_id: number; quantity: number }[]
   >([]);
-  const [reason, setReason] = useState<CancelReason | "">("");
+  const [reason, setReason] = useState<ICancelReason | "">("");
 
   return (
     <Transition show={is_open} as={Fragment}>
@@ -64,11 +61,11 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                 Select items and quantity to cancel
               </p>
               {/* ITEMS */}
-              <div className="mt-4 space-y-3 overflow-y-auto max-h-64">
-                {order.order_items.flatMap(({ item, quantity }) =>
+              <div className="mt-4 max-h-64 space-y-3 overflow-y-auto">
+                {order.order_items.flatMap(({ item_id, item, quantity }) =>
                   item.variants.map((variant) => {
                     const selected_item = selected_items.find(
-                      (i) => i.variant_id === variant.id,
+                      (i) => i.item_id === item_id,
                     );
 
                     const is_selected = !!selected_item;
@@ -86,21 +83,19 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                         onToggle={() => {
                           setSelectedItems((prev) => {
                             const exists = prev.find(
-                              (i) => i.variant_id === variant.id,
+                              (i) => i.item_id === item_id,
                             );
 
                             if (exists) {
                               // remove item
-                              return prev.filter(
-                                (i) => i.variant_id !== variant.id,
-                              );
+                              return prev.filter((i) => i.item_id !== item_id);
                             }
 
                             // add item with default quantity = 1
                             return [
                               ...prev,
                               {
-                                variant_id: variant.id,
+                                item_id,
                                 quantity: 1,
                               },
                             ];
@@ -109,13 +104,13 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                         onQuantityChange={(updated_quantity) => {
                           setSelectedItems((prev) => {
                             const exists = prev.find(
-                              (i) => i.variant_id === variant.id,
+                              (i) => i.item_id === item_id,
                             );
 
                             if (!exists) return prev;
 
                             return prev.map((i) =>
-                              i.variant_id === variant.id
+                              i.item_id === item_id
                                 ? {
                                     ...i,
                                     quantity: Math.max(
@@ -144,7 +139,7 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                     }
                     placeholder="Select a reason"
                     onChange={(value) => {
-                      setReason(value as CancelReason);
+                      setReason(value as ICancelReason);
                     }}
                   />
                 </div>
@@ -162,11 +157,32 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                 </button>
 
                 <button
-                  // onClick={handleSubmit}
-                  disabled={!reason || selected_items.length === 0}
+                  onClick={() => {
+                    if (reason !== "") {
+                      cancel_order_mutation.mutate(
+                        {
+                          order_id: order.id,
+                          items: selected_items,
+                          reason,
+                        },
+                        {
+                          onSuccess() {
+                            onClose();
+                          },
+                        },
+                      );
+                    }
+                  }}
+                  disabled={
+                    !reason ||
+                    selected_items.length === 0 ||
+                    cancel_order_mutation.isPending
+                  }
                   className="rounded-md bg-red-500 px-4 py-2 text-sm text-white disabled:opacity-50"
                 >
-                  Cancel Selected Items
+                  {cancel_order_mutation.isPending
+                    ? "Cancelling"
+                    : "Request Cancellation"}
                 </button>
               </div>
             </DialogPanel>

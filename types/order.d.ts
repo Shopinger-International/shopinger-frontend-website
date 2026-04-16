@@ -1,6 +1,14 @@
 import type IProduct from "@/types/product";
 
+export type ICancelReason =
+  | "ORDER_BY_MISTAKE"
+  | "FOUND_BETTER_PRICE"
+  | "DELAYED_DELIVERY"
+  | "CHANGE_OF_MIND"
+  | "OTHER";
+
 type IOrderItems = {
+  item_id:number;
   item: IProduct;
   quantity: number;
 };
