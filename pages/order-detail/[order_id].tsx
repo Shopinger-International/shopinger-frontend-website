@@ -226,12 +226,13 @@ const OrderDetailPage: NextPageWithLayout<{
 
                 <div className="space-y-4">
                   {order?.order_items?.flatMap(
-                    ({ quantity, item: { variants, ...product } }) =>
+                    ({ quantity, item: { variants, ...product }, status }) =>
                       variants.map((variant) => (
                         <OrderItem
                           quantity={quantity}
                           product={product}
                           variant={variant}
+                          status={status}
                           key={`cart-item-${variant.id}`}
                           is_delivered={true}
                           is_reviewed={false}

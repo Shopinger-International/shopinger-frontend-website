@@ -10,6 +10,7 @@ export type ICancelReason =
 type IOrderItems = {
   item_id:number;
   item: IProduct;
+  status:string;
   quantity: number;
 };
 

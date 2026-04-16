@@ -16,6 +16,7 @@ import { generateSlug } from "@/helpers/product.helper";
 type IProps = {
   product: Omit<IProduct, "variants">;
   variant: IVariant;
+  status: string;
   is_delivered: boolean;
   is_reviewed: boolean;
   quantity: number;
@@ -25,6 +26,7 @@ type IProps = {
 const OrderItem: FC<IProps> = ({
   product,
   variant,
+  status,
   is_delivered,
   is_reviewed,
   quantity,
@@ -114,7 +116,13 @@ const OrderItem: FC<IProps> = ({
         {/* CONTENT */}
         <div className="flex flex-1 flex-col space-y-1">
           {/* TOP */}
-          <h4 className="line-clamp-1 text-sm font-medium">{title}</h4>
+          <div className="flex items-start justify-between gap-2">
+            <h4 className="line-clamp-1 text-sm font-medium">{title}</h4>
+
+            <span className={`shrink-0 text-xs font-medium text-gray-600`}>
+              {status[0] + status.slice(1).toLowerCase()}
+            </span>
+          </div>
 
           {!!formated_variant_attribute_value.length && (
             <>
