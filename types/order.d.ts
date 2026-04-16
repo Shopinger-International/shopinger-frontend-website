@@ -5,8 +5,13 @@ export type ICancelReason =
   | "FOUND_BETTER_PRICE"
   | "DELAYED_DELIVERY"
   | "CHANGE_OF_MIND"
+  | "DUPLICATE_ORDER"
+  | "WRONG_ITEM_ORDERED"
+  | "NO_LONGER_NEEDED"
+  | "HIGH_SHIPPING_COST"
+  | "BAD_REVIEWS"
+  | "LATE_DELIVERY_EXPECTED"
   | "OTHER";
-
 type IOrderItems = {
   item_id:number;
   item: IProduct;

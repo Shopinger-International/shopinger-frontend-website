@@ -49,6 +49,7 @@ const SelectInput: FC<SelectInputProps> = ({
 
   return (
     <SelectComponent
+      menuPosition="fixed"
       isOptionDisabled={(option) => block_list.includes(option.value)}
       unstyled
       placeholder={placeholder}
@@ -85,7 +86,7 @@ const SelectInput: FC<SelectInputProps> = ({
         control: ({ isFocused }) =>
           clsx(
             "flex w-full items-center rounded-md border px-3 py-2",
-            isFocused ? "ring-2 ring-orange-500" : "border-gray-300",
+            isFocused ? "border-2 border-orange-500" : "border-gray-300",
           ),
         valueContainer: () => "flex gap-1 flex-wrap",
         placeholder: () => "text-gray-400",
@@ -93,7 +94,7 @@ const SelectInput: FC<SelectInputProps> = ({
         menuList: () => "max-h-60 overflow-y-auto py-2",
         option: ({ isFocused, isSelected, isDisabled }) =>
           clsx(
-            "px-3 py-3 text-sm transition-colors",
+            "px-3 py-2 text-sm transition-colors",
 
             // Disabled state (always highest priority)
             isDisabled &&

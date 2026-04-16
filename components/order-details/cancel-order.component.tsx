@@ -30,9 +30,18 @@ type Props = {
 
 const reasons: { label: string; value: ICancelReason }[] = [
   { label: "Ordered by mistake", value: "ORDER_BY_MISTAKE" },
-  { label: "Found better price", value: "FOUND_BETTER_PRICE" },
+  { label: "Found a better price elsewhere", value: "FOUND_BETTER_PRICE" },
   { label: "Delivery taking too long", value: "DELAYED_DELIVERY" },
   { label: "Changed my mind", value: "CHANGE_OF_MIND" },
+  { label: "Placed duplicate order", value: "DUPLICATE_ORDER" },
+  { label: "Wrong item ordered", value: "WRONG_ITEM_ORDERED" },
+  { label: "Item no longer needed", value: "NO_LONGER_NEEDED" },
+  { label: "Shipping cost too high", value: "HIGH_SHIPPING_COST" },
+  { label: "Product reviews changed my mind", value: "BAD_REVIEWS" },
+  {
+    label: "Item expected to arrive too late",
+    value: "LATE_DELIVERY_EXPECTED",
+  },
   { label: "Other", value: "OTHER" },
 ];
 
