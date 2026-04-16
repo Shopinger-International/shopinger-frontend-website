@@ -169,7 +169,7 @@ const CancelOrderItem: FC<IProps> = ({
             </div>
 
             <div className="flex items-center justify-between">
-              <p className="text-xs text-gray-400">Cancel quantity</p>
+              <p className="text-xs text-gray-600">Cancel quantity</p>
               <QuantityStepper
                 size="small"
                 show_decrease_disabled={!is_selected || selected_quantity <= 0}

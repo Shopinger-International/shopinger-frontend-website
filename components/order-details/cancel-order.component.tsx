@@ -18,6 +18,9 @@ import SelectInput from "../common/select-input.component";
 // hooks
 import useCancelOrderMutation from "@/hooks/axios/order/use-cancel-order-mutation.hook";
 
+// icons
+import { X } from "lucide-react";
+
 type Props = {
   is_open: boolean;
   order: IOrder;
@@ -63,9 +66,19 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <TransitionChild as={Fragment}>
             <DialogPanel className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
-              <DialogTitle className="text-lg font-semibold">
-                Cancel Items
-              </DialogTitle>
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-lg font-semibold">
+                  Cancel Items
+                </DialogTitle>
+
+                <button
+                  onClick={onClose}
+                  className="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+                  aria-label="Close modal"
+                >
+                  <X className="size-5"/>
+                </button>
+              </div>
               <p className="mt-1 text-sm text-gray-600">
                 Select items and quantity to cancel
               </p>
