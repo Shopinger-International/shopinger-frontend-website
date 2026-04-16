@@ -20,22 +20,16 @@ const SelectedAddressProvider: FC<{
     address_id: null,
   });
   const { data: user_addresses = [] } = useUserAddresses();
+  const default_address_id = user_addresses.find(
+    (address) => address.is_default == true,
+  )?.id;
+  if (default_address_id && !address_drawer_state.address_id) {
+    setAddressDrawerState({
+      ...address_drawer_state,
+      address_id: default_address_id,
+    });
+  }
 
-  useEffect(() => {
-    if (user_addresses.length) {
-      const default_address = user_addresses.find(
-        (address) => address.is_default == true,
-      );
-
-      const selected_address = user_addresses.find(
-        (address) => address.id == address_drawer_state.address_id,
-      );
-      setAddressDrawerState((prev) => ({
-        ...prev,
-        address_id: selected_address?.id ?? default_address?.id ?? null,
-      }));
-    }
-  }, [user_addresses.length, address_drawer_state.address_id]);
   return (
     <AddressDrawerState.Provider
       value={{

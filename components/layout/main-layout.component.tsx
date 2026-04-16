@@ -84,6 +84,7 @@ const MainLayout: FC<{
             }
             initial_data={null}
             handleOnSuccess={(address) => {
+              console.log("new address id", address, address.id);
               updateState?.({
                 open: false,
                 is_modal_open: false,

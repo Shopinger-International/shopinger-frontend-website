@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Head from "next/head";
 
 // types
@@ -51,6 +51,9 @@ import { QueryClient, dehydrate } from "@tanstack/react-query";
 // icons
 import { MapPin } from "lucide-react";
 
+// context
+import { AddressDrawerState } from "@/context";
+
 export type IAddressModalState = {
   open: boolean;
   data: IAddress | null;
@@ -61,6 +64,7 @@ const CartCheckoutPage: NextPageWithLayout = () => {
   const delete_address_mutation = useDeleteAddressMutation();
   const is_mobile = useIsMobile();
   const [is_address_drawer_open, setIsAddressDrawerOpen] = useState(false);
+  const { address_id } = useContext(AddressDrawerState);
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(
     null,
   );
@@ -84,16 +88,26 @@ const CartCheckoutPage: NextPageWithLayout = () => {
     open: false,
   });
   const { data } = useCart();
-  console.log("value fo data",data);
+
+  useEffect(() => {
+    const globally_selected_address = user_addresses.find(
+      (address) => address.id == address_id,
+    );
+    setSelectedAddress(globally_selected_address ?? null);
+  }, [address_id]);
 
   useEffect(() => {
     const default_address = user_addresses.find(
       (address) => address.is_default,
     );
-    if (default_address && !selected_address) {
-      setSelectedAddress(default_address);
+
+    const globally_selected_address = user_addresses.find(
+      (address) => address.id == address_id,
+    );
+    if (!selected_address) {
+      setSelectedAddress(globally_selected_address ?? default_address ?? null);
     }
-  }, [user_addresses.length]);
+  }, [user_addresses.length, address_id]);
 
   return (
     <>
