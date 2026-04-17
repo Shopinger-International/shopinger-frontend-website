@@ -1,4 +1,5 @@
 import type IAttributeType from "@/types/attribute";
+import type IMedia from "@/types/media";
 
 type ISkuRow = {
   sku: string;
@@ -38,6 +39,9 @@ type IVariant = {
   variant_attribute_values: IVariantAttributeValues[];
   variant_inventory: IVariantInventory;
   variant_pricing: IVariantPricing;
+  variant_medias: {
+    media: IMedia;
+  }[];
 };
 export default IVariant;
 export { IVariantInventory, IVariantAttributeValues };

@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -23,7 +22,6 @@ type IProps = {
   product: IProduct;
   variant: IVariant;
   selected_attributes: Record<string, any>;
-  media_group: IMediaGroup;
   category_mappings: ICategoryAttributeMapping[];
   is_product_available: boolean;
 };
@@ -32,11 +30,9 @@ const ProductInfo: FC<IProps> = ({
   product,
   variant,
   selected_attributes,
-  media_group,
   category_mappings,
   is_product_available,
 }) => {
-  const router = useRouter();
   const add_to_cart_mutation = useAddToCartMutation();
   const { title, brand, sub_sub_category } = product;
   const updated_title =
@@ -96,7 +92,6 @@ const ProductInfo: FC<IProps> = ({
 
       <MobileProductGallary
         variant={variant}
-        media_group={media_group}
         product={product}
         category_mappings={category_mappings}
       />
@@ -152,7 +147,6 @@ const ProductInfo: FC<IProps> = ({
         product={product}
         selected_attributes={selected_attributes}
         category_mappings={category_mappings}
-        media_group={media_group}
       />
       <CheckDeliveryAvailability />
       <p className="order-6 mb-4 font-medium">

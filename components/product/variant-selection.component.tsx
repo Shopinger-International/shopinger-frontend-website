@@ -20,12 +20,10 @@ type AttributeGroup = {
 const VariantSelection: FC<{
   product: IProduct;
   selected_attributes: Record<string, any>;
-  media_group: IMediaGroup;
   category_mappings: ICategoryAttributeMapping[];
 }> = ({
-  product: { id: product_id, title, variants, brand },
+  product: { id: product_id, title, variants, brand, ...product },
   selected_attributes,
-  media_group,
   category_mappings,
 }) => {
   const variant_attributes_values_group = variants
@@ -89,6 +87,18 @@ const VariantSelection: FC<{
                     );
                   },
                 );
+                const variant_medias = variant?.variant_medias.map(
+                  ({ media }) => media,
+                );
+                const product_medias = product.product_medias.map(
+                  ({ media }) => media,
+                );
+                console.log(
+                  "value of variant medias",
+                  variant_medias,
+                  variant
+                );
+
                 const readable_value =
                   attribute.options?.find(
                     ({ value: option_value }) => value == option_value,
@@ -130,9 +140,7 @@ const VariantSelection: FC<{
                           <Image
                             sizes="96px"
                             src={
-                              media_group[attribute.id as number]?.[
-                                value.toLowerCase()
-                              ]?.[0].url
+                              variant_medias?.[0]?.url ?? product_medias[0].url
                             }
                             fill
                             alt={value}
