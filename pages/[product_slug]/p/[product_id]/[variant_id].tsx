@@ -75,13 +75,6 @@ const getRelatedProducts = async (
   };
 };
 
-export type IMediaGroup = Record<
-  number, // attribute_id
-  Record<
-    string, // attribute_value
-    Array<IMedia>
-  >
->;
 type IParams = {
   product_slug: string;
   product_id: string;

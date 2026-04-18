@@ -1,7 +1,5 @@
 import Image from "next/image";
-import { useMemo } from "react";
 // types
-import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type { FC } from "react";
 import type { FieldProps } from "formik";
 import type IProduct from "@/types/product";
@@ -20,7 +18,6 @@ import "@smastrom/react-rating/style.css";
 
 // api hooks
 import useReviewGeneratorMutation from "@/hooks/axios/review/review-generator-mutation.hook";
-import useCategoryMappings from "@/hooks/axios/common/use-category-mappings.hook";
 
 const rating_labels = [
   "Very poor",
@@ -44,51 +41,10 @@ type IProps = {
 };
 
 const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
-  const { title, variant_visual_attribute_medias, sub_sub_category_id } =
-    product;
+  const { title } = product;
   const review_generator_mutation = useReviewGeneratorMutation();
-  const { data: category_mappings } = useCategoryMappings(sub_sub_category_id);
-  const { variant_attribute_values } = variant;
-  const variant_medias = useMemo(() => {
-    const media_group = variant_visual_attribute_medias.reduce<IMediaGroup>(
-      (acc, item) => {
-        const { attribute_id, attribute_value } = item;
-        const updated_attribute_value = attribute_value.toLowerCase();
+  const variant_medias = variant.variant_medias.map(({ media }) => media);
 
-        if (!acc[attribute_id]) {
-          acc[attribute_id] = {};
-        }
-
-        if (!acc[attribute_id][updated_attribute_value]) {
-          acc[attribute_id][updated_attribute_value] = [];
-        }
-
-        acc[attribute_id][updated_attribute_value].push(item.media);
-
-        return acc;
-      },
-      {},
-    );
-
-    let variant_medias = variant_attribute_values
-      .filter(
-        ({ attribute }) =>
-          category_mappings?.find(
-            ({ attribute: mapping_attribute }) =>
-              mapping_attribute.id == attribute.id,
-          )?.is_visual,
-      )
-      .flatMap(
-        ({ attribute, value }) =>
-          media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
-      );
-
-    return variant_medias;
-  }, [
-    variant_attribute_values.length,
-    category_mappings?.length,
-    variant_visual_attribute_medias.length,
-  ]);
   return (
     <Dialog as="div" className="relative z-50" onClose={onClose} open={is_open}>
       <div className="fixed inset-0 bg-black/40 backdrop-blur-xs" />
@@ -153,7 +109,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                           <Rating
                             style={{ maxWidth: 140 }}
                             value={field.value || 0}
-                            onChange={(val:any) => {
+                            onChange={(val: any) => {
                               form.setFieldValue(field.name, val);
 
                               review_generator_mutation.mutate(

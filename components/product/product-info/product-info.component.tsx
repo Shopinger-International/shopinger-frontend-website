@@ -2,7 +2,6 @@
 import type { FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
-import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
 // icons
