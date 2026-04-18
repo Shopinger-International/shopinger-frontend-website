@@ -13,7 +13,7 @@ import PromoBanner from "@/components/home/promo-banner.component";
 import SaleLiveSection from "@/components/home/sale-live-section.component";
 import WatchLiveSection from "@/components/home/watch-live-section.component";
 import ProductMarquee from "@/components/home/product-marquee.component";
-import BestDeals from "@/components/home/best-deals/best-deals.component";
+import BestDeals from "@/components/home/best-deals/best-deals.component"; 
 import DiscountSection from "@/components/home/discount/discount-section.component";
 
 // lib
