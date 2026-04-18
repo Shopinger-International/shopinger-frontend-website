@@ -3,7 +3,6 @@ import Link from "next/link";
 // types
 import type { FC } from "react";
 import type IAttributeType from "@/types/attribute";
-import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type IProduct from "@/types/product";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
@@ -57,7 +56,7 @@ const VariantSelection: FC<{
           if (mapping_a?.is_visual == mapping_b?.is_visual) return 0;
           return mapping_a?.is_visual ? -1 : 1;
         })
-        .map(({ attribute, values }) => (
+        .map(({ attribute, values }, index) => (
           <div className="space-y-2" key={`variant-attribute-${attribute.id}`}>
             <h3 className="font-bold">
               {attribute.name} <span aria-hidden="true"> : </span>
@@ -93,11 +92,6 @@ const VariantSelection: FC<{
                 const product_medias = product.product_medias.map(
                   ({ media }) => media,
                 );
-                console.log(
-                  "value of variant medias",
-                  variant_medias,
-                  variant
-                );
 
                 const readable_value =
                   attribute.options?.find(
@@ -120,10 +114,7 @@ const VariantSelection: FC<{
                     role="radio"
                     className="shrink-0 snap-start"
                   >
-                    {category_mappings.find(
-                      ({ attribute: mapping_attribute }) =>
-                        mapping_attribute.id == attribute.id,
-                    )?.is_visual ? (
+                    {index == 0 ? (
                       <div
                         className={clsx(
                           "group flex h-full w-24 flex-col overflow-hidden rounded-lg border bg-white transition-all duration-200 lg:w-20",
