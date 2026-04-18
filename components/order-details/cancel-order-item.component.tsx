@@ -1,21 +1,16 @@
 import clsx from "clsx";
-import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
 import type { FC } from "react";
 import type IVariant from "@/types/variant";
 import type IProduct from "@/types/product";
-import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // external component
 import { Checkbox } from "@headlessui/react";
 
 // local components
 import QuantityStepper from "@/components/common/quantity-stepper.component";
-
-// hooks
-import useCategoryMappings from "@/hooks/axios/common/use-category-mappings.hook";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
@@ -39,15 +34,7 @@ const CancelOrderItem: FC<IProps> = ({
   onToggle,
   onQuantityChange,
 }) => {
-  const {
-    title,
-    variant_visual_attribute_medias,
-    id: product_id,
-    sub_sub_category_id,
-  } = product;
-
-  const { data: category_mappings } = useCategoryMappings(sub_sub_category_id);
-
+  const { title, id: product_id } = product;
   const { id: variant_id, variant_attribute_values, variant_pricing } = variant;
 
   const product_slug = generateSlug(title);
@@ -63,41 +50,8 @@ const CancelOrderItem: FC<IProps> = ({
           : value,
     }),
   );
+  const variant_medias = variant.variant_medias.map(({ media }) => media);
 
-  const variant_medias = useMemo(() => {
-    const media_group = variant_visual_attribute_medias.reduce<IMediaGroup>(
-      (acc, item) => {
-        const { attribute_id, attribute_value } = item;
-        const updated_value = attribute_value.toLowerCase();
-
-        if (!acc[attribute_id]) acc[attribute_id] = {};
-        if (!acc[attribute_id][updated_value])
-          acc[attribute_id][updated_value] = [];
-
-        acc[attribute_id][updated_value].push(item.media);
-        return acc;
-      },
-      {},
-    );
-
-    return variant_attribute_values
-      .filter(
-        ({ attribute }) =>
-          category_mappings?.find(
-            ({ attribute: mapping_attribute }) =>
-              mapping_attribute.id == attribute.id,
-          )?.is_visual,
-      )
-      .flatMap(
-        ({ attribute, value }) =>
-          media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
-      );
-  }, [
-    variant_attribute_values,
-    category_mappings,
-    variant_visual_attribute_medias,
-  ]);
-  console.log("value of selected quantity", selected_quantity);
   return (
     <div
       className={clsx(

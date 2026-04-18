@@ -11,7 +11,7 @@ type IProps = {
   quantity: number;
   show_increase_disabled: boolean;
   show_decrease_disabled: boolean;
-  size: "small" | "large";
+  size?: "small" | "large";
   onIncrease: () => void;
   onDecrease: () => void;
 };

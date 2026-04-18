@@ -3,7 +3,6 @@ import { useRef } from "react";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
-import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
 // local components
@@ -59,39 +58,7 @@ const RelatedProducts: FC<IProps> = ({
         ? `${updated_title} in ${visual_values.join(", ")}`
         : `${updated_title}`;
 
-      const media_group =
-        product.variant_visual_attribute_medias.reduce<IMediaGroup>(
-          (acc, item) => {
-            const { attribute_id, attribute_value } = item;
-            const updated_attribute_value = attribute_value.toLowerCase();
-
-            if (!acc[attribute_id]) {
-              acc[attribute_id] = {};
-            }
-
-            if (!acc[attribute_id][updated_attribute_value]) {
-              acc[attribute_id][updated_attribute_value] = [];
-            }
-
-            acc[attribute_id][updated_attribute_value].push(item.media);
-
-            return acc;
-          },
-          {},
-        );
-
-      let variant_medias = variant.variant_attribute_values
-        .filter(
-          ({ attribute }) =>
-            category_mappings.find(
-              ({ attribute: mapping_attribute }) =>
-                mapping_attribute.id == attribute.id,
-            )?.is_visual,
-        )
-        .flatMap(
-          ({ attribute, value }) =>
-            media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
-        );
+      let variant_medias = variant.variant_medias.map(({ media }) => media);
 
       let variant_medias_with_title = (
         variant_medias.length

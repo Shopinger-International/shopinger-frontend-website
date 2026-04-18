@@ -2,7 +2,6 @@
 import type { ComponentType } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
-import type { IMediaGroup } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type IMedia from "@/types/media";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
@@ -20,7 +19,6 @@ interface IInjectedProps {
 interface IWithGalleryControlProps {
   product: IProduct;
   variant: IVariant;
-  media_group: IMediaGroup;
   category_mappings: ICategoryAttributeMapping[];
 }
 const withProductGalleryFunctionality = <P extends object>(
@@ -31,25 +29,12 @@ const withProductGalleryFunctionality = <P extends object>(
   const EnhancedComponent = ({
     product,
     variant,
-    media_group,
     category_mappings,
     ...props
   }: HocProps) => {
     const { product_medias } = product;
-    const { variant_attribute_values } = variant;
+    const { variant_attribute_values, variant_medias } = variant;
 
-    let variant_medias = variant_attribute_values
-      .filter(
-        ({ attribute }) =>
-          category_mappings.find(
-            ({ attribute: mapping_attribute }) =>
-              mapping_attribute.id == attribute.id,
-          )?.is_visual,
-      )
-      .flatMap(
-        ({ attribute, value }) =>
-          media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
-      );
     const visual_values = variant_attribute_values
       .filter(
         ({ attribute }) =>
@@ -62,7 +47,7 @@ const withProductGalleryFunctionality = <P extends object>(
 
     let variant_medias_with_title = (
       variant_medias.length
-        ? variant_medias
+        ? variant_medias.map(({ media }) => media)
         : product_medias.map(({ media }) => media)
     ).map((media, index) => {
       const image_title = visual_values.length

@@ -75,13 +75,6 @@ const getRelatedProducts = async (
   };
 };
 
-export type IMediaGroup = Record<
-  number, // attribute_id
-  Record<
-    string, // attribute_value
-    Array<IMedia>
-  >
->;
 type IParams = {
   product_slug: string;
   product_id: string;
@@ -109,6 +102,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     product_id,
     variant_id,
   );
+  const variant_medias = variant.variant_medias.map(({ media }) => media);
   const {
     title,
     brand,
@@ -144,37 +138,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     acc[attribute.code] = value;
     return acc;
   }, {});
-  const media_group =
-    product.variant_visual_attribute_medias.reduce<IMediaGroup>((acc, item) => {
-      const { attribute_id, attribute_value } = item;
-      const updated_attribute_value = attribute_value.toLowerCase();
-
-      if (!acc[attribute_id]) {
-        acc[attribute_id] = {};
-      }
-
-      if (!acc[attribute_id][updated_attribute_value]) {
-        acc[attribute_id][updated_attribute_value] = [];
-      }
-
-      acc[attribute_id][updated_attribute_value].push(item.media);
-
-      return acc;
-    }, {});
-
-  let variant_medias = variant.variant_attribute_values
-    .filter(
-      ({ attribute }) =>
-        category_mappings.find(
-          ({ attribute: mapping_attribute }) =>
-            mapping_attribute.id == attribute.id,
-        )?.is_visual,
-    )
-    .flatMap(
-      ({ attribute, value }) =>
-        media_group[attribute.id as number]?.[value.toLowerCase()] ?? [],
-    );
-
   return (
     <>
       <Head>
@@ -243,7 +206,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pt-(--header-height) lg:mt-8 lg:flex-row lg:items-start lg:pt-0">
         <ProductGallary
           variant={variant}
-          media_group={media_group}
           product={product}
           category_mappings={category_mappings}
           product_title={updated_title}
@@ -253,7 +215,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           product={product}
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
-          media_group={media_group}
           category_mappings={category_mappings}
         />
       </div>

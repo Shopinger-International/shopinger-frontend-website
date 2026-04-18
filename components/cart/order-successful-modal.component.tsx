@@ -14,7 +14,7 @@ import { CheckCircle, CreditCard, Clock } from "lucide-react";
 
 type IProps = {
   is_open: boolean;
-  order_id?: string;
+  order_id?: number;
   total_amount?: number;
   onClose: () => void;
 };
