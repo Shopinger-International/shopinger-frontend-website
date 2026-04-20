@@ -17,6 +17,8 @@ const ProductReview = dynamic(
   },
 );
 
+import ReviewGallary from "@/components/product/product-info/review/review-gallary.component";
+
 // external components
 import {
   Disclosure,
@@ -67,6 +69,36 @@ export const getReadableValue = ({
 
   return String(value);
 };
+
+const DUMMY_REVIEWS = [
+  {
+    id: "1",
+    user_name: "Amit Sharma",
+    rating: 5,
+    title: "Excellent product",
+    description:
+      "Really happy with the quality of this product. It feels premium in hand and performs exactly as expected. Totally worth the price and I would definitely recommend it to others looking for something reliable in this range.",
+    created_at: "2025-03-10",
+  },
+  {
+    id: "2",
+    user_name: "Priya Verma",
+    rating: 4,
+    title: "Very good but pricey",
+    description:
+      "The product quality is really good and it works as described. However, I feel the pricing is slightly on the higher side compared to similar alternatives available in the market. Still, overall a solid purchase.",
+    created_at: "2025-03-15",
+  },
+  {
+    id: "3",
+    user_name: "Rahul Singh",
+    rating: 3,
+    title: "Average experience",
+    description:
+      "The product is okay for regular use, but I was expecting better build quality and durability. It gets the job done, but there is definitely room for improvement in terms of material and finishing.",
+    created_at: "2025-03-20",
+  },
+];
 
 export const DIMENSION_ATTR = {
   ITEM_LENGTH: "item_length",
@@ -220,9 +252,21 @@ const ProductDetails: FC<{
             category_mappings={category_mappings}
           />
         </ExtendedDisclosure>
-        {/* <ExtendedDisclosure default_open={true} heading="Customer Reviews">
-          <ProductReview />
-        </ExtendedDisclosure> */}
+        <ExtendedDisclosure
+          default_open={true}
+          heading="Customer Reviews"
+          is_last={true}
+        >
+          <div className="space-y-4">
+            <ReviewGallary />
+            {DUMMY_REVIEWS.map((review) => (
+              <ProductReview {...review} key={`review-${review.id}`} />
+            ))}
+            <button className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-600">
+              Show all reviews
+            </button>
+          </div>
+        </ExtendedDisclosure>
       </div>
     </section>
   );
@@ -234,7 +278,8 @@ const ExtendedDisclosure: FC<{
   children: ReactNode;
   heading: string;
   default_open: boolean;
-}> = ({ children, heading, default_open }) => {
+  is_last?: boolean;
+}> = ({ children, heading, default_open, is_last = false }) => {
   return (
     <Disclosure defaultOpen={default_open}>
       {({ open }) => (
@@ -263,7 +308,12 @@ const ExtendedDisclosure: FC<{
             </DisclosureButton>
           </h2>
 
-          <DisclosurePanel className="overflow-hidden pb-4 text-gray-600">
+          <DisclosurePanel
+            className={clsx(
+              "overflow-hidden text-gray-600",
+              is_last ? "pb-4 sm:pb-0" : "pb-4",
+            )}
+          >
             {children}
           </DisclosurePanel>
         </div>
