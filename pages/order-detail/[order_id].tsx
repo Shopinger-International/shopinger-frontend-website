@@ -52,7 +52,6 @@ const OrderDetailPage: NextPageWithLayout<{
   order_id: string;
 }> = ({ order_id }) => {
   const { data: order } = useOrder(order_id) as { data: IOrder };
-  console.log("value of order",order);
   const [review_modal_state, setReviewModalState] = useState<IBaseReviewType>({
     open: false,
     product: null,
@@ -285,27 +284,54 @@ type Props = {
   order_id: string;
 };
 export const getServerSideProps = (async (context) => {
-  // Fetch data from external API
   const cookie = context.req.headers.cookie ?? "";
   const { order_id } = context.params as { order_id: string };
 
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery<IOrder>({
-    queryKey: ["order", order_id],
-    queryFn: async () => {
-      return await getOrderDetail(order_id, cookie);
-    },
-  });
+  try {
+    await queryClient.fetchQuery<IOrder>({
+      queryKey: ["order", order_id],
+      queryFn: async () => {
+        return await getOrderDetail(order_id, cookie);
+      },
+    });
+    return {
+      props: {
+        dehydratedState: dehydrate(queryClient),
+        order_id,
+      },
+    };
+  } catch (error: any) {
+    const status = error?.response?.status;
 
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-      order_id,
-    },
-  };
+    if (status === 404) {
+      return {
+        redirect: {
+          destination: "/404",
+          permanent: false,
+        },
+      };
+    }
+
+    if (status === 401) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+
+    // fallback: generic error page
+    return {
+      redirect: {
+        destination: "/500",
+        permanent: false,
+      },
+    };
+  }
 }) satisfies GetServerSideProps<Props>;
-
 OrderDetailPage.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;
 };

@@ -17,27 +17,24 @@ export const getOrderDetail = async (
   order_id: string,
   cookie?: string,
 ): Promise<IOrder> => {
-  const {
-    data: { order },
-  } = await Axios.get<{
-    success: boolean;
-    order: IOrder;
-  }>(`/get-order/${order_id}`, {
-    headers: cookie
-      ? {
-          cookie,
-        }
-      : {},
-  });
-  return order;
-};
+  try {
+    const { data } = await Axios.get<{
+      success: boolean;
+      order: IOrder;
+    }>(`/get-order/${order_id}`, {
+      headers: cookie ? { cookie } : {},
+    });
 
+    return data.order;
+  } catch (error) {
+    throw error; // React Query will catch it
+  }
+};
 const useOrder = (order_id: string) => {
   return useQuery<IOrder, AxiosError>({
     queryKey: ["order", order_id],
     async queryFn() {
-      const order = await getOrderDetail(order_id);
-      return order;
+      return await getOrderDetail(order_id);
     },
     staleTime: 1000 * 60 * 5,
   });
