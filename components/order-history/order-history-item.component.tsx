@@ -6,8 +6,7 @@ import type IOrder from "@/types/order";
 import OrderHistoryProduct from "@/components/order-history/order-history-product.component";
 import Badge from "@/components/product/badge.component";
 
-import { formateDate } from "@/helpers/common.helper";
-import clsx from "clsx";
+import { formatDate } from "@/helpers/common.helper";
 
 type IProps = {
   order: IOrder;
@@ -38,7 +37,7 @@ const OrderHistoryItem: FC<IProps> = ({ order }) => {
           </div>
 
           <p className="mt-1 text-sm text-slate-500">
-            Placed on {formateDate(order.created_at)}
+            Placed on {formatDate(order.created_at)}
           </p>
         </div>
 

@@ -44,7 +44,6 @@ const useCancelOrderMutation = () => {
       return response.data;
     },
     onSuccess(response) {
-      console.log("value of response",response);
       enqueueSnackbar(response.message, {
         key: "cancel-order-success",
         variant: "success",

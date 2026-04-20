@@ -55,19 +55,19 @@ const OrderItem: FC<IProps> = ({
       )}
     >
       <div className="flex gap-4">
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
-          <Link href={`/${product_slug}/p/${product_id}/${variant_id}`}>
+        <Link href={`/${product_slug}/p/${product_id}/${variant_id}`}>
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
             <Image
               src={
                 variant_medias[0]?.url ?? product.product_medias[0].media.url
               }
               alt={title}
-              fill
+              fill={true}
               className="object-contain"
               sizes="80px"
             />
-          </Link>
-        </div>
+          </div>
+        </Link>
 
         {/* CONTENT */}
         <div className="flex flex-1 flex-col space-y-1">

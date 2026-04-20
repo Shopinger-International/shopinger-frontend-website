@@ -1,7 +1,11 @@
 import type { FC } from "react";
 import { MapPin, CreditCard, User, Phone } from "lucide-react";
 
+// api hooks
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+
 const OrderSummary: FC = () => {
+  const { data: user } = useUserDetails();
   return (
     <div className="rounded-xl border border-gray-300 bg-white p-6">
       <h2 className="mb-6 font-semibold text-gray-900">Order Details</h2>
@@ -13,7 +17,7 @@ const OrderSummary: FC = () => {
           <div>
             <p className="text-sm font-semibold text-gray-900">Customer</p>
             <p className="text-sm font-medium text-gray-900">
-              Ashish Prajapati
+              {(user?.name ?? user?.email) || user?.phone}
             </p>
           </div>
         </div>
@@ -36,7 +40,9 @@ const OrderSummary: FC = () => {
             <p className="text-sm font-semibold text-gray-900">
               Delivery Address
             </p>
-            <p className="text-sm text-gray-600">Mohan Park, Naveen Shahadara, Delhi - 110032</p>
+            <p className="text-sm text-gray-600">
+              Mohan Park, Naveen Shahadara, Delhi - 110032
+            </p>
           </div>
         </div>
       </div>

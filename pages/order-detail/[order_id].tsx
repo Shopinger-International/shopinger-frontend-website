@@ -28,7 +28,7 @@ import { CreditCard, Truck, CheckCircle } from "lucide-react";
 // helpers
 import clsx from "clsx";
 import webAxios from "@/lib/axios/web.lib";
-import { formateDate } from "@/helpers/common.helper";
+import { formatDate } from "@/helpers/common.helper";
 
 const steps = [
   { label: "Confirmed", icon: CreditCard, status: "CONFIRMED" },
@@ -131,7 +131,7 @@ const OrderDetailPage: NextPageWithLayout<{
                 Order ID: 171-6754116-9353937
               </h1>
               <p className="mt-1 text-sm text-gray-600">
-                Placed on 12 Feb 2026
+                Placed on {formatDate(order.created_at)}
               </p>
             </div>
             {/* ACTIONS */}
@@ -217,7 +217,7 @@ const OrderDetailPage: NextPageWithLayout<{
                           }`}
                         >
                           {order_status_date &&
-                            formateDate(order_status_date) &&
+                            formatDate(order_status_date) &&
                             ""}
                         </span>
                       </div>
@@ -232,7 +232,7 @@ const OrderDetailPage: NextPageWithLayout<{
                   {total_active_items} items in this order
                 </h2>
                 {total_cancelled_items > 0 && (
-                  <p className="mb-4 text-xs text-gray-600 font-medium">
+                  <p className="mb-4 text-xs font-medium text-gray-600">
                     {total_cancelled_items} item
                     {total_cancelled_items !== 1 ? "s" : ""} cancelled
                   </p>
