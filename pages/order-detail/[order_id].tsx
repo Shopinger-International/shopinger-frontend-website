@@ -11,6 +11,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type IOrder from "@/types/order";
+import type { DehydratedState } from "@tanstack/react-query";
 
 // local components
 import OrderItem from "@/components/order-details/order-item.component";
@@ -20,15 +21,19 @@ import HelpSection from "@/components/common/help-section.component";
 import ReviewModal from "@/components/common/review/review-modal.component";
 import CancelOrderModal from "@/components/order-details/cancel-order.component";
 
-// hooks
+// api hooks
+import useOrder from "@/hooks/axios/order/use-order.hook";
 
 // icon
 import { CreditCard, Truck, CheckCircle } from "lucide-react";
 
 // helpers
 import clsx from "clsx";
-import webAxios from "@/lib/axios/web.lib";
 import { formatDate } from "@/helpers/common.helper";
+import { getOrderDetail } from "@/hooks/axios/order/use-order.hook";
+
+// react query
+import { QueryClient, dehydrate } from "@tanstack/react-query";
 
 const steps = [
   { label: "Confirmed", icon: CreditCard, status: "CONFIRMED" },
@@ -43,28 +48,11 @@ type IBaseReviewType = {
   variant: IVariant | null;
 };
 
-const getOrderDetail = async (
-  order_id: number,
-  cookie: string,
-): Promise<IOrder> => {
-  const {
-    data: { order },
-  } = await webAxios.get<{
-    success: boolean;
-    order: IOrder;
-  }>(`/get-order/${order_id}`, {
-    headers: cookie
-      ? {
-          cookie,
-        }
-      : {},
-  });
-  return order;
-};
-
 const OrderDetailPage: NextPageWithLayout<{
-  order: IOrder;
-}> = ({ order }) => {
+  order_id: string;
+}> = ({ order_id }) => {
+  const { data: order } = useOrder(order_id) as { data: IOrder };
+  console.log("value of order",order);
   const [review_modal_state, setReviewModalState] = useState<IBaseReviewType>({
     open: false,
     product: null,
@@ -292,13 +280,31 @@ const OrderDetailPage: NextPageWithLayout<{
 
 export default OrderDetailPage;
 
+type Props = {
+  dehydratedState: DehydratedState;
+  order_id: string;
+};
 export const getServerSideProps = (async (context) => {
   // Fetch data from external API
   const cookie = context.req.headers.cookie ?? "";
   const { order_id } = context.params as { order_id: string };
-  const order = await getOrderDetail(Number(order_id), cookie);
-  return { props: { order } };
-}) satisfies GetServerSideProps<{ order: IOrder }>;
+
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery<IOrder>({
+    queryKey: ["order", order_id],
+    queryFn: async () => {
+      return await getOrderDetail(order_id, cookie);
+    },
+  });
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      order_id,
+    },
+  };
+}) satisfies GetServerSideProps<Props>;
 
 OrderDetailPage.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;

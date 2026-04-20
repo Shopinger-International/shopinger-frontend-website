@@ -1,5 +1,6 @@
 // types
 import type { ICancelReason } from "@/types/order";
+
 // external components
 import {
   Dialog,
@@ -20,6 +21,9 @@ import useCancelOrderMutation from "@/hooks/axios/order/use-cancel-order-mutatio
 
 // icons
 import { X } from "lucide-react";
+
+// react query
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   is_open: boolean;
@@ -49,11 +53,13 @@ const reasons: { label: string; value: ICancelReason }[] = [
 ];
 
 export default function CancelOrderModal({ is_open, order, onClose }: Props) {
+  const query_client = useQueryClient();
   const cancel_order_mutation = useCancelOrderMutation();
   const [selected_items, setSelectedItems] = useState<
     { item_id: number; quantity: number }[]
   >([]);
   const [reason, setReason] = useState<ICancelReason | "">("");
+  console.log("value of order id", order.id);
 
   return (
     <Transition show={is_open} as={Fragment}>
@@ -193,6 +199,9 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                         {
                           onSuccess() {
                             onClose();
+                            query_client.invalidateQueries({
+                              queryKey: ["order", String(order.id)],
+                            });
                           },
                         },
                       );

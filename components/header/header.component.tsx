@@ -140,7 +140,7 @@ const Header: FC = () => {
               </div>
             </div>
           </button>
-          <button className="hidden items-center gap-1.5 text-white lg:flex">
+          {/* <button className="hidden items-center gap-1.5 text-white lg:flex">
             <span className="text-xl">
               {countries.find(({ name }) => name == "India")?.flag}
             </span>
@@ -153,7 +153,7 @@ const Header: FC = () => {
                 )}
               />
             </span>
-          </button>
+          </button> */}
           <div className="hidden lg:inline">
             <AccountDropdown />
           </div>
