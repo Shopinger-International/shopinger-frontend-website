@@ -76,7 +76,7 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                   className="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                   aria-label="Close modal"
                 >
-                  <X className="size-5"/>
+                  <X className="size-5" />
                 </button>
               </div>
               <p className="mt-1 text-sm text-gray-600">
@@ -84,69 +84,72 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
               </p>
               {/* ITEMS */}
               <div className="mt-4 max-h-64 space-y-3 overflow-y-auto">
-                {order.order_items.flatMap(({ item_id, item, quantity }) =>
-                  item.variants.map((variant) => {
-                    const selected_item = selected_items.find(
-                      (i) => i.item_id === item_id,
-                    );
+                {order.order_items.flatMap(
+                  ({ item_id, item, quantity, cancelled_quantity }) =>
+                    item.variants.map((variant) => {
+                      const selected_item = selected_items.find(
+                        (i) => i.item_id === item_id,
+                      );
 
-                    const is_selected = !!selected_item;
+                      const is_selected = !!selected_item;
 
-                    const selected_quantity = selected_item?.quantity ?? 0;
+                      const selected_quantity = selected_item?.quantity ?? 0;
 
-                    return (
-                      <CancelOrderItem
-                        key={variant.id}
-                        product={item}
-                        variant={variant}
-                        quantity={quantity}
-                        is_selected={is_selected}
-                        selected_quantity={selected_quantity}
-                        onToggle={() => {
-                          setSelectedItems((prev) => {
-                            const exists = prev.find(
-                              (i) => i.item_id === item_id,
-                            );
+                      return (
+                        <CancelOrderItem
+                          key={variant.id}
+                          product={item}
+                          variant={variant}
+                          quantity={quantity - cancelled_quantity}
+                          is_selected={is_selected}
+                          selected_quantity={selected_quantity}
+                          onToggle={() => {
+                            setSelectedItems((prev) => {
+                              const exists = prev.find(
+                                (i) => i.item_id === item_id,
+                              );
 
-                            if (exists) {
-                              // remove item
-                              return prev.filter((i) => i.item_id !== item_id);
-                            }
+                              if (exists) {
+                                // remove item
+                                return prev.filter(
+                                  (i) => i.item_id !== item_id,
+                                );
+                              }
 
-                            // add item with default quantity = 1
-                            return [
-                              ...prev,
-                              {
-                                item_id,
-                                quantity: 1,
-                              },
-                            ];
-                          });
-                        }}
-                        onQuantityChange={(updated_quantity) => {
-                          setSelectedItems((prev) => {
-                            const exists = prev.find(
-                              (i) => i.item_id === item_id,
-                            );
+                              // add item with default quantity = 1
+                              return [
+                                ...prev,
+                                {
+                                  item_id,
+                                  quantity: 1,
+                                },
+                              ];
+                            });
+                          }}
+                          onQuantityChange={(updated_quantity) => {
+                            setSelectedItems((prev) => {
+                              const exists = prev.find(
+                                (i) => i.item_id === item_id,
+                              );
 
-                            if (!exists) return prev;
+                              if (!exists) return prev;
 
-                            return prev.map((i) =>
-                              i.item_id === item_id
-                                ? {
-                                    ...i,
-                                    quantity: Math.max(
-                                      0,
-                                      Math.min(quantity, updated_quantity),
-                                    ),
-                                  }
-                                : i,
-                            );
-                          });
-                        }}
-                      />
-                    );
-                  }),
+                              return prev.map((i) =>
+                                i.item_id === item_id
+                                  ? {
+                                      ...i,
+                                      quantity: Math.max(
+                                        0,
+                                        Math.min(quantity, updated_quantity),
+                                      ),
+                                    }
+                                  : i,
+                              );
+                            });
+                          }}
+                        />
+                      );
+                    }),
                 )}
               </div>
               {/* REASON */}

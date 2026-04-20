@@ -90,17 +90,15 @@ const CancelOrderItem: FC<IProps> = ({
         <div className="flex flex-1 gap-4">
           {/* IMAGE */}
           <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
-            <Link href={`/${product_slug}/p/${product_id}/${variant_id}`}>
-              <Image
-                src={
-                  variant_medias[0]?.url ?? product.product_medias[0].media.url
-                }
-                alt={title}
-                fill
-                className="object-contain"
-                sizes="80px"
-              />
-            </Link>
+            <Image
+              src={
+                variant_medias[0]?.url ?? product.product_medias[0].media.url
+              }
+              alt={title}
+              fill
+              className="object-contain"
+              sizes="80px"
+            />
           </div>
 
           {/* INFO */}

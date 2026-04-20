@@ -76,7 +76,15 @@ const OrderDetailPage: NextPageWithLayout<{
     open: false,
   });
   const order_status_history = order.order_status_history;
-  console.log("value of order", order);
+  const total_order_items = order.order_items.reduce(
+    (acc, { quantity }) => acc + quantity,
+    0,
+  );
+  const total_cancelled_items = order.order_items.reduce(
+    (acc, { cancelled_quantity }) => acc + cancelled_quantity,
+    0,
+  );
+  const total_active_items = total_order_items - total_cancelled_items;
 
   return (
     <>
@@ -220,19 +228,29 @@ const OrderDetailPage: NextPageWithLayout<{
               <OrderSummary />
               {/* Order Items */}
               <div className="rounded-xl border border-gray-300 bg-white p-6">
-                <h2 className="mb-4 font-semibold text-gray-900">
-                  {order?.order_items.length} items in this order
+                <h2 className="mb-2 font-semibold text-gray-900">
+                  {total_active_items} items in this order
                 </h2>
+                {total_cancelled_items > 0 && (
+                  <p className="mb-4 text-xs text-gray-600 font-medium">
+                    {total_cancelled_items} item
+                    {total_cancelled_items !== 1 ? "s" : ""} cancelled
+                  </p>
+                )}
 
                 <div className="space-y-4">
                   {order?.order_items?.flatMap(
-                    ({ quantity, item: { variants, ...product }, status }) =>
+                    ({
+                      quantity,
+                      item: { variants, ...product },
+                      cancelled_quantity,
+                    }) =>
                       variants.map((variant) => (
                         <OrderItem
                           quantity={quantity}
+                          cancelled_quantity={cancelled_quantity}
                           product={product}
                           variant={variant}
-                          status={status}
                           key={`cart-item-${variant.id}`}
                           is_delivered={true}
                           is_reviewed={false}

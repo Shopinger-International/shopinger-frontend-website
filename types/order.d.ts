@@ -13,10 +13,11 @@ export type ICancelReason =
   | "LATE_DELIVERY_EXPECTED"
   | "OTHER";
 type IOrderItems = {
-  item_id:number;
+  item_id: number;
   item: IProduct;
-  status:string;
+  status: string;
   quantity: number;
+  cancelled_quantity: number;
 };
 
 type IOrderStatusHistory = {
@@ -33,7 +34,7 @@ type IOrder = {
   id: number;
   status: string;
   payment_status: string;
-  sub_total:number;
+  sub_total: number;
   total_amount: number;
   gst: number;
   discount: number;
