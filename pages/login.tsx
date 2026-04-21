@@ -1,6 +1,7 @@
 import Head from "next/head";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
+import type { GetServerSideProps } from "next";
 
 // local components
 import LoginInfoSection from "@/components/login/login-info-section.component";
@@ -9,6 +10,11 @@ import Tooltip from "@/components/common/tooltip.component";
 
 // icons
 import { MessageCircleQuestionIcon } from "lucide-react";
+
+// react query
+
+// helpers
+import { getUser } from "@/hooks/axios/common/use-user-details.hook";
 
 const Login: NextPageWithLayout = () => {
   return (
@@ -59,3 +65,21 @@ const Login: NextPageWithLayout = () => {
 };
 
 export default Login;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cookie = context.req.headers.cookie ?? "";
+  try {
+    const user = await getUser(cookie);
+    if (user) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+  } catch (err) {}
+  return {
+    props: {},
+  };
+};

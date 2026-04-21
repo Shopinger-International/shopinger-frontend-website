@@ -13,9 +13,7 @@ import {
   Handbag,
   MapPin,
   Heart,
-  Gift,
   LogOut,
-  MessageSquare,
 } from "lucide-react";
 
 // helpers
@@ -23,7 +21,7 @@ import { clsx } from "clsx";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
-import useLogoutMutation from "@/hooks/axios/login/logout-mutation.hook";
+import useLogoutMutation from "@/hooks/axios/login/use-logout-mutation.hook";
 
 const AccountDropdown: FC = () => {
   const { data: user_details } = useUserDetails();

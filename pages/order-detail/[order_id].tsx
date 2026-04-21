@@ -3,6 +3,7 @@ import Head from "next/head";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
+import ProtectedLayout from "@/components/layout/protected-layout.component";
 
 // types
 import type { GetServerSideProps } from "next";
@@ -62,16 +63,20 @@ const OrderDetailPage: NextPageWithLayout<{
   }>({
     open: false,
   });
-  const order_status_history = order.order_status_history;
-  const total_order_items = order.order_items.reduce(
+  const order_status_history = order?.order_status_history;
+  const total_order_items = order?.order_items.reduce(
     (acc, { quantity }) => acc + quantity,
     0,
   );
-  const total_cancelled_items = order.order_items.reduce(
+  const total_cancelled_items = order?.order_items.reduce(
     (acc, { cancelled_quantity }) => acc + cancelled_quantity,
     0,
   );
   const total_active_items = total_order_items - total_cancelled_items;
+
+  if (!order) {
+    return null;
+  }
 
   return (
     <>
@@ -333,5 +338,9 @@ export const getServerSideProps = (async (context) => {
   }
 }) satisfies GetServerSideProps<Props>;
 OrderDetailPage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return (
+    <ProtectedLayout>
+      <MainLayout>{page}</MainLayout>
+    </ProtectedLayout>
+  );
 };

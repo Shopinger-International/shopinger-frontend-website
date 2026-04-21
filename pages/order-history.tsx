@@ -2,6 +2,7 @@ import Head from "next/head";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
+import ProtectedLayout from "@/components/layout/protected-layout.component";
 
 // local components
 import OrderHistoryItem from "@/components/order-history/order-history-item.component";
@@ -64,5 +65,9 @@ const OrderHistoryPage: NextPageWithLayout = () => {
 export default OrderHistoryPage;
 
 OrderHistoryPage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return (
+    <ProtectedLayout>
+      <MainLayout>{page}</MainLayout>
+    </ProtectedLayout>
+  );
 };

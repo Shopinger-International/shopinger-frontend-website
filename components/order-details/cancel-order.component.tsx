@@ -63,7 +63,13 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
 
   return (
     <Transition show={is_open} as={Fragment}>
-      <Dialog onClose={onClose} className="relative z-50">
+      <Dialog
+        onClose={() => {
+          onClose();
+          setSelectedItems([]);
+        }}
+        className="relative z-50"
+      >
         {/* backdrop */}
         <TransitionChild as={Fragment}>
           <div className="fixed inset-0 bg-black/40" />
@@ -78,7 +84,10 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                 </DialogTitle>
 
                 <button
-                  onClick={onClose}
+                  onClick={() => {
+                    onClose();
+                    setSelectedItems([]);
+                  }}
                   className="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                   aria-label="Close modal"
                 >
@@ -202,6 +211,7 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                             query_client.invalidateQueries({
                               queryKey: ["order", String(order.id)],
                             });
+                            setSelectedItems([]);
                           },
                         },
                       );

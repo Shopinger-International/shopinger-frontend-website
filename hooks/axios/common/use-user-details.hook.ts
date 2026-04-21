@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 // types
-import type { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import type IUser from "@/types/user";
 
 // lib
@@ -13,28 +13,41 @@ import Axios from "@/lib/axios/private.lib";
  * are passed with credientials
  */
 export const getUser = async (cookie?: string) => {
-  const { data } = await Axios.get<{
-    data: IUser;
-    success: boolean;
-    message: string;
-  }>(`/get-user-details`, {
-    headers: cookie
-      ? {
-          cookie,
-        }
-      : {},
-  });
+  try {
+    const { data } = await Axios.get<{
+      data: IUser;
+      success: boolean;
+      message: string;
+    }>(`/get-user-details`, {
+      headers: cookie
+        ? {
+            cookie,
+          }
+        : {},
+    });
 
-  return data.data;
+    return data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw error;
+    }
+    throw new Error("Unexpected error occurred");
+  }
 };
 
 const useUserDetails = () => {
-  return useQuery<IUser, AxiosError>({
+  return useQuery<IUser | null, AxiosError>({
     queryKey: ["user-details"],
     staleTime: 10 * 60 * 1000,
-    async queryFn() {
-      const user_details = await getUser();
-      return user_details;
+    queryFn: async () => {
+      try {
+        return await getUser();
+      } catch (error) {
+        if (error instanceof AxiosError && error.response?.status === 401) {
+          return null; // only here
+        }
+        throw error;
+      }
     },
   });
 };

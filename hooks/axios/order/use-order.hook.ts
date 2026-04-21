@@ -1,6 +1,6 @@
 // types
 import type IOrder from "@/types/order";
-import type { AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 // react query
 import { useQuery } from "@tanstack/react-query";
@@ -27,7 +27,10 @@ export const getOrderDetail = async (
 
     return data.order;
   } catch (error) {
-    throw error; // React Query will catch it
+    if (error instanceof AxiosError) {
+      throw error;
+    }
+    throw new Error("Unexpected error occurred"); // React Query will catch it
   }
 };
 const useOrder = (order_id: string) => {
