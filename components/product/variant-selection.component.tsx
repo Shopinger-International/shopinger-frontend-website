@@ -105,6 +105,7 @@ const VariantSelection: FC<{
 
                 return (
                   <Link
+                    replace={true}
                     scroll={false}
                     href={`/${product_slug}/p/${product_id}/${variant?.id}`}
                     key={`variant-attribute-value-${value}`}
