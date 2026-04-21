@@ -168,10 +168,10 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                 )}
               </div>
               {/* REASON */}
-              <div className="mt-5">
+              <div className="mt-4">
                 <p className="text-sm font-medium">Reason for cancellation</p>
 
-                <div className="mt-2">
+                <div className="mt-2 space-y-4">
                   <SelectInput
                     options={reasons}
                     value={
@@ -182,6 +182,13 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                       setReason(value as ICancelReason);
                     }}
                   />
+                  {reason == "OTHER" && (
+                    <textarea
+                      rows={4}
+                      placeholder="Reason for order cancelling"
+                      className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 focus:outline-orange-500"
+                    />
+                  )}
                 </div>
               </div>
               {/* ACTIONS */}
