@@ -12,6 +12,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type IOrder from "@/types/order";
+import type { IOrderItem } from "@/types/order";
 import type { DehydratedState } from "@tanstack/react-query";
 
 // local components
@@ -47,6 +48,7 @@ type IBaseReviewType = {
   open: boolean;
   product: Omit<IProduct, "variants"> | null;
   variant: IVariant | null;
+  order_item: IOrderItem | null;
 };
 
 const OrderDetailPage: NextPageWithLayout<{
@@ -57,6 +59,7 @@ const OrderDetailPage: NextPageWithLayout<{
     open: false,
     product: null,
     variant: null,
+    order_item: null,
   });
   const [cancel_order_modal_state, setCancelOrderModalState] = useState<{
     open: boolean;
@@ -93,12 +96,14 @@ const OrderDetailPage: NextPageWithLayout<{
         <ReviewModal
           product={review_modal_state.product}
           variant={review_modal_state.variant}
+          order_item={review_modal_state.order_item as IOrderItem}
           is_open={review_modal_state.open}
           onClose={() =>
             setReviewModalState({
               open: false,
               product: null,
               variant: null,
+              order_item: null,
             })
           }
         />
@@ -232,31 +237,32 @@ const OrderDetailPage: NextPageWithLayout<{
                 )}
 
                 <div className="space-y-4">
-                  {order?.order_items?.flatMap(
-                    ({
+                  {order?.order_items?.flatMap((order_item) => {
+                    const {
                       quantity,
                       item: { variants, ...product },
                       cancelled_quantity,
-                    }) =>
-                      variants.map((variant) => (
-                        <OrderItem
-                          quantity={quantity}
-                          cancelled_quantity={cancelled_quantity}
-                          product={product}
-                          variant={variant}
-                          key={`cart-item-${variant.id}`}
-                          is_delivered={true}
-                          is_reviewed={false}
-                          handleShowReviewModal={() =>
-                            setReviewModalState({
-                              open: true,
-                              product,
-                              variant,
-                            })
-                          }
-                        />
-                      )),
-                  )}
+                    } = order_item;
+                    return variants.map((variant) => (
+                      <OrderItem
+                        quantity={quantity}
+                        cancelled_quantity={cancelled_quantity}
+                        product={product}
+                        variant={variant}
+                        key={`cart-item-${variant.id}`}
+                        is_delivered={true}
+                        is_reviewed={false}
+                        handleShowReviewModal={() =>
+                          setReviewModalState({
+                            open: true,
+                            product,
+                            variant,
+                            order_item,
+                          })
+                        }
+                      />
+                    ));
+                  })}
                 </div>
               </div>
             </div>

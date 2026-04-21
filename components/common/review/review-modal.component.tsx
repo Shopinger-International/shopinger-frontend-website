@@ -4,6 +4,7 @@ import type { FC } from "react";
 import type { FieldProps } from "formik";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
+import { IOrderItem } from "@/types/order";
 
 // external components
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -18,6 +19,7 @@ import "@smastrom/react-rating/style.css";
 
 // api hooks
 import useReviewGeneratorMutation from "@/hooks/axios/review/review-generator-mutation.hook";
+import useAddReviewMutation from "@/hooks/axios/review/add-review.mutation.hook";
 
 const rating_labels = [
   "Very poor",
@@ -30,20 +32,28 @@ const rating_labels = [
 type IInitialValues = {
   rating: number;
   title: string;
-  description: string;
+  comment: string;
   medias: File[];
 };
 type IProps = {
   product: Omit<IProduct, "variants">;
   variant: IVariant;
+  order_item: IOrderItem;
   is_open: boolean;
   onClose: () => void;
 };
 
-const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
+const ReviewModal: FC<IProps> = ({
+  product,
+  variant,
+  order_item,
+  is_open,
+  onClose,
+}) => {
   const { title } = product;
   const review_generator_mutation = useReviewGeneratorMutation();
   const variant_medias = variant.variant_medias.map(({ media }) => media);
+  const add_review_mutation = useAddReviewMutation();
 
   return (
     <Dialog as="div" className="relative z-50" onClose={onClose} open={is_open}>
@@ -88,11 +98,23 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
             initialValues={{
               rating: 0,
               title: "",
-              description: "",
+              comment: "",
               medias: [],
             }}
-            onSubmit={(values) => {
-              console.log(values);
+            onSubmit={({ medias, ...values }) => {
+              add_review_mutation.mutate(
+                {
+                  product_id: product.id,
+                  variant_id: variant.id,
+                  order_item_id: order_item.item_id,
+                  ...values,
+                },
+                {
+                  onSuccess() {
+                    onClose();
+                  },
+                },
+              );
             }}
           >
             {({ values, setValues }) => (
@@ -126,7 +148,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                                     setValues((prev) => ({
                                       ...prev,
                                       title: review_title,
-                                      description: review_description,
+                                      comment: review_description,
                                     }));
                                   },
                                 },
@@ -171,7 +193,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                   </Field>
 
                   {/* Description */}
-                  <Field name="description">
+                  <Field name="comment">
                     {({ field }: FieldProps<string, IInitialValues>) => (
                       <div className="flex flex-col gap-2">
                         <label className="text-sm font-medium">
@@ -314,7 +336,8 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                     type="submit"
                     disabled={
                       values.rating === 0 ||
-                      values.description.trim().length < 10
+                      values.comment.trim().length < 10 ||
+                      add_review_mutation.isPending
                     }
                     className="rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
                   >

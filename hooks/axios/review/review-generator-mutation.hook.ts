@@ -17,7 +17,6 @@ type IRequestPayload = {
 
 const useReviewGeneratorMutation = () => {
   return useMutation<IResponse, Error, IRequestPayload>({
-    mutationKey: ["user-login-and-register-with-otp"],
     async mutationFn({ rating, product_title, product_description }) {
       const { data } = await axios.post<IResponse>("/api/review", {
         rating,

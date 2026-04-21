@@ -12,7 +12,7 @@ export type ICancelReason =
   | "BAD_REVIEWS"
   | "LATE_DELIVERY_EXPECTED"
   | "OTHER";
-type IOrderItems = {
+type IOrderItem = {
   item_id: number;
   item: IProduct;
   status: string;
@@ -51,8 +51,9 @@ type IOrder = {
     house_number: string;
   };
   order_status_history: IOrderStatusHistory[];
-  order_items: IOrderItems[];
+  order_items: IOrderItem[];
   created_at: string;
 };
 
 export default IOrder;
+export { IOrderItem };
