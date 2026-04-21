@@ -45,13 +45,13 @@ const ProductReview: FC<{
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2">
-            <ThumbsUp className="size-4 text-gray-600" />
+        <div className="flex items-center gap-4 font-medium">
+          <button className="flex cursor-pointer items-center gap-1 text-orange-500">
+            <ThumbsUp className="size-4" strokeWidth={2.5} />
             <span>20</span>
           </button>
-          <button className="flex items-center gap-2">
-            <ThumbsDown className="size-4 text-gray-600" />
+          <button className="flex cursor-pointer items-center gap-1">
+            <ThumbsDown className="size-4" strokeWidth={2.5} />
             <span>20</span>
           </button>
         </div>
