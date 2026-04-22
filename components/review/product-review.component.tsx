@@ -9,7 +9,14 @@ import Avatar from "@/components/common/avatar.component";
 // helpers
 import { timeAgo } from "@/helpers/common.helper";
 
+// hooks
+import useReactToReviewMutation from "@/hooks/axios/review/use-react-to-review-mutation.hook";
+
+// icons
+import { ThumbsUp } from "lucide-react";
+
 const ProductReview: FC<IReview> = ({
+  id,
   title,
   comment,
   rating,
@@ -18,6 +25,7 @@ const ProductReview: FC<IReview> = ({
   variant_snapshot,
   created_at,
 }) => {
+  const react_to_review_mutation = useReactToReviewMutation();
   const product_review_medias = review_medias.map(({ media }) => media);
   const attributes_snapshot = variant_snapshot.attributes;
   return (
@@ -71,6 +79,23 @@ const ProductReview: FC<IReview> = ({
           ))}
         </div>
       ) : null}
+      <div className="flex items-center gap-3 font-medium text-sm">
+        <button
+          className="flex cursor-pointer items-center gap-1 text-orange-500"
+          onClick={() => {
+            react_to_review_mutation.mutate({
+              review_id: id,
+            });
+          }}
+        >
+          <ThumbsUp className="size-4" strokeWidth={2.5} />
+          <span>Helpful</span>
+        </button>
+        <span> | </span>
+        <button className="flex cursor-pointer items-center gap-1">
+          Report
+        </button>
+      </div>
     </div>
   );
 };

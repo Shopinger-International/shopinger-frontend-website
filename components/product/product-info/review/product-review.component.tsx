@@ -10,7 +10,7 @@ import Avatar from "@/components/common/avatar.component";
 import { formatDate } from "@/helpers/common.helper";
 
 // icons
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsUp } from "lucide-react";
 
 // hooks
 import useReactToReviewMutation from "@/hooks/axios/review/use-react-to-review-mutation.hook";
@@ -50,7 +50,7 @@ const ProductReview: FC<IReview> = ({
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-3 font-medium">
+        <div className="flex items-center gap-3 text-sm font-medium">
           <button
             className="flex cursor-pointer items-center gap-1 text-orange-500"
             onClick={() => {

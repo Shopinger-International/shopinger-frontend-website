@@ -14,6 +14,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import RatingSummary from "@/components/review/rating-summary.component";
 import ProductReview from "@/components/review/product-review.component";
+import ReportModal from "@/components/review/report-modal.component";
 
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
@@ -68,6 +69,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
     <section className="w-full bg-white py-4">
+      <ReportModal is_open={true} onClose={() => {}} />
       <div className="mx-auto mt-(--header-height) max-w-6xl space-y-6 px-4">
         {/* Rating Summary */}
         {rating_summary && <RatingSummary {...rating_summary} />}
