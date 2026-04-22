@@ -18,8 +18,8 @@ import { X } from "lucide-react";
 import "@smastrom/react-rating/style.css";
 
 // api hooks
-import useReviewGeneratorMutation from "@/hooks/axios/review/review-generator-mutation.hook";
-import useAddReviewMutation from "@/hooks/axios/review/add-review.mutation.hook";
+import useReviewGeneratorMutation from "@/hooks/axios/review/use-review-generator-mutation.hook";
+import useAddReviewMutation from "@/hooks/axios/review/use-add-review-mutation.hook";
 
 const rating_labels = [
   "Very poor",
@@ -54,6 +54,14 @@ const ReviewModal: FC<IProps> = ({
   const review_generator_mutation = useReviewGeneratorMutation();
   const variant_medias = variant.variant_medias.map(({ media }) => media);
   const add_review_mutation = useAddReviewMutation();
+  const review = order_item.product_review[0];
+  const initial_values: IInitialValues = {
+    rating: review?.rating ?? 0,
+    title: review?.title ?? "",
+    comment: review?.comment ?? "",
+    medias: [],
+  };
+  console.log("value of review",review);
 
   return (
     <Dialog as="div" className="relative z-50" onClose={onClose} open={is_open}>
@@ -95,26 +103,24 @@ const ReviewModal: FC<IProps> = ({
 
           {/* Form */}
           <Formik<IInitialValues>
-            initialValues={{
-              rating: 0,
-              title: "",
-              comment: "",
-              medias: [],
-            }}
+            initialValues={initial_values}
             onSubmit={({ medias, ...values }) => {
-              add_review_mutation.mutate(
-                {
-                  product_id: product.id,
-                  variant_id: variant.id,
-                  order_item_id: order_item.item_id,
-                  ...values,
-                },
-                {
-                  onSuccess() {
-                    onClose();
-                  },
-                },
+              const form_data = new FormData();
+              const payload = {
+                product_id: product.id,
+                variant_id: variant.id,
+                order_item_id: order_item.item_id,
+                ...values,
+              };
+              Object.entries(payload).forEach(([key, value]) =>
+                form_data.append(key, String(value)),
               );
+              medias.forEach((media) => form_data.append("files", media));
+              add_review_mutation.mutate(form_data, {
+                onSuccess() {
+                  onClose();
+                },
+              });
             }}
           >
             {({ values, setValues }) => (

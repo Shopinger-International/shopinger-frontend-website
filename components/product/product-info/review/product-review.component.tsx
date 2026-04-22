@@ -1,8 +1,10 @@
 // types
 import type { FC } from "react";
+import type IReview from "@/types/review";
 
 // local components
 import Rating from "@/components/common/rating.component";
+import Avatar from "@/components/common/avatar.component";
 
 // helpers
 import { formatDate } from "@/helpers/common.helper";
@@ -10,14 +12,13 @@ import { formatDate } from "@/helpers/common.helper";
 // icons
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 
-const ProductReview: FC<{
-  id: string;
-  user_name: string;
-  rating: number;
-  title: string;
-  description: string;
-  created_at: string;
-}> = ({ id, user_name, rating, title, description, created_at }) => {
+const ProductReview: FC<IReview> = ({
+  user,
+  rating,
+  title,
+  comment,
+  created_at,
+}) => {
   return (
     <div className="space-y-2 rounded-xl border border-gray-300 bg-gray-50 p-6">
       <Rating
@@ -27,15 +28,14 @@ const ProductReview: FC<{
         size={16}
       />
       <h4 className="text-sm font-medium text-gray-900">{title}</h4>
-      <p className="line-clamp-3 text-sm font-medium">{description}</p>
+      <p className="line-clamp-3 text-sm font-medium">{comment}</p>
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-full bg-orange-100 font-semibold text-orange-600">
-            {user_name.charAt(0)}
-          </span>
+          <Avatar name={user.name} size={32} />
+
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-900">
-              {user_name}{" "}
+              {user.name}{" "}
               <span className="hidden text-gray-600 sm:inline">
                 (Ghaziabad, UP)
               </span>

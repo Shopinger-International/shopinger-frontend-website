@@ -1,6 +1,8 @@
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
+import type { GetServerSideProps } from "next";
+import type IReview from "@/types/review";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -8,6 +10,9 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import RatingSummary from "@/components/review/rating-summary.component";
 import ProductReview from "@/components/review/product-review.component";
+
+// api hooks
+import useProductReviews from "@/hooks/axios/review/use-product-reviews.hook";
 
 export const dummy_reviews = [
   {
@@ -91,12 +96,24 @@ export const dummy_reviews = [
   },
 ];
 
-const Reviews: NextPageWithLayout = () => {
+type IProps = {
+  product_id: number;
+};
+
+const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
+  console.log("value of product id", product_id);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useProductReviews({ productId: product_id });
+  const product_reviews = data?.pages.reduce<IReview[]>((acc, { reviews }) => {
+    return [...acc, ...reviews];
+  }, []);
+  const rating_summary = data?.pages[0].summary;
+
   return (
     <section className="w-full bg-white py-6">
       <div className="mx-auto mt-(--header-height) max-w-5xl space-y-6 px-4">
         {/* Rating Summary */}
-        <RatingSummary />
+        {rating_summary && <RatingSummary {...rating_summary} />}
 
         {/* Photo Grid */}
         <div className="flex items-center gap-4 overflow-auto">
@@ -122,8 +139,8 @@ const Reviews: NextPageWithLayout = () => {
 
         {/* Reviews List */}
         <div>
-          {dummy_reviews.map((review) => (
-            <ProductReview review={review} />
+          {product_reviews?.map((review) => (
+            <ProductReview {...review} />
           ))}
         </div>
       </div>
@@ -136,3 +153,11 @@ export default Reviews;
 Reviews.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;
 };
+export const getServerSideProps = (async ({ params }) => {
+  const product_id = Number(params?.product_id);
+  return {
+    props: {
+      product_id,
+    },
+  };
+}) satisfies GetServerSideProps<IProps>;

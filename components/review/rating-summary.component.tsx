@@ -10,7 +10,17 @@ const ratingsData = [
   { star: 1, count: 386 },
 ];
 
-const RatingSummary: FC = () => {
+type IProps = {
+  average_rating: number;
+  total_reviews: number;
+  rating_breakdown: Record<number, number>;
+};
+
+const RatingSummary: FC<IProps> = ({
+  average_rating,
+  total_reviews,
+  rating_breakdown,
+}) => {
   const { totalRatings, average } = useMemo(() => {
     const total = ratingsData.reduce((sum, r) => sum + r.count, 0);
 
@@ -30,8 +40,8 @@ const RatingSummary: FC = () => {
       {/* LEFT: Overall summary */}
       <div className="space-y-3">
         <div className="flex items-end gap-3">
-          <h1 className="text-5xl font-semibold leading-none">
-            {average}
+          <h1 className="text-5xl leading-none font-semibold">
+            {average_rating}
           </h1>
 
           <div className="flex items-center pb-1">
@@ -42,14 +52,14 @@ const RatingSummary: FC = () => {
         <div className="text-sm text-gray-600">
           Based on{" "}
           <span className="font-medium text-gray-900">
-            {totalRatings.toLocaleString()}
+            {total_reviews.toLocaleString()}
           </span>{" "}
           ratings
         </div>
 
         <Rating
           totalStars={5}
-          custom_rating={average}
+          custom_rating={average_rating}
           size={20}
           onChange={() => {}}
         />
@@ -57,21 +67,18 @@ const RatingSummary: FC = () => {
 
       {/* RIGHT: Distribution */}
       <div className="w-full space-y-3 md:w-1/2">
-        {ratingsData.map((r) => {
-          const percent =
-            totalRatings > 0 ? (r.count / totalRatings) * 100 : 0;
+        {Object.entries(rating_breakdown).map(([rating, count], index) => {
+          const percent = total_reviews > 0 ? (count / total_reviews) * 100 : 0;
 
           return (
             <div
-              key={r.star}
+              key={`rating-break-down-${index}`}
               className="group flex items-center gap-3"
             >
               {/* Star label */}
               <div className="flex w-12 items-center gap-1 text-sm text-gray-700">
-                <span className="font-medium">{r.star}</span>
-                <Star
-                  className="size-3.5 fill-orange-500 text-orange-500"
-                />
+                <span className="font-medium">{rating}</span>
+                <Star className="size-3.5 fill-orange-500 text-orange-500" />
               </div>
 
               {/* Bar */}

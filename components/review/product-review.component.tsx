@@ -1,37 +1,28 @@
+import type IReview from "@/types/review";
 import type { FC } from "react";
 
 // local components
 import Rating from "@/components/common/rating.component";
+import Avatar from "@/components/common/avatar.component";
 
-type Review = {
-  id: number;
-  rating: number;
-  title: string;
-  text: string;
-  is_verified: boolean;
-  variant?: {
-    color?: string;
-    storage?: string;
-  };
-  images?: string[];
-};
-const ProductReview: FC<{ review: Review }> = ({ review }) => {
-  const user = {
-    name: "Ashish Prajapati",
-    avatar: "https://i.pravatar.cc/150?img=12",
-  };
-
+const ProductReview: FC<IReview> = ({
+  title,
+  comment,
+  rating,
+  user,
+  is_verified_purchase,
+  review_medias,
+  variant_snapshot,
+}) => {
+  const product_review_medias = review_medias.map(({ media }) => media);
+  const attributes_snapshot = variant_snapshot.attributes;
   return (
     <div className="space-y-3 border-b border-gray-200 py-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* Avatar */}
-          <img
-            src={user.avatar}
-            className="h-8 w-8 rounded-full object-cover"
-            alt={user.name}
-          />
+          <Avatar name={user.name} />
 
           {/* User info */}
           <div className="leading-tight">
@@ -40,7 +31,7 @@ const ProductReview: FC<{ review: Review }> = ({ review }) => {
                 {user.name}
               </span>
 
-              {review.is_verified && (
+              {is_verified_purchase && (
                 <span className="rounded bg-green-100 px-2 py-0.5 text-[10px] text-green-700">
                   Verified
                 </span>
@@ -53,34 +44,34 @@ const ProductReview: FC<{ review: Review }> = ({ review }) => {
 
         <Rating
           totalStars={5}
-          custom_rating={review.rating}
+          custom_rating={rating}
           onChange={() => {}}
           size={16}
         />
       </div>
 
       {/* Title */}
-      <h4 className="font-semibold text-gray-900">{review.title}</h4>
+      <h4 className="font-semibold text-gray-900">{title}</h4>
 
       {/* Variant */}
-      {review.variant && (
+      {!!Object.entries(attributes_snapshot).length && (
         <div className="text-xs text-gray-500">
-          {review.variant.color && `Color: ${review.variant.color}`}
-          {review.variant.color && review.variant.storage && " • "}
-          {review.variant.storage && `Storage: ${review.variant.storage}`}
+          {Object.entries(attributes_snapshot)
+            .map(([key, value]) => `${key} : ${value}`)
+            .join(", ")}
         </div>
       )}
 
       {/* Text */}
-      <p className="text-sm leading-relaxed text-gray-600">{review.text}</p>
+      <p className="text-sm leading-relaxed text-gray-600">{comment}</p>
 
       {/* Images */}
-      {review.images?.length ? (
+      {!!product_review_medias.length ? (
         <div className="flex items-center gap-4">
-          {review.images.map((img, idx) => (
+          {product_review_medias.map((media, index) => (
             <img
-              key={idx}
-              src={img}
+              key={index}
+              src={media.url}
               className="size-20 rounded-md object-cover"
               alt=""
             />

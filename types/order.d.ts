@@ -1,4 +1,5 @@
 import type IProduct from "@/types/product";
+import type IReview from "@/types/review";
 
 export type ICancelReason =
   | "ORDER_BY_MISTAKE"
@@ -12,12 +13,14 @@ export type ICancelReason =
   | "BAD_REVIEWS"
   | "LATE_DELIVERY_EXPECTED"
   | "OTHER";
+
 type IOrderItem = {
   item_id: number;
   item: IProduct;
   status: string;
   quantity: number;
   cancelled_quantity: number;
+  product_review: IReview[];
 };
 
 type IOrderStatusHistory = {

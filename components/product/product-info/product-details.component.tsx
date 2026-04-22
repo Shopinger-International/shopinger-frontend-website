@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 // types
 import type { FC, ReactNode } from "react";
 import type IAttributeType from "@/types/attribute";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
-import IProduct from "@/types/product";
+import type IProduct from "@/types/product";
+import type IMedia from "@/types/media";
 
 // local components
 import ProductInfoTabs from "@/components/product/product-info/product-info-tabs.component";
@@ -29,6 +31,7 @@ import {
 // helpers
 import clsx from "clsx";
 import { capitalizeFirstLetter } from "@/helpers/common.helper";
+import { generateSlug } from "@/helpers/product.helper";
 
 // const
 import { DISPLAY_AREA } from "@/constants/display-area.constant";
@@ -70,36 +73,6 @@ export const getReadableValue = ({
   return String(value);
 };
 
-const DUMMY_REVIEWS = [
-  {
-    id: "1",
-    user_name: "Amit Sharma",
-    rating: 5,
-    title: "Excellent product",
-    description:
-      "Really happy with the quality of this product. It feels premium in hand and performs exactly as expected. Totally worth the price and I would definitely recommend it to others looking for something reliable in this range.",
-    created_at: "2025-03-10",
-  },
-  {
-    id: "2",
-    user_name: "Priya Verma",
-    rating: 4,
-    title: "Very good but pricey",
-    description:
-      "The product quality is really good and it works as described. However, I feel the pricing is slightly on the higher side compared to similar alternatives available in the market. Still, overall a solid purchase.",
-    created_at: "2025-03-15",
-  },
-  {
-    id: "3",
-    user_name: "Rahul Singh",
-    rating: 3,
-    title: "Average experience",
-    description:
-      "The product is okay for regular use, but I was expecting better build quality and durability. It gets the job done, but there is definitely room for improvement in terms of material and finishing.",
-    created_at: "2025-03-20",
-  },
-];
-
 export const DIMENSION_ATTR = {
   ITEM_LENGTH: "item_length",
   ITEM_WIDTH: "item_width",
@@ -110,8 +83,23 @@ const ProductDetails: FC<{
   product: IProduct;
   category_mappings: ICategoryAttributeMapping[];
 }> = ({ product, category_mappings }) => {
-  const { key_features, brand, country_of_origin, product_attribute_values } =
-    product;
+  const {
+    key_features,
+    brand,
+    country_of_origin,
+    product_attribute_values,
+    product_reviews,
+  } = product;
+  const product_slug = generateSlug(product.title);
+  const product_reviews_medias = product_reviews.reduce<IMedia[]>(
+    (acc, { review_medias }) => {
+      review_medias.forEach(({ media }) => {
+        acc.push(media);
+      });
+      return acc;
+    },
+    [],
+  );
   let updated_key_features = (JSON.parse(key_features) ?? []) as Array<string>;
   const [show_all, setShowAll] = useState(false);
   const initial_visible = 4;
@@ -253,19 +241,37 @@ const ProductDetails: FC<{
           />
         </ExtendedDisclosure>
         <ExtendedDisclosure
-          default_open={true}
+          default_open={!!product_reviews.length}
           heading="Customer Reviews"
           is_last={true}
         >
-          <div className="space-y-4">
-            <ReviewGallary />
-            {DUMMY_REVIEWS.map((review) => (
-              <ProductReview {...review} key={`review-${review.id}`} />
-            ))}
-            <button className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-600">
-              Show all reviews
-            </button>
-          </div>
+          {product_reviews.length === 0 ? (
+            <div className="flex flex-col items-center justify-center space-y-3 py-10 text-center">
+              <p className="text-lg font-semibold text-gray-900">
+                No reviews yet
+              </p>
+              <p className="text-sm text-gray-600">
+                Be the first to review this product
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {!!product_reviews_medias.length && (
+                <ReviewGallary review_medias={product_reviews_medias} />
+              )}
+
+              {product_reviews.map((review) => (
+                <ProductReview {...review} key={`review-${review.id}`} />
+              ))}
+
+              <Link
+                href={`/${product_slug}/p/${product.id}/reviews`}
+                className="flex w-full cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-600"
+              >
+                Show all reviews
+              </Link>
+            </div>
+          )}
         </ExtendedDisclosure>
       </div>
     </section>
