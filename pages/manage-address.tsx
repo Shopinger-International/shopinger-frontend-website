@@ -161,9 +161,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   context,
 ) => {
   const cookie = context.req.headers.cookie ?? "";
-  const queryClient = new QueryClient();
+  const query_client = new QueryClient();
 
-  await queryClient.prefetchQuery<IAddress[]>({
+  await query_client.prefetchQuery<IAddress[]>({
     queryKey: ["user-addresses"],
     queryFn: async () => {
       return await getUserAddresses(cookie);
@@ -172,7 +172,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   return {
     props: {
-      dehydratedState: dehydrate(queryClient),
+      dehydratedState: dehydrate(query_client),
     },
   };
 };
