@@ -18,52 +18,38 @@ const ProductReview: FC<IReview> = ({
   const attributes_snapshot = variant_snapshot.attributes;
   return (
     <div className="space-y-3 border-b border-gray-200 py-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {/* Avatar */}
-          <Avatar name={user.name} />
+      <div className="flex items-center gap-3">
+        <Avatar name={user.name} size = {36} />
 
-          {/* User info */}
-          <div className="leading-tight">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-900">
-                {user.name}
-              </span>
-
-              {is_verified_purchase && (
-                <span className="rounded bg-green-100 px-2 py-0.5 text-[10px] text-green-700">
-                  Verified
-                </span>
-              )}
-            </div>
-
-            <div className="text-xs text-gray-500">2 days ago</div>
+        {/* User info */}
+        <div className="leading-tight">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-900">
+              {user.name}
+            </span>
           </div>
+          <div className="text-xs text-gray-600">2 days ago</div>
         </div>
-
+      </div>
+      <div className="space-y-2">
         <Rating
           totalStars={5}
           custom_rating={rating}
           onChange={() => {}}
           size={16}
         />
-      </div>
-
-      {/* Title */}
-      <h4 className="font-semibold text-gray-900">{title}</h4>
-
-      {/* Variant */}
-      {!!Object.entries(attributes_snapshot).length && (
-        <div className="text-xs text-gray-500">
-          {Object.entries(attributes_snapshot)
-            .map(([key, value]) => `${key} : ${value}`)
-            .join(", ")}
+        <div className="space-y-0.5">
+          <h4 className="text-sm font-semibold text-gray-900">{title}</h4>
+          {!!Object.entries(attributes_snapshot).length && (
+            <div className="text-xs text-gray-500">
+              {Object.entries(attributes_snapshot)
+                .map(([key, value]) => `${key} : ${value}`)
+                .join(", ")}
+            </div>
+          )}
         </div>
-      )}
-
-      {/* Text */}
-      <p className="text-sm leading-relaxed text-gray-600">{comment}</p>
+        <p className="text-sm leading-relaxed text-gray-600">{comment}</p>
+      </div>
 
       {/* Images */}
       {!!product_review_medias.length ? (

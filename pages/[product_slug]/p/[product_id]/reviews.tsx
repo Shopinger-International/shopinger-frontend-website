@@ -28,8 +28,7 @@ type IProps = {
 };
 
 const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
-  console.log("value of product id", product_id);
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useProductReviews({ productId: product_id });
   const product_reviews = data?.pages.reduce<IReview[]>((acc, { reviews }) => {
     return [...acc, ...reviews];
@@ -64,8 +63,8 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
     return () => observer_ref.current?.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
-    <section className="w-full bg-white py-6">
-      <div className="mx-auto mt-(--header-height) max-w-5xl space-y-6 px-4">
+    <section className="w-full bg-white py-4">
+      <div className="mx-auto mt-(--header-height) max-w-6xl space-y-6 px-4">
         {/* Rating Summary */}
         {rating_summary && <RatingSummary {...rating_summary} />}
 
