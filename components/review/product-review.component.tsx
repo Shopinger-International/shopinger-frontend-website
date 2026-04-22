@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type IReview from "@/types/review";
 import type { FC } from "react";
 
@@ -58,12 +59,15 @@ const ProductReview: FC<IReview> = ({
       {!!product_review_medias.length ? (
         <div className="flex items-center gap-4">
           {product_review_medias.map((media, index) => (
-            <img
-              key={index}
-              src={media.url}
-              className="size-20 rounded-md object-cover"
-              alt=""
-            />
+            <div className="relative size-20 overflow-hidden rounded-md border border-gray-300">
+              <Image
+                key={index}
+                fill={true}
+                src={media.url}
+                className="object-cover"
+                alt="review-media"
+              />
+            </div>
           ))}
         </div>
       ) : null}
