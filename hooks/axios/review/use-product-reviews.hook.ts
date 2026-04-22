@@ -5,13 +5,15 @@ import type IReview from "@/types/review";
 // helpers
 import webAxios from "@/lib/axios/web.lib";
 
+export type IFilterType = "recent" | "helpful" | "highest" | "lowest";
+
 export const getProductReviews = async (
   product_id: number,
   params?: {
     page?: number;
     limit?: number;
     rating?: number;
-    sort?: "recent" | "helpful" | "highest" | "lowest";
+    sort?: IFilterType;
   },
 ): Promise<{
   reviews: IReview[];

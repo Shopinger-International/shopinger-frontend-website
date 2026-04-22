@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
 import type { GetServerSideProps } from "next";
 import type IReview from "@/types/review";
 import type { DehydratedState } from "@tanstack/react-query";
+import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -28,8 +29,9 @@ type IProps = {
 };
 
 const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
+  const [filter_state, setFilterState] = useState<IFilterType>("recent");
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useProductReviews({ productId: product_id });
+    useProductReviews({ productId: product_id, sort: filter_state });
   const product_reviews = data?.pages.reduce<IReview[]>((acc, { reviews }) => {
     return [...acc, ...reviews];
   }, []);
@@ -80,14 +82,28 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
         </div>
 
         <div className="flex gap-3 text-sm">
-          {["Most Helpful", "Latest", "Positive", "Negative"].map((item) => (
-            <button
-              key={item}
-              className="rounded-full border border-orange-500 px-3 py-1 font-semibold text-orange-500"
-            >
-              {item}
-            </button>
-          ))}
+          {[
+            { label: "Helpful", value: "helpful" },
+            { label: "Latest", value: "recent" },
+            { label: "Highest", value: "highest" },
+            { label: "Lowest", value: "lowest" },
+          ].map(({ label, value }) => {
+            const isActive = filter_state === value;
+
+            return (
+              <button
+                key={`filter-${value}`}
+                onClick={() => setFilterState(value as IFilterType)}
+                className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 ${
+                  isActive
+                    ? "bg-orange-500 text-white shadow-sm"
+                    : "border border-gray-300 text-gray-600 hover:border-orange-400 hover:text-orange-500"
+                } `}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Reviews List */}
