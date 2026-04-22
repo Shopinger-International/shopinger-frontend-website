@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, keepPreviousData } from "@tanstack/react-query";
 // types
 import type IReview from "@/types/review";
 import type IMedia from "@/types/media";
@@ -68,7 +68,7 @@ const useProductReviews = ({
 }) => {
   return useInfiniteQuery({
     queryKey: ["product-reviews", productId, rating, sort],
-    placeholderData: (prev) => prev,
+    placeholderData: keepPreviousData,
     queryFn: ({ pageParam = 1 }) =>
       getProductReviews(productId, {
         page: pageParam,
