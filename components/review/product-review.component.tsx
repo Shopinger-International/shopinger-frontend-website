@@ -5,21 +5,24 @@ import type { FC } from "react";
 import Rating from "@/components/common/rating.component";
 import Avatar from "@/components/common/avatar.component";
 
+// helpers
+import { timeAgo } from "@/helpers/common.helper";
+
 const ProductReview: FC<IReview> = ({
   title,
   comment,
   rating,
   user,
-  is_verified_purchase,
   review_medias,
   variant_snapshot,
+  created_at,
 }) => {
   const product_review_medias = review_medias.map(({ media }) => media);
   const attributes_snapshot = variant_snapshot.attributes;
   return (
     <div className="space-y-3 border-b border-gray-200 py-4">
       <div className="flex items-center gap-3">
-        <Avatar name={user.name} size = {36} />
+        <Avatar name={user.name} size={36} />
 
         {/* User info */}
         <div className="leading-tight">
@@ -28,7 +31,7 @@ const ProductReview: FC<IReview> = ({
               {user.name}
             </span>
           </div>
-          <div className="text-xs text-gray-600">2 days ago</div>
+          <div className="text-xs text-gray-600">{timeAgo(created_at)}</div>
         </div>
       </div>
       <div className="space-y-2">
@@ -44,7 +47,7 @@ const ProductReview: FC<IReview> = ({
             <div className="text-xs text-gray-500">
               {Object.entries(attributes_snapshot)
                 .map(([key, value]) => `${key} : ${value}`)
-                .join(", ")}
+                .join(" | ")}
             </div>
           )}
         </div>
