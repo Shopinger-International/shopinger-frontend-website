@@ -68,7 +68,7 @@ const useProductReviews = ({
 }) => {
   return useInfiniteQuery({
     queryKey: ["product-reviews", productId, rating, sort],
-
+    placeholderData: (prev) => prev,
     queryFn: ({ pageParam = 1 }) =>
       getProductReviews(productId, {
         page: pageParam,

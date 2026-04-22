@@ -67,7 +67,10 @@ const ProductReview: FC<IReview> = ({
       {!!product_review_medias.length ? (
         <div className="flex items-center gap-4">
           {product_review_medias.map((media, index) => (
-            <div className="relative size-20 overflow-hidden rounded-md border border-gray-300">
+            <div
+              className="relative size-20 overflow-hidden rounded-md border border-gray-300"
+              key={`review-media-${media.id}`}
+            >
               <Image
                 key={index}
                 fill={true}
@@ -79,7 +82,7 @@ const ProductReview: FC<IReview> = ({
           ))}
         </div>
       ) : null}
-      <div className="flex items-center gap-3 font-medium text-sm">
+      <div className="flex items-center gap-3 text-sm font-medium">
         <button
           className="flex cursor-pointer items-center gap-1 text-orange-500"
           onClick={() => {

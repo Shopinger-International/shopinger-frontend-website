@@ -69,7 +69,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
     <section className="w-full bg-white py-4">
-      <ReportModal is_open={true} onClose={() => {}} />
+      {/* <ReportModal is_open={false} onClose={() => {}} /> */}
       <div className="mx-auto mt-(--header-height) max-w-6xl space-y-6 px-4">
         {/* Rating Summary */}
         {rating_summary && <RatingSummary {...rating_summary} />}
@@ -77,7 +77,10 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
         {/* Photo Grid */}
         <div className="flex items-center gap-4 overflow-auto">
           {top_medias.map((media, index) => (
-            <div className="relative size-40 overflow-hidden rounded-md border border-gray-300">
+            <div
+              className="relative size-40 overflow-hidden rounded-md border border-gray-300"
+              key={`top-media-${media.id}`}
+            >
               <Image
                 fill={true}
                 key={`top-media-${index}`}
@@ -117,7 +120,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
         {/* Reviews List */}
         <div>
           {product_reviews?.map((review) => (
-            <ProductReview {...review} />
+            <ProductReview {...review} key={`product-review-${review.id}`} />
           ))}
         </div>
         {/* Infinite scroll trigger */}
