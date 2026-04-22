@@ -75,10 +75,10 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
         {rating_summary && <RatingSummary {...rating_summary} />}
 
         {/* Photo Grid */}
-        <div className="flex items-center gap-4 overflow-auto">
+        <div className="flex items-center gap-4 overflow-x-auto">
           {top_medias.map((media, index) => (
             <div
-              className="relative size-40 overflow-hidden rounded-md border border-gray-300"
+              className="relative size-40 overflow-hidden rounded-md border border-gray-300 shrink-0"
               key={`top-media-${media.id}`}
             >
               <Image
