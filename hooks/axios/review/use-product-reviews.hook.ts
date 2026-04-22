@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 // types
 import type IReview from "@/types/review";
+import type IMedia from "@/types/media";
 
 // helpers
 import webAxios from "@/lib/axios/web.lib";
@@ -21,6 +22,7 @@ export const getProductReviews = async (
     average_rating: number;
     total_reviews: number;
     rating_breakdown: Record<number, number>;
+    top_media: IMedia[];
   };
   pagination: {
     page: number;
@@ -37,6 +39,7 @@ export const getProductReviews = async (
         average_rating: number;
         total_reviews: number;
         rating_breakdown: Record<number, number>;
+        top_media: IMedia[];
       };
       pagination: {
         page: number;

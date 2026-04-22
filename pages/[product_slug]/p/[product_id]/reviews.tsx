@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
@@ -36,6 +37,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
     return [...acc, ...reviews];
   }, []);
   const rating_summary = data?.pages[0].summary;
+  const top_medias = rating_summary?.top_media ?? [];
   const load_more_ref = useRef<HTMLDivElement | null>(null);
 
   const observer_ref = useRef<IntersectionObserver | null>(null);
@@ -72,12 +74,16 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
 
         {/* Photo Grid */}
         <div className="flex items-center gap-4 overflow-auto">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <img
-              key={i}
-              src={`https://picsum.photos/200?random=${i}`}
-              className="size-40 rounded object-cover"
-            />
+          {top_medias.map((media, index) => (
+            <div className="relative size-40 overflow-hidden rounded-md border border-gray-300">
+              <Image
+                fill={true}
+                key={`top-media-${index}`}
+                alt="top-media"
+                src={media.url}
+                className="object-cover"
+              />
+            </div>
           ))}
         </div>
 
