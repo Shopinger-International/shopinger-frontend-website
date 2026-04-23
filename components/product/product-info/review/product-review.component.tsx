@@ -10,17 +10,20 @@ import Avatar from "@/components/common/avatar.component";
 
 // helpers
 import { formatDate } from "@/helpers/common.helper";
+import clsx from "clsx";
 
 // icons
 import { ThumbsUp } from "lucide-react";
 
 // hooks
 import useReactToReviewMutation from "@/hooks/axios/review/use-react-to-review-mutation.hook";
+import useDeleteReviewReactionMutation from "@/hooks/axios/review/use-delete-review-reaction-mutation.hook";
 
 // api hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 type IProps = IReview & {
+  product_id: number;
   handleLoginModalState: ({
     open,
     action_type,
@@ -40,12 +43,21 @@ const ProductReview: FC<IProps> = ({
   title,
   comment,
   created_at,
+  is_reacted,
+  product_id,
   handleLoginModalState,
   handleReportModalState,
 }) => {
   const { data: user_details } = useUserDetails();
   const is_logged_in = !!user_details;
-  const react_to_review_mutation = useReactToReviewMutation();
+  const react_to_review_mutation = useReactToReviewMutation(
+    product_id,
+    "helpful",
+  );
+  const delete_review_reaction_mutation = useDeleteReviewReactionMutation(
+    product_id,
+    "helpful",
+  );
   return (
     <div className="space-y-2 rounded-xl border border-gray-300 bg-gray-50 p-6">
       <Rating
@@ -76,6 +88,12 @@ const ProductReview: FC<IProps> = ({
           <button
             className="flex cursor-pointer items-center gap-1 text-orange-500"
             onClick={() => {
+              if (is_reacted) {
+                delete_review_reaction_mutation.mutate({
+                  review_id: id,
+                });
+                return;
+              }
               if (is_logged_in) {
                 react_to_review_mutation.mutate({
                   review_id: id,
@@ -94,7 +112,10 @@ const ProductReview: FC<IProps> = ({
               });
             }}
           >
-            <ThumbsUp className="size-4" strokeWidth={2.5} />
+            <ThumbsUp
+              className={clsx("size-4", is_reacted && "fill-orange-500")}
+              strokeWidth={2.5}
+            />
             <span>Helpful</span>
           </button>
           <span> | </span>

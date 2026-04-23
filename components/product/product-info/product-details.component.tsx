@@ -8,10 +8,14 @@ import type IProduct from "@/types/product";
 import type IMedia from "@/types/media";
 import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
+import type IReview from "@/types/review";
 
 // local components
 import ProductInfoTabs from "@/components/product/product-info/product-info-tabs.component";
 import AttributeInfoCell from "@/components/product/product-info/attribute-info-cell.component";
+
+// api hooks
+import useProductReviews from "@/hooks/axios/review/use-product-reviews.hook";
 
 const ProductReview = dynamic(
   () =>
@@ -98,23 +102,21 @@ const ProductDetails: FC<IProps> = ({
   handleLoginModalState,
   handleReportModalState,
 }) => {
-  const {
-    key_features,
-    brand,
-    country_of_origin,
-    product_attribute_values,
-    product_reviews,
-  } = product;
+  const review_exist = !!product.product_reviews.length;
+  const { key_features, brand, country_of_origin, product_attribute_values } =
+    product;
+  const { data } = useProductReviews({
+    productId: product.id,
+    sort: "helpful",
+  });
+
+  const rating_summary = data?.pages[0].summary;
+  const product_reviews = data?.pages.reduce<IReview[]>((acc, { reviews }) => {
+    return [...acc, ...reviews];
+  }, []);
+
+  const top_medias = rating_summary?.top_media ?? [];
   const product_slug = generateSlug(product.title);
-  const product_reviews_medias = product_reviews.reduce<IMedia[]>(
-    (acc, { review_medias }) => {
-      review_medias.forEach(({ media }) => {
-        acc.push(media);
-      });
-      return acc;
-    },
-    [],
-  );
   let updated_key_features = (JSON.parse(key_features) ?? []) as Array<string>;
   const [show_all, setShowAll] = useState(false);
   const initial_visible = 4;
@@ -256,11 +258,11 @@ const ProductDetails: FC<IProps> = ({
           />
         </ExtendedDisclosure>
         <ExtendedDisclosure
-          default_open={!!product_reviews.length}
+          default_open={review_exist}
           heading="Customer Reviews"
           is_last={true}
         >
-          {product_reviews.length === 0 ? (
+          {product_reviews?.length === 0 ? (
             <div className="flex flex-col items-center justify-center space-y-3 py-10 text-center">
               <p className="text-lg font-semibold text-gray-900">
                 No reviews yet
@@ -271,13 +273,14 @@ const ProductDetails: FC<IProps> = ({
             </div>
           ) : (
             <div className="space-y-4">
-              {!!product_reviews_medias.length && (
-                <ReviewGallary review_medias={product_reviews_medias} />
+              {!!top_medias.length && (
+                <ReviewGallary review_medias={top_medias} />
               )}
 
-              {product_reviews.map((review) => (
+              {product_reviews?.map((review) => (
                 <ProductReview
                   {...review}
+                  product_id={product.id}
                   key={`review-${review.id}`}
                   handleLoginModalState={handleLoginModalState}
                   handleReportModalState={handleReportModalState}
