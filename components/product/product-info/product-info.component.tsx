@@ -3,8 +3,8 @@ import type { FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
-import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
+import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // icons
 import { Star } from "lucide-react";
@@ -29,11 +29,7 @@ type IProps = {
     open,
     action_type,
     onSuccess,
-  }: {
-    open: boolean;
-    action_type?: IActionType;
-    onSuccess?: () => void;
-  }) => void;
+  }: ILoginModalState) => void;
   handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
