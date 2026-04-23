@@ -8,6 +8,7 @@ import type IReview from "@/types/review";
 import type { DehydratedState } from "@tanstack/react-query";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
 import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type IUser from "@/types/user";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -82,6 +83,20 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
 
     return () => observer_ref.current?.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const openLoginModal = () => {
+    return new Promise<IUser>((resolve, reject) => {
+      setLoginModalState({
+        open: true,
+        onSuccess: (user: IUser) => {
+          resolve(user);
+        },
+        onCancel: () => {
+          reject();
+        },
+      });
+    });
+  };
   return (
     <>
       <LoginModal
@@ -91,11 +106,11 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
             open: false,
           })
         }
-        handleOnSuccess={() => {
+        handleOnSuccess={(user) => {
           setLoginModalState({
             open: false,
           });
-          login_modal_state.onSuccess?.();
+          login_modal_state.onSuccess?.(user);
         }}
       />
       <ReportModal
@@ -105,6 +120,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
             open: false,
           });
         }}
+        handleLogin={openLoginModal}
       />
       <section className="w-full bg-white py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl space-y-6 px-4">

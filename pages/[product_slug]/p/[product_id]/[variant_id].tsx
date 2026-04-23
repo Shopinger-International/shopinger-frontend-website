@@ -8,6 +8,7 @@ import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
+import type IUser from "@/types/user";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -87,7 +88,8 @@ type IParams = {
 export type ILoginModalState = {
   open: boolean;
   action_type?: IActionType;
-  onSuccess?: () => void;
+  onSuccess?: (user: IUser) => void;
+  onCancel?: () => void;
 };
 
 export type IActionType = "review_upvote";
@@ -158,6 +160,20 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     acc[attribute.code] = value;
     return acc;
   }, {});
+
+  const openLoginModal = () => {
+    return new Promise<IUser>((resolve, reject) => {
+      setLoginModalState({
+        open: true,
+        onSuccess: (user: IUser) => {
+          resolve(user);
+        },
+        onCancel: () => {
+          reject();
+        },
+      });
+    });
+  };
   return (
     <>
       <Head>
@@ -204,21 +220,23 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       </Head>
       <LoginModal
         open={login_modal_state.open}
-        handleClose={() =>
-          setLoginModalState({
-            open: false,
-          })
-        }
-        handleOnSuccess={() => {
+        handleClose={() => {
           setLoginModalState({
             open: false,
           });
-          login_modal_state.onSuccess?.();
+          login_modal_state.onCancel?.();
+        }}
+        handleOnSuccess={(user) => {
+          setLoginModalState({
+            open: false,
+          });
+          login_modal_state.onSuccess?.(user);
         }}
       />
       <ReportModal
         is_open={report_modal_state.open}
         onClose={() => setReportModalState({ open: false })}
+        handleLogin={openLoginModal}
       />
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="mx-auto w-full px-4">

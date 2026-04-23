@@ -1,5 +1,6 @@
 // types
 import type { FC } from "react";
+import type IUser from "@/types/user";
 
 // external components
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -8,14 +9,11 @@ import { Formik, Form } from "formik";
 // icons
 import { X } from "lucide-react";
 
+// api hooks
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+
 type IInitialValues = {
   reason: string;
-};
-
-type IProps = {
-  is_open: boolean;
-  onClose: () => void;
-  reviewTitle?: string;
 };
 
 const reasons = [
@@ -26,7 +24,15 @@ const reasons = [
   "Other",
 ];
 
-const ReportModal: FC<IProps> = ({ is_open, onClose }) => {
+type IProps = {
+  is_open: boolean;
+  onClose: () => void;
+  handleLogin: () => Promise<IUser>;
+};
+
+const ReportModal: FC<IProps> = ({ is_open, onClose, handleLogin }) => {
+  const { data: user_details } = useUserDetails();
+  const is_logged_in = !!user_details;
   return (
     <Dialog open={is_open} onClose={onClose} className="relative z-50">
       {/* Backdrop */}
@@ -54,8 +60,15 @@ const ReportModal: FC<IProps> = ({ is_open, onClose }) => {
             initialValues={{
               reason: "",
             }}
-            onSubmit={(values) => {
-              console.log("value of values", values);
+            onSubmit={async (values) => {
+              if (is_logged_in) {
+              } else {
+                handleLogin()
+                  .then((user) => {
+                    onClose();
+                  })
+                  .catch((err) => {});
+              }
             }}
           >
             {({ values, setFieldValue }) => (
