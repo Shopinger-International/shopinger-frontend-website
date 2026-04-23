@@ -54,9 +54,11 @@ const ReportModal: FC<IProps> = ({ is_open, onClose }) => {
             initialValues={{
               reason: "",
             }}
-            onSubmit={(values) => {}}
+            onSubmit={(values) => {
+              console.log("value of values", values);
+            }}
           >
-            {({ values, setFieldValue, isSubmitting }) => (
+            {({ values, setFieldValue }) => (
               <Form className="flex flex-1 flex-col">
                 {/* Body */}
                 <div className="flex-1 overflow-y-auto px-6 py-4">
@@ -104,10 +106,9 @@ const ReportModal: FC<IProps> = ({ is_open, onClose }) => {
 
                   <button
                     type="submit"
-                    disabled={!values.reason || isSubmitting}
                     className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-50"
                   >
-                    {isSubmitting ? "Submitting..." : "Submit report"}
+                    Submit Report
                   </button>
                 </div>
               </Form>

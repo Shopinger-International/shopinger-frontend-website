@@ -2,6 +2,7 @@
 import type { FC } from "react";
 import type IReview from "@/types/review";
 import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 
 // local components
 import Rating from "@/components/common/rating.component";
@@ -29,6 +30,7 @@ type IProps = IReview & {
     action_type?: IActionType;
     onSuccess?: () => void;
   }) => void;
+  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
 const ProductReview: FC<IProps> = ({
@@ -39,6 +41,7 @@ const ProductReview: FC<IProps> = ({
   comment,
   created_at,
   handleLoginModalState,
+  handleReportModalState,
 }) => {
   const { data: user_details } = useUserDetails();
   const is_logged_in = !!user_details;
@@ -95,7 +98,15 @@ const ProductReview: FC<IProps> = ({
             <span>Helpful</span>
           </button>
           <span> | </span>
-          <button className="flex cursor-pointer items-center gap-1">
+          <button
+            className="flex cursor-pointer items-center gap-1"
+            onClick={() => {
+              handleReportModalState({
+                open: true,
+                review_id: id,
+              });
+            }}
+          >
             Report
           </button>
         </div>

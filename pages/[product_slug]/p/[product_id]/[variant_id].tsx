@@ -7,6 +7,7 @@ import type { GetStaticPaths, GetStaticProps } from "next";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
+import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -16,6 +17,7 @@ import ProductGallary from "@/components/product/product-gallary/product-gallary
 import ProductInfo from "@/components/product/product-info/product-info.component";
 import RelatedProducts from "@/components/product/related-products/related-products.component";
 import LoginModal from "@/components/login/login-modal.component";
+import ReportModal from "@/components/review/report-modal.component";
 
 // icons
 import { ChevronRight } from "lucide-react";
@@ -110,6 +112,12 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
     open: false,
   });
+
+  const [report_modal_state, setReportModalState] = useState<IReportModalState>(
+    {
+      open: false,
+    },
+  );
   const { data: availbility_data } = useProductAvailability(
     product_id,
     variant_id,
@@ -208,6 +216,10 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           login_modal_state.onSuccess?.();
         }}
       />
+      <ReportModal
+        is_open={report_modal_state.open}
+        onClose={() => setReportModalState({ open: false })}
+      />
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="mx-auto w-full px-4">
           <nav aria-label="Breadcrumb">
@@ -253,6 +265,16 @@ const ProductPage: NextPageWithLayout<IProps> = ({
               ...(onSuccess ? { onSuccess } : {}),
             });
           }}
+          handleReportModalState={({ open, review_id }) =>
+            setReportModalState({
+              open,
+              ...(review_id
+                ? {
+                    review_id,
+                  }
+                : {}),
+            })
+          }
         />
       </div>
 

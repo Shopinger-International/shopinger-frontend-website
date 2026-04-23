@@ -4,6 +4,7 @@ import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 
 // icons
 import { Star } from "lucide-react";
@@ -27,12 +28,13 @@ type IProps = {
   handleLoginModalState: ({
     open,
     action_type,
-    onSuccess
+    onSuccess,
   }: {
     open: boolean;
     action_type?: IActionType;
     onSuccess?: () => void;
   }) => void;
+  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
 const ProductInfo: FC<IProps> = ({
@@ -42,6 +44,7 @@ const ProductInfo: FC<IProps> = ({
   category_mappings,
   is_product_available,
   handleLoginModalState,
+  handleReportModalState,
 }) => {
   const add_to_cart_mutation = useAddToCartMutation();
   const { title, brand, sub_sub_category } = product;
@@ -167,6 +170,7 @@ const ProductInfo: FC<IProps> = ({
         product={product}
         category_mappings={category_mappings}
         handleLoginModalState={handleLoginModalState}
+        handleReportModalState={handleReportModalState}
       />
       <div
         id="buy-cta-container"

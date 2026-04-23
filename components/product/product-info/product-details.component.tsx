@@ -7,6 +7,7 @@ import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type IProduct from "@/types/product";
 import type IMedia from "@/types/media";
 import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 
 // local components
 import ProductInfoTabs from "@/components/product/product-info/product-info-tabs.component";
@@ -88,12 +89,14 @@ type IProps = {
     action_type,
     onSuccess,
   }: ILoginModalState) => void;
+  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
 const ProductDetails: FC<IProps> = ({
   product,
   category_mappings,
   handleLoginModalState,
+  handleReportModalState,
 }) => {
   const {
     key_features,
@@ -277,6 +280,7 @@ const ProductDetails: FC<IProps> = ({
                   {...review}
                   key={`review-${review.id}`}
                   handleLoginModalState={handleLoginModalState}
+                  handleReportModalState={handleReportModalState}
                 />
               ))}
 
