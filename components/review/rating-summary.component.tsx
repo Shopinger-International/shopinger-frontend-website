@@ -1,14 +1,6 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import Rating from "@/components/common/rating.component";
 import { Star } from "lucide-react";
-
-const ratingsData = [
-  { star: 5, count: 7285 },
-  { star: 4, count: 1068 },
-  { star: 3, count: 211 },
-  { star: 2, count: 115 },
-  { star: 1, count: 386 },
-];
 
 type IProps = {
   average_rating: number;
@@ -21,27 +13,13 @@ const RatingSummary: FC<IProps> = ({
   total_reviews,
   rating_breakdown,
 }) => {
-  const { totalRatings, average } = useMemo(() => {
-    const total = ratingsData.reduce((sum, r) => sum + r.count, 0);
-
-    const avg =
-      total > 0
-        ? ratingsData.reduce((sum, r) => sum + r.star * r.count, 0) / total
-        : 0;
-
-    return {
-      totalRatings: total,
-      average: Number(avg.toFixed(1)),
-    };
-  }, []);
-
   return (
     <div className="flex flex-col gap-8 border-b border-gray-300 pb-6 md:flex-row md:items-center md:justify-between">
       {/* LEFT: Overall summary */}
       <div className="space-y-3">
         <div className="flex items-end gap-3">
           <h1 className="text-5xl leading-none font-semibold">
-            {average_rating}
+            {average_rating.toFixed(1)}
           </h1>
 
           <div className="flex items-center pb-1">

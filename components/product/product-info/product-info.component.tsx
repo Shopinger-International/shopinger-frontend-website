@@ -3,6 +3,7 @@ import type { FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
+import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // icons
 import { Star } from "lucide-react";
@@ -23,6 +24,15 @@ type IProps = {
   selected_attributes: Record<string, any>;
   category_mappings: ICategoryAttributeMapping[];
   is_product_available: boolean;
+  handleLoginModalState: ({
+    open,
+    action_type,
+    onSuccess
+  }: {
+    open: boolean;
+    action_type?: IActionType;
+    onSuccess?: () => void;
+  }) => void;
 };
 
 const ProductInfo: FC<IProps> = ({
@@ -31,6 +41,7 @@ const ProductInfo: FC<IProps> = ({
   selected_attributes,
   category_mappings,
   is_product_available,
+  handleLoginModalState,
 }) => {
   const add_to_cart_mutation = useAddToCartMutation();
   const { title, brand, sub_sub_category } = product;
@@ -152,7 +163,11 @@ const ProductInfo: FC<IProps> = ({
         Sold by{" "}
         <strong className="font-medium text-orange-500">Himang Retails</strong>
       </p>
-      <ProductDetails product={product} category_mappings={category_mappings} />
+      <ProductDetails
+        product={product}
+        category_mappings={category_mappings}
+        handleLoginModalState={handleLoginModalState}
+      />
       <div
         id="buy-cta-container"
         className="fixed bottom-0 left-0 z-4 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md lg:sticky lg:border-none lg:px-0 lg:shadow-none"

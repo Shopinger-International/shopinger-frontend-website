@@ -6,6 +6,7 @@ import type IAttributeType from "@/types/attribute";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type IProduct from "@/types/product";
 import type IMedia from "@/types/media";
+import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import ProductInfoTabs from "@/components/product/product-info/product-info-tabs.component";
@@ -79,10 +80,25 @@ export const DIMENSION_ATTR = {
   ITEM_HEIGHT: "item_height",
 };
 
-const ProductDetails: FC<{
+type IProps = {
   product: IProduct;
   category_mappings: ICategoryAttributeMapping[];
-}> = ({ product, category_mappings }) => {
+  handleLoginModalState: ({
+    open,
+    action_type,
+    onSuccess,
+  }: {
+    open: boolean;
+    action_type?: IActionType;
+    onSuccess?: () => void;
+  }) => void;
+};
+
+const ProductDetails: FC<IProps> = ({
+  product,
+  category_mappings,
+  handleLoginModalState,
+}) => {
   const {
     key_features,
     brand,
@@ -261,7 +277,11 @@ const ProductDetails: FC<{
               )}
 
               {product_reviews.map((review) => (
-                <ProductReview {...review} key={`review-${review.id}`} />
+                <ProductReview
+                  {...review}
+                  key={`review-${review.id}`}
+                  handleLoginModalState={handleLoginModalState}
+                />
               ))}
 
               <Link

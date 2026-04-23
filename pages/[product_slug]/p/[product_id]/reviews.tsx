@@ -7,6 +7,7 @@ import type { GetServerSideProps } from "next";
 import type IReview from "@/types/review";
 import type { DehydratedState } from "@tanstack/react-query";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
+import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -15,6 +16,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 import RatingSummary from "@/components/review/rating-summary.component";
 import ProductReview from "@/components/review/product-review.component";
 import ReportModal from "@/components/review/report-modal.component";
+import LoginModal from "@/components/login/login-modal.component";
 
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
@@ -31,7 +33,14 @@ type IProps = {
 };
 
 const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
-  const [filter_state, setFilterState] = useState<IFilterType>("recent");
+  const [login_modal_state, setLoginModalState] = useState<{
+    open: boolean;
+    action_type?: IActionType;
+    onSuccess?: () => void;
+  }>({
+    open: false,
+  });
+  const [filter_state, setFilterState] = useState<IFilterType>("helpful");
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useProductReviews({ productId: product_id, sort: filter_state });
   const product_reviews = data?.pages.reduce<IReview[]>((acc, { reviews }) => {
@@ -68,65 +77,95 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
     return () => observer_ref.current?.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
-    <section className="w-full bg-white py-4">
-      {/* <ReportModal is_open={false} onClose={() => {}} /> */}
-      <div className="mx-auto mt-(--header-height) max-w-6xl space-y-6 px-4">
-        {/* Rating Summary */}
-        {rating_summary && <RatingSummary {...rating_summary} />}
+    <>
+      <LoginModal
+        open={login_modal_state.open}
+        handleClose={() =>
+          setLoginModalState({
+            open: false,
+          })
+        }
+        handleOnSuccess={() => {
+          setLoginModalState({
+            open: false,
+          });
+          login_modal_state.onSuccess?.();
+        }}
+      />
+      <section className="w-full bg-white py-4">
+        {/* <ReportModal is_open={false} onClose={() => {}} /> */}
+        <div className="mx-auto mt-(--header-height) max-w-6xl space-y-6 px-4">
+          {/* Rating Summary */}
+          {rating_summary && <RatingSummary {...rating_summary} />}
 
-        {/* Photo Grid */}
-        <div className="flex items-center gap-4 overflow-x-auto">
-          {top_medias.map((media, index) => (
-            <div
-              className="relative size-40 overflow-hidden rounded-md border border-gray-300 shrink-0"
-              key={`top-media-${media.id}`}
-            >
-              <Image
-                fill={true}
-                key={`top-media-${index}`}
-                alt="top-media"
-                src={media.url}
-                className="object-cover"
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="flex gap-3 text-sm">
-          {[
-            { label: "Helpful", value: "helpful" },
-            { label: "Latest", value: "recent" },
-            { label: "Highest", value: "highest" },
-            { label: "Lowest", value: "lowest" },
-          ].map(({ label, value }) => {
-            const isActive = filter_state === value;
-
-            return (
-              <button
-                key={`filter-${value}`}
-                onClick={() => setFilterState(value as IFilterType)}
-                className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 ${
-                  isActive
-                    ? "bg-orange-500 text-white shadow-sm"
-                    : "border border-gray-300 text-gray-600 hover:border-orange-400 hover:text-orange-500"
-                } `}
+          {/* Photo Grid */}
+          <div className="flex items-center gap-4 overflow-x-auto">
+            {top_medias.map((media, index) => (
+              <div
+                className="relative size-40 shrink-0 overflow-hidden rounded-md border border-gray-300"
+                key={`top-media-${media.id}`}
               >
-                {label}
-              </button>
-            );
-          })}
-        </div>
+                <Image
+                  fill={true}
+                  key={`top-media-${index}`}
+                  alt="top-media"
+                  src={media.url}
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
 
-        {/* Reviews List */}
-        <div>
-          {product_reviews?.map((review) => (
-            <ProductReview {...review} key={`product-review-${review.id}`} />
-          ))}
+          <div className="flex gap-3 text-sm">
+            {[
+              { label: "Helpful", value: "helpful" },
+              { label: "Latest", value: "recent" },
+              { label: "Positive", value: "highest" },
+              { label: "Negative", value: "lowest" },
+            ].map(({ label, value }) => {
+              const isActive = filter_state === value;
+
+              return (
+                <button
+                  key={`filter-${value}`}
+                  onClick={() => setFilterState(value as IFilterType)}
+                  className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 ${
+                    isActive
+                      ? "bg-orange-500 text-white shadow-sm"
+                      : "border border-gray-300 text-gray-600 hover:border-orange-400 hover:text-orange-500"
+                  } `}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Reviews List */}
+          <div>
+            {product_reviews?.map((review) => (
+              <ProductReview
+                {...review}
+                key={`product-review-${review.id}`}
+                handleLoginModalState={({ open, action_type, onSuccess }) => {
+                  setLoginModalState({
+                    open,
+                    ...(action_type
+                      ? {
+                          action_type,
+                        }
+                      : {}),
+                    ...(onSuccess ? { onSuccess } : {}),
+                  });
+                }}
+              />
+            ))}
+          </div>
+          {/* Infinite scroll trigger */}
+          <div ref={load_more_ref} className="h-10" />
         </div>
-        {/* Infinite scroll trigger */}
-        <div ref={load_more_ref} className="h-10" />
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

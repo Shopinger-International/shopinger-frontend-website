@@ -1,6 +1,9 @@
 import Image from "next/image";
+
+// types
 import type IReview from "@/types/review";
 import type { FC } from "react";
+import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import Rating from "@/components/common/rating.component";
@@ -9,13 +12,26 @@ import Avatar from "@/components/common/avatar.component";
 // helpers
 import { timeAgo } from "@/helpers/common.helper";
 
-// hooks
+// api hooks
 import useReactToReviewMutation from "@/hooks/axios/review/use-react-to-review-mutation.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // icons
 import { ThumbsUp } from "lucide-react";
 
-const ProductReview: FC<IReview> = ({
+type IProps = IReview & {
+  handleLoginModalState: ({
+    open,
+    action_type,
+    onSuccess,
+  }: {
+    open: boolean;
+    action_type?: IActionType;
+    onSuccess?: () => void;
+  }) => void;
+};
+
+const ProductReview: FC<IProps> = ({
   id,
   title,
   comment,
@@ -24,8 +40,11 @@ const ProductReview: FC<IReview> = ({
   review_medias,
   variant_snapshot,
   created_at,
+  handleLoginModalState,
 }) => {
   const react_to_review_mutation = useReactToReviewMutation();
+  const { data: user_details } = useUserDetails();
+  const is_logged_in = !!user_details;
   const product_review_medias = review_medias.map(({ media }) => media);
   const attributes_snapshot = variant_snapshot.attributes;
   return (
@@ -86,8 +105,21 @@ const ProductReview: FC<IReview> = ({
         <button
           className="flex cursor-pointer items-center gap-1 text-orange-500"
           onClick={() => {
-            react_to_review_mutation.mutate({
-              review_id: id,
+            if (is_logged_in) {
+              react_to_review_mutation.mutate({
+                review_id: id,
+              });
+              return;
+            }
+
+            handleLoginModalState({
+              open: true,
+              action_type: "review_upvote",
+              onSuccess: () => {
+                react_to_review_mutation.mutate({
+                  review_id: id,
+                });
+              },
             });
           }}
         >

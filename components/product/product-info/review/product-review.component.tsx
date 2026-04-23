@@ -1,6 +1,7 @@
 // types
 import type { FC } from "react";
 import type IReview from "@/types/review";
+import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import Rating from "@/components/common/rating.component";
@@ -15,14 +16,32 @@ import { ThumbsUp } from "lucide-react";
 // hooks
 import useReactToReviewMutation from "@/hooks/axios/review/use-react-to-review-mutation.hook";
 
-const ProductReview: FC<IReview> = ({
+// api hooks
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+
+type IProps = IReview & {
+  handleLoginModalState: ({
+    open,
+    action_type,
+    onSuccess,
+  }: {
+    open: boolean;
+    action_type?: IActionType;
+    onSuccess?: () => void;
+  }) => void;
+};
+
+const ProductReview: FC<IProps> = ({
   id,
   user,
   rating,
   title,
   comment,
   created_at,
+  handleLoginModalState,
 }) => {
+  const { data: user_details } = useUserDetails();
+  const is_logged_in = !!user_details;
   const react_to_review_mutation = useReactToReviewMutation();
   return (
     <div className="space-y-2 rounded-xl border border-gray-300 bg-gray-50 p-6">
@@ -54,8 +73,21 @@ const ProductReview: FC<IReview> = ({
           <button
             className="flex cursor-pointer items-center gap-1 text-orange-500"
             onClick={() => {
-              react_to_review_mutation.mutate({
-                review_id: id,
+              if (is_logged_in) {
+                react_to_review_mutation.mutate({
+                  review_id: id,
+                });
+                return;
+              }
+
+              handleLoginModalState({
+                open: true,
+                action_type: "review_upvote",
+                onSuccess: () => {
+                  react_to_review_mutation.mutate({
+                    review_id: id,
+                  });
+                },
               });
             }}
           >

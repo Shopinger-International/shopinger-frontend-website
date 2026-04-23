@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Head from "next/head";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
@@ -5,7 +6,6 @@ import type { ReactElement } from "react";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
-import type IMedia from "@/types/media";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 
 // layout
@@ -15,6 +15,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
 import RelatedProducts from "@/components/product/related-products/related-products.component";
+import LoginModal from "@/components/login/login-modal.component";
 
 // icons
 import { ChevronRight } from "lucide-react";
@@ -81,6 +82,8 @@ type IParams = {
   variant_id: string;
 };
 
+export type IActionType = "review_upvote";
+
 type IProps = {
   product_id: number;
   variant_id: number;
@@ -98,6 +101,13 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   variant,
   related_products,
 }) => {
+  const [login_modal_state, setLoginModalState] = useState<{
+    open: boolean;
+    action_type?: IActionType;
+    onSuccess?: () => void;
+  }>({
+    open: false,
+  });
   const { data: availbility_data } = useProductAvailability(
     product_id,
     variant_id,
@@ -182,6 +192,20 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         <meta name="twitter:site" content="@shopinger" />
         <meta name="twitter:creator" content="@shopinger" />
       </Head>
+      <LoginModal
+        open={login_modal_state.open}
+        handleClose={() =>
+          setLoginModalState({
+            open: false,
+          })
+        }
+        handleOnSuccess={() => {
+          setLoginModalState({
+            open: false,
+          });
+          login_modal_state.onSuccess?.();
+        }}
+      />
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="mx-auto w-full px-4">
           <nav aria-label="Breadcrumb">
@@ -216,6 +240,17 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           category_mappings={category_mappings}
+          handleLoginModalState={({ open, action_type, onSuccess }) => {
+            setLoginModalState({
+              open,
+              ...(action_type
+                ? {
+                    action_type,
+                  }
+                : {}),
+              ...(onSuccess ? { onSuccess } : {}),
+            });
+          }}
         />
       </div>
 
