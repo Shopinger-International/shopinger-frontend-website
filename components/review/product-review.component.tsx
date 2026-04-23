@@ -5,6 +5,7 @@ import type { FC } from "react";
 import type IReview from "@/types/review";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
 
 // local components
 import Rating from "@/components/common/rating.component";
@@ -12,15 +13,19 @@ import Avatar from "@/components/common/avatar.component";
 
 // helpers
 import { timeAgo } from "@/helpers/common.helper";
+import clsx from "clsx";
 
 // api hooks
 import useReactToReviewMutation from "@/hooks/axios/review/use-react-to-review-mutation.hook";
+import useDeleteReviewReactionMutation from "@/hooks/axios/review/use-delete-review-reaction-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // icons
 import { ThumbsUp } from "lucide-react";
 
 type IProps = IReview & {
+  product_id: number;
+  filter_state: IFilterType;
   handleLoginModalState: ({
     open,
     action_type,
@@ -37,11 +42,21 @@ const ProductReview: FC<IProps> = ({
   user,
   review_medias,
   variant_snapshot,
+  is_reacted,
   created_at,
+  product_id,
+  filter_state,
   handleLoginModalState,
   handleReportModalState,
 }) => {
-  const react_to_review_mutation = useReactToReviewMutation();
+  const react_to_review_mutation = useReactToReviewMutation(
+    product_id,
+    filter_state,
+  );
+  const delete_review_reaction_mutation = useDeleteReviewReactionMutation(
+    product_id,
+    filter_state,
+  );
   const { data: user_details } = useUserDetails();
   const is_logged_in = !!user_details;
   const product_review_medias = review_medias.map(({ media }) => media);
@@ -104,6 +119,12 @@ const ProductReview: FC<IProps> = ({
         <button
           className="flex cursor-pointer items-center gap-1 text-orange-500"
           onClick={() => {
+            if (is_reacted) {
+              delete_review_reaction_mutation.mutate({
+                review_id: id,
+              });
+              return;
+            }
             if (is_logged_in) {
               react_to_review_mutation.mutate({
                 review_id: id,
@@ -122,7 +143,10 @@ const ProductReview: FC<IProps> = ({
             });
           }}
         >
-          <ThumbsUp className="size-4" strokeWidth={2.5} />
+          <ThumbsUp
+            className={clsx("size-4", is_reacted && "fill-orange-500")}
+            strokeWidth={2.5}
+          />
           <span>Helpful</span>
         </button>
         <span> | </span>

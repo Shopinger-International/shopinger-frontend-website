@@ -4,19 +4,11 @@ import type IReview from "@/types/review";
 import type IMedia from "@/types/media";
 
 // helpers
-import webAxios from "@/lib/axios/web.lib";
+import Axios from "@/lib/axios/private.lib";
 
 export type IFilterType = "recent" | "helpful" | "highest" | "lowest";
 
-export const getProductReviews = async (
-  product_id: number,
-  params?: {
-    page?: number;
-    limit?: number;
-    rating?: number;
-    sort?: IFilterType;
-  },
-): Promise<{
+export type IProductReviewsPageType = {
   reviews: IReview[];
   summary: {
     average_rating: number;
@@ -30,24 +22,20 @@ export const getProductReviews = async (
     total: number;
     total_pages: number;
   };
-}> => {
-  const { data } = await webAxios.get<{
+};
+
+export const getProductReviews = async (
+  product_id: number,
+  params?: {
+    page?: number;
+    limit?: number;
+    rating?: number;
+    sort?: IFilterType;
+  },
+): Promise<IProductReviewsPageType> => {
+  const { data } = await Axios.get<{
     success: boolean;
-    data: {
-      reviews: IReview[];
-      summary: {
-        average_rating: number;
-        total_reviews: number;
-        rating_breakdown: Record<number, number>;
-        top_media: IMedia[];
-      };
-      pagination: {
-        page: number;
-        limit: number;
-        total: number;
-        total_pages: number;
-      };
-    };
+    data: IProductReviewsPageType;
   }>(`/get-reviews/${product_id}`, {
     params,
   });

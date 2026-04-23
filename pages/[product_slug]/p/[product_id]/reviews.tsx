@@ -176,6 +176,8 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
               <ProductReview
                 {...review}
                 key={`product-review-${review.id}`}
+                product_id={product_id}
+                filter_state={filter_state}
                 handleLoginModalState={({ open, action_type, onSuccess }) => {
                   setLoginModalState({
                     open,
@@ -224,7 +226,7 @@ export const getServerSideProps = (async ({ params }) => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ["product-reviews", product_id, null, "recent"],
+    queryKey: ["product-reviews", product_id, null, "helpful"],
     queryFn: ({ pageParam = 1 }) =>
       getProductReviews(product_id, {
         page: pageParam,

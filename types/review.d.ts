@@ -27,6 +27,7 @@ type IReview = {
   order_item_id: number | null;
   review_medias: IReviewMedia[];
   user: IUser;
+  is_reacted:boolean;
 };
 
 export default IReview;

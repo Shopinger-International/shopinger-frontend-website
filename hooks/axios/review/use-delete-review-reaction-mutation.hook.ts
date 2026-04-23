@@ -17,27 +17,23 @@ type IRequestPayload = {
   review_id: number;
 };
 
-const useReactToReviewMutation = (
+const useDeleteReviewReactionMutation = (
   product_id: number,
   filter_state: IFilterType,
 ) => {
   const query_client = useQueryClient();
   return useMutation<IResponse, AxiosError<IResponse>, IRequestPayload>({
     async mutationFn({ review_id }) {
-      const response = await Axios.post<IResponse>(
-        `/react-to-review/${review_id}`,
-        {
-          is_helpful: true,
-        },
+      const response = await Axios.delete<IResponse>(
+        `/remove-reaction/${review_id}`,
       );
       return response.data;
     },
     onSuccess(response, { review_id }) {
       enqueueSnackbar(response.message, {
-        key: "react-to-review-success",
+        key: "delete-review-reaction-success",
         variant: "success",
       });
-
       query_client.setQueryData(
         ["product-reviews", product_id, null, filter_state],
         (oldData: any) => {
@@ -51,8 +47,8 @@ const useReactToReviewMutation = (
                 if (review.id === review_id) {
                   return {
                     ...review,
-                    is_reacted: true,
-                    helpful_count: review.helpful_count + 1,
+                    is_reacted: false,
+                    helpful_count: review.helpful_count - 1,
                   };
                 }
                 return review;
@@ -64,10 +60,10 @@ const useReactToReviewMutation = (
     },
     onError(error) {
       enqueueSnackbar(error.response?.data?.message ?? "Something went wrong", {
-        key: "react-to-review-error",
+        key: "delete-review-reaction-error",
         variant: "error",
       });
     },
   });
 };
-export default useReactToReviewMutation;
+export default useDeleteReviewReactionMutation;
