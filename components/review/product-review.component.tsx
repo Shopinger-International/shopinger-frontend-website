@@ -1,9 +1,10 @@
 import Image from "next/image";
 
 // types
-import type IReview from "@/types/review";
 import type { FC } from "react";
-import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type IReview from "@/types/review";
+import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
+import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import Rating from "@/components/common/rating.component";
@@ -24,11 +25,8 @@ type IProps = IReview & {
     open,
     action_type,
     onSuccess,
-  }: {
-    open: boolean;
-    action_type?: IActionType;
-    onSuccess?: () => void;
-  }) => void;
+  }: ILoginModalState) => void;
+  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
 const ProductReview: FC<IProps> = ({
@@ -41,6 +39,7 @@ const ProductReview: FC<IProps> = ({
   variant_snapshot,
   created_at,
   handleLoginModalState,
+  handleReportModalState,
 }) => {
   const react_to_review_mutation = useReactToReviewMutation();
   const { data: user_details } = useUserDetails();
@@ -127,7 +126,15 @@ const ProductReview: FC<IProps> = ({
           <span>Helpful</span>
         </button>
         <span> | </span>
-        <button className="flex cursor-pointer items-center gap-1">
+        <button
+          className="flex cursor-pointer items-center gap-1"
+          onClick={() =>
+            handleReportModalState({
+              open: true,
+              review_id: id,
+            })
+          }
+        >
           Report
         </button>
       </div>

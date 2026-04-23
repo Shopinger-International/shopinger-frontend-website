@@ -6,7 +6,7 @@ import type IAttributeType from "@/types/attribute";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type IProduct from "@/types/product";
 import type IMedia from "@/types/media";
-import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import ProductInfoTabs from "@/components/product/product-info/product-info-tabs.component";
@@ -87,11 +87,7 @@ type IProps = {
     open,
     action_type,
     onSuccess,
-  }: {
-    open: boolean;
-    action_type?: IActionType;
-    onSuccess?: () => void;
-  }) => void;
+  }: ILoginModalState) => void;
 };
 
 const ProductDetails: FC<IProps> = ({

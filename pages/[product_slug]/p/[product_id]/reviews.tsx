@@ -7,7 +7,7 @@ import type { GetServerSideProps } from "next";
 import type IReview from "@/types/review";
 import type { DehydratedState } from "@tanstack/react-query";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
-import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -27,17 +27,23 @@ import useProductReviews from "@/hooks/axios/review/use-product-reviews.hook";
 // helpers
 import { getProductReviews } from "@/hooks/axios/review/use-product-reviews.hook";
 
+export type IReportModalState = {
+  open: boolean;
+  review_id?: number;
+};
+
 type IProps = {
   product_id: number;
   dehydratedState: DehydratedState;
 };
 
 const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
-  const [login_modal_state, setLoginModalState] = useState<{
-    open: boolean;
-    action_type?: IActionType;
-    onSuccess?: () => void;
-  }>({
+  const [report_modal_state, setReportModalState] = useState<IReportModalState>(
+    {
+      open: false,
+    },
+  );
+  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
     open: false,
   });
   const [filter_state, setFilterState] = useState<IFilterType>("helpful");
@@ -92,8 +98,15 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
           login_modal_state.onSuccess?.();
         }}
       />
+      <ReportModal
+        is_open={report_modal_state.open}
+        onClose={() => {
+          setReportModalState({
+            open: false,
+          });
+        }}
+      />
       <section className="w-full bg-white py-4">
-        {/* <ReportModal is_open={false} onClose={() => {}} /> */}
         <div className="mx-auto mt-(--header-height) max-w-6xl space-y-6 px-4">
           {/* Rating Summary */}
           {rating_summary && <RatingSummary {...rating_summary} />}
@@ -158,6 +171,16 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
                     ...(onSuccess ? { onSuccess } : {}),
                   });
                 }}
+                handleReportModalState={({ open, review_id }) =>
+                  setReportModalState({
+                    open,
+                    ...(review_id
+                      ? {
+                          review_id,
+                        }
+                      : {}),
+                  })
+                }
               />
             ))}
           </div>

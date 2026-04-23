@@ -82,6 +82,12 @@ type IParams = {
   variant_id: string;
 };
 
+export type ILoginModalState = {
+  open: boolean;
+  action_type?: IActionType;
+  onSuccess?: () => void;
+};
+
 export type IActionType = "review_upvote";
 
 type IProps = {
@@ -101,11 +107,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   variant,
   related_products,
 }) => {
-  const [login_modal_state, setLoginModalState] = useState<{
-    open: boolean;
-    action_type?: IActionType;
-    onSuccess?: () => void;
-  }>({
+  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
     open: false,
   });
   const { data: availbility_data } = useProductAvailability(

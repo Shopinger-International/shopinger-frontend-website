@@ -1,12 +1,21 @@
-import { useEffect, useState } from "react";
+// types
 import type { FC } from "react";
+
+// external components
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { Formik, Form } from "formik";
+
+// icons
+import { X } from "lucide-react";
+
+type IInitialValues = {
+  reason: string;
+};
 
 type IProps = {
   is_open: boolean;
   onClose: () => void;
   reviewTitle?: string;
-  onSubmit: (data: { reason: string; note?: string }) => Promise<void>;
 };
 
 const reasons = [
@@ -17,120 +26,93 @@ const reasons = [
   "Other",
 ];
 
-const ReportModal: FC<IProps> = ({
-  is_open,
-  onClose,
-  reviewTitle,
-  onSubmit,
-}) => {
-  const [reason, setReason] = useState("");
-  const [note, setNote] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const isOther = reason === "Other";
-
-  // reset when closed
-  useEffect(() => {
-    if (!is_open) {
-      setReason("");
-      setNote("");
-      setLoading(false);
-    }
-  }, [is_open]);
-
-  const handleSubmit = async () => {
-    try {
-      setLoading(true);
-
-      await onSubmit({
-        reason,
-        note: note?.trim() || undefined,
-      });
-
-      onClose();
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const ReportModal: FC<IProps> = ({ is_open, onClose }) => {
   return (
     <Dialog open={is_open} onClose={onClose} className="relative z-50">
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-xs" />
 
       {/* Center */}
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-md rounded-2xl bg-white shadow-xl">
-          
+        <DialogPanel className="flex w-full max-w-sm flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
           {/* Header */}
-          <div className="border-b p-5">
-            <DialogTitle className="text-lg font-semibold text-gray-900">
+          <div className="flex items-center justify-between border-b border-gray-300 bg-gray-50 px-6 py-3">
+            <DialogTitle className="text-base font-semibold text-gray-900">
               Report review
             </DialogTitle>
 
-            {reviewTitle && (
-              <p className="mt-1 line-clamp-2 text-sm text-gray-500">
-                “{reviewTitle}”
-              </p>
-            )}
-          </div>
-
-          {/* Body */}
-          <div className="p-5">
-            <p className="text-sm text-gray-600">
-              Help us understand what’s wrong with this review
-            </p>
-
-            {/* Reasons */}
-            <div className="mt-4 space-y-2">
-              {reasons.map((item) => (
-                <label
-                  key={item}
-                  className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-gray-50"
-                >
-                  <input
-                    type="radio"
-                    name="report_reason"
-                    value={item}
-                    checked={reason === item}
-                    onChange={() => setReason(item)}
-                    className="accent-orange-500"
-                  />
-                  {item}
-                </label>
-              ))}
-            </div>
-
-            {/* Optional textarea */}
-            {isOther && (
-              <textarea
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                placeholder="Tell us more..."
-                className="mt-4 w-full rounded-md border border-gray-300 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                rows={3}
-              />
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="flex justify-end gap-3 border-t p-4">
             <button
-              className="rounded-md px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
               onClick={onClose}
-              disabled={loading}
+              className="rounded-md p-2 hover:bg-gray-100"
             >
-              Cancel
-            </button>
-
-            <button
-              disabled={!reason || loading}
-              className="rounded-md bg-orange-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-              onClick={handleSubmit}
-            >
-              {loading ? "Submitting..." : "Submit"}
+              <X className="h-5 w-5 text-gray-600" />
             </button>
           </div>
+
+          {/* Form */}
+          <Formik<IInitialValues>
+            initialValues={{
+              reason: "",
+            }}
+            onSubmit={(values) => {}}
+          >
+            {({ values, setFieldValue, isSubmitting }) => (
+              <Form className="flex flex-1 flex-col">
+                {/* Body */}
+                <div className="flex-1 overflow-y-auto px-6 py-4">
+                  <p className="text-sm font-medium text-gray-900">
+                    Why are you reporting this?
+                  </p>
+
+                  <ul className="mt-3 space-y-3">
+                    {reasons.map((reason, index) => {
+                      const active = values.reason === reason;
+
+                      return (
+                        <li key={`reason-${index}`}>
+                          <button
+                            type="button"
+                            onClick={() => setFieldValue("reason", reason)}
+                            className={`flex w-full items-center gap-3 text-left text-sm transition outline-none`}
+                          >
+                            <span
+                              className={`size-4 rounded-full transition ${
+                                active
+                                  ? "bg-orange-500"
+                                  : "border-2 border-gray-400"
+                              }`}
+                            />
+
+                            {/* Label */}
+                            <span>{reason}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
+                {/* Footer */}
+                <div className="flex justify-end gap-3 border-t border-gray-300 px-6 py-3">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="rounded-lg px-4 py-2 text-sm font-medium text-gray-900"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={!values.reason || isSubmitting}
+                    className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-50"
+                  >
+                    {isSubmitting ? "Submitting..." : "Submit report"}
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
         </DialogPanel>
       </div>
     </Dialog>
