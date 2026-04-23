@@ -2,6 +2,9 @@ import { FC } from "react";
 import Rating from "@/components/common/rating.component";
 import { Star } from "lucide-react";
 
+// hooks
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+
 type IProps = {
   average_rating: number;
   total_reviews: number;
@@ -13,17 +16,18 @@ const RatingSummary: FC<IProps> = ({
   total_reviews,
   rating_breakdown,
 }) => {
+  const is_mobile = useIsMobile();
   return (
     <div className="flex flex-col gap-8 border-b border-gray-300 pb-6 md:flex-row md:items-center md:justify-between">
       {/* LEFT: Overall summary */}
-      <div className="space-y-3">
-        <div className="flex items-end gap-3">
-          <h1 className="text-5xl leading-none font-semibold">
+      <div className="space-y-2 sm:space-y-3">
+        <div className="flex items-end gap-2 sm:gap-3">
+          <h1 className="text-3xl leading-none font-semibold sm:text-5xl">
             {average_rating.toFixed(1)}
           </h1>
 
           <div className="flex items-center pb-1">
-            <Star className="size-10 fill-orange-500 text-orange-500" />
+            <Star className="size-6 fill-orange-500 text-orange-500 sm:size-10" />
           </div>
         </div>
 
@@ -38,7 +42,7 @@ const RatingSummary: FC<IProps> = ({
         <Rating
           totalStars={5}
           custom_rating={average_rating}
-          size={20}
+          size={is_mobile ? 14 : 20}
           onChange={() => {}}
         />
       </div>

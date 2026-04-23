@@ -61,7 +61,6 @@ const ReviewModal: FC<IProps> = ({
     comment: review?.comment ?? "",
     medias: [],
   };
-  console.log("value of review",review);
 
   return (
     <Dialog as="div" className="relative z-50" onClose={onClose} open={is_open}>

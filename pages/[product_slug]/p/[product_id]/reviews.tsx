@@ -145,7 +145,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
             ))}
           </div>
 
-          <div className="flex gap-3 text-sm">
+          <div className="flex gap-3 text-sm overflow-x-auto">
             {[
               { label: "Helpful", value: "helpful" },
               { label: "Latest", value: "recent" },
