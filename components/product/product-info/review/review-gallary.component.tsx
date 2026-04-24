@@ -25,6 +25,7 @@ const ReviewGallary: FC<IProps> = ({ review_medias }) => {
               src={main_image.url}
               fill={true}
               className="object-cover"
+              sizes="160px"
             />
 
             <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/20" />
@@ -42,6 +43,7 @@ const ReviewGallary: FC<IProps> = ({ review_medias }) => {
                     src={media.url}
                     className="object-cover"
                     fill={true}
+                    sizes="120px"
                     alt="review"
                   />
 
