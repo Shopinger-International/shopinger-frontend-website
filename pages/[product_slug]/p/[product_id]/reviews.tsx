@@ -136,6 +136,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
               >
                 <Image
                   fill={true}
+                  sizes="160px"
                   key={`top-media-${index}`}
                   alt="top-media"
                   src={media.url}
@@ -145,7 +146,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
             ))}
           </div>
 
-          <div className="flex gap-3 overflow-x-auto text-sm no-scrollbar">
+          <div className="no-scrollbar flex gap-3 overflow-x-auto text-sm">
             {[
               { label: "Helpful", value: "helpful" },
               { label: "Latest", value: "recent" },

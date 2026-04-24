@@ -108,6 +108,7 @@ const ProductReview: FC<IProps> = ({
               <Image
                 key={index}
                 fill={true}
+                sizes={"80px"}
                 src={media.url}
                 className="object-cover"
                 alt="review-media"
