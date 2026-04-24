@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -49,14 +50,21 @@ type IResponse = ICart & {
 };
 
 const getCheckoutIntent = (intent_id: string, cookie: string) => {
-  const response = Axios.get<IResponse>(`/checkout/intent/${intent_id}`, {
-    headers: cookie
-      ? {
-          cookie,
-        }
-      : {},
-  });
-  return response;
+  try {
+    const response = Axios.get<IResponse>(`/checkout/intent/${intent_id}`, {
+      headers: cookie
+        ? {
+            cookie,
+          }
+        : {},
+    });
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw error;
+    }
+    throw new Error("Unexpected error occurred"); // React Query will catch it
+  }
 };
 
 export type IAddressModalState = {
@@ -232,20 +240,49 @@ export const getServerSideProps = (async ({ params, req }) => {
   if (!intent_id) {
     return { notFound: true };
   }
+  try {
+    const {
+      data: { items, sub_total, total_amount, total_discount, total_items },
+    } = await getCheckoutIntent(intent_id, cookie);
 
-  const {
-    data: { items, sub_total, total_amount, total_discount, total_items },
-  } = await getCheckoutIntent(intent_id, cookie);
+    return {
+      props: {
+        products: items,
+        sub_total,
+        total_amount,
+        total_discount,
+        total_items,
+      },
+    };
+  } catch (error: any) {
+    const status = error?.response?.status;
 
-  return {
-    props: {
-      products: items,
-      sub_total,
-      total_amount,
-      total_discount,
-      total_items,
-    },
-  };
+    if (status === 404) {
+      return {
+        redirect: {
+          destination: "/404",
+          permanent: false,
+        },
+      };
+    }
+
+    if (status === 401) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+
+    // fallback: generic error page
+    return {
+      redirect: {
+        destination: "/500",
+        permanent: false,
+      },
+    };
+  }
 }) satisfies GetServerSideProps<IProps>;
 
 export default CheckoutPage;
