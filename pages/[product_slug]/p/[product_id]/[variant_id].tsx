@@ -34,7 +34,7 @@ import {
 import { getMappings } from "@/hooks/axios/common/use-category-mappings.hook";
 import { useProductAvailability } from "@/hooks/axios/product/use-get-product-availbility.hook";
 
-const getProduct = async (
+export const getProduct = async (
   product_id: number,
 ): Promise<{
   product: IProduct;

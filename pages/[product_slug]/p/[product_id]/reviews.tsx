@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 // types
@@ -9,6 +10,7 @@ import type { DehydratedState } from "@tanstack/react-query";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
 import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type IUser from "@/types/user";
+import type IProduct from "@/types/product";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -27,6 +29,7 @@ import useProductReviews from "@/hooks/axios/review/use-product-reviews.hook";
 
 // helpers
 import { getProductReviews } from "@/hooks/axios/review/use-product-reviews.hook";
+import { getProduct } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 export type IReportModalState = {
   open: boolean;
@@ -35,10 +38,16 @@ export type IReportModalState = {
 
 type IProps = {
   product_id: number;
+  product: IProduct;
   dehydratedState: DehydratedState;
 };
 
-const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
+const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
+  const { title, brand } = product;
+  const product_title =
+    !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
+      ? title
+      : `${brand} ${title}`;
   const [report_modal_state, setReportModalState] = useState<IReportModalState>(
     {
       open: false,
@@ -99,6 +108,15 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
   };
   return (
     <>
+      <Head>
+        <title>{product_title} Reviews & Ratings | Shopinger</title>
+        <meta
+          name="description"
+          content={`Read customer reviews and ratings for ${product_title}. See real feedback, pros & cons, and user experiences on Shopinger.`}
+          key="desc"
+        />
+        <meta name="robots" content="index, follow" />
+      </Head>
       <LoginModal
         open={login_modal_state.open}
         handleClose={() =>
@@ -235,9 +253,12 @@ export const getServerSideProps = (async ({ params }) => {
       }),
     initialPageParam: 1,
   });
+
+  let { product } = await getProduct(product_id);
   return {
     props: {
       product_id,
+      product,
       dehydratedState: dehydrate(queryClient),
     },
   };
