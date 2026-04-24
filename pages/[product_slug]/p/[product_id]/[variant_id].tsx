@@ -234,6 +234,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         }}
       />
       <ReportModal
+        review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
         onClose={() => setReportModalState({ open: false })}
         handleLogin={openLoginModal}

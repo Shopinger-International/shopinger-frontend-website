@@ -123,6 +123,7 @@ const ProductReview: FC<IProps> = ({
           <button
             className="flex cursor-pointer items-center gap-1"
             onClick={() => {
+              console.log('value of id',id);
               handleReportModalState({
                 open: true,
                 review_id: id,

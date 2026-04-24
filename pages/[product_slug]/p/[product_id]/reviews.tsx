@@ -132,6 +132,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
         }}
       />
       <ReportModal
+        review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
         onClose={() => {
           setReportModalState({
