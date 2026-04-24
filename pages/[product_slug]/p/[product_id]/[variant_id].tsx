@@ -84,6 +84,7 @@ type IParams = {
   product_id: string;
   variant_id: string;
 };
+export type IActionType = "review_upvote" | "buy_intent";
 
 export type ILoginModalState = {
   open: boolean;
@@ -91,8 +92,6 @@ export type ILoginModalState = {
   onSuccess?: (user: IUser) => void;
   onCancel?: () => void;
 };
-
-export type IActionType = "review_upvote";
 
 type IProps = {
   product_id: number;

@@ -20,6 +20,7 @@ import MobileProductGallary from "@/components/product/product-gallary/mobile-pr
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
 import useCreateBuyingIntentMutation from "@/hooks/axios/checkout/use-create-buying-intent-mutation.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 type IProps = {
   product: IProduct;
@@ -45,6 +46,8 @@ const ProductInfo: FC<IProps> = ({
   handleReportModalState,
 }) => {
   const router = useRouter();
+  const { data: user_details } = useUserDetails();
+  const is_logged_in = !!user_details;
   const create_buying_intent_mutation = useCreateBuyingIntentMutation();
   const add_to_cart_mutation = useAddToCartMutation();
   const { title, brand, sub_sub_category } = product;
@@ -195,18 +198,42 @@ const ProductInfo: FC<IProps> = ({
             create_buying_intent_mutation.isPending || !is_product_available
           }
           onClick={() => {
-            create_buying_intent_mutation.mutate(
-              {
-                product_id: product.id,
-                variant_id: variant.id,
-                quantity: 1,
-              },
-              {
-                onSuccess({ intent_id }) {
-                  router.push(`/checkout/${intent_id}`);
+            if (is_logged_in) {
+              create_buying_intent_mutation.mutate(
+                {
+                  product_id: product.id,
+                  variant_id: variant.id,
+                  quantity: 1,
                 },
-              },
-            );
+                {
+                  onSuccess({ intent_id }) {
+                    router.push(`/checkout/${intent_id}`);
+                  },
+                },
+              );
+            } else {
+              handleLoginModalState({
+                open: true,
+                action_type: "buy_intent",
+                onSuccess(user) {
+                  if (user) {
+                    create_buying_intent_mutation.mutate(
+                      {
+                        product_id: product.id,
+                        variant_id: variant.id,
+                        quantity: 1,
+                      },
+                      {
+                        onSuccess({ intent_id }) {
+                          router.push(`/checkout/${intent_id}`);
+                        },
+                      },
+                    );
+                  }
+                },
+                onCancel() {},
+              });
+            }
           }}
         >
           Buy Now

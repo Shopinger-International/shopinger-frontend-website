@@ -58,35 +58,42 @@ const RatingSummary: FC<IProps> = ({
 
       {/* RIGHT: Distribution */}
       <div className="w-full space-y-3 md:w-1/2">
-        {Object.entries(rating_breakdown).map(([rating, count], index) => {
-          const percent = total_reviews > 0 ? (count / total_reviews) * 100 : 0;
+        {Object.entries(rating_breakdown)
+          .sort((a, b) => {
+            const a_rating = Number(a[0]);
+            const b_rating = Number(b[0]);
+            return b_rating - a_rating;
+          })
+          .map(([rating, count], index) => {
+            const percent =
+              total_reviews > 0 ? (count / total_reviews) * 100 : 0;
 
-          return (
-            <div
-              key={`rating-break-down-${index}`}
-              className="group flex items-center gap-3"
-            >
-              {/* Star label */}
-              <div className="flex w-12 items-center gap-1 text-sm text-gray-700">
-                <span className="font-medium">{rating}</span>
-                <Star className="size-3.5 fill-orange-500 text-orange-500" />
+            return (
+              <div
+                key={`rating-break-down-${index}`}
+                className="group flex items-center gap-3"
+              >
+                {/* Star label */}
+                <div className="flex w-12 items-center gap-1 text-sm text-gray-700">
+                  <span className="font-medium">{rating}</span>
+                  <Star className="size-3.5 fill-orange-500 text-orange-500" />
+                </div>
+
+                {/* Bar */}
+                <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-gray-200">
+                  <div
+                    className="h-full rounded-full bg-orange-500 transition-all duration-500 group-hover:bg-orange-600"
+                    style={{ width: `${percent}%` }}
+                  />
+                </div>
+
+                {/* Percent instead of raw count (cleaner UX) */}
+                <span className="w-14 text-right text-xs text-gray-500 tabular-nums">
+                  {percent.toFixed(0)}%
+                </span>
               </div>
-
-              {/* Bar */}
-              <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-gray-200">
-                <div
-                  className="h-full rounded-full bg-orange-500 transition-all duration-500 group-hover:bg-orange-600"
-                  style={{ width: `${percent}%` }}
-                />
-              </div>
-
-              {/* Percent instead of raw count (cleaner UX) */}
-              <span className="w-14 text-right text-xs text-gray-500 tabular-nums">
-                {percent.toFixed(0)}%
-              </span>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
     </div>
   );

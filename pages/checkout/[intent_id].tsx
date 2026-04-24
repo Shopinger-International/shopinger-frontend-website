@@ -11,6 +11,7 @@ import type { ICart } from "@/types/cart";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
+import ProtectedLayout from "@/components/layout/protected-layout.component";
 
 // local components
 import CheckoutDetail from "@/components/checkout/checkout-detail.component";
@@ -105,11 +106,10 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({
   return (
     <>
       <Head>
-        <title>Your Cart | Shopinger</title>
+        <title>Secure Checkout | Shopinger</title>
         <meta
           name="description"
-          content="Review the items in your cart, update quantities, and proceed to checkout securely on Shopinger."
-          key="desc"
+          content="Complete your purchase securely. Review your order and confirm delivery details on Shopinger."
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
@@ -231,7 +231,11 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({
 };
 
 CheckoutPage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return (
+    <ProtectedLayout>
+      <MainLayout>{page}</MainLayout>
+    </ProtectedLayout>
+  );
 };
 
 export const getServerSideProps = (async ({ params, req }) => {
