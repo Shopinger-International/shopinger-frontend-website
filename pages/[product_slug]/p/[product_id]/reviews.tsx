@@ -123,7 +123,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
         handleLogin={openLoginModal}
       />
       <section className="w-full bg-white py-4">
-        <div className="mx-auto mt-(--header-height) max-w-6xl space-y-6 px-4">
+        <div className="mx-auto mt-(--header-height) max-w-6xl space-y-4 px-4">
           {/* Rating Summary */}
           {rating_summary && <RatingSummary {...rating_summary} />}
 
@@ -145,7 +145,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id }) => {
             ))}
           </div>
 
-          <div className="flex gap-3 text-sm overflow-x-auto">
+          <div className="flex gap-3 overflow-x-auto text-sm no-scrollbar">
             {[
               { label: "Helpful", value: "helpful" },
               { label: "Latest", value: "recent" },

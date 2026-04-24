@@ -1,9 +1,15 @@
+// types
 import { FC } from "react";
+
+// local components
 import Rating from "@/components/common/rating.component";
+
+// icons
 import { Star } from "lucide-react";
 
 // hooks
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 
 type IProps = {
   average_rating: number;
@@ -17,6 +23,7 @@ const RatingSummary: FC<IProps> = ({
   rating_breakdown,
 }) => {
   const is_mobile = useIsMobile();
+  const is_mounted = useIsMounted();
   return (
     <div className="flex flex-col gap-8 border-b border-gray-300 pb-6 md:flex-row md:items-center md:justify-between">
       {/* LEFT: Overall summary */}
@@ -39,12 +46,14 @@ const RatingSummary: FC<IProps> = ({
           ratings
         </div>
 
-        <Rating
-          totalStars={5}
-          custom_rating={average_rating}
-          size={is_mobile ? 14 : 20}
-          onChange={() => {}}
-        />
+        {is_mounted && (
+          <Rating
+            totalStars={5}
+            custom_rating={average_rating}
+            size={is_mobile ? 18 : 20}
+            onChange={() => {}}
+          />
+        )}
       </div>
 
       {/* RIGHT: Distribution */}
