@@ -127,18 +127,36 @@ const ReportModal: FC<IProps> = ({
             }}
             onSubmit={async ({ description, ...values }) => {
               if (is_logged_in) {
-                report_review_mutation.mutate({
-                  review_id,
-                  reason: values.reason as IReason,
-                  ...(description
-                    ? {
-                        description,
-                      }
-                    : {}),
-                });
+                report_review_mutation.mutate(
+                  {
+                    review_id,
+                    reason: values.reason as IReason,
+                    ...(description
+                      ? {
+                          description,
+                        }
+                      : {}),
+                  },
+                  {
+                    onSuccess() {
+                      onClose();
+                    },
+                  },
+                );
               } else {
                 handleLogin()
                   .then((user) => {
+                    if (user) {
+                      report_review_mutation.mutate({
+                        review_id,
+                        reason: values.reason as IReason,
+                        ...(description
+                          ? {
+                              description,
+                            }
+                          : {}),
+                      });
+                    }
                     onClose();
                   })
                   .catch((err) => {});
