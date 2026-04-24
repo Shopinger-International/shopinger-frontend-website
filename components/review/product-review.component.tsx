@@ -42,6 +42,7 @@ const ProductReview: FC<IProps> = ({
   user,
   review_medias,
   variant_snapshot,
+  helpful_count,
   is_reacted,
   created_at,
   product_id,
@@ -147,7 +148,7 @@ const ProductReview: FC<IProps> = ({
             className={clsx("size-4", is_reacted && "fill-orange-500")}
             strokeWidth={2.5}
           />
-          <span>Helpful</span>
+          <span>Helpful {helpful_count > 0 && `(${helpful_count})`}</span>
         </button>
         <span> | </span>
         <button

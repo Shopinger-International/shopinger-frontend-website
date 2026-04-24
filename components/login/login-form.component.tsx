@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -114,6 +115,7 @@ const LoginForm: FC<IProps> = ({
   handleOnSuccess,
   anchorOrigin,
 }) => {
+  const query_client = useQueryClient();
   const send_otp_mutation = useSendOTPMutation();
   const verify_otp_mutation = useVerifyLoginOtp(anchorOrigin);
   const router = useRouter();
@@ -291,6 +293,9 @@ const LoginForm: FC<IProps> = ({
                   onSuccess(response) {
                     !is_modal && router.push("/");
                     handleOnSuccess?.(response.user);
+                    query_client.invalidateQueries({
+                      queryKey: ["product-reviews"],
+                    });
                   },
                 },
               );
