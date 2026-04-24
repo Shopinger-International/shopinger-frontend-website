@@ -4,7 +4,8 @@ import type { FC } from "react";
 import type { FieldProps } from "formik";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
-import { IOrderItem } from "@/types/order";
+import type { IOrderItem } from "@/types/order";
+import type IMedia from "@/types/media";
 
 // external components
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -34,6 +35,7 @@ type IInitialValues = {
   title: string;
   comment: string;
   medias: File[];
+  existing_medias: Array<IMedia>;
 };
 type IProps = {
   product: Omit<IProduct, "variants">;
@@ -60,6 +62,7 @@ const ReviewModal: FC<IProps> = ({
     title: review?.title ?? "",
     comment: review?.comment ?? "",
     medias: [],
+    existing_medias: review?.review_medias?.map(({ media }) => media) ?? [],
   };
 
   return (
@@ -103,7 +106,7 @@ const ReviewModal: FC<IProps> = ({
           {/* Form */}
           <Formik<IInitialValues>
             initialValues={initial_values}
-            onSubmit={({ medias, ...values }) => {
+            onSubmit={({ medias, existing_medias, ...values }) => {
               const form_data = new FormData();
               const payload = {
                 product_id: product.id,
@@ -111,6 +114,9 @@ const ReviewModal: FC<IProps> = ({
                 order_item_id: order_item.item_id,
                 ...values,
               };
+              existing_medias.forEach((media) => {
+                form_data.append("existing_medias_id[]", String(media.id));
+              });
               Object.entries(payload).forEach(([key, value]) =>
                 form_data.append(key, String(value)),
               );
@@ -228,12 +234,17 @@ const ReviewModal: FC<IProps> = ({
                           (f) => f.size <= MAX_SIZE,
                         );
 
-                        form.setFieldValue(
-                          "medias",
-                          [...files, ...valid].slice(0, MAX_FILES),
-                        );
-                      };
+                        const remainingSlots =
+                          MAX_FILES -
+                          values.existing_medias.length -
+                          files.length;
 
+                        if (remainingSlots <= 0) return;
+
+                        const filesToAdd = valid.slice(0, remainingSlots);
+
+                        form.setFieldValue("medias", [...files, ...filesToAdd]);
+                      };
                       return (
                         <div className="flex flex-col gap-3">
                           <label className="text-sm font-medium">
@@ -268,14 +279,48 @@ const ReviewModal: FC<IProps> = ({
                           </div>
 
                           {/* Preview Grid */}
-                          {files.length > 0 && (
+                          {(files.length > 0 ||
+                            values["existing_medias"].length > 0) && (
                             <div className="grid grid-cols-4 gap-3">
+                              {values["existing_medias"].map((media) => (
+                                <div
+                                  key={`existing-media-${media.id}`}
+                                  className="group relative aspect-square overflow-hidden rounded-md border-2 border-gray-300"
+                                >
+                                  <Image
+                                    src={media.url}
+                                    alt="preview"
+                                    fill
+                                    className="object-cover"
+                                  />
+
+                                  <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/40" />
+
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const existing_medias =
+                                        values["existing_medias"];
+                                      form.setFieldValue(
+                                        "existing_medias",
+                                        existing_medias.filter(
+                                          (existing_media) =>
+                                            existing_media.id != media.id,
+                                        ),
+                                      );
+                                    }}
+                                    className="absolute top-1 right-1 rounded-sm bg-white p-1 text-xs shadow"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
                               {files.map((file, index) => {
                                 const preview = URL.createObjectURL(file);
 
                                 return (
                                   <div
-                                    key={index}
+                                    key={`existing-uploaded-files-${index}`}
                                     className="group relative aspect-square overflow-hidden rounded-md border-2 border-gray-300"
                                   >
                                     <Image
@@ -295,7 +340,7 @@ const ReviewModal: FC<IProps> = ({
                                         );
                                         form.setFieldValue("medias", updated);
                                       }}
-                                      className="absolute top-1 right-1 hidden rounded-md bg-white p-1 text-xs shadow group-hover:block"
+                                      className="absolute top-1 right-1 rounded-sm bg-white p-1 text-xs shadow"
                                     >
                                       ✕
                                     </button>
@@ -303,7 +348,8 @@ const ReviewModal: FC<IProps> = ({
                                 );
                               })}
 
-                              {files.length < 5 && (
+                              {files.length + values["existing_medias"].length <
+                                5 && (
                                 <label className="flex aspect-square cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-orange-400 hover:text-orange-500">
                                   +
                                   <input
