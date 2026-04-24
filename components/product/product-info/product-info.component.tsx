@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -18,6 +19,7 @@ import MobileProductGallary from "@/components/product/product-gallary/mobile-pr
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
+import useCreateBuyingIntentMutation from "@/hooks/axios/checkout/use-create-buying-intent-mutation.hook";
 
 type IProps = {
   product: IProduct;
@@ -42,6 +44,8 @@ const ProductInfo: FC<IProps> = ({
   handleLoginModalState,
   handleReportModalState,
 }) => {
+  const router = useRouter();
+  const create_buying_intent_mutation = useCreateBuyingIntentMutation();
   const add_to_cart_mutation = useAddToCartMutation();
   const { title, brand, sub_sub_category } = product;
   const updated_title =
@@ -181,13 +185,29 @@ const ProductInfo: FC<IProps> = ({
             });
           }}
           disabled={add_to_cart_mutation.isPending || !is_product_available}
-          className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-600"
+          className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600"
         >
           Add to cart
         </button>
         <button
-          className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white"
-          disabled={!is_product_available}
+          className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white disabled:bg-orange-300"
+          disabled={
+            create_buying_intent_mutation.isPending || !is_product_available
+          }
+          onClick={() => {
+            create_buying_intent_mutation.mutate(
+              {
+                product_id: product.id,
+                variant_id: variant.id,
+                quantity: 1,
+              },
+              {
+                onSuccess({ intent_id }) {
+                  router.push(`/checkout/${intent_id}`);
+                },
+              },
+            );
+          }}
         >
           Buy Now
         </button>

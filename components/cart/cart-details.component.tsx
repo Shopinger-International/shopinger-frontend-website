@@ -1,4 +1,3 @@
-import { useState } from "react";
 // types
 import type { FC } from "react";
 import type IOrder from "@/types/order";

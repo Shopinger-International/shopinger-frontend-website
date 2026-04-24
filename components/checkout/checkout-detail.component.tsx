@@ -2,19 +2,33 @@
 import type { FC } from "react";
 import type { IAddress } from "@/types/address";
 import type IOrder from "@/types/order";
+import type { ICart } from "@/types/cart";
 
 // local components
 import AddressBar from "@/components/cart/address-bar.component";
+import CartItem from "../cart/cart-item.component";
+import CartSummary from "../cart/cart-summary.component";
+import HelpSection from "../common/help-section.component";
 
 type IProps = {
+  products: ICart["items"];
   selected_address: IAddress | null;
+  sub_total: number;
+  total_amount: number;
+  total_discount: number;
+  total_items: number;
   handleAddressDrawerState: (open: boolean) => void;
   handleOrderSuccess: (order: IOrder) => void;
 };
 const CheckoutDetail: FC<IProps> = ({
+  products,
   selected_address,
+  sub_total,
+  total_amount,
+  total_discount,
+  total_items,
   handleAddressDrawerState,
-  handleOrderSuccess
+  handleOrderSuccess,
 }) => {
   return (
     <div className="relative grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -27,9 +41,43 @@ const CheckoutDetail: FC<IProps> = ({
         />
 
         {/* Cart Items */}
+        <div className="h-min overflow-hidden rounded-xl border border-gray-300 bg-white">
+          {products?.flatMap(({ variants, ...product }) =>
+            variants.map((variant) => (
+              <CartItem
+                product={product}
+                variant={variant}
+                key={`cart-item-${variant.id}`}
+              />
+            )),
+          )}
+        </div>
       </div>
 
       {/* Summary */}
+      <div className="flex flex-col gap-4 lg:sticky lg:top-(--header-height)">
+        <CartSummary
+          handleShowLoginModal={() => {
+            // handleShowLoginModal("checkout");
+          }}
+          handleShowAddresDrawer={() => {
+            handleAddressDrawerState(true);
+          }}
+          sub_total={sub_total ?? 0}
+          total_amount={total_amount ?? 0}
+          total_discount={total_discount ?? 0}
+          total_items={total_items ?? 0}
+          charges={50}
+          selected_address={selected_address}
+          handleOrderSuccess={handleOrderSuccess}
+        />
+        <HelpSection
+          title={"Need help completing your order?"}
+          description={
+            "Facing issues with payment, address, or checkout? We’re here to help."
+          }
+        />
+      </div>
     </div>
   );
 };

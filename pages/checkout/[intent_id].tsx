@@ -5,6 +5,8 @@ import Head from "next/head";
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { IAddress } from "@/types/address";
+import type { GetServerSideProps } from "next";
+import type { ICart } from "@/types/cart";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -37,13 +39,47 @@ import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-m
 // icons
 import { MapPin } from "lucide-react";
 
+// helpers
+import Axios from "@/lib/axios/private.lib";
+
+type IResponse = ICart & {
+  expires_at: string;
+  intent_id: string;
+  type: "buy_now";
+};
+
+const getCheckoutIntent = (intent_id: string, cookie: string) => {
+  const response = Axios.get<IResponse>(`/checkout/intent/${intent_id}`, {
+    headers: cookie
+      ? {
+          cookie,
+        }
+      : {},
+  });
+  return response;
+};
+
 export type IAddressModalState = {
   open: boolean;
   data: IAddress | null;
   action_type?: "checkout";
 };
 
-const Checkout: NextPageWithLayout = () => {
+type IProps = {
+  products: ICart["items"];
+  sub_total: number;
+  total_amount: number;
+  total_discount: number;
+  total_items: number;
+};
+
+const CheckoutPage: NextPageWithLayout<IProps> = ({
+  products,
+  sub_total,
+  total_amount,
+  total_discount,
+  total_items,
+}) => {
   const { data: user_addresses = [] } = useUserAddresses();
   const is_mobile = useIsMobile();
   const delete_address_mutation = useDeleteAddressMutation();
@@ -171,6 +207,11 @@ const Checkout: NextPageWithLayout = () => {
       <section className="w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           <CheckoutDetail
+            total_amount={total_amount}
+            total_discount={total_discount}
+            total_items={total_items}
+            sub_total={sub_total}
+            products={products}
             selected_address={selected_address}
             handleAddressDrawerState={(open) => setIsAddressDrawerOpen(open)}
             handleOrderSuccess={() => {}}
@@ -181,8 +222,30 @@ const Checkout: NextPageWithLayout = () => {
   );
 };
 
-Checkout.getLayout = function getLayout(page: ReactElement) {
+CheckoutPage.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;
 };
 
-export default Checkout;
+export const getServerSideProps = (async ({ params, req }) => {
+  const intent_id = params?.intent_id as string;
+  const cookie = req.headers.cookie ?? "";
+  if (!intent_id) {
+    return { notFound: true };
+  }
+
+  const {
+    data: { items, sub_total, total_amount, total_discount, total_items },
+  } = await getCheckoutIntent(intent_id, cookie);
+
+  return {
+    props: {
+      products: items,
+      sub_total,
+      total_amount,
+      total_discount,
+      total_items,
+    },
+  };
+}) satisfies GetServerSideProps<IProps>;
+
+export default CheckoutPage;
