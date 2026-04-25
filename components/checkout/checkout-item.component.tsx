@@ -86,13 +86,13 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
       <div className="flex gap-4">
         {/* IMAGE */}
 
-        <div
-          className={clsx(
-            "relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100",
-            variant.stock_status == "STOCK_EXCEEDED" && "opacity-80",
-          )}
-        >
-          <Link href={`/${product_slug}/p/${product_id}/${variant.id}`}>
+        <Link href={`/${product_slug}/p/${product_id}/${variant.id}`}>
+          <div
+            className={clsx(
+              "relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100",
+              variant.stock_status == "STOCK_EXCEEDED" && "opacity-80",
+            )}
+          >
             <Image
               src={
                 variant_medias[0]?.url ?? product.product_medias[0].media.url
@@ -102,8 +102,8 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
               className="object-contain"
               sizes="80px"
             />
-          </Link>
-        </div>
+          </div>
+        </Link>
 
         {/* CONTENT */}
         <div className="flex flex-1 flex-col justify-between">
