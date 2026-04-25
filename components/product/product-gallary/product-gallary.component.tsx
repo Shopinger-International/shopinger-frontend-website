@@ -118,7 +118,6 @@ const ProductGallary: FC<IProps> = ({
                 <Image
                   sizes="512px"
                   fill
-                  loading={"eager"}
                   src={
                     variant_medias_with_title[selected_thumbnail_index].media
                       .url
