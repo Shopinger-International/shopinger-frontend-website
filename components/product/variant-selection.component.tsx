@@ -134,6 +134,7 @@ const VariantSelection: FC<{
                             src={
                               variant_medias?.[0]?.url ?? product_medias[0].url
                             }
+                            loading="lazy"
                             fill
                             alt={value}
                             className="object-cover object-top transition-transform duration-300 group-hover:scale-105"

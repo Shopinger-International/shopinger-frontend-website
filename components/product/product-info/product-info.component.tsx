@@ -159,11 +159,11 @@ const ProductInfo: FC<IProps> = ({
         </p>
       </section>
 
-      <VariantSelection
+      {/* <VariantSelection
         product={product}
         selected_attributes={selected_attributes}
         category_mappings={category_mappings}
-      />
+      /> */}
       <CheckDeliveryAvailability />
       <p className="order-6 mb-4 font-medium">
         Sold by{" "}

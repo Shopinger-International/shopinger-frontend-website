@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -7,7 +7,7 @@ import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { IAddress } from "@/types/address";
 import type { GetServerSideProps } from "next";
-import type { ICart } from "@/types/cart";
+import type { IResponse } from "@/hooks/axios/checkout/use-checkout-intent.hook";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -17,6 +17,7 @@ import ProtectedLayout from "@/components/layout/protected-layout.component";
 import CheckoutDetail from "@/components/checkout/checkout-detail.component";
 import SidebarDrawer from "@/components/common/sidebar-drawer.component";
 import AddressRow from "@/components/cart/address-row.component";
+
 const AddAddressModal = dynamic(
   () =>
     import("@/components/manage-address/add-address-modal/add-address-modal.component"),
@@ -37,36 +38,13 @@ const MobileAddressModal = dynamic(
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
+import useCheckoutIntent from "@/hooks/axios/checkout/use-checkout-intent.hook";
 
 // icons
 import { MapPin } from "lucide-react";
 
 // helpers
-import Axios from "@/lib/axios/private.lib";
-
-type IResponse = ICart & {
-  expires_at: string;
-  intent_id: string;
-  type: "buy_now";
-};
-
-const getCheckoutIntent = (intent_id: string, cookie: string) => {
-  try {
-    const response = Axios.get<IResponse>(`/checkout/intent/${intent_id}`, {
-      headers: cookie
-        ? {
-            cookie,
-          }
-        : {},
-    });
-    return response;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      throw error;
-    }
-    throw new Error("Unexpected error occurred"); // React Query will catch it
-  }
-};
+import { getCheckoutIntent } from "@/hooks/axios/checkout/use-checkout-intent.hook";
 
 export type IAddressModalState = {
   open: boolean;
@@ -75,20 +53,11 @@ export type IAddressModalState = {
 };
 
 type IProps = {
-  products: ICart["items"];
-  sub_total: number;
-  total_amount: number;
-  total_discount: number;
-  total_items: number;
+  intent_id: string;
 };
 
-const CheckoutPage: NextPageWithLayout<IProps> = ({
-  products,
-  sub_total,
-  total_amount,
-  total_discount,
-  total_items,
-}) => {
+const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
+  const { data: intent_details } = useCheckoutIntent(intent_id);
   const { data: user_addresses = [] } = useUserAddresses();
   const is_mobile = useIsMobile();
   const delete_address_mutation = useDeleteAddressMutation();
@@ -215,11 +184,12 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({
       <section className="w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           <CheckoutDetail
-            total_amount={total_amount}
-            total_discount={total_discount}
-            total_items={total_items}
-            sub_total={sub_total}
-            products={products}
+            intent_id={intent_id}
+            total_amount={intent_details?.total_amount ?? 0}
+            total_discount={intent_details?.total_discount ?? 0}
+            total_items={intent_details?.total_items ?? 0}
+            sub_total={intent_details?.sub_total ?? 0}
+            products={intent_details?.items ?? []}
             selected_address={selected_address}
             handleAddressDrawerState={(open) => setIsAddressDrawerOpen(open)}
             handleOrderSuccess={() => {}}
@@ -240,22 +210,23 @@ CheckoutPage.getLayout = function getLayout(page: ReactElement) {
 
 export const getServerSideProps = (async ({ params, req }) => {
   const intent_id = params?.intent_id as string;
+  const query_client = new QueryClient();
   const cookie = req.headers.cookie ?? "";
   if (!intent_id) {
     return { notFound: true };
   }
   try {
-    const {
-      data: { items, sub_total, total_amount, total_discount, total_items },
-    } = await getCheckoutIntent(intent_id, cookie);
-
+    await query_client.prefetchQuery<IResponse>({
+      queryKey: ["buy-intent", intent_id],
+      queryFn: async () => {
+        const { data } = await getCheckoutIntent(intent_id, cookie);
+        return data;
+      },
+    });
     return {
       props: {
-        products: items,
-        sub_total,
-        total_amount,
-        total_discount,
-        total_items,
+        intent_id,
+        dehydratedState: dehydrate(query_client),
       },
     };
   } catch (error: any) {

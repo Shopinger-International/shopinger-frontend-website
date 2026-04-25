@@ -6,11 +6,12 @@ import type { ICart } from "@/types/cart";
 
 // local components
 import AddressBar from "@/components/cart/address-bar.component";
-import CartItem from "../cart/cart-item.component";
-import CartSummary from "../cart/cart-summary.component";
-import HelpSection from "../common/help-section.component";
+import CheckoutItem from "@/components/checkout/checkout-item.component";
+import CartSummary from "@/components/cart/cart-summary.component";
+import HelpSection from "@/components/common/help-section.component";
 
 type IProps = {
+  intent_id: string;
   products: ICart["items"];
   selected_address: IAddress | null;
   sub_total: number;
@@ -21,6 +22,7 @@ type IProps = {
   handleOrderSuccess: (order: IOrder) => void;
 };
 const CheckoutDetail: FC<IProps> = ({
+  intent_id,
   products,
   selected_address,
   sub_total,
@@ -44,10 +46,12 @@ const CheckoutDetail: FC<IProps> = ({
         <div className="h-min overflow-hidden rounded-xl border border-gray-300 bg-white">
           {products?.flatMap(({ variants, ...product }) =>
             variants.map((variant) => (
-              <CartItem
+              <CheckoutItem
                 product={product}
                 variant={variant}
                 key={`cart-item-${variant.id}`}
+                type="buy-checkout"
+                intent_id={intent_id}
               />
             )),
           )}

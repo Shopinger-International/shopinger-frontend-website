@@ -7,7 +7,7 @@ import { enqueueSnackbar } from "notistack";
 type IRequestPayload = {
   product_id: number;
   variant_id: number;
-  quantity: 1;
+  quantity: number;
 };
 
 type IResponse = {
