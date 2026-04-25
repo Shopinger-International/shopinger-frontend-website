@@ -216,7 +216,7 @@ export const getServerSideProps = (async ({ params, req }) => {
     return { notFound: true };
   }
   try {
-    await query_client.prefetchQuery<IResponse>({
+    await query_client.fetchQuery<IResponse>({
       queryKey: ["buy-intent", intent_id],
       queryFn: async () => {
         const { data } = await getCheckoutIntent(intent_id, cookie);

@@ -219,29 +219,47 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
           show_decrease_disabled={cart_item_decrease_mutation.isPending}
           quantity={selected_stock}
           onDecrease={() => {
-            cart_item_decrease_mutation.mutate({
-              variant_id,
-            });
+            if (type == "cart-checkout") {
+              cart_item_decrease_mutation.mutate({
+                variant_id,
+              });
+            } else {
+              update_intent_quantity_mutation.mutate({
+                intent_id: intent_id as string,
+                variant_id,
+                quantity: selected_stock - 1,
+              });
+            }
           }}
           onIncrease={() => {
-            cart_item_increase_mutation.mutate({
-              variant_id,
-            });
+            if (type == "cart-checkout") {
+              cart_item_increase_mutation.mutate({
+                variant_id,
+              });
+            } else {
+              update_intent_quantity_mutation.mutate({
+                intent_id: intent_id as string,
+                variant_id,
+                quantity: selected_stock + 1,
+              });
+            }
           }}
         />
 
         {/* Remove Button */}
-        <button
-          className="flex size-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
-          disabled={cart_item_remove_mutation.isPending}
-          onClick={() =>
-            cart_item_remove_mutation.mutate({
-              variant_id,
-            })
-          }
-        >
-          <X size={18} />
-        </button>
+        {type == "cart-checkout" && (
+          <button
+            className="flex size-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
+            disabled={cart_item_remove_mutation.isPending}
+            onClick={() =>
+              cart_item_remove_mutation.mutate({
+                variant_id,
+              })
+            }
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
     </div>
   );

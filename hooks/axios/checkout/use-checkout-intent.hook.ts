@@ -13,15 +13,18 @@ export type IResponse = ICart & {
   type: "buy_now";
 };
 
-export const getCheckoutIntent = (intent_id: string, cookie?: string) => {
+export const getCheckoutIntent = async (intent_id: string, cookie?: string) => {
   try {
-    const response = Axios.get<IResponse>(`/checkout/intent/${intent_id}`, {
-      headers: cookie
-        ? {
-            cookie,
-          }
-        : {},
-    });
+    const response = await Axios.get<IResponse>(
+      `/checkout/intent/${intent_id}`,
+      {
+        headers: cookie
+          ? {
+              cookie,
+            }
+          : {},
+      },
+    );
     return response;
   } catch (error) {
     if (error instanceof AxiosError) {
