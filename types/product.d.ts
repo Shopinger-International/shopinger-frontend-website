@@ -7,7 +7,6 @@ import type {
   ISubCategory,
   ISubSubCategory,
 } from "@/types/categories";
-import type IReview from "@/types/review";
 
 type IProduct = {
   id: number;
@@ -43,7 +42,7 @@ type IProduct = {
     attribute: IAttributeType;
     value;
   }>;
-  product_reviews: IReview[];
+  reviews_count: number;
   sub_sub_category_id: number;
   main_category: ICategory;
   sub_category: ISubCategory;

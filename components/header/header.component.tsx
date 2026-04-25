@@ -173,7 +173,7 @@ const Header: FC = () => {
               <Cart width={30} height={23} aria-hidden="true" />
             </span>
 
-            <span aria-hidden="true">₹{cart_details?.total_amount}</span>
+            <span aria-hidden="true">₹{cart_details?.total_amount??0}</span>
           </Link>
           <div className="hidden lg:inline">
             <Tooltip

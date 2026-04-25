@@ -25,14 +25,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
 
+// api hooks
+import useRelatedProducts from "@/hooks/axios/product/use-related-products.hook";
+
 type IProps = {
-  related_products: IProduct[];
+  product_id: number;
   category_mappings: ICategoryAttributeMapping[];
 };
-const RelatedProducts: FC<IProps> = ({
-  related_products,
-  category_mappings,
-}) => {
+const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
+  const { data: related_products = [] } = useRelatedProducts(product_id);
   const is_mobile = useIsMobile();
   const swiper_ref = useRef<any>(null);
   const formatted_related_products = related_products.flatMap((product) => {

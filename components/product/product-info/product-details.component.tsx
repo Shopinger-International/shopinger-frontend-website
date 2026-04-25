@@ -102,7 +102,7 @@ const ProductDetails: FC<IProps> = ({
   handleLoginModalState,
   handleReportModalState,
 }) => {
-  const review_exist = !!product.product_reviews.length;
+  const review_exist = !!product.reviews_count;
   const { key_features, brand, country_of_origin, product_attribute_values } =
     product;
   const { data } = useProductReviews({

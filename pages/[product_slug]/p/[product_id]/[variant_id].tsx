@@ -63,22 +63,6 @@ const getAllProducts = async (): Promise<IProduct[]> => {
   return products;
 };
 
-const getRelatedProducts = async (
-  product_id: number,
-): Promise<{
-  related_products: IProduct[];
-}> => {
-  const {
-    data: { related_products },
-  } = await webAxios.get<{
-    success: boolean;
-    related_products: IProduct[];
-  }>(`/get-related-products/${product_id}`);
-  return {
-    related_products,
-  };
-};
-
 type IParams = {
   product_slug: string;
   product_id: string;
@@ -98,8 +82,6 @@ type IProps = {
   variant_id: number;
   product: IProduct;
   category_mappings: ICategoryAttributeMapping[];
-  variant: IVariant;
-  related_products: IProduct[];
 };
 
 const ProductPage: NextPageWithLayout<IProps> = ({
@@ -107,9 +89,10 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   variant_id,
   product,
   category_mappings,
-  variant,
-  related_products,
 }) => {
+  const variant = product.variants?.find(
+    (variant) => variant.id == variant_id,
+  ) as IVariant;
   const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
     open: false,
   });
@@ -297,7 +280,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       </div>
 
       <RelatedProducts
-        related_products={related_products}
+        product_id={product_id}
         category_mappings={category_mappings}
       />
     </>
@@ -340,11 +323,18 @@ export const getStaticProps = (async ({ params }) => {
 
   let { product } = await getProduct(product_id);
   let category_mappings = await getMappings(product.sub_sub_category.id);
-  let { related_products } = await getRelatedProducts(product_id);
-
   if (!product) {
     return { notFound: true };
   }
+  const sizeInKB =
+    Buffer.byteLength(
+      JSON.stringify({
+        product_id,
+        variant_id,
+        product,
+        category_mappings,
+      }),
+    ) / 1024;
 
   return {
     props: {
@@ -352,10 +342,6 @@ export const getStaticProps = (async ({ params }) => {
       variant_id,
       product,
       category_mappings,
-      variant: product.variants?.find(
-        (variant) => variant.id == variant_id,
-      ) as IVariant,
-      related_products,
     },
     revalidate: 43200, // 🔥 enable ISR
   };
