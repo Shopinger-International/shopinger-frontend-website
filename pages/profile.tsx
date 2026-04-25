@@ -1,4 +1,4 @@
-import { Head } from "next/document";
+import Head from "next/head";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
@@ -27,6 +27,9 @@ const ProfilePage: NextPageWithLayout = () => {
         {/* Private page */}
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+      <div>
+        <h1>testing</h1>
+      </div>
     </>
   );
 };

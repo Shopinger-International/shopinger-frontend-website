@@ -8,6 +8,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import type { IAddress } from "@/types/address";
 import type { GetServerSideProps } from "next";
 import type { IResponse } from "@/hooks/axios/checkout/use-checkout-intent.hook";
+import type IOrder from "@/types/order";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -17,6 +18,7 @@ import ProtectedLayout from "@/components/layout/protected-layout.component";
 import CheckoutDetail from "@/components/checkout/checkout-detail.component";
 import SidebarDrawer from "@/components/common/sidebar-drawer.component";
 import AddressRow from "@/components/cart/address-row.component";
+import OrderSuccessfulModal from "@/components/cart/order-successful-modal.component";
 
 const AddAddressModal = dynamic(
   () =>
@@ -71,6 +73,12 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
       open: false,
       data: null,
     });
+  const [order_success_modal_state, setOrderSuccessModalState] = useState<{
+    open: boolean;
+    order?: IOrder;
+  }>({
+    open: false,
+  });
 
   return (
     <>
@@ -82,6 +90,17 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+
+      <OrderSuccessfulModal
+        is_open={order_success_modal_state.open}
+        order_id={order_success_modal_state.order?.id}
+        total_amount={order_success_modal_state.order?.total_amount}
+        onClose={() =>
+          setOrderSuccessModalState({
+            open: false,
+          })
+        }
+      />
       {is_mobile ? (
         <MobileAddressModal
           open={address_modal_state.open}
@@ -192,7 +211,12 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
             products={intent_details?.items ?? []}
             selected_address={selected_address}
             handleAddressDrawerState={(open) => setIsAddressDrawerOpen(open)}
-            handleOrderSuccess={() => {}}
+            handleOrderSuccess={(order) => {
+              setOrderSuccessModalState({
+                open: true,
+                order,
+              });
+            }}
           />
         </div>
       </section>
