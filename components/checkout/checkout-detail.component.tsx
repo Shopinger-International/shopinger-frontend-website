@@ -7,7 +7,7 @@ import type { ICart } from "@/types/cart";
 // local components
 import AddressBar from "@/components/cart/address-bar.component";
 import CheckoutItem from "@/components/checkout/checkout-item.component";
-import CartSummary from "@/components/cart/cart-summary.component";
+import CheckoutSummary from "@/components/checkout/checkout-summary.component";
 import HelpSection from "@/components/common/help-section.component";
 
 type IProps = {
@@ -60,7 +60,7 @@ const CheckoutDetail: FC<IProps> = ({
 
       {/* Summary */}
       <div className="flex flex-col gap-4 lg:sticky lg:top-(--header-height)">
-        <CartSummary
+        <CheckoutSummary
           handleShowLoginModal={() => {
             // handleShowLoginModal("checkout");
           }}
@@ -74,6 +74,8 @@ const CheckoutDetail: FC<IProps> = ({
           charges={50}
           selected_address={selected_address}
           handleOrderSuccess={handleOrderSuccess}
+          intent_id={intent_id}
+          type="buy-checkout"
         />
         <HelpSection
           title={"Need help completing your order?"}

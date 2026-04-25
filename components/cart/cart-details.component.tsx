@@ -9,7 +9,7 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 // local components
 import AddressBar from "@/components/cart/address-bar.component";
 import CheckoutItem from "@/components/checkout/checkout-item.component";
-import CartSummary from "@/components/cart/cart-summary.component";
+import CheckoutSummary from "@/components/checkout/checkout-summary.component";
 import HelpSection from "@/components/common/help-section.component";
 
 // helpers
@@ -65,7 +65,7 @@ const CartDetails: FC<IProps> = ({
 
         {/* Summary */}
         <div className="flex flex-col gap-4 lg:sticky lg:top-(--header-height)">
-          <CartSummary
+          <CheckoutSummary
             handleShowLoginModal={() => {
               handleShowLoginModal("checkout");
             }}
@@ -77,6 +77,7 @@ const CartDetails: FC<IProps> = ({
             total_discount={cart?.total_discount ?? 0}
             total_items={cart?.total_items ?? 0}
             charges={50}
+            type={"cart-checkout"}
             selected_address={selected_address}
             handleOrderSuccess={handleOrderSuccess}
           />

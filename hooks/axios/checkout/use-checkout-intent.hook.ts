@@ -27,6 +27,7 @@ export const getCheckoutIntent = async (intent_id: string, cookie?: string) => {
     );
     return response;
   } catch (error) {
+    console.log("value of error",error);
     if (error instanceof AxiosError) {
       throw error;
     }
