@@ -63,8 +63,8 @@ const AccountDropdown: FC = () => {
             <div className={"border-t border-gray-300"}>
               {[
                 {
-                  label: "My Profile",
-                  href: "/profile",
+                  label: "Your Account",
+                  href: "/account",
                   icon: User,
                 },
                 {
