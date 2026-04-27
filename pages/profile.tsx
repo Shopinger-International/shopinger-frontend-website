@@ -16,6 +16,7 @@ import ProtectedLayout from "@/components/layout/protected-layout.component";
 import SelectInput from "@/components/common/select-input.component";
 import AlertPopup from "@/components/common/alert-popup.component";
 import FAQItem from "@/components/profile/faq-item.component";
+import OTPModal from "@/components/common/otp-modal.component";
 
 // external components
 import { Formik, Form, Field } from "formik";
@@ -24,7 +25,7 @@ import { Formik, Form, Field } from "formik";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // icons
-import { Pen } from "lucide-react";
+import { Pen, Mail, Phone } from "lucide-react";
 
 // utils
 import clsx from "clsx";
@@ -34,7 +35,7 @@ import profile_faqs from "@/data/profile/faq.data";
 
 type IExtendedFieldProps =
   | {
-      type: "text" | "email" | "tel";
+      type: "text" | "email" | "tel" | "date";
       name: string;
       label: string;
       placeholder?: string;
@@ -106,8 +107,15 @@ type IAlertModalState = {
   onCancel?: () => void;
 };
 
+type IOTPModalState = IAlertModalState & {
+  type?: "phone-otp" | "email";
+};
+
 const ProfilePage: NextPageWithLayout = () => {
   const [alert_popup_state, setAlertPopupState] = useState<IAlertModalState>({
+    open: false,
+  });
+  const [otp_modal_state, setOtpModalState] = useState<IOTPModalState>({
     open: false,
   });
   const { data: user_details } = useUserDetails();
@@ -118,6 +126,7 @@ const ProfilePage: NextPageWithLayout = () => {
     email: user_details?.email ?? "",
     phone: user_details?.phone ?? "",
     gender: user_details?.gender ?? "male",
+    dob: user_details?.dob ?? "",
   };
 
   const openDeleteConfirmationModal = () => {
@@ -165,6 +174,29 @@ const ProfilePage: NextPageWithLayout = () => {
           });
         }}
       />
+      <OTPModal
+        open={otp_modal_state.open}
+        onClose={() => {
+          setOtpModalState({
+            open: false,
+          });
+        }}
+      >
+        {otp_modal_state.type == "email" && (
+          <div className="mb-6 flex flex-col items-center gap-2">
+            <span className="shrink-0 rounded-full bg-orange-100 p-4">
+              <Mail className="h-8 w-8 fill-orange-500 text-white" />
+            </span>
+            <h2 className="text-center text-2xl font-bold">Check your email</h2>
+            <p className="jtext-gray-600 text-center">
+              Enter the verification code sent to{" "}
+              <span className="font-medium text-orange-500">
+                {otp_data.email}
+              </span>
+            </p>
+          </div>
+        )}
+      </OTPModal>
       <section className="min-h-screen w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           <div className="w-full rounded-xl border border-gray-300 bg-white">
@@ -256,6 +288,13 @@ const ProfilePage: NextPageWithLayout = () => {
                       { label: "Other", value: "other" },
                     ]}
                   />
+                  <ExtendedField
+                    type="date"
+                    name="dob"
+                    label="Date of Birth"
+                    placeholder="Select your date of birth"
+                    disabled={!is_editing}
+                  />
                 </div>
 
                 {/* FAQ SECTION */}
@@ -294,7 +333,7 @@ const ProfilePage: NextPageWithLayout = () => {
                           console.log("got error");
                         });
                     }}
-                    className="mt-4 rounded-lg border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50"
+                    className="mt-4 rounded-lg border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition outline-none hover:bg-red-50"
                   >
                     Delete Account
                   </button>
