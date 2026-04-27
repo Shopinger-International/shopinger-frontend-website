@@ -1,7 +1,6 @@
 // types
 import type { FC, ReactNode } from "react";
 import { useEffect, useState } from "react";
-import type { UseMutationResult } from "@tanstack/react-query";
 
 // external components
 import {
@@ -33,17 +32,19 @@ const otp_verification_validation_schema = z.object({
 
 interface OTPModalProps {
   open: boolean;
+  is_pending: boolean;
   onClose: () => void;
   onResend: () => void;
-  verify_otp_mutation: UseMutationResult;
+  handleSubmit: (otp: string) => void;
   children: ReactNode;
 }
 
 const OTPModal: FC<OTPModalProps> = ({
   open,
+  is_pending,
   onClose,
   onResend,
-  verify_otp_mutation,
+  handleSubmit,
   children,
 }) => {
   const [timer, setTimer] = useState(60);
@@ -83,7 +84,7 @@ const OTPModal: FC<OTPModalProps> = ({
             }}
             validate={toFormikValidate(otp_verification_validation_schema)}
             onSubmit={(values) => {
-              verify_otp_mutation.mutate(values["otp"]);
+              handleSubmit(values["otp"]);
             }}
           >
             {({ values, setFieldValue, handleSubmit }) => (
@@ -133,11 +134,9 @@ const OTPModal: FC<OTPModalProps> = ({
                     "hover:bg-orange-600 hover:shadow-md",
                     "disabled:bg-orange-300",
                   )}
-                  disabled={
-                    verify_otp_mutation.isPending || values["otp"].length < 6
-                  }
+                  disabled={is_pending || values["otp"].length < 6}
                 >
-                  {verify_otp_mutation.isPending ? "Verifying..." : "Verify"}
+                  {is_pending ? "Verifying..." : "Verify"}
                 </button>
               </form>
             )}

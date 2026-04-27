@@ -4,6 +4,7 @@ type IUser = {
   name: string;
   country_code: string;
   dob: string;
+  gender:string;
   email: string;
   fcm_token: string;
   phone: string;
