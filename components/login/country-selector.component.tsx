@@ -54,7 +54,6 @@ const CountrySelector: FC<{
           placeholder="Search country"
           onChange={(e) => setQuery(e.target.value)}
           displayValue={(country) => {
-            console.log("value of country", country);
             return "";
           }}
         />
@@ -77,7 +76,13 @@ const CountrySelector: FC<{
                       selected && "bg-orange-500 text-white",
                     )}
                   >
-                    <Image src={country.flag} width={8} height={8} alt="flag" className="size-3 object-cover" />
+                    <Image
+                      src={country.flag}
+                      width={8}
+                      height={8}
+                      alt="flag"
+                      className="size-3 object-cover"
+                    />
                     <span className="font-medium">{country.name}</span>
                     <span className="ml-auto text-gray-500">
                       {getCallingCode(country.code as CountryCode)}
