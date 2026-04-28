@@ -112,8 +112,9 @@ const ProfileForm: FC = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const isValidPhone = (phone: string) => {
-    return /^[6-9]\d{9}$/.test(phone); // Indian format (10 digits, starts 6-9)
+  const isValidPhone = (phone: string, country_code: CountryCode) => {
+    const phoneNumber = parsePhoneNumberFromString(phone, country_code);
+    return phoneNumber?.isValid() ?? false;
   };
 
   const initial_values: IInitialValues = {
@@ -249,7 +250,10 @@ const ProfileForm: FC = () => {
                 }}
               >
                 {!verification_flag.is_phone_verified &&
-                  isValidPhone(values["phone"]) && (
+                  isValidPhone(
+                    values["phone"],
+                    (values["country"]?.code ?? "IN") as CountryCode,
+                  ) && (
                     <button
                       type="button"
                       className="h-11 shrink-0 rounded-lg bg-orange-500 px-4 font-medium text-white"

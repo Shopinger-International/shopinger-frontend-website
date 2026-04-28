@@ -1,6 +1,7 @@
 import { useState, Fragment } from "react";
 
 // types
+import type { FC } from "react";
 import type { IInitialValues } from "@/components/login/login-form.component";
 import type { CountryCode } from "libphonenumber-js";
 
@@ -22,7 +23,9 @@ import { useFormikContext } from "formik";
 import clsx from "clsx";
 import { getCallingCode } from "@/helpers/common.helper";
 
-const CountrySelector = () => {
+const CountrySelector: FC<{
+  handleChange: () => void;
+}> = ({ handleChange }) => {
   const { values, setFieldValue } = useFormikContext<IInitialValues>();
   const [query, setQuery] = useState("");
 
@@ -40,6 +43,7 @@ const CountrySelector = () => {
       value={values.country}
       onChange={(value) => {
         value && setFieldValue("country", value);
+        handleChange();
       }}
     >
       <div>

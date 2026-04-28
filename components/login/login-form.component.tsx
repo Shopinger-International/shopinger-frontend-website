@@ -222,9 +222,11 @@ const LoginForm: FC<IProps> = ({
                           </PopoverButton>
 
                           <PopoverPanel className="absolute z-20 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                            <div className="max-h-64 overflow-y-auto p-2">
-                              <CountrySelector />
-                            </div>
+                            {({ close }) => (
+                              <div className="max-h-64 overflow-y-auto p-2">
+                                <CountrySelector handleChange={() => close()} />
+                              </div>
+                            )}
                           </PopoverPanel>
                         </Popover>
                       )}

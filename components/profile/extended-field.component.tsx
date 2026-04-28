@@ -66,9 +66,11 @@ const ExtendedField: FC<
                     </PopoverButton>
 
                     <PopoverPanel className="absolute z-20 mt-2 w-64 rounded-xl border bg-white shadow-lg">
-                      <div className="max-h-64 overflow-y-auto p-2">
-                        <CountrySelector />
-                      </div>
+                      {({ close }) => (
+                        <div className="max-h-64 overflow-y-auto p-2">
+                          <CountrySelector handleChange={() => close()} />
+                        </div>
+                      )}
                     </PopoverPanel>
                   </Popover>
                   <input
@@ -85,7 +87,7 @@ const ExtendedField: FC<
                       disabled && "cursor-not-allowed bg-gray-100",
                       has_error
                         ? "border-red-500"
-                        : "border-gray-300 focus:border-orange-500",
+                        : "border-gray-300 focus:border-2 focus:border-orange-500",
                     )}
                   />
                   {children}
@@ -121,7 +123,7 @@ const ExtendedField: FC<
                     disabled && "cursor-not-allowed bg-gray-100",
                     has_error
                       ? "border-red-500"
-                      : "border-gray-300 focus:border-orange-500",
+                      : "border-gray-300 focus:border-2 focus:border-orange-500",
                   )}
                 />
               );
