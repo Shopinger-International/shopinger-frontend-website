@@ -19,6 +19,7 @@ type SelectInputProps = {
   updateOptions?: (options: IOption[]) => void;
   block_list?: Array<any>;
   is_disabled?: boolean;
+  instance_id: string;
 };
 
 const SelectInput: FC<SelectInputProps> = ({
@@ -31,6 +32,7 @@ const SelectInput: FC<SelectInputProps> = ({
   updateOptions,
   block_list = [],
   is_disabled,
+  instance_id,
 }) => {
   const SelectComponent = is_custom_allowed ? CreatableSelect : Select;
 
@@ -51,6 +53,7 @@ const SelectInput: FC<SelectInputProps> = ({
 
   return (
     <SelectComponent
+      instanceId={instance_id}
       menuPosition="fixed"
       isOptionDisabled={(option) => block_list.includes(option.value)}
       unstyled

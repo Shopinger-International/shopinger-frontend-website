@@ -1,10 +1,10 @@
-// src/data/countries.ts
 import rawCountries from "world-countries";
 
-export type Country = {
+export type ICountry = {
   code: string;
   name: string;
   flag: string;
+  phone_code: string;
 };
 export const countries = rawCountries
   .filter((c) => c.independent)
@@ -12,5 +12,8 @@ export const countries = rawCountries
     code: c.cca2,
     name: c.name.common,
     flag: c.flag,
+    phone_code: c.idd?.root
+      ? `${c.idd.root.replace("+", "")}${c.idd.suffixes?.[0] ?? ""}`
+      : "",
   }))
   .sort((a, b) => a.name.localeCompare(b.name));

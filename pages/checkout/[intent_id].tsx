@@ -1,5 +1,5 @@
 import { QueryClient, dehydrate } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 // types
@@ -60,7 +60,7 @@ type IProps = {
 
 const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
   const { data: intent_details } = useCheckoutIntent(intent_id);
-  const { data: user_addresses = [] } = useUserAddresses();
+  const { data: user_addresses = [], isPending } = useUserAddresses();
   const is_mobile = useIsMobile();
   const delete_address_mutation = useDeleteAddressMutation();
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(
@@ -79,6 +79,15 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
   }>({
     open: false,
   });
+
+  useEffect(() => {
+    if (!isPending && user_addresses.length) {
+      const default_address = user_addresses.find(
+        (address) => address.is_default,
+      );
+      default_address && setSelectedAddress(default_address);
+    }
+  }, [isPending, user_addresses]);
 
   return (
     <>

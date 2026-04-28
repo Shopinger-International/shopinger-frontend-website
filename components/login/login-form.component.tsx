@@ -6,7 +6,7 @@ import Image from "next/image";
 // types
 import type { FC } from "react";
 import type { FieldProps } from "formik";
-import type { Country } from "@/data/countries.data";
+import type { ICountry } from "@/data/countries.data";
 import type { CountryCode } from "libphonenumber-js";
 import type { SnackbarOrigin } from "notistack";
 import type IUser from "@/types/user";
@@ -42,7 +42,7 @@ import useVerifyLoginOtp from "@/hooks/axios/login/verify-login-otp-mutation";
 
 export type IInitialValues = {
   identifier: string;
-  country: Country | undefined;
+  country: ICountry | undefined;
 };
 
 const initial_values = {

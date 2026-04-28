@@ -13,14 +13,12 @@ const NavigationCard: FC<{
       href={href}
       className="flex cursor-pointer items-center gap-4 rounded-xl border border-gray-300 bg-white p-4"
     >
-      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-orange-100">
+      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-orange-100">
         {children}
       </div>
       <div>
-        <h3 className="text-base font-semibold text-gray-800 sm:text-lg">
-          {title}
-        </h3>
-        <p className="text-sm text-gray-500">{description}</p>
+        <h3 className="text-sm font-semibold sm:text-base">{title}</h3>
+        <p className="text-sm text-gray-600">{description}</p>
       </div>
     </Link>
   );

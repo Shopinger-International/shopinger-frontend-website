@@ -2,159 +2,34 @@ import Head from "next/head";
 import { useState } from "react";
 
 // types
-import type { FC, ChangeEvent } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
-import type { FieldProps } from "formik";
-import type { IOption } from "@/components/common/select-input.component";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
 import ProtectedLayout from "@/components/layout/protected-layout.component";
 
 // local components
-import SelectInput from "@/components/common/select-input.component";
 import AlertPopup from "@/components/common/alert-popup.component";
 import FAQItem from "@/components/profile/faq-item.component";
-import OTPModal from "@/components/common/otp-modal.component";
-
-// external components
-import { Formik, Form, Field } from "formik";
+import ProfileForm from "@/components/profile/profile-form.component";
 
 // api hooks
-import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
-import useSendOtpMutation from "@/hooks/axios/profile/use-send-otp-mutation.hook";
-import useVerifyOtpMutation from "@/hooks/axios/profile/use-verify-otp-mutation.hook";
-import useUpdateUserProfileMutation from "@/hooks/axios/profile/use-update-profile-mutation.hook";
 import useSoftDeleteUser from "@/hooks/axios/profile/use-delete-user-mutation.hook";
-
-// icons
-import { Pen, Mail, Phone } from "lucide-react";
-
-// utils
-import clsx from "clsx";
 
 // data
 import profile_faqs from "@/data/profile/faq.data";
-
-type IExtendedFieldProps =
-  | {
-      type: "text" | "email" | "tel" | "date";
-      name: string;
-      label: string;
-      placeholder?: string;
-      handleOnChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-    }
-  | {
-      type: "select";
-      name: string;
-      label: string;
-      placeholder: string;
-      options: IOption[];
-      handleOnChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-    };
-
-const ExtendedField: FC<IExtendedFieldProps & { disabled?: boolean }> = (
-  props,
-) => {
-  const { name, label, disabled, handleOnChange } = props;
-
-  return (
-    <Field name={name}>
-      {({ field, meta, form }: FieldProps) => {
-        const hasError = meta.touched && meta.error;
-
-        return (
-          <div className="flex flex-1 flex-col gap-2">
-            <label className="text-sm font-medium text-gray-900">{label}</label>
-
-            {/* INPUT */}
-            {props.type !== "select" && (
-              <input
-                {...field}
-                disabled={disabled}
-                type={props.type}
-                onChange={(e) => {
-                  field.onChange(e);
-                  handleOnChange?.(e);
-                }}
-                placeholder={props.placeholder}
-                className={clsx(
-                  "h-11 w-full rounded-lg border px-3 transition outline-none",
-                  disabled && "cursor-not-allowed bg-gray-100",
-                  hasError
-                    ? "border-red-500"
-                    : "border-gray-300 focus:border-orange-500",
-                )}
-              />
-            )}
-
-            {/* SELECT */}
-            {props.type === "select" && (
-              <SelectInput
-                is_disabled={disabled}
-                value={
-                  props.options.find((o) => o.value === field.value)?.value ??
-                  ""
-                }
-                options={props.options}
-                onChange={(value) => form.setFieldValue(name, value)}
-                placeholder={props.placeholder}
-              />
-            )}
-
-            {hasError && <p className="text-xs text-red-500">{meta.error}</p>}
-          </div>
-        );
-      }}
-    </Field>
-  );
-};
 
 type IAlertModalState = {
   open: boolean;
   onSuccess?: () => void;
   onCancel?: () => void;
 };
-
-type IOTPModalState = IAlertModalState & {
-  type?: "phone-otp" | "email-otp";
-  identifier?: string;
-};
-
 const ProfilePage: NextPageWithLayout = () => {
-  const update_user_profile_mutation = useUpdateUserProfileMutation();
   const delete_user_mutation = useSoftDeleteUser();
-  const send_otp_mutation = useSendOtpMutation();
-  const verify_otp_mutation = useVerifyOtpMutation();
   const [alert_popup_state, setAlertPopupState] = useState<IAlertModalState>({
     open: false,
   });
-  const [otp_modal_state, setOtpModalState] = useState<IOTPModalState>({
-    open: false,
-  });
-  const [verification_flag, setVerificationFlag] = useState({
-    is_email_verified: true,
-    is_phone_verified: true,
-  });
-  const { data: user_details } = useUserDetails();
-  const [is_editing, setIsEditing] = useState(false);
-  const isValidEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const isValidPhone = (phone: string) => {
-    return /^[6-9]\d{9}$/.test(phone); // Indian format (10 digits, starts 6-9)
-  };
-
-  const initial_values = {
-    name: user_details?.name ?? "",
-    email: user_details?.email ?? "",
-    phone: user_details?.phone ?? "",
-    gender: user_details?.gender ?? "male",
-    dob: user_details?.dob ?? "",
-  };
-
   const openDeleteConfirmationModal = () => {
     return new Promise((resolve, reject) => {
       setAlertPopupState({
@@ -200,289 +75,48 @@ const ProfilePage: NextPageWithLayout = () => {
           });
         }}
       />
-      <OTPModal
-        open={otp_modal_state.open}
-        onResend={() => {
-          send_otp_mutation.mutate({
-            new_identifier: otp_modal_state.identifier as string,
-          });
-        }}
-        handleSubmit={(otp) =>
-          verify_otp_mutation.mutate(
-            { otp },
-            {
-              onSuccess() {
-                setVerificationFlag((prev) => ({
-                  ...prev,
-                  ...(otp_modal_state.type == "email-otp"
-                    ? {
-                        is_email_verified: true,
-                      }
-                    : { is_phone_verified: true }),
-                }));
-
-                setOtpModalState({
-                  open: false,
-                });
-              },
-            },
-          )
-        }
-        is_pending={verify_otp_mutation.isPending}
-        onClose={() => {
-          setOtpModalState({
-            open: false,
-          });
-        }}
-      >
-        {otp_modal_state.type == "email-otp" && (
-          <div className="mb-6 flex flex-col items-center gap-2">
-            <span className="shrink-0 rounded-full bg-orange-100 p-4">
-              <Mail className="h-8 w-8 fill-orange-500 text-white" />
-            </span>
-            <h2 className="text-center text-2xl font-bold">Check your email</h2>
-            <p className="jtext-gray-600 text-center">
-              Enter the verification code sent to{" "}
-              <span className="font-medium text-orange-500">
-                {otp_modal_state.identifier}
-              </span>
-            </p>
-          </div>
-        )}
-        {otp_modal_state.type == "phone-otp" && (
-          <div className="mb-6 flex flex-col items-center gap-2">
-            <span className="shrink-0 rounded-full bg-orange-100 p-4">
-              <Phone className="h-8 w-8 fill-orange-500 text-white" />
-            </span>
-            <h2 className="text-center text-2xl font-bold">Check your Phone</h2>
-            <p className="jtext-gray-600 text-center">
-              Enter the verification code sent to{" "}
-              <span className="font-medium text-orange-500">
-                {otp_modal_state.identifier}
-              </span>
-            </p>
-          </div>
-        )}
-      </OTPModal>
       <section className="min-h-screen w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           <div className="w-full rounded-xl border border-gray-300 bg-white">
-            {/* HEADER */}
-            <div className="flex items-center justify-between border-b border-gray-300 px-6 py-4">
-              <div>
-                <h1 className="text-base font-semibold sm:text-xl">
-                  Your Profile
-                </h1>
-                <p className="hidden text-sm text-gray-600 sm:block">
-                  View and manage your personal information
-                </p>
+            <ProfileForm />
+            <div className="mt-10 border-t border-gray-200 p-6">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900">FAQs</h2>
+
+              <div className="space-y-1">
+                {profile_faqs.map((faq, idx) => (
+                  <FAQItem
+                    key={idx}
+                    question={faq.question}
+                    answer={faq.answer}
+                  />
+                ))}
               </div>
-
-              {!is_editing ? (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-orange-500 hover:bg-orange-50 sm:border sm:border-orange-500"
-                >
-                  <span className="hidden font-semibold sm:inline-block">
-                    Edit Profile
-                  </span>
-                  <Pen className="inline-block size-4 text-orange-500 sm:hidden" />
-                </button>
-              ) : (
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    form="profile-form"
-                    className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:bg-orange-300"
-                    disabled={
-                      !verification_flag.is_email_verified ||
-                      !verification_flag.is_phone_verified
-                    }
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              )}
             </div>
+            <div className="mt-10 border-t border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Danger Zone
+              </h2>
 
-            {/* FORM */}
-            <Formik
-              initialValues={initial_values}
-              enableReinitialize
-              onSubmit={(values) => {
-                update_user_profile_mutation.mutate({
-                  ...values,
-                });
-                setIsEditing(false);
-              }}
-            >
-              {({ values }) => (
-                <Form id="profile-form" className="space-y-6 p-6">
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <ExtendedField
-                      type="text"
-                      name="name"
-                      label="Full Name"
-                      placeholder="Enter your name"
-                      disabled={!is_editing}
-                    />
-                    <div className="flex w-full items-end gap-2">
-                      <ExtendedField
-                        type="tel"
-                        name="phone"
-                        label="Phone Number"
-                        placeholder="Enter your phone"
-                        disabled={!is_editing}
-                        handleOnChange={(e) => {
-                          const updated_value = e.target.value;
-                          setVerificationFlag((prev) => ({
-                            ...prev,
-                            is_phone_verified:
-                              updated_value == user_details?.phone,
-                          }));
-                        }}
-                      />
-                      {!verification_flag.is_phone_verified &&
-                        isValidPhone(values["phone"]) && (
-                          <button
-                            type="button"
-                            className="h-11 rounded-lg bg-orange-500 px-4 font-medium text-white"
-                            onClick={() => {
-                              send_otp_mutation.mutate(
-                                {
-                                  new_identifier: values["phone"],
-                                },
-                                {
-                                  onSuccess() {
-                                    setOtpModalState({
-                                      open: true,
-                                      identifier: values["phone"],
-                                      type: "phone-otp",
-                                    });
-                                  },
-                                },
-                              );
-                            }}
-                          >
-                            Send OTP
-                          </button>
-                        )}
-                    </div>
-                    <div className="flex w-full items-end gap-2">
-                      <ExtendedField
-                        type="email"
-                        name="email"
-                        label="Email Address"
-                        placeholder="Enter your email"
-                        disabled={!is_editing}
-                        handleOnChange={(e) => {
-                          const updated_value = e.target.value;
-                          setVerificationFlag((prev) => ({
-                            ...prev,
-                            is_email_verified:
-                              updated_value == user_details?.email,
-                          }));
-                        }}
-                      />
-                      {!verification_flag.is_email_verified &&
-                        isValidEmail(values["email"]) && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              send_otp_mutation.mutate(
-                                {
-                                  new_identifier: values["email"],
-                                },
-                                {
-                                  onSuccess() {
-                                    setOtpModalState({
-                                      open: true,
-                                      identifier: values["email"],
-                                      type: "email-otp",
-                                    });
-                                  },
-                                },
-                              );
-                            }}
-                            className="h-11 rounded-lg bg-orange-500 px-4 font-medium text-white"
-                          >
-                            Send OTP
-                          </button>
-                        )}
-                    </div>
+              <p className="mt-1 text-sm text-gray-600">
+                Permanently delete your account and all associated data.
+              </p>
 
-                    <ExtendedField
-                      type="select"
-                      name="gender"
-                      label="Gender"
-                      placeholder="Select gender"
-                      disabled={!is_editing}
-                      options={[
-                        { label: "Male", value: "male" },
-                        { label: "Female", value: "female" },
-                        { label: "Other", value: "other" },
-                      ]}
-                    />
-                    <ExtendedField
-                      type="date"
-                      name="dob"
-                      label="Date of Birth"
-                      placeholder="Select your date of birth"
-                      disabled={!is_editing}
-                    />
-                  </div>
-
-                  {/* FAQ SECTION */}
-                  <div className="mt-10 border-t border-gray-200 pt-6">
-                    <h2 className="mb-4 text-lg font-semibold text-gray-900">
-                      FAQs
-                    </h2>
-
-                    <div className="space-y-1">
-                      {profile_faqs.map((faq, idx) => (
-                        <FAQItem
-                          key={idx}
-                          question={faq.question}
-                          answer={faq.answer}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mt-10 border-t border-gray-200 pt-6">
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      Danger Zone
-                    </h2>
-
-                    <p className="mt-1 text-sm text-gray-600">
-                      Permanently delete your account and all associated data.
-                    </p>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        openDeleteConfirmationModal()
-                          .then(() => {
-                            delete_user_mutation.mutate();
-                          })
-                          .catch(() => {
-                            console.log("got error");
-                          });
-                      }}
-                      className="mt-4 rounded-lg border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition outline-none hover:bg-red-50"
-                    >
-                      Delete Account
-                    </button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
+              <button
+                type="button"
+                onClick={() => {
+                  openDeleteConfirmationModal()
+                    .then(() => {
+                      delete_user_mutation.mutate();
+                    })
+                    .catch(() => {
+                      console.log("got error");
+                    });
+                }}
+                className="mt-4 rounded-lg border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition outline-none hover:bg-red-50"
+              >
+                Delete Account
+              </button>
+            </div>
           </div>
         </div>
       </section>

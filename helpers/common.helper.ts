@@ -2,10 +2,11 @@
 import type { ZodType } from "zod";
 import type { CountryCode } from "libphonenumber-js";
 
+// countries
+import { countries } from "@/data/countries.data";
+
 // helpers/phone.helper.ts
-import {
-  getCountryCallingCode,
-} from "libphonenumber-js";
+import { getCountryCallingCode } from "libphonenumber-js";
 
 // Convert smart quotes → normal apostrophe before comparison:
 const normalizeText = (str: string) =>
