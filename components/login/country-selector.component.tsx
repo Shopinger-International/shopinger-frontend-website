@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useState, Fragment } from "react";
 
 // types
@@ -76,7 +77,7 @@ const CountrySelector: FC<{
                       selected && "bg-orange-500 text-white",
                     )}
                   >
-                    <span>{country.flag}</span>
+                    <Image src={country.flag} width={8} height={8} alt="flag" className="size-3 object-cover" />
                     <span className="font-medium">{country.name}</span>
                     <span className="ml-auto text-gray-500">
                       {getCallingCode(country.code as CountryCode)}

@@ -11,7 +11,7 @@ export const countries = rawCountries
   .map((c) => ({
     code: c.cca2,
     name: c.name.common,
-    flag: c.flag,
+    flag: `https://flagcdn.com/w40/${c.cca2.toLowerCase()}.png`,
     phone_code: c.idd?.root
       ? `${c.idd.root.replace("+", "")}${c.idd.suffixes?.[0] ?? ""}`
       : "",
