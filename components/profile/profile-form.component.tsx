@@ -35,6 +35,7 @@ type IOTPModalState = {
   onCancel?: () => void;
   type?: "phone-otp" | "email-otp";
   identifier?: string;
+  country_code?: number;
 };
 
 export type IInitialValues = {
@@ -99,7 +100,13 @@ const ProfileForm: FC = () => {
   const send_otp_mutation = useSendOtpMutation();
   const verify_otp_mutation = useVerifyOtpMutation();
   const { data: user_details } = useUserDetails();
-
+  const user_phone_number = user_details
+    ? `+${user_details?.country_code}${user_details?.phone}`
+    : null;
+  const user_country_code =
+    (user_phone_number &&
+      parsePhoneNumberFromString(user_phone_number)?.country) ??
+    "91";
   const [is_editing, setIsEditing] = useState(false);
   const [otp_modal_state, setOtpModalState] = useState<IOTPModalState>({
     open: false,
@@ -123,10 +130,11 @@ const ProfileForm: FC = () => {
     phone: user_details?.phone ?? "",
     gender: user_details?.gender ?? "male",
     dob: user_details?.dob ?? "",
-    country: countries.find(
-      (country) => +country.phone_code == user_details?.country_code,
-    ) as ICountry | undefined,
+    country: countries.find((country) => country.code == user_country_code) as
+      | ICountry
+      | undefined,
   };
+  console.log("value of user phone number", user_phone_number);
   return (
     <>
       <OTPModal
@@ -217,9 +225,10 @@ const ProfileForm: FC = () => {
         initialValues={initial_values}
         validate={toFormikValidate(profile_validation_schema)}
         enableReinitialize
-        onSubmit={(values) => {
+        onSubmit={({ country, ...values }) => {
           update_user_profile_mutation.mutate({
             ...values,
+            country_code: +getCallingCode(country?.code as CountryCode),
           });
           setIsEditing(false);
         }}
@@ -261,15 +270,19 @@ const ProfileForm: FC = () => {
                         send_otp_mutation.mutate(
                           {
                             new_identifier: values["phone"],
-                            // country_code: getCallingCode(
-                            //   values["country"].code,
-                            // ),
+                            country_code: +getCallingCode(
+                              (values["country"]?.code ?? "IN") as CountryCode,
+                            ),
                           },
                           {
                             onSuccess() {
                               setOtpModalState({
                                 open: true,
                                 identifier: values["phone"],
+                                country_code: +getCallingCode(
+                                  (values["country"]?.code ??
+                                    "IN") as CountryCode,
+                                ),
                                 type: "phone-otp",
                               });
                             },

@@ -10,6 +10,7 @@ type IRequest = {
   phone: string;
   gender: "male" | "female" | "other";
   dob: string;
+  country_code:number;
 };
 
 type IResponse = {

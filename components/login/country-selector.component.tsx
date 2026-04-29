@@ -27,7 +27,8 @@ import { getCallingCode } from "@/helpers/common.helper";
 const CountrySelector: FC<{
   handleChange: () => void;
 }> = ({ handleChange }) => {
-  const { values, setFieldValue } = useFormikContext<IInitialValues>();
+  const { values, setFieldValue, validateForm } =
+    useFormikContext<IInitialValues>();
   const [query, setQuery] = useState("");
 
   const filtered_countries =
@@ -42,8 +43,9 @@ const CountrySelector: FC<{
   return (
     <Combobox
       value={values.country}
-      onChange={(value) => {
-        value && setFieldValue("country", value);
+      onChange={async (value) => {
+        value && (await setFieldValue("country", value));
+        await validateForm();
         handleChange();
       }}
     >
