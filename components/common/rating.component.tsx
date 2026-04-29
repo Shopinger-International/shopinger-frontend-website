@@ -10,7 +10,8 @@ const Rating: FC<{
   onChange: (index: number) => void;
   size: number;
   custom_rating?: number;
-}> = ({ totalStars, onChange, size, custom_rating }) => {
+  gap?: number;
+}> = ({ totalStars, onChange, size, custom_rating, gap = 2 }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
@@ -19,7 +20,7 @@ const Rating: FC<{
     onChange?.(index); // callback to parent if provided
   };
   return (
-    <div className="flex gap-2">
+    <div className={`flex gap-${gap}`}>
       {Array.from({ length: totalStars }, (_, i) => {
         const index = i + 1;
         return (

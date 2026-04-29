@@ -5,6 +5,7 @@ import Link from "next/link";
 // types
 import type { FC } from "react";
 import type { ICategory } from "@/types/categories";
+import type { ISubCategory } from "@/types/categories";
 
 // local components
 import Tooltip from "@/components/common/tooltip.component";
@@ -32,6 +33,8 @@ const CategorySection: FC = () => {
   const router = useRouter();
   const { data: categories = [] } = useCategories(true);
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
+  const [selected_sub_category, setSelectedSubCategory] =
+    useState<ISubCategory | null>();
   const [can_scroll_left, setCanScrollLeft] = useState(false);
   const [can_scroll_right, setCanScrollRight] = useState(false);
   const nav_ref = useRef<HTMLDivElement>(null);
@@ -280,20 +283,24 @@ const CategorySection: FC = () => {
             ref={sub_nav_ref}
             className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap"
           >
-            {selected_category.subCategories.map(
-              ({ id, name, slug: sub_slug }) => (
+            {selected_category.subCategories.map((sub_category) => {
+              const { id, name, slug: sub_slug } = sub_category;
+              return (
                 <Link
                   key={`sub-category-${id}`}
-                  className="group flex shrink-0 items-center gap-2 rounded-md py-1.5"
+                  className={clsx(
+                    "group flex shrink-0 items-center gap-2 rounded-md py-1.5 font-medium hover:underline",
+                    selected_sub_category?.id == id &&
+                      "font-semibold underline",
+                  )}
                   replace={true}
                   href={`/categories/${selected_category.slug}/${sub_slug}`}
+                  onClick={() => setSelectedSubCategory(sub_category)}
                 >
-                  <span className="text-sm font-medium group-hover:underline">
-                    {name}
-                  </span>
+                  <span className="text-sm">{name}</span>
                 </Link>
-              ),
-            )}
+              );
+            })}
           </nav>
 
           <button
