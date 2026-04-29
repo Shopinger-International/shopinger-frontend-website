@@ -47,7 +47,7 @@ const ProfilePage: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Your Account | Shopinger</title>
+        <title>Your Profile | Shopinger</title>
         <meta
           name="description"
           content="View and manage your account details securely on Shopinger."

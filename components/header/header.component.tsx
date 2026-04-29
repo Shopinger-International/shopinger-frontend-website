@@ -14,7 +14,6 @@ import AccountDropdown from "@/components/header/account-dropdown.component";
 
 // icons
 import {
-  Triangle,
   EllipsisVertical,
   Menu,
   Bell,
@@ -28,7 +27,6 @@ import {
 import { clsx } from "clsx";
 
 // data
-import { countries } from "@/data/countries.data";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
@@ -72,7 +70,7 @@ const Header: FC = () => {
           "gap-3 px-4 py-1.5",
           // "lg:max-w-8xl",
           "lg:grid-cols-[auto_minmax(0,1fr)_auto_auto]",
-          "lg:gap-8",
+          "lg:gap-4",
         )}
       >
         {/* LEFT: Menu + Logo */}
@@ -99,7 +97,7 @@ const Header: FC = () => {
           <Searchbar />
         </div>
         {/* RIGHT: Actions */}
-        <div className="order-2 -mr-3 flex items-center justify-end gap-6 lg:order-3 lg:-mr-8">
+        <div className="order-2 -mr-3 flex items-center justify-end gap-4 lg:order-3 lg:-mr-8">
           <button
             onClick={() =>
               updateState?.({

@@ -1,4 +1,5 @@
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 // types
@@ -28,7 +29,8 @@ import useCategories from "@/hooks/axios/common/use-categories";
 import clsx from "clsx";
 
 const CategorySection: FC = () => {
-  const { data: categories = [] } = useCategories();
+  const router = useRouter();
+  const { data: categories = [] } = useCategories(true);
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
   const [can_scroll_left, setCanScrollLeft] = useState(false);
   const [can_scroll_right, setCanScrollRight] = useState(false);
@@ -189,7 +191,10 @@ const CategorySection: FC = () => {
                     <button
                       key={`category-${id}`}
                       className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => {
+                        router.push(`/categories/${category.slug}`);
+                        setSelectedCategory(category);
+                      }}
                     >
                       <span
                         className={clsx(
@@ -275,16 +280,20 @@ const CategorySection: FC = () => {
             ref={sub_nav_ref}
             className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap"
           >
-            {selected_category.subCategories.map(({ id, name }) => (
-              <span
-                key={`sub-category-${id}`}
-                className="group flex shrink-0 items-center gap-2 rounded-md py-1.5"
-              >
-                <span className="text-sm font-medium group-hover:underline">
-                  {name}
-                </span>
-              </span>
-            ))}
+            {selected_category.subCategories.map(
+              ({ id, name, slug: sub_slug }) => (
+                <Link
+                  key={`sub-category-${id}`}
+                  className="group flex shrink-0 items-center gap-2 rounded-md py-1.5"
+                  replace={true}
+                  href={`/categories/${selected_category.slug}/${sub_slug}`}
+                >
+                  <span className="text-sm font-medium group-hover:underline">
+                    {name}
+                  </span>
+                </Link>
+              ),
+            )}
           </nav>
 
           <button
