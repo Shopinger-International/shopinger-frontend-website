@@ -7,12 +7,17 @@ import Image from "next/image";
 import Link from "next/link";
 
 // icons
-import { Heart } from "lucide-react";
+import { Heart, ChevronRight } from "lucide-react";
 
 // local components
 import Rating from "@/components/common/rating.component";
 
+// api hooks
+import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
+
 type IProps = {
+  product_id: number;
+  variant_id: number;
   title: string;
   src: string;
   product_thumbnail: IMedia;
@@ -20,9 +25,12 @@ type IProps = {
   mrp: number;
   discount_percentage: number;
   is_new: boolean;
+  have_variants: boolean;
 };
 
 const ProductCard: FC<IProps> = ({
+  product_id,
+  variant_id,
   title,
   src,
   product_thumbnail,
@@ -30,13 +38,15 @@ const ProductCard: FC<IProps> = ({
   mrp,
   discount_percentage,
   is_new,
+  have_variants,
 }) => {
+  const add_to_cart_mutation = useAddToCartMutation();
   return (
     <Link
       href={`${src}`}
-      className="group block overflow-hidden rounded-2xl border border-gray-300 bg-white"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-gray-300 bg-white"
     >
-      <div className="relative aspect-square overflow-hidden bg-gray-100">
+      <div className="relative aspect-square overflow-hidden border-b border-gray-300 bg-gray-100">
         <Image
           src={product_thumbnail.url}
           alt={title}
@@ -55,7 +65,7 @@ const ProductCard: FC<IProps> = ({
             <Heart className="size-6 text-orange-500" strokeWidth={2} />
           </button>
         </div>
-        {is_new && (
+        {true && (
           <span className="absolute right-0 bottom-2 overflow-hidden bg-orange-500 px-3 py-1 text-[10px] font-bold text-white shadow">
             NEW
             <span className="absolute top-0 -left-2 h-full w-3 skew-x-[-20deg] bg-orange-600" />
@@ -64,8 +74,7 @@ const ProductCard: FC<IProps> = ({
       </div>
 
       {/* content */}
-      <div className="space-y-3 p-4">
-        {/* title */}
+      <div className="flex flex-1 flex-col space-y-3 p-4">
         <h3 className="line-clamp-3 font-medium text-gray-900">{title}</h3>
 
         {/* rating */}
@@ -91,6 +100,29 @@ const ProductCard: FC<IProps> = ({
             <span className="text-sm text-gray-400 line-through">
               ₹{mrp?.toLocaleString()}
             </span>
+          )}
+        </div>
+        <div className="mt-auto">
+          {have_variants ? (
+            <button className="flex w-full items-center justify-center gap-1 rounded-xl border border-gray-300 py-2.5 text-sm font-semibold text-gray-900 hover:bg-gray-100">
+              <span>See all options</span>
+              <ChevronRight className="size-5" />
+            </button>
+          ) : (
+            <button
+              className="w-full rounded-xl bg-orange-500 py-2.5 text-sm font-semibold text-white hover:bg-orange-600"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                add_to_cart_mutation.mutate({
+                  product_id: product_id,
+                  variant_id: variant_id,
+                  quantity: 1,
+                });
+              }}
+            >
+              Add to cart
+            </button>
           )}
         </div>
       </div>

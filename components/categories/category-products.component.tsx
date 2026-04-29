@@ -70,6 +70,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     const is_new = isNewProduct(created_at);
     return {
       product_id,
+      variant_id,
       title: updated_title,
       src: `/${product_slug}/p/${product.id}/${variant_id}`,
       product_thumbnail: variant_medias[0]?.media ?? product_medias[0].media,
@@ -77,6 +78,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       mrp,
       discount_percentage,
       is_new,
+      have_variants: variants.length > 1,
     };
   });
 
@@ -110,16 +112,9 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   return (
     <>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {formatted_category_products?.map(({ product_id, ...product }) => (
-          <ProductCard {...product} key={`category-product-${product_id}`} />
+        {formatted_category_products?.map((product) => (
+          <ProductCard {...product} key={`category-product-${product.product_id}`} />
         ))}
-
-        {isFetchingNextPage &&
-          new Array(8)
-            .fill(0)
-            .map((_, index) => (
-              <ProductCardSkeleton key={`skeleton-${index}`} />
-            ))}
 
         {/* observer */}
         {!isFetchingNextPage && <div ref={load_more_ref} className="h-10" />}
