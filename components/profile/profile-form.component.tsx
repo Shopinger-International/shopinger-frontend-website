@@ -226,11 +226,17 @@ const ProfileForm: FC = () => {
         validate={toFormikValidate(profile_validation_schema)}
         enableReinitialize
         onSubmit={({ country, ...values }) => {
-          update_user_profile_mutation.mutate({
-            ...values,
-            country_code: +getCallingCode(country?.code as CountryCode),
-          });
-          setIsEditing(false);
+          update_user_profile_mutation.mutate(
+            {
+              ...values,
+              country_code: +getCallingCode(country?.code as CountryCode),
+            },
+            {
+              onSuccess() {
+                setIsEditing(false);
+              },
+            },
+          );
         }}
       >
         {({ values }) => (
@@ -370,10 +376,13 @@ const ProfileForm: FC = () => {
                   className="w-full rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:bg-orange-300 sm:w-auto"
                   disabled={
                     !verification_flag.is_email_verified ||
-                    !verification_flag.is_phone_verified
+                    !verification_flag.is_phone_verified ||
+                    update_user_profile_mutation.isPending
                   }
                 >
-                  Save Changes
+                  {update_user_profile_mutation.isPending
+                    ? "Saving..."
+                    : "Save Changes"}
                 </button>
               </div>
             )}

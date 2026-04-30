@@ -4,6 +4,7 @@ import { useState } from "react";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
+import type { GetServerSideProps } from "next";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -19,6 +20,10 @@ import useSoftDeleteUser from "@/hooks/axios/profile/use-delete-user-mutation.ho
 
 // data
 import profile_faqs from "@/data/profile/faq.data";
+
+// helpers
+import { getUser } from "@/hooks/axios/common/use-user-details.hook";
+
 
 type IAlertModalState = {
   open: boolean;
@@ -133,3 +138,41 @@ ProfilePage.getLayout = function getLayout(page: ReactElement) {
     </ProtectedLayout>
   );
 };
+
+export const getServerSideProps = (async (context) => {
+  const cookie = context.req.headers.cookie ?? "";
+  try {
+    await getUser(cookie);
+    return {
+      props: {},
+    };
+  } catch (error: any) {
+    const status = error?.response?.status;
+
+    if (status === 404) {
+      return {
+        redirect: {
+          destination: "/404",
+          permanent: false,
+        },
+      };
+    }
+
+    if (status === 401) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+
+    // fallback: generic error page
+    return {
+      redirect: {
+        destination: "/500",
+        permanent: false,
+      },
+    };
+  }
+}) satisfies GetServerSideProps;

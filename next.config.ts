@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   images: {
-    unoptimized:true,
+    // unoptimized:true,
     remotePatterns: [
       {
         protocol: "https",
@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "shopinger.co.in",
+      },
+      {
+        protocol: "https",
+        hostname: "flagcdn.com",
       },
     ],
   },
