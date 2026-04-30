@@ -50,6 +50,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         brand,
         created_at,
         product_medias,
+        reviews_count,
       } = product;
       const updated_title =
         !brand ||
@@ -82,6 +83,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         discount_percentage,
         is_new,
         have_variants: variants.length > 1,
+        total_reviews: reviews_count,
       };
     },
   );

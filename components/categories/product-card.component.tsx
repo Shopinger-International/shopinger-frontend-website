@@ -11,6 +11,7 @@ import { Heart, ChevronRight } from "lucide-react";
 
 // local components
 import Rating from "@/components/common/rating.component";
+import RatingPopover from "@/components/categories/rating-popover.component";
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
@@ -26,6 +27,7 @@ type IProps = {
   discount_percentage: number;
   is_new: boolean;
   have_variants: boolean;
+  total_reviews: number;
 };
 
 const ProductCard: FC<IProps> = ({
@@ -39,6 +41,7 @@ const ProductCard: FC<IProps> = ({
   discount_percentage,
   is_new,
   have_variants,
+  total_reviews,
 }) => {
   const add_to_cart_mutation = useAddToCartMutation();
   return (
@@ -65,7 +68,7 @@ const ProductCard: FC<IProps> = ({
             <Heart className="size-6 text-orange-500" strokeWidth={2} />
           </button>
         </div>
-        {true && (
+        {is_new && (
           <span className="absolute right-0 bottom-2 overflow-hidden bg-orange-500 px-3 py-1 text-[10px] font-bold text-white shadow">
             NEW
             <span className="absolute top-0 -left-2 h-full w-3 skew-x-[-20deg] bg-orange-600" />
@@ -80,13 +83,17 @@ const ProductCard: FC<IProps> = ({
         {/* rating */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
+            <span className="text-base font-medium">
+              {total_reviews.toFixed(1)}
+            </span>
             <Rating
               totalStars={5}
               custom_rating={2}
               onChange={() => {}}
-              size={12}
+              size={16}
               gap={0.5}
             />
+            <RatingPopover />
           </div>
         </div>
 

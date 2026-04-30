@@ -128,7 +128,7 @@ const CategorySection: FC = () => {
                       <Tooltip
                         placement="bottom"
                         key={label}
-                        className="z-50 rounded-xl border border-gray-200 bg-white py-1 font-semibold shadow-lg"
+                        className="z-50 rounded-xl border border-gray-300 bg-white py-1 font-semibold shadow-lg"
                         content={() => (
                           <div className="space-y-1 px-3 py-1.5">
                             <p className="tracking-wide text-orange-500">
