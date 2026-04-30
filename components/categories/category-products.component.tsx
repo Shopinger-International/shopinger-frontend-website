@@ -41,46 +41,50 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     [],
   );
 
-  const formatted_category_products = category_products?.map((product) => {
-    const {
-      id: product_id,
-      variants,
-      title,
-      brand,
-      created_at,
-      product_medias,
-    } = product;
-    const updated_title =
-      !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
-        ? title
-        : `${brand} ${title}`;
+  const formatted_category_products = category_products?.map(
+    (product, index) => {
+      const {
+        id: product_id,
+        variants,
+        title,
+        brand,
+        created_at,
+        product_medias,
+      } = product;
+      const updated_title =
+        !brand ||
+        brand.toLocaleLowerCase() == "generic" ||
+        title.includes(brand)
+          ? title
+          : `${brand} ${title}`;
 
-    const product_slug = generateSlug(product.title);
-    const {
-      id: variant_id,
-      variant_medias,
-      variant_inventory,
-      variant_pricing,
-    } = variants[0];
-    const { mrp, selling_price_with_commission } = variant_pricing;
+      const product_slug = generateSlug(product.title);
+      const {
+        id: variant_id,
+        variant_medias,
+        variant_inventory,
+        variant_pricing,
+      } = variants[0];
+      const { mrp, selling_price_with_commission } = variant_pricing;
 
-    const discount_percentage = Math.round(
-      ((mrp - selling_price_with_commission) / mrp) * 100,
-    );
-    const is_new = isNewProduct(created_at);
-    return {
-      product_id,
-      variant_id,
-      title: updated_title,
-      src: `/${product_slug}/p/${product.id}/${variant_id}`,
-      product_thumbnail: variant_medias[0]?.media ?? product_medias[0].media,
-      selling_price: selling_price_with_commission,
-      mrp,
-      discount_percentage,
-      is_new,
-      have_variants: variants.length > 1,
-    };
-  });
+      const discount_percentage = Math.round(
+        ((mrp - selling_price_with_commission) / mrp) * 100,
+      );
+      const is_new = isNewProduct(created_at);
+      return {
+        product_id,
+        variant_id,
+        title: updated_title,
+        src: `/${product_slug}/p/${product.id}/${variant_id}`,
+        product_thumbnail: variant_medias[0]?.media ?? product_medias[0].media,
+        selling_price: selling_price_with_commission,
+        mrp,
+        discount_percentage,
+        is_new,
+        have_variants: variants.length > 1,
+      };
+    },
+  );
 
   const load_more_ref = useRef<HTMLDivElement | null>(null);
   const observer_ref = useRef<IntersectionObserver | null>(null);
@@ -113,7 +117,10 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     <>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {formatted_category_products?.map((product) => (
-          <ProductCard {...product} key={`category-product-${product.product_id}`} />
+          <ProductCard
+            {...product}
+            key={`category-product-${product.product_id}`}
+          />
         ))}
 
         {/* observer */}

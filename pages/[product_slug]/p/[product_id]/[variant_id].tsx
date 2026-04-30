@@ -326,15 +326,6 @@ export const getStaticProps = (async ({ params }) => {
   if (!product) {
     return { notFound: true };
   }
-  const sizeInKB =
-    Buffer.byteLength(
-      JSON.stringify({
-        product_id,
-        variant_id,
-        product,
-        category_mappings,
-      }),
-    ) / 1024;
 
   return {
     props: {

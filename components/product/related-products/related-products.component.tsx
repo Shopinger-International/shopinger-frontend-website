@@ -93,7 +93,7 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
         </h2>
         {/* Left arrow */}
         <div
-          className="relative"
+          className="relative mx-auto"
           role="region"
           aria-label="Related Products Region"
         >
@@ -109,7 +109,7 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
           <Swiper
             role="list"
             modules={[Navigation]}
-            spaceBetween={is_mobile ? 16 : 40}
+            spaceBetween={is_mobile ? 16 : 20}
             slidesPerView={"auto"}
             slidesPerGroup={is_mobile ? 1 : 4}
             grabCursor
