@@ -96,18 +96,19 @@ const ProductCard: FC<IProps> = ({
             <RatingPopover />
           </div>
         </div>
-
+        <p className="text-sm font-medium text-gray-700">
+          20+ bought in last month
+        </p>
         {/* price */}
         <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-gray-900">
-            ₹{selling_price.toLocaleString()}
-          </span>
-
           {!!discount_percentage && (
-            <span className="text-sm text-gray-400 line-through">
+            <span className="font-medium text-gray-600 line-through">
               ₹{mrp?.toLocaleString()}
             </span>
           )}
+          <span className="font-semibold text-gray-900">
+            ₹{selling_price.toLocaleString()}
+          </span>
         </div>
         <div className="mt-auto">
           {have_variants ? (
@@ -117,7 +118,8 @@ const ProductCard: FC<IProps> = ({
             </button>
           ) : (
             <button
-              className="w-full rounded-xl bg-orange-500 py-2.5 text-sm font-semibold text-white hover:bg-orange-600"
+              className="w-full rounded-xl bg-orange-500 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:bg-orange-300"
+              disabled={add_to_cart_mutation.isPending}
               onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
