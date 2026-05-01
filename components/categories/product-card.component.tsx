@@ -60,13 +60,13 @@ const ProductCard: FC<IProps> = ({
           sizes="300px"
         />
 
-        <div className="absolute flex w-full items-center justify-between p-2">
+        <div className="absolute w-full mt-2">
           {!!discount_percentage && (
-            <span className="rounded-full border border-gray-300 bg-orange-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+            <span className="absolute left-2 rounded-full border border-gray-300 bg-orange-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">
               -{discount_percentage}%
             </span>
           )}
-          <button className="shrink-0 rounded-full border border-gray-300 bg-white p-1 shadow-sm">
+          <button className="absolute right-2 shrink-0 rounded-full border border-gray-300 bg-white p-1 shadow-sm">
             <Heart className="size-6 text-orange-500" strokeWidth={2} />
           </button>
         </div>

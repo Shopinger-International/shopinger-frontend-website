@@ -16,7 +16,7 @@ type IProps = {
 const SubCategory: NextPageWithLayout<IProps> = ({ sub_category_slug }) => {
   return (
     <section className="min-h-screen w-full py-4">
-      <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
+      <div className="mx-auto mt-(--header-height) max-w-6xl space-y-4 px-4">
         <CategoryProducts
           category_slug={sub_category_slug}
           category_type="sub"

@@ -6,6 +6,7 @@ import type IProduct from "@/types/product";
 // local components
 import ProductCard from "@/components/categories/product-card.component";
 import ProductCardSkeleton from "@/components/categories/product-card-skeleton.component";
+import FilterHeader from "./filter-header.component";
 
 // hooks
 import useGetProductsByCategory from "@/hooks/axios/categories/use-get-category-product.hook";
@@ -119,6 +120,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
     <>
+      <FilterHeader />
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {formatted_category_products?.map((product) => (
           <ProductCard
