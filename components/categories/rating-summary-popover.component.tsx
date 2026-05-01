@@ -33,7 +33,10 @@ type IProps = {
   product_id: number;
   product_reviews_link: string;
 };
-const RatingPopover: FC<IProps> = ({ product_id, product_reviews_link }) => {
+const RatingSummaryPopover: FC<IProps> = ({
+  product_id,
+  product_reviews_link,
+}) => {
   const [is_hovered, setIsHovered] = useState(false);
   const { data: rating_summary, isPending } = useProductRatingSummary({
     product_id,
@@ -133,4 +136,4 @@ const RatingPopover: FC<IProps> = ({ product_id, product_reviews_link }) => {
   );
 };
 
-export default RatingPopover;
+export default RatingSummaryPopover;

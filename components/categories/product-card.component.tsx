@@ -11,7 +11,7 @@ import { Heart, ChevronRight } from "lucide-react";
 
 // local components
 import Rating from "@/components/common/rating.component";
-import RatingPopover from "@/components/categories/rating-popover.component";
+import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
@@ -95,7 +95,7 @@ const ProductCard: FC<IProps> = ({
               size={16}
               gap={0.5}
             />
-            <RatingPopover
+            <RatingSummaryPopover
               product_id={product_id}
               product_reviews_link={product_reviews_link}
             />

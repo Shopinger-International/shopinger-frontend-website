@@ -34,7 +34,7 @@ const Rating: FC<{
             <Star
               size={size}
               className={`transition-colors ${
-                index <= (custom_rating || hover || rating)
+                index <= (custom_rating ?? hover ?? rating)
                   ? "fill-orange-500 text-orange-400"
                   : "fill-none text-gray-400"
               }`}
