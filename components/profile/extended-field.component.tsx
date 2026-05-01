@@ -93,6 +93,29 @@ const ExtendedField: FC<
                   {children}
                 </div>
               );
+            case props.type == "email":
+              return (
+                <div className="flex w-full items-end gap-2">
+                  <input
+                    {...field}
+                    disabled={disabled}
+                    type={props.type}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      handleOnChange?.(e);
+                    }}
+                    placeholder={props.placeholder}
+                    className={clsx(
+                      "h-11 w-full rounded-lg border px-3 transition outline-none",
+                      disabled && "cursor-not-allowed bg-gray-100",
+                      has_error
+                        ? "border-red-500"
+                        : "border-gray-300 focus:border-2 focus:border-orange-500",
+                    )}
+                  />
+                  {children}
+                </div>
+              );
             case props.type == "select":
               return (
                 <SelectInput

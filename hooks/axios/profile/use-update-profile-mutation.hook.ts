@@ -10,7 +10,7 @@ type IRequest = {
   phone: string;
   gender: "male" | "female" | "other";
   dob: string;
-  country_code:number;
+  country_code: number;
 };
 
 type IResponse = {
@@ -27,7 +27,7 @@ type IResponse = {
 };
 
 export const updateUserProfile = async (
-  payload: IRequest,
+  payload: Partial<IRequest>,
 ): Promise<IResponse> => {
   const { data } = await Axios.patch("/update-user-profile", payload);
 

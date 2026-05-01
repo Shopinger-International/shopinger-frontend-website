@@ -187,9 +187,8 @@ const LoginForm: FC<IProps> = ({
             send_otp_mutation.mutate(
               {
                 identifier: values.identifier,
-                country_code: user_details.country?.code
-                  ? getCallingCode(user_details.country.code as CountryCode)
-                  : undefined,
+                country_code:
+                  getCallingCode(values.country?.code as CountryCode) ?? "91",
               },
               {
                 onSuccess(response) {

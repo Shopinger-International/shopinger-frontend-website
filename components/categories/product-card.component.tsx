@@ -28,6 +28,7 @@ type IProps = {
   is_new: boolean;
   have_variants: boolean;
   total_reviews: number;
+  product_reviews_link: string;
 };
 
 const ProductCard: FC<IProps> = ({
@@ -42,6 +43,7 @@ const ProductCard: FC<IProps> = ({
   is_new,
   have_variants,
   total_reviews,
+  product_reviews_link,
 }) => {
   const add_to_cart_mutation = useAddToCartMutation();
   return (
@@ -93,7 +95,10 @@ const ProductCard: FC<IProps> = ({
               size={16}
               gap={0.5}
             />
-            <RatingPopover />
+            <RatingPopover
+              product_id={product_id}
+              product_reviews_link={product_reviews_link}
+            />
           </div>
         </div>
         <p className="text-sm font-medium text-gray-700">

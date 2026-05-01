@@ -33,30 +33,43 @@ type IOrderStatusHistory = {
   source: string;
   to_status: string;
 };
+
+type IAddressSnapshot = {
+  full_name: string;
+  phone: string;
+
+  place_id: number;
+  house_number: string;
+  area: string;
+  landmark: string;
+
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+
+  formatted_address: string;
+  latitude: number;
+  longitude: number;
+
+  address_type: "HOME" | "WORK" | "OTHER";
+  delivery_instructions: "Leave at door";
+};
 type IOrder = {
   id: number;
   status: string;
   payment_status: string;
+  payment_method: string;
   sub_total: number;
   total_amount: number;
   gst: number;
   discount: number;
   delivery_fee: number;
-  address_snapshot: {
-    area: string;
-    city: string;
-    phone: string;
-    state: string;
-    country: string;
-    pincode: string;
-    landmark: string;
-    full_name: string;
-    house_number: string;
-  };
+  address_snapshot: IAddressSnapshot;
   order_status_history: IOrderStatusHistory[];
   order_items: IOrderItem[];
   created_at: string;
 };
 
 export default IOrder;
-export { IOrderItem };
+export { IOrderItem, IAddressSnapshot };

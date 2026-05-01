@@ -71,6 +71,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       const discount_percentage = Math.round(
         ((mrp - selling_price_with_commission) / mrp) * 100,
       );
+      const product_reviews_link = `/${product_slug}/p/${product_id}/reviews`;
       const is_new = isNewProduct(created_at);
       return {
         product_id,
@@ -84,6 +85,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         is_new,
         have_variants: variants.length > 1,
         total_reviews: reviews_count,
+        product_reviews_link,
       };
     },
   );

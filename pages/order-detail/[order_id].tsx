@@ -14,6 +14,7 @@ import type IVariant from "@/types/variant";
 import type IOrder from "@/types/order";
 import type { IOrderItem } from "@/types/order";
 import type { DehydratedState } from "@tanstack/react-query";
+import type { IAddressSnapshot } from "@/types/order";
 
 // local components
 import OrderItem from "@/components/order-details/order-item.component";
@@ -31,7 +32,7 @@ import { CreditCard, Truck, CheckCircle } from "lucide-react";
 
 // helpers
 import clsx from "clsx";
-import { formatDate } from "@/helpers/common.helper";
+import { formatDate, capitalizeFirstLetter } from "@/helpers/common.helper";
 import { getOrderDetail } from "@/hooks/axios/order/use-order.hook";
 
 // react query
@@ -49,6 +50,19 @@ type IBaseReviewType = {
   product: Omit<IProduct, "variants"> | null;
   variant: IVariant | null;
   order_item: IOrderItem | null;
+};
+
+const getFormattedAddress = (address: IAddressSnapshot) => {
+  return [
+    address.house_number,
+    address.area,
+    address.landmark,
+    address.city,
+    address.state,
+    address.pincode,
+  ]
+    .filter(Boolean)
+    .join(", ");
 };
 
 const OrderDetailPage: NextPageWithLayout<{
@@ -223,7 +237,12 @@ const OrderDetailPage: NextPageWithLayout<{
                   })}
                 </div>
               </div>
-              <OrderSummary />
+              <OrderSummary
+                username={order.address_snapshot.full_name}
+                phone={order.address_snapshot.phone}
+                payment_method={capitalizeFirstLetter(order.payment_method)}
+                delivery_address={getFormattedAddress(order.address_snapshot)}
+              />
               {/* Order Items */}
               <div className="rounded-xl border border-gray-300 bg-white p-6">
                 <h2 className="mb-2 font-semibold text-gray-900">

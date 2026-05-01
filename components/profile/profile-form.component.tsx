@@ -39,21 +39,19 @@ type IOTPModalState = {
 };
 
 export type IInitialValues = {
-  name: string;
-  email: string;
-  phone: string;
-  gender: IGender;
-  dob: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  gender?: IGender;
+  dob?: string;
   country?: ICountry;
 };
-
 export const profile_validation_schema = z
   .object({
     name: z.string().trim().min(1, "Name is required"),
-    email: z
-      .string()
-      .trim()
-      .pipe(z.email({ message: "Enter a valid email" })),
+
+    email: z.string().trim().email("Enter a valid email"),
+
     phone: z.string().trim().min(1, "Phone number is required"),
 
     gender: z.custom<IGender>((value) => {
@@ -66,8 +64,10 @@ export const profile_validation_schema = z
       return typeof value === "object" && value !== null && "code" in value;
     }, "Select a country"),
   })
+  .partial()
   .superRefine((data, ctx) => {
     const { phone, country } = data;
+    if (!phone || !country) return;
 
     const is_digit_only = /^\d+$/.test(phone);
 
@@ -118,21 +118,38 @@ const ProfileForm: FC = () => {
   const isValidEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
+  console.log("valid", isValidEmail("ashish_classic@proton.me"));
 
   const isValidPhone = (phone: string, country_code: CountryCode) => {
     const phoneNumber = parsePhoneNumberFromString(phone, country_code);
     return phoneNumber?.isValid() ?? false;
   };
-
   const initial_values: IInitialValues = {
-    name: user_details?.name ?? "",
-    email: user_details?.email ?? "",
-    phone: user_details?.phone ?? "",
-    gender: user_details?.gender ?? "male",
-    dob: user_details?.dob ?? "",
-    country: countries.find((country) => country.code == user_country_code) as
-      | ICountry
-      | undefined,
+    ...(user_details?.name && {
+      name: user_details.name,
+    }),
+
+    ...(user_details?.email && {
+      email: user_details.email,
+    }),
+
+    ...(user_details?.phone && {
+      phone: user_details.phone,
+    }),
+
+    ...(user_details?.gender && {
+      gender: user_details.gender,
+    }),
+
+    ...(user_details?.dob && {
+      dob: user_details.dob,
+    }),
+
+    ...(user_country_code && {
+      country: countries.find(
+        (country) => country.code == user_country_code,
+      ) as ICountry | undefined,
+    }),
   };
   console.log("value of user phone number", user_phone_number);
   return (
@@ -266,7 +283,7 @@ const ProfileForm: FC = () => {
               >
                 {!verification_flag.is_phone_verified &&
                   isValidPhone(
-                    values["phone"],
+                    values["phone"] as string,
                     (values["country"]?.code ?? "IN") as CountryCode,
                   ) && (
                     <button
@@ -275,7 +292,7 @@ const ProfileForm: FC = () => {
                       onClick={() => {
                         send_otp_mutation.mutate(
                           {
-                            new_identifier: values["phone"],
+                            new_identifier: values["phone"] as string,
                             country_code: +getCallingCode(
                               (values["country"]?.code ?? "IN") as CountryCode,
                             ),
@@ -312,16 +329,20 @@ const ProfileForm: FC = () => {
                     ...prev,
                     is_email_verified: updated_value == user_details?.email,
                   }));
+                  console.log(
+                    !verification_flag.is_email_verified &&
+                      isValidEmail(values["email"] as string),
+                  );
                 }}
               >
                 {!verification_flag.is_email_verified &&
-                  isValidEmail(values["email"]) && (
+                  isValidEmail(values["email"] as string) && (
                     <button
                       type="button"
                       onClick={() => {
                         send_otp_mutation.mutate(
                           {
-                            new_identifier: values["email"],
+                            new_identifier: values["email"] as string,
                           },
                           {
                             onSuccess() {
