@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 // types
 import type { FC } from "react";
 
@@ -10,7 +10,7 @@ import Tooltip from "@/components/common/tooltip.component";
 import Rating from "@/components/common/rating.component";
 
 // icons
-import { ChevronDown, ChevronRight, Star } from "lucide-react";
+import { ChevronRight, Star } from "lucide-react";
 
 // hooks
 import useProductRatingSummary from "@/hooks/axios/common/use-product-rating-summary.hook";
@@ -18,24 +18,23 @@ import useProductRatingSummary from "@/hooks/axios/common/use-product-rating-sum
 const ExtendedButton: FC<{
   open: boolean;
   handleOnOpen: () => void;
-}> = ({ open, handleOnOpen }) => {
+  children: ReactNode;
+}> = ({ open, handleOnOpen, children }) => {
   useEffect(() => {
     open && handleOnOpen();
   }, [open]);
-  return (
-    <button className="text-orange-500">
-      <ChevronDown className="size-5" strokeWidth={2.5} />
-    </button>
-  );
+  return <>{children}</>;
 };
 
 type IProps = {
   product_id: number;
   product_reviews_link: string;
+  children: ReactNode;
 };
 const RatingSummaryPopover: FC<IProps> = ({
   product_id,
   product_reviews_link,
+  children,
 }) => {
   const [is_hovered, setIsHovered] = useState(false);
   const { data: rating_summary, isPending } = useProductRatingSummary({
@@ -130,7 +129,9 @@ const RatingSummaryPopover: FC<IProps> = ({
       }
     >
       {({ open }) => (
-        <ExtendedButton open={open} handleOnOpen={() => setIsHovered(true)} />
+        <ExtendedButton open={open} handleOnOpen={() => setIsHovered(true)}>
+          {children}
+        </ExtendedButton>
       )}
     </Tooltip>
   );

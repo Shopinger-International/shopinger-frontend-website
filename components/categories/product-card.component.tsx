@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 // icons
-import { Heart, ChevronRight } from "lucide-react";
+import { Heart, ChevronRight, ChevronDown } from "lucide-react";
 
 // local components
 import Rating from "@/components/common/rating.component";
@@ -60,7 +60,7 @@ const ProductCard: FC<IProps> = ({
           sizes="300px"
         />
 
-        <div className="absolute w-full mt-2">
+        <div className="absolute mt-2 w-full">
           {!!discount_percentage && (
             <span className="absolute left-2 rounded-full border border-gray-300 bg-orange-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">
               -{discount_percentage}%
@@ -98,7 +98,11 @@ const ProductCard: FC<IProps> = ({
             <RatingSummaryPopover
               product_id={product_id}
               product_reviews_link={product_reviews_link}
-            />
+            >
+              <button className="text-orange-500">
+                <ChevronDown className="size-5" strokeWidth={2.5} />
+              </button>
+            </RatingSummaryPopover>
           </div>
         </div>
         <p className="text-sm font-medium text-gray-700">

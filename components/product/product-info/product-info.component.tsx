@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
@@ -8,7 +9,7 @@ import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/re
 import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // icons
-import { Star } from "lucide-react";
+import { Star, ChevronDown } from "lucide-react";
 
 // local components
 import Badge from "@/components/product/badge.component";
@@ -16,11 +17,15 @@ import VariantSelection from "@/components/product/variant-selection.component";
 import CheckDeliveryAvailability from "@/components/product/product-info/check-delivery-availability.component";
 import ProductDetails from "@/components/product/product-info/product-details.component";
 import MobileProductGallary from "@/components/product/product-gallary/mobile-product-gallary.component";
+import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
 import useCreateBuyingIntentMutation from "@/hooks/axios/checkout/use-create-buying-intent-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+
+// helpers
+import { generateSlug } from "@/helpers/product.helper";
 
 type IProps = {
   product: IProduct;
@@ -61,6 +66,7 @@ const ProductInfo: FC<IProps> = ({
     ((mrp - selling_price_with_commission) / mrp) * 100,
   );
 
+  const product_slug = generateSlug(product.title);
   const nor_visual_variant_attributes = variant.variant_attribute_values
     .filter(
       ({ attribute }) =>
@@ -141,20 +147,31 @@ const ProductInfo: FC<IProps> = ({
       <section className="order-5">
         <h2 className="sr-only">Product rating</h2>
         <p className="mb-4" aria-label="Product rating and reviews">
-          <strong className="font-medium">4.6 </strong>{" "}
-          <span className="sr-only">out of 5 stars</span>{" "}
-          <Star
-            className="inline size-4 fill-amber-300 text-amber-300"
-            aria-hidden="true"
-          />
+          <RatingSummaryPopover
+            product_id={product.id}
+            product_reviews_link={`/${product_slug}/p/${product.id}/reviews`}
+          >
+            <span className="inline-flex cursor-pointer items-center gap-1">
+              <strong className="font-medium">4.6 </strong>{" "}
+              <span className="sr-only">out of 5 stars</span>{" "}
+              <Star
+                className="inline size-4 fill-amber-300 text-amber-300"
+                aria-hidden="true"
+              />
+              <ChevronDown
+                className="inline-block size-4 text-orange-500"
+                strokeWidth={2.5}
+              />
+            </span>
+          </RatingSummaryPopover>
           <span aria-hidden="true"> | </span>{" "}
-          <a
-            href="#reviews"
+          <Link
+            href={`/${product_slug}/p/${product.id}/reviews`}
             className="text-orange-500"
             aria-label={`view all ${2847} reviews`}
           >
             2,847 reviews
-          </a>{" "}
+          </Link>{" "}
           <span className="inline">500+ bought in past month</span>
         </p>
       </section>

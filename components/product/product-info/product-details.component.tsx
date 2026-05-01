@@ -5,7 +5,6 @@ import type { FC, ReactNode } from "react";
 import type IAttributeType from "@/types/attribute";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type IProduct from "@/types/product";
-import type IMedia from "@/types/media";
 import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 import type IReview from "@/types/review";
