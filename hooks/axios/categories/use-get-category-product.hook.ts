@@ -55,7 +55,6 @@ const useGetCategoryProducts = ({
     },
 
     getNextPageParam: (lastPage) => {
-      console.log("value of page", lastPage);
       const currentPage = lastPage?.pagination?.page;
       const totalPages = lastPage?.pagination?.total_pages;
 

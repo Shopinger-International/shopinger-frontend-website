@@ -7,9 +7,11 @@ import type IProduct from "@/types/product";
 import ProductCard from "@/components/categories/product-card.component";
 import ProductCardSkeleton from "@/components/categories/product-card-skeleton.component";
 import FilterHeader from "./filter-header.component";
+import SideFilter from "./side-filters.component";
 
 // hooks
 import useGetProductsByCategory from "@/hooks/axios/categories/use-get-category-product.hook";
+import useCategoryFilters from "@/hooks/axios/categories/use-category-filters.hook";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
@@ -29,6 +31,10 @@ type IProps = {
   category_type: "main" | "sub";
 };
 const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
+  const { data: category_filters } = useCategoryFilters({
+    category_slug,
+    category_type,
+  });
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useGetProductsByCategory({
       slug: category_slug,
@@ -119,27 +125,32 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     return () => observer_ref.current?.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
-    <>
-      <FilterHeader />
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {formatted_category_products?.map((product) => (
-          <ProductCard
-            {...product}
-            key={`category-product-${product.product_id}`}
-          />
-        ))}
-
-        {/* observer */}
-        {!isFetchingNextPage && <div ref={load_more_ref} className="h-10" />}
+    <div className="flex space-x-3">
+      <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-72 self-start overflow-y-auto lg:block">
+        <SideFilter />
       </div>
-      {hasNextPage && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <ProductCardSkeleton key={i} />
+      <div className="space-y-4">
+        {category_filters && <FilterHeader {...category_filters} />}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+          {formatted_category_products?.map((product) => (
+            <ProductCard
+              {...product}
+              key={`category-product-${product.product_id}`}
+            />
           ))}
+
+          {/* observer */}
+          {!isFetchingNextPage && <div ref={load_more_ref} className="h-10" />}
         </div>
-      )}
-    </>
+        {hasNextPage && (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

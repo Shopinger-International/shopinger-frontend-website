@@ -1,4 +1,9 @@
+import { Fragment } from "react";
 import { useState } from "react";
+
+// types
+import type { FC } from "react";
+import { IResponse } from "@/hooks/axios/categories/use-category-filters.hook";
 
 // icons
 import { ChevronDown, Check, Star } from "lucide-react";
@@ -6,7 +11,7 @@ import { ChevronDown, Check, Star } from "lucide-react";
 // helpers
 import clsx from "clsx";
 
-import { Fragment } from "react";
+// external components
 import {
   Listbox,
   ListboxButton,
@@ -22,21 +27,15 @@ const sort_options = [
   { label: "Top Rated", value: "rating" },
 ];
 
-const rating_options = [4, 3, 2, 1];
-
-const price_ranges = [
-  { label: "Under ₹500", value: "0-500" },
-  { label: "₹500 - ₹1000", value: "500-1000" },
-  { label: "₹1000 - ₹5000", value: "1000-5000" },
-  { label: "Above ₹5000", value: "5000-max" },
-];
-
 type IFilters = {
   sort: string;
   price: string | null;
-  rating: number | null;
+  rating: string | null;
 };
-const FilterHeader = () => {
+
+type IProps = IResponse;
+
+const FilterHeader: FC<IProps> = ({ price_filters, rating_filters }) => {
   const [filters, setFilters] = useState<IFilters>({
     sort: "latest",
     price: null,
@@ -55,16 +54,16 @@ const FilterHeader = () => {
 
         {/* Price */}
         <div className="flex flex-wrap gap-2">
-          {price_ranges.map((price) => {
-            const active = price.value == filters.price;
+          {price_filters.map(({ label }) => {
+            const active = label == filters.price;
 
             return (
               <button
-                key={price.value}
+                key={label}
                 onClick={() =>
                   setFilters((prev) => ({
                     ...prev,
-                    price: price.value,
+                    price: label,
                   }))
                 }
                 className={clsx(
@@ -75,7 +74,7 @@ const FilterHeader = () => {
                 )}
               >
                 {active && <Check className="h-3.5 w-3.5" strokeWidth={2.5} />}
-                {price.label}
+                {label}
               </button>
             );
           })}
@@ -83,16 +82,17 @@ const FilterHeader = () => {
 
         {/* Rating */}
         <div className="flex flex-wrap gap-2">
-          {rating_options.map((rating) => {
-            const active = rating == filters.rating;
+          {rating_filters.map(({ label, count }) => {
+            const active = label == filters.rating;
 
+            if (!count) return null;
             return (
               <button
-                key={rating}
+                key={label}
                 onClick={() =>
                   setFilters((prev) => ({
                     ...prev,
-                    rating,
+                    rating: label,
                   }))
                 }
                 className={clsx(
@@ -107,7 +107,7 @@ const FilterHeader = () => {
                     active ? "fill-white" : "fill-orange-400 text-orange-400"
                   }`}
                 />
-                {rating}+
+                {label}
               </button>
             );
           })}
@@ -149,30 +149,24 @@ const SelectInput = () => {
         >
           <ListboxOptions
             className={clsx(
-              "absolute right-0 z-20 mt-2 max-h-60 w-full overflow-auto rounded-xl border border-gray-300 bg-white p-1 shadow-md outline-none",
+              "absolute right-0 z-20 mt-2 max-h-60 w-full space-y-1 overflow-auto rounded-xl border border-gray-300 bg-white p-1 shadow-md outline-none",
             )}
           >
             {sort_options.map((option) => (
               <ListboxOption
                 key={option.value}
                 value={option.value}
-                className={({ active }) =>
+                className={({ focus, selected }) =>
                   clsx(
-                    "relative flex cursor-pointer items-center rounded-lg px-3 py-2 text-sm transition select-none",
-                    active ? "bg-orange-500 text-white" : "text-gray-900",
+                    "relative flex cursor-pointer items-center rounded-md px-3 py-2 text-sm transition select-none",
+                    focus && "bg-orange-100 text-gray-900",
+                    selected && "bg-orange-500 font-medium text-white",
                   )
                 }
               >
                 {({ selected }) => (
                   <>
-                    <span
-                      className={clsx(
-                        "truncate",
-                        selected && "font-medium text-gray-900",
-                      )}
-                    >
-                      {option.label}
-                    </span>
+                    <span className={clsx("truncate")}>{option.label}</span>
 
                     {selected && (
                       <span className="ml-auto">
