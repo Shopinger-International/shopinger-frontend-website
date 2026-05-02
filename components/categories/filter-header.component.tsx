@@ -3,7 +3,9 @@ import { useState } from "react";
 
 // types
 import type { FC } from "react";
-import { IResponse } from "@/hooks/axios/categories/use-category-filters.hook";
+import type { IResponse } from "@/hooks/axios/categories/use-category-filters.hook";
+import type { IFilterState } from "./category-products.component";
+import type { ISort } from "./category-products.component";
 
 // icons
 import { ChevronDown, Check, Star } from "lucide-react";
@@ -22,9 +24,9 @@ import {
 
 const sort_options = [
   { label: "Newest", value: "latest" },
-  { label: "Price: Low to High", value: "price_asc" },
-  { label: "Price: High to Low", value: "price_desc" },
-  { label: "Top Rated", value: "rating" },
+  { label: "Price: Low to High", value: "price_low_high" },
+  { label: "Price: High to Low", value: "price_high_low" },
+  { label: "Top Rated", value: "top_rated" },
 ];
 
 type IFilters = {
@@ -33,9 +35,15 @@ type IFilters = {
   rating: string | null;
 };
 
-type IProps = IResponse;
+type IProps = IResponse & {
+  onChange: (selected_filter: IFilterState) => void;
+};
 
-const FilterHeader: FC<IProps> = ({ price_filters, rating_filters }) => {
+const FilterHeader: FC<IProps> = ({
+  price_filters,
+  rating_filters,
+  onChange,
+}) => {
   const [filters, setFilters] = useState<IFilters>({
     sort: "latest",
     price: null,
@@ -49,22 +57,29 @@ const FilterHeader: FC<IProps> = ({ price_filters, rating_filters }) => {
       <div className="flex flex-wrap items-center gap-2">
         {/* Sort */}
         <div className="relative">
-          <SelectInput />
+          <SelectInput
+            selected_sort={"latest"}
+            onChange={(selected_sort) =>
+              onChange({
+                sort: selected_sort,
+              })
+            }
+          />
         </div>
 
         {/* Price */}
         <div className="flex flex-wrap gap-2">
-          {price_filters.map(({ label }) => {
+          {price_filters.map(({ label, min, max }) => {
             const active = label == filters.price;
 
             return (
               <button
                 key={label}
                 onClick={() =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    price: label,
-                  }))
+                  onChange({
+                    min_price: min,
+                    max_price: max,
+                  })
                 }
                 className={clsx(
                   "flex h-9 items-center gap-1 rounded-lg border px-3 text-sm",
@@ -82,7 +97,7 @@ const FilterHeader: FC<IProps> = ({ price_filters, rating_filters }) => {
 
         {/* Rating */}
         <div className="flex flex-wrap gap-2">
-          {rating_filters.map(({ label, count }) => {
+          {rating_filters.map(({ label, count, min_rating }) => {
             const active = label == filters.rating;
 
             if (!count) return null;
@@ -90,10 +105,9 @@ const FilterHeader: FC<IProps> = ({ price_filters, rating_filters }) => {
               <button
                 key={label}
                 onClick={() =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    rating: label,
-                  }))
+                  onChange({
+                    min_rating: min_rating,
+                  })
                 }
                 className={clsx(
                   "flex h-9 items-center gap-1 rounded-lg border px-3 text-sm",
@@ -119,10 +133,12 @@ const FilterHeader: FC<IProps> = ({ price_filters, rating_filters }) => {
 
 export default FilterHeader;
 
-const SelectInput = () => {
-  const [selected_sort, setSelectedSort] = useState(null);
+const SelectInput: FC<{
+  selected_sort: ISort;
+  onChange: (selected_sort: ISort) => void;
+}> = ({ selected_sort, onChange }) => {
   return (
-    <Listbox value={selected_sort} onChange={setSelectedSort}>
+    <Listbox value={selected_sort} onChange={onChange}>
       <div className="relative">
         {/* Button */}
         <ListboxButton

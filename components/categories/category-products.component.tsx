@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -6,7 +6,7 @@ import type IProduct from "@/types/product";
 // local components
 import ProductCard from "@/components/categories/product-card.component";
 import ProductCardSkeleton from "@/components/categories/product-card-skeleton.component";
-import FilterHeader from "./filter-header.component";
+import FilterHeader from "@/components/categories/filter-header.component";
 import SideFilter from "./side-filters.component";
 
 // hooks
@@ -26,11 +26,27 @@ const isNewProduct = (created_at: string | Date) => {
   return diffInDays <= 7;
 };
 
+export type ISort =
+  | "latest"
+  | "price_low_high"
+  | "price_high_low"
+  | "top_rated";
+
+export type IFilterState = {
+  sort?: ISort;
+  min_rating?: number;
+  min_price?: number;
+  max_price?: number;
+};
+
 type IProps = {
   category_slug: string;
   category_type: "main" | "sub";
 };
 const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
+  const [selected_filters, setSelectedFilters] = useState<IFilterState | null>(
+    null,
+  );
   const { data: category_filters } = useCategoryFilters({
     category_slug,
     category_type,
@@ -39,6 +55,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     useGetProductsByCategory({
       slug: category_slug,
       category_type,
+      ...selected_filters,
     });
 
   const category_products = data?.pages.reduce<IProduct[]>(
@@ -48,54 +65,50 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     [],
   );
 
-  const formatted_category_products = category_products?.map(
-    (product, index) => {
-      const {
-        id: product_id,
-        variants,
-        title,
-        brand,
-        created_at,
-        product_medias,
-        reviews_count,
-      } = product;
-      const updated_title =
-        !brand ||
-        brand.toLocaleLowerCase() == "generic" ||
-        title.includes(brand)
-          ? title
-          : `${brand} ${title}`;
+  const formatted_category_products = category_products?.map((product) => {
+    const {
+      id: product_id,
+      variants,
+      title,
+      brand,
+      created_at,
+      product_medias,
+      reviews_count,
+    } = product;
+    const updated_title =
+      !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
+        ? title
+        : `${brand} ${title}`;
 
-      const product_slug = generateSlug(product.title);
-      const {
-        id: variant_id,
-        variant_medias,
-        variant_inventory,
-        variant_pricing,
-      } = variants[0];
-      const { mrp, selling_price_with_commission } = variant_pricing;
+    const product_slug = generateSlug(product.title);
+    const {
+      id: variant_id,
+      variant_medias,
+      variant_inventory,
+      variant_pricing,
+    } = variants[0];
+    const { mrp, selling_price_with_commission } = variant_pricing;
 
-      const discount_percentage = Math.round(
-        ((mrp - selling_price_with_commission) / mrp) * 100,
-      );
-      const product_reviews_link = `/${product_slug}/p/${product_id}/reviews`;
-      const is_new = isNewProduct(created_at);
-      return {
-        product_id,
-        variant_id,
-        title: updated_title,
-        src: `/${product_slug}/p/${product.id}/${variant_id}`,
-        product_thumbnail: variant_medias[0]?.media ?? product_medias[0].media,
-        selling_price: selling_price_with_commission,
-        mrp,
-        discount_percentage,
-        is_new,
-        have_variants: variants.length > 1,
-        total_reviews: reviews_count,
-        product_reviews_link,
-      };
-    },
-  );
+    const discount_percentage = Math.round(
+      ((mrp - selling_price_with_commission) / mrp) * 100,
+    );
+    const product_reviews_link = `/${product_slug}/p/${product_id}/reviews`;
+    const is_new = isNewProduct(created_at);
+    return {
+      product_id,
+      variant_id,
+      title: updated_title,
+      src: `/${product_slug}/p/${product.id}/${variant_id}`,
+      product_thumbnail: variant_medias[0]?.media ?? product_medias[0].media,
+      selling_price: selling_price_with_commission,
+      mrp,
+      discount_percentage,
+      is_new,
+      have_variants: variants.length > 1,
+      total_reviews: reviews_count,
+      product_reviews_link,
+    };
+  });
 
   const load_more_ref = useRef<HTMLDivElement | null>(null);
   const observer_ref = useRef<IntersectionObserver | null>(null);
@@ -126,11 +139,16 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
     <div className="flex space-x-3">
-      <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-72 self-start overflow-y-auto lg:block">
+      <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
         <SideFilter />
       </div>
       <div className="space-y-4">
-        {category_filters && <FilterHeader {...category_filters} />}
+        {category_filters && (
+          <FilterHeader
+            {...category_filters}
+            onChange={(selected_filter) => setSelectedFilters(selected_filter)}
+          />
+        )}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
           {formatted_category_products?.map((product) => (
             <ProductCard

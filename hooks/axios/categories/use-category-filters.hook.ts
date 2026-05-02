@@ -30,7 +30,7 @@ const useCategoryFilters = ({
     queryKey: ["category-filters", category_slug, category_type],
     async queryFn() {
       const { data } = await Axios.get<IResponse>(
-        `/get-category-filters-meta?category_slug=${category_slug}&category_type=${category_type}`,
+        `/get-category-filters-meta?slug=${category_slug}&category_type=${category_type}`,
       );
       console.log("value of data", data);
       return data;
