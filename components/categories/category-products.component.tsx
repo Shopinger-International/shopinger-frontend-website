@@ -32,7 +32,7 @@ export type ISort =
   | "price_high_low"
   | "top_rated";
 
-export type IFilterState = {
+export type ISelectedFilters = {
   sort?: ISort;
   min_rating?: number;
   min_price?: number;
@@ -44,14 +44,13 @@ type IProps = {
   category_type: "main" | "sub";
 };
 const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
-  const [selected_filters, setSelectedFilters] = useState<IFilterState | null>(
-    null,
-  );
+  const [selected_filters, setSelectedFilters] =
+    useState<ISelectedFilters | null>(null);
   const { data: category_filters } = useCategoryFilters({
     category_slug,
     category_type,
   });
-  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+  const { data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useGetProductsByCategory({
       slug: category_slug,
       category_type,
@@ -142,9 +141,10 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
         <SideFilter />
       </div>
-      <div className="space-y-4">
+      <div className="flex-1 space-y-4">
         {category_filters && (
           <FilterHeader
+            selected_filters={selected_filters}
             {...category_filters}
             onChange={(selected_filter) => setSelectedFilters(selected_filter)}
           />
@@ -158,9 +158,11 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
           ))}
 
           {/* observer */}
-          {!isFetchingNextPage && <div ref={load_more_ref} className="h-10" />}
+          {!isFetchingNextPage && !isPending && (
+            <div ref={load_more_ref} className="h-10" />
+          )}
         </div>
-        {hasNextPage && (
+        {(isPending || hasNextPage) && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <ProductCardSkeleton key={i} />
