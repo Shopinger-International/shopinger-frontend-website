@@ -52,7 +52,7 @@ const SideFilters: FC<{
 
   if (isPending || !filters_data) return null;
   return (
-    <aside className="min-h-screen w-70 rounded-xl border border-gray-300 bg-white">
+    <aside className="min-h-screen w-70 lg:rounded-xl border border-gray-300 bg-white">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-300 px-4 py-3">
         <div className="flex items-center gap-3">

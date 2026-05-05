@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -16,6 +16,9 @@ import useCategoryFilters from "@/hooks/axios/categories/use-category-filters.ho
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
+
+// context
+import { FiltersSortBarState } from "@/context";
 
 const isNewProduct = (created_at: string | Date) => {
   const created = new Date(created_at);
@@ -45,6 +48,7 @@ type IProps = {
   category_type: "main" | "sub";
 };
 const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
+  const { state, updateState } = useContext(FiltersSortBarState);
   const [selected_filters, setSelectedFilters] =
     useState<ISelectedFilters | null>(null);
   const { data: category_filters } = useCategoryFilters({
@@ -139,6 +143,26 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
     <>
+      <>
+        {/* Overlay */}
+        <div
+          className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${state === "filter" ? "visible opacity-100" : "invisible opacity-0"} `}
+          onClick={() => updateState?.(null)}
+        />
+
+        {/* Drawer */}
+        <div
+          className={`fixed inset-y-0 left-0 z-50 transform bg-white transition-transform duration-300 ease-in-out ${state === "filter" ? "translate-x-0" : "-translate-x-full"} `}
+        >
+          <div className="h-full">
+            <SideFilter
+              category_slug={category_slug}
+              category_type={category_type}
+            />
+          </div>
+        </div>
+      </>
+
       <FilterDrawer>
         {category_filters && (
           <SortFilterHeader
