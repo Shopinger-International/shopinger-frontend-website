@@ -29,6 +29,7 @@ type IProps = {
   have_variants: boolean;
   total_reviews: number;
   product_reviews_link: string;
+  avg_rating: number;
 };
 
 const ProductCard: FC<IProps> = ({
@@ -44,6 +45,7 @@ const ProductCard: FC<IProps> = ({
   have_variants,
   total_reviews,
   product_reviews_link,
+  avg_rating,
 }) => {
   const add_to_cart_mutation = useAddToCartMutation();
   return (
@@ -90,7 +92,7 @@ const ProductCard: FC<IProps> = ({
             </span>
             <Rating
               totalStars={5}
-              custom_rating={2}
+              custom_rating={avg_rating}
               onChange={() => {}}
               size={16}
               gap={0.5}
