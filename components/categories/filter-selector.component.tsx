@@ -41,8 +41,8 @@ const FilterSelector: FC<IProps> = ({
         clsx(is_open && "pb-4"),
       )}
     >
-      <div
-        className="mb-4 flex w-full items-center justify-between"
+      <button
+        className="flex w-full items-center justify-between py-3.5 cursor-pointer"
         onClick={() => handleOpen(code)}
       >
         <h3 className="text-sm font-semibold text-orange-500">{label}</h3>
@@ -52,7 +52,7 @@ const FilterSelector: FC<IProps> = ({
         ) : (
           <ChevronDown className="size-4 text-gray-600" />
         )}
-      </div>
+      </button>
 
       {is_open && (
         <div>

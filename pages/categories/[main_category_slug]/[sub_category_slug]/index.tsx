@@ -9,6 +9,9 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import CategoryProducts from "@/components/categories/category-products.component";
 
+// provider
+import FiltersSortBarStateProvider from "@/provider/filter-sort-bar-state.provider";
+
 type IProps = {
   sub_category_slug: string;
 };
@@ -16,7 +19,7 @@ type IProps = {
 const SubCategory: NextPageWithLayout<IProps> = ({ sub_category_slug }) => {
   return (
     <section className="min-h-screen w-full py-4">
-      <div className="mx-auto mt-(--header-height) max-w-8xl space-y-3 px-4">
+      <div className="max-w-8xl mx-auto mt-(--header-height) space-y-3 px-4">
         <CategoryProducts
           category_slug={sub_category_slug}
           category_type="sub"
@@ -40,5 +43,9 @@ export const getServerSideProps = (async ({ params }) => {
   };
 }) satisfies GetServerSideProps<IProps>;
 SubCategory.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return (
+    <FiltersSortBarStateProvider>
+      <MainLayout show_filter_sort_bar={true}>{page}</MainLayout>
+    </FiltersSortBarStateProvider>
+  );
 };

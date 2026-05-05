@@ -11,10 +11,20 @@ export type IAddressDrawerState = {
   }) => void;
 };
 
+export type IFilterSortBarStateType = "sort" | "filter" | null;
+type IFiltersSortBarState = {
+  state: IFilterSortBarStateType;
+  updateState?: (state: IFilterSortBarStateType) => void;
+};
+
 const AddressDrawerState = createContext<IAddressDrawerState>({
   is_open: false,
   is_modal_open: false,
   address_id: null,
 });
 
-export { AddressDrawerState };
+const FiltersSortBarState = createContext<IFiltersSortBarState>({
+  state: null,
+});
+
+export { AddressDrawerState, FiltersSortBarState };

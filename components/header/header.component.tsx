@@ -11,6 +11,7 @@ import CategorySection from "@/components/header/category-section.component";
 import Tooltip from "@/components/common/tooltip.component";
 import AIAssistant from "../common/ai-chat-box.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
+import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 
 // icons
 import {
@@ -35,7 +36,9 @@ import useCart from "@/hooks/axios/cart/use-cart.hook";
 // context
 import { AddressDrawerState } from "@/context";
 
-const Header: FC = () => {
+const Header: FC<{
+  show_filter_sort_bar?: boolean;
+}> = ({ show_filter_sort_bar }) => {
   const { address_id, is_modal_open, updateState } =
     useContext(AddressDrawerState);
   const { data: user_details } = useUserDetails();
@@ -171,7 +174,7 @@ const Header: FC = () => {
               <Cart width={30} height={23} aria-hidden="true" />
             </span>
 
-            <span aria-hidden="true">₹{cart_details?.total_amount??0}</span>
+            <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
           </Link>
           <div className="hidden lg:inline">
             <Tooltip
@@ -238,6 +241,7 @@ const Header: FC = () => {
         </div>
       </div>
       <CategorySection />
+      {show_filter_sort_bar && <FilterSortBar />}
     </header>
   );
 };

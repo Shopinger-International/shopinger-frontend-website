@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 // types
 import type { FC, ReactNode } from "react";
 import type { IAddressDrawerState } from "@/context";

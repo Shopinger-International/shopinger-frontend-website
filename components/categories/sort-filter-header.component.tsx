@@ -33,7 +33,7 @@ type IProps = IResponse & {
   onChange: (selected_filter: ISelectedFilters | null) => void;
 };
 
-const FilterHeader: FC<IProps> = ({
+const SortFilterHeader: FC<IProps> = ({
   selected_filters,
   price_filters,
   rating_filters,
@@ -129,7 +129,7 @@ const FilterHeader: FC<IProps> = ({
   );
 };
 
-export default FilterHeader;
+export default SortFilterHeader;
 
 const SelectInput: FC<{
   selected_sort?: ISort;

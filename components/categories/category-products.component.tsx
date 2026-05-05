@@ -6,8 +6,9 @@ import type IProduct from "@/types/product";
 // local components
 import ProductCard from "@/components/categories/product-card.component";
 import ProductCardSkeleton from "@/components/categories/product-card-skeleton.component";
-import FilterHeader from "@/components/categories/filter-header.component";
+import SortFilterHeader from "@/components/categories/sort-filter-header.component";
 import SideFilter from "./side-filters.component";
+import FilterDrawer from "./filter-drawer.component";
 
 // hooks
 import useGetProductsByCategory from "@/hooks/axios/categories/use-get-category-product.hook";
@@ -137,40 +138,58 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     return () => observer_ref.current?.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
-    <div className="flex space-x-3">
-      <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
-        <SideFilter />
-      </div>
-      <div className="flex-1 space-y-4">
+    <>
+      <FilterDrawer>
         {category_filters && (
-          <FilterHeader
+          <SortFilterHeader
             selected_filters={selected_filters}
             {...category_filters}
             onChange={(selected_filter) => setSelectedFilters(selected_filter)}
           />
         )}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-          {formatted_category_products?.map((product) => (
-            <ProductCard
-              {...product}
-              key={`category-product-${product.product_id}`}
-            />
-          ))}
+      </FilterDrawer>
+      <div className="flex space-x-3 px-4">
+        <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
+          <SideFilter
+            category_slug={category_slug}
+            category_type={category_type}
+          />
+        </div>
+        <div className="flex-1 space-y-4">
+          {category_filters && (
+            <div className="hidden lg:block">
+              <SortFilterHeader
+                selected_filters={selected_filters}
+                {...category_filters}
+                onChange={(selected_filter) =>
+                  setSelectedFilters(selected_filter)
+                }
+              />
+            </div>
+          )}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+            {formatted_category_products?.map((product) => (
+              <ProductCard
+                {...product}
+                key={`category-product-${product.product_id}`}
+              />
+            ))}
 
-          {/* observer */}
-          {!isFetchingNextPage && !isPending && (
-            <div ref={load_more_ref} className="h-10" />
+            {/* observer */}
+            {!isFetchingNextPage && !isPending && (
+              <div ref={load_more_ref} className="h-10" />
+            )}
+          </div>
+          {(isPending || hasNextPage) && (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </div>
           )}
         </div>
-        {(isPending || hasNextPage) && (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <ProductCardSkeleton key={i} />
-            ))}
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 };
 

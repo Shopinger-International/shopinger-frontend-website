@@ -10,7 +10,7 @@ type IProps = {
 };
 const Checkbox: FC<IProps> = ({ enabled, label, onChange }) => {
   return (
-    <Field className="flex items-center gap-2 py-1">
+    <Field className="flex cursor-pointer items-center gap-2 py-1">
       <HeadlessCheckbox
         checked={enabled}
         onChange={onChange}
