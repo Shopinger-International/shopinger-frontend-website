@@ -52,7 +52,7 @@ const SideFilters: FC<{
 
   if (isPending || !filters_data) return null;
   return (
-    <aside className="min-h-screen w-70 lg:rounded-xl border border-gray-300 bg-white">
+    <aside className="min-h-screen w-70 border border-gray-300 bg-white lg:rounded-xl">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-300 px-4 py-3">
         <div className="flex items-center gap-3">
@@ -74,9 +74,9 @@ const SideFilters: FC<{
         </button>
       </div>
 
-      <div className="p-4 py-5">
+      <div className="px-4 pt-4">
         {!!selected_filters.length && (
-          <div className="flex flex-wrap gap-1 pb-4">
+          <div className="flex flex-wrap gap-1 pb-0">
             {selected_filters.map(({ attribute_code, label, value }) => (
               <button
                 key={value}

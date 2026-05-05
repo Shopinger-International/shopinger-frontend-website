@@ -154,7 +154,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         <div
           className={`fixed inset-y-0 left-0 z-50 transform bg-white transition-transform duration-300 ease-in-out ${state === "filter" ? "translate-x-0" : "-translate-x-full"} `}
         >
-          <div className="h-full">
+          <div className="h-screen overflow-y-auto">
             <SideFilter
               category_slug={category_slug}
               category_type={category_type}

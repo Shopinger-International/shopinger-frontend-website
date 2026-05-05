@@ -50,12 +50,13 @@ const useCategorySpecificFilters = ({
       return data;
     },
     select(data) {
+      let count = 0;
       return data.data.map((filter) => {
         const { options } = filter;
         return {
           attribute: {
             ...filter.attribute,
-            is_open: false,
+            is_open: count++ < 2,
           },
           options: options.map((option) => ({
             ...option,
