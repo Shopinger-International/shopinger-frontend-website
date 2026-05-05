@@ -94,12 +94,15 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       }, {}),
     });
 
-  const category_products = data?.pages.reduce<IProduct[]>(
-    (acc, { products }) => {
-      return [...acc, ...products];
-    },
-    [],
-  );
+  const category_products = data?.pages.reduce<
+    Array<
+      IProduct & {
+        avg_rating: number;
+      }
+    >
+  >((acc, { products }) => {
+    return [...acc, ...products];
+  }, []);
 
   useEffect(() => {
     if (is_category_specific_filters_pending || !category_sorting_filters)
@@ -116,6 +119,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       created_at,
       product_medias,
       reviews_count,
+      avg_rating,
     } = product;
     const updated_title =
       !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
@@ -128,7 +132,14 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       variant_medias,
       variant_inventory,
       variant_pricing,
-    } = variants[0];
+    } = variants.sort(
+      (
+        { variant_pricing: variant_pricing_a },
+        { variant_pricing: variant_pricing_b },
+      ) =>
+        variant_pricing_a.selling_price_with_commission -
+        variant_pricing_b.selling_price_with_commission,
+    )[0];
     const { mrp, selling_price_with_commission } = variant_pricing;
 
     const discount_percentage = Math.round(
@@ -149,6 +160,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       have_variants: variants.length > 1,
       total_reviews: reviews_count,
       product_reviews_link,
+      avg_rating
     };
   });
 

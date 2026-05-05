@@ -26,7 +26,11 @@ type IResponseType = {
     total: number;
     total_pages: number;
   };
-  products: IProduct[];
+  products: Array<
+    IProduct & {
+      avg_rating: number;
+    }
+  >;
 };
 
 const useGetCategoryProducts = ({
