@@ -21,7 +21,7 @@ type IProps = {
   ) => void;
   options: {
     label: string;
-    enabled: boolean;
+    is_enabled: boolean;
     value: string;
   }[];
 };
@@ -36,9 +36,12 @@ const FilterSelector: FC<IProps> = ({
 }) => {
   return (
     <section
-      className={clsx("border-b border-gray-300", clsx(is_open && "pb-4"))}
+      className={clsx(
+        "border-b border-gray-300 select-none",
+        clsx(is_open && "pb-4"),
+      )}
     >
-      <button
+      <div
         className="mb-4 flex w-full items-center justify-between"
         onClick={() => handleOpen(code)}
       >
@@ -49,15 +52,15 @@ const FilterSelector: FC<IProps> = ({
         ) : (
           <ChevronDown className="size-4 text-gray-600" />
         )}
-      </button>
+      </div>
 
       {is_open && (
-        <div className="space-y-2">
-          {options.map(({ label, enabled, value }, index) => {
+        <div>
+          {options.map(({ label, is_enabled, value }, index) => {
             return (
               <Checkbox
-                enabled={enabled}
-                onChange={() => handleOptionChange(code, value, !enabled)}
+                enabled={is_enabled}
+                onChange={() => handleOptionChange(code, value, !is_enabled)}
                 label={label}
                 key={`filter-option-${index}`}
               />
