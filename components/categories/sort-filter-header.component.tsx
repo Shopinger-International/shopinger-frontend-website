@@ -2,7 +2,7 @@ import { Fragment } from "react";
 
 // types
 import type { FC } from "react";
-import type { IResponse } from "@/hooks/axios/categories/use-category-filters.hook";
+import type { IResponse } from "@/hooks/axios/categories/use-category-sorting-filters.hook";
 import type { ISelectedFilters } from "./category-products.component";
 import type { ISort } from "@/components/categories/category-products.component";
 

@@ -15,6 +15,7 @@ type GetProductsByCategoryParams = {
   min_price?: number;
   max_price?: number;
   min_rating?: number;
+  filters?: Record<string, string[]>;
 };
 
 type IResponseType = {
@@ -36,6 +37,7 @@ const useGetCategoryProducts = ({
   min_price,
   max_price,
   min_rating,
+  filters,
 }: GetProductsByCategoryParams) => {
   return useInfiniteQuery({
     queryKey: [
@@ -47,6 +49,7 @@ const useGetCategoryProducts = ({
       min_price,
       max_price,
       min_rating,
+      filters,
     ],
 
     initialPageParam: 1,
@@ -64,6 +67,7 @@ const useGetCategoryProducts = ({
             min_price,
             max_price,
             min_rating,
+            filters: filters ? JSON.stringify(filters) : undefined,
           },
 
           withCredentials: true,

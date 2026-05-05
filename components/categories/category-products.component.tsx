@@ -2,6 +2,10 @@ import { useRef, useEffect, useState, useContext } from "react";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
+import type {
+  IFilterAttribute,
+  IOption,
+} from "@/hooks/axios/categories/use-category-specific-filter.hook";
 
 // local components
 import ProductCard from "@/components/categories/product-card.component";
@@ -12,7 +16,8 @@ import FilterDrawer from "./filter-drawer.component";
 
 // hooks
 import useGetProductsByCategory from "@/hooks/axios/categories/use-get-category-product.hook";
-import useCategoryFilters from "@/hooks/axios/categories/use-category-filters.hook";
+import useCategorySortingFilters from "@/hooks/axios/categories/use-category-sorting-filters.hook";
+import useCategorySpecificFilters from "@/hooks/axios/categories/use-category-specific-filter.hook";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
@@ -49,9 +54,26 @@ type IProps = {
 };
 const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   const { state, updateState } = useContext(FiltersSortBarState);
-  const [selected_filters, setSelectedFilters] =
+  const [selected_sorting_filters, setSelectedSortingFilters] =
     useState<ISelectedFilters | null>(null);
-  const { data: category_filters } = useCategoryFilters({
+  const { data: category_sorting_filters } = useCategorySortingFilters({
+    category_slug,
+    category_type,
+  });
+  const [
+    selected_category_specific_filters,
+    setSelectedCategorySpecificFilters,
+  ] = useState<
+    Array<
+      IFilterAttribute & {
+        options: Array<IOption>;
+      }
+    >
+  >([]);
+  const {
+    data: category_specific_filters = [],
+    isPending: is_category_specific_filters_pending,
+  } = useCategorySpecificFilters({
     category_slug,
     category_type,
   });
@@ -59,7 +81,17 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     useGetProductsByCategory({
       slug: category_slug,
       category_type,
-      ...selected_filters,
+      ...selected_sorting_filters,
+      filters: selected_category_specific_filters.reduce((acc, filter) => {
+        if (filter.options.some(({ is_enabled }) => is_enabled)) {
+          return {
+            [filter.attribute.code]: filter.options
+              .filter(({ is_enabled }) => is_enabled)
+              .map(({ value }) => value),
+          };
+        }
+        return acc;
+      }, {}),
     });
 
   const category_products = data?.pages.reduce<IProduct[]>(
@@ -68,6 +100,12 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     },
     [],
   );
+
+  useEffect(() => {
+    if (is_category_specific_filters_pending || !category_sorting_filters)
+      return;
+    setSelectedCategorySpecificFilters(category_specific_filters);
+  }, [category_sorting_filters, is_category_specific_filters_pending]);
 
   const formatted_category_products = category_products?.map((product) => {
     const {
@@ -158,35 +196,45 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
             <SideFilter
               category_slug={category_slug}
               category_type={category_type}
+              filters={selected_category_specific_filters}
+              handleFiltersChange={(updated_filters) => {
+                setSelectedCategorySpecificFilters(updated_filters);
+              }}
             />
           </div>
         </div>
       </>
 
       <FilterDrawer>
-        {category_filters && (
+        {category_sorting_filters && (
           <SortFilterHeader
-            selected_filters={selected_filters}
-            {...category_filters}
-            onChange={(selected_filter) => setSelectedFilters(selected_filter)}
+            selected_filters={selected_sorting_filters}
+            {...category_sorting_filters}
+            onChange={(selected_filter) =>
+              setSelectedSortingFilters(selected_filter)
+            }
           />
         )}
       </FilterDrawer>
       <div className="flex space-x-3 px-4">
         <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
           <SideFilter
+            filters={selected_category_specific_filters}
+            handleFiltersChange={(updated_filters) => {
+              setSelectedCategorySpecificFilters(updated_filters);
+            }}
             category_slug={category_slug}
             category_type={category_type}
           />
         </div>
         <div className="flex-1 space-y-4">
-          {category_filters && (
+          {category_sorting_filters && (
             <div className="hidden lg:block">
               <SortFilterHeader
-                selected_filters={selected_filters}
-                {...category_filters}
+                selected_filters={selected_sorting_filters}
+                {...category_sorting_filters}
                 onChange={(selected_filter) =>
-                  setSelectedFilters(selected_filter)
+                  setSelectedSortingFilters(selected_filter)
                 }
               />
             </div>

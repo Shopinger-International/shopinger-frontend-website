@@ -19,7 +19,7 @@ export type IResponse = {
   price_filters: IPriceFilter[];
   rating_filters: IRatingFilter[];
 };
-const useCategoryFilters = ({
+const useCategorySortingFilters = ({
   category_slug,
   category_type,
 }: {
@@ -37,4 +37,4 @@ const useCategoryFilters = ({
     },
   });
 };
-export default useCategoryFilters;
+export default useCategorySortingFilters;

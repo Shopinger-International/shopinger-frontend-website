@@ -22,18 +22,23 @@ import useCategorySpecificFilters from "@/hooks/axios/categories/use-category-sp
 const SideFilters: FC<{
   category_type: string;
   category_slug: string;
-}> = ({ category_type, category_slug }) => {
+  filters: Array<
+    IFilterAttribute & {
+      options: Array<IOption>;
+    }
+  >;
+  handleFiltersChange: (
+    updated_filters: Array<
+      IFilterAttribute & {
+        options: Array<IOption>;
+      }
+    >,
+  ) => void;
+}> = ({ category_type, category_slug, filters, handleFiltersChange }) => {
   const { data: filters_data, isPending } = useCategorySpecificFilters({
     category_slug,
     category_type,
   });
-  const [filters, setFilters] = useState<
-    Array<
-      IFilterAttribute & {
-        options: Array<IOption>;
-      }
-    >
-  >([]);
   const selected_filters =
     filters &&
     filters
@@ -44,11 +49,6 @@ const SideFilters: FC<{
         })),
       )
       .filter(({ is_enabled }) => is_enabled);
-
-  useEffect(() => {
-    if (isPending || !filters_data) return;
-    setFilters(filters_data);
-  }, [filters_data, isPending]);
 
   if (isPending || !filters_data) return null;
   return (
@@ -67,7 +67,7 @@ const SideFilters: FC<{
           </div>
         </div>
         <button
-          onClick={() => setFilters(filters_data)}
+          // onClick={() => setFilters(filters_data)}
           className="cursor-pointer text-xs font-medium text-gray-600 hover:text-gray-900"
         >
           Clear All
@@ -82,24 +82,23 @@ const SideFilters: FC<{
                 key={value}
                 className="flex cursor-pointer items-center gap-1 rounded-full border border-gray-300 bg-gray-50 px-3 py-0.5 text-[11px] font-medium text-gray-900 transition hover:border-gray-400"
                 onClick={() => {
-                  setFilters((prev) =>
-                    prev.map((filter) => {
-                      if (filter.attribute.code == attribute_code) {
-                        return {
-                          ...filter,
-                          options: filter.options.map((option) =>
-                            value == option.value
-                              ? {
-                                  ...option,
-                                  is_enabled: false,
-                                }
-                              : option,
-                          ),
-                        };
-                      }
-                      return filter;
-                    }),
-                  );
+                  const updated_filters = filters.map((filter) => {
+                    if (filter.attribute.code == attribute_code) {
+                      return {
+                        ...filter,
+                        options: filter.options.map((option) =>
+                          value == option.value
+                            ? {
+                                ...option,
+                                is_enabled: false,
+                              }
+                            : option,
+                        ),
+                      };
+                    }
+                    return filter;
+                  });
+                  handleFiltersChange(updated_filters);
                 }}
               >
                 {label}
@@ -118,48 +117,46 @@ const SideFilters: FC<{
               options={options}
               is_open={attribute.is_open}
               handleOpen={(attribute_code) => {
-                setFilters((prev) => {
-                  return prev.map((filter) => {
-                    const { code, is_open } = filter.attribute;
-                    if (code == attribute_code) {
-                      return {
-                        ...filter,
-                        attribute: {
-                          ...filter.attribute,
-                          is_open: !is_open,
-                        },
-                      };
-                    }
-                    return filter;
-                  });
+                const updated_filters = filters.map((filter) => {
+                  const { code, is_open } = filter.attribute;
+                  if (code == attribute_code) {
+                    return {
+                      ...filter,
+                      attribute: {
+                        ...filter.attribute,
+                        is_open: !is_open,
+                      },
+                    };
+                  }
+                  return filter;
                 });
+                handleFiltersChange(updated_filters);
               }}
               handleOptionChange={(
                 attribute_code: string,
                 option_value: string,
                 is_enabled: boolean,
-              ) =>
-                setFilters((prev) =>
-                  prev.map((filter) => {
-                    const { attribute, options } = filter;
-                    const { code } = attribute;
-                    if (code == attribute_code) {
-                      return {
-                        ...filter,
-                        options: options.map((option) =>
-                          option.value == option_value
-                            ? {
-                                ...option,
-                                is_enabled,
-                              }
-                            : option,
-                        ),
-                      };
-                    }
-                    return filter;
-                  }),
-                )
-              }
+              ) => {
+                const updated_filters = filters.map((filter) => {
+                  const { attribute, options } = filter;
+                  const { code } = attribute;
+                  if (code == attribute_code) {
+                    return {
+                      ...filter,
+                      options: options.map((option) =>
+                        option.value == option_value
+                          ? {
+                              ...option,
+                              is_enabled,
+                            }
+                          : option,
+                      ),
+                    };
+                  }
+                  return filter;
+                });
+                handleFiltersChange(updated_filters);
+              }}
             />
           ))}
         </div>
