@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Head from "next/head";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
@@ -5,8 +6,9 @@ import type { ReactElement } from "react";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
-import type IMedia from "@/types/media";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
+import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
+import type IUser from "@/types/user";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -15,6 +17,8 @@ import MainLayout from "@/components/layout/main-layout.component";
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
 import RelatedProducts from "@/components/product/related-products/related-products.component";
+import LoginModal from "@/components/login/login-modal.component";
+import ReportModal from "@/components/review/report-modal.component";
 
 // icons
 import { ChevronRight } from "lucide-react";
@@ -30,7 +34,7 @@ import {
 import { getMappings } from "@/hooks/axios/common/use-category-mappings.hook";
 import { useProductAvailability } from "@/hooks/axios/product/use-get-product-availbility.hook";
 
-const getProduct = async (
+export const getProduct = async (
   product_id: number,
 ): Promise<{
   product: IProduct;
@@ -59,26 +63,18 @@ const getAllProducts = async (): Promise<IProduct[]> => {
   return products;
 };
 
-const getRelatedProducts = async (
-  product_id: number,
-): Promise<{
-  related_products: IProduct[];
-}> => {
-  const {
-    data: { related_products },
-  } = await webAxios.get<{
-    success: boolean;
-    related_products: IProduct[];
-  }>(`/get-related-products/${product_id}`);
-  return {
-    related_products,
-  };
-};
-
 type IParams = {
   product_slug: string;
   product_id: string;
   variant_id: string;
+};
+export type IActionType = "review_upvote" | "buy_intent";
+
+export type ILoginModalState = {
+  open: boolean;
+  action_type?: IActionType;
+  onSuccess?: (user: IUser) => void;
+  onCancel?: () => void;
 };
 
 type IProps = {
@@ -86,8 +82,6 @@ type IProps = {
   variant_id: number;
   product: IProduct;
   category_mappings: ICategoryAttributeMapping[];
-  variant: IVariant;
-  related_products: IProduct[];
 };
 
 const ProductPage: NextPageWithLayout<IProps> = ({
@@ -95,9 +89,19 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   variant_id,
   product,
   category_mappings,
-  variant,
-  related_products,
 }) => {
+  const variant = product.variants?.find(
+    (variant) => variant.id == variant_id,
+  ) as IVariant;
+  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
+    open: false,
+  });
+
+  const [report_modal_state, setReportModalState] = useState<IReportModalState>(
+    {
+      open: false,
+    },
+  );
   const { data: availbility_data } = useProductAvailability(
     product_id,
     variant_id,
@@ -138,6 +142,20 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     acc[attribute.code] = value;
     return acc;
   }, {});
+
+  const openLoginModal = () => {
+    return new Promise<IUser>((resolve, reject) => {
+      setLoginModalState({
+        open: true,
+        onSuccess: (user: IUser) => {
+          resolve(user);
+        },
+        onCancel: () => {
+          reject();
+        },
+      });
+    });
+  };
   return (
     <>
       <Head>
@@ -182,6 +200,27 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         <meta name="twitter:site" content="@shopinger" />
         <meta name="twitter:creator" content="@shopinger" />
       </Head>
+      <LoginModal
+        open={login_modal_state.open}
+        handleClose={() => {
+          setLoginModalState({
+            open: false,
+          });
+          login_modal_state.onCancel?.();
+        }}
+        handleOnSuccess={(user) => {
+          setLoginModalState({
+            open: false,
+          });
+          login_modal_state.onSuccess?.(user);
+        }}
+      />
+      <ReportModal
+        review_id={report_modal_state.review_id as number}
+        is_open={report_modal_state.open}
+        onClose={() => setReportModalState({ open: false })}
+        handleLogin={openLoginModal}
+      />
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="mx-auto w-full px-4">
           <nav aria-label="Breadcrumb">
@@ -216,11 +255,32 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           category_mappings={category_mappings}
+          handleLoginModalState={({ open, action_type, onSuccess }) => {
+            setLoginModalState({
+              open,
+              ...(action_type
+                ? {
+                    action_type,
+                  }
+                : {}),
+              ...(onSuccess ? { onSuccess } : {}),
+            });
+          }}
+          handleReportModalState={({ open, review_id }) =>
+            setReportModalState({
+              open,
+              ...(review_id
+                ? {
+                    review_id,
+                  }
+                : {}),
+            })
+          }
         />
       </div>
 
       <RelatedProducts
-        related_products={related_products}
+        product_id={product_id}
         category_mappings={category_mappings}
       />
     </>
@@ -263,8 +323,6 @@ export const getStaticProps = (async ({ params }) => {
 
   let { product } = await getProduct(product_id);
   let category_mappings = await getMappings(product.sub_sub_category.id);
-  let { related_products } = await getRelatedProducts(product_id);
-
   if (!product) {
     return { notFound: true };
   }
@@ -275,10 +333,6 @@ export const getStaticProps = (async ({ params }) => {
       variant_id,
       product,
       category_mappings,
-      variant: product.variants?.find(
-        (variant) => variant.id == variant_id,
-      ) as IVariant,
-      related_products,
     },
     revalidate: 43200, // 🔥 enable ISR
   };

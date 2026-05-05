@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import Link from "next/link";
 // types
 import type { FC } from "react";
@@ -12,6 +11,7 @@ import { handlePayment } from "@/helpers/payment.helper";
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCartCheckoutMutation from "@/hooks/axios/cart/use-cart-checkout-mutation.hook";
+import useBuyNowCheckoutMutation from "@/hooks/axios/checkout/use-buy-now-checkout.hook";
 import useCreateRazorpayOrderMutation from "@/hooks/axios/cart/create-razorpay-order-mutation.hook";
 import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation.hook";
 
@@ -25,9 +25,11 @@ type IProps = {
   total_discount: number;
   total_items: number;
   charges: number;
+  type: "buy-checkout" | "cart-checkout";
+  intent_id?: string;
 };
 
-const CartSummary: FC<IProps> = ({
+const CheckoutSummary: FC<IProps> = ({
   handleShowLoginModal,
   handleShowAddresDrawer,
   handleOrderSuccess,
@@ -37,8 +39,10 @@ const CartSummary: FC<IProps> = ({
   total_discount,
   total_items,
   charges,
+  type,
+  intent_id,
 }) => {
-  const router = useRouter();
+  const buy_now_checkout_mutation = useBuyNowCheckoutMutation();
   const cart_checkout_mutation = useCartCheckoutMutation();
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
   const verify_payment_mutation = useVerifyPaymentMutation();
@@ -110,44 +114,86 @@ const CartSummary: FC<IProps> = ({
               handleShowAddresDrawer();
               return;
             }
-            cart_checkout_mutation.mutate(
-              {
-                address_id: selected_address.id,
-              },
-              {
-                onSuccess(data) {
-                  create_razorpay_order_mutation.mutate(
-                    {
-                      order_id: data.order_id,
-                    },
-                    {
-                      onSuccess(data) {
-                        handlePayment({
-                          ...data,
-                          selected_address,
-                          total_items,
-                          user_phone: user_detail.phone,
-                          successHandler(response) {
-                            verify_payment_mutation.mutate(
-                              {
-                                ...response,
-                                amount: data.amount,
-                                currency: data.currency,
-                              },
-                              {
-                                onSuccess(response) {
-                                  handleOrderSuccess(response.order);
-                                },
-                              },
-                            );
-                          },
-                        });
-                      },
-                    },
-                  );
+            if (type == "cart-checkout") {
+              cart_checkout_mutation.mutate(
+                {
+                  address_id: selected_address.id,
                 },
-              },
-            );
+                {
+                  onSuccess(data) {
+                    create_razorpay_order_mutation.mutate(
+                      {
+                        order_id: data.order_id,
+                      },
+                      {
+                        onSuccess(data) {
+                          handlePayment({
+                            ...data,
+                            selected_address,
+                            total_items,
+                            user_phone: user_detail.phone,
+                            successHandler(response) {
+                              verify_payment_mutation.mutate(
+                                {
+                                  ...response,
+                                  amount: data.amount,
+                                  currency: data.currency,
+                                },
+                                {
+                                  onSuccess(response) {
+                                    handleOrderSuccess(response.order);
+                                  },
+                                },
+                              );
+                            },
+                          });
+                        },
+                      },
+                    );
+                  },
+                },
+              );
+            } else {
+              buy_now_checkout_mutation.mutate(
+                {
+                  address_id: selected_address.id,
+                  intent_id: intent_id as string,
+                },
+                {
+                  onSuccess(data) {
+                    create_razorpay_order_mutation.mutate(
+                      {
+                        order_id: data.order_id,
+                      },
+                      {
+                        onSuccess(data) {
+                          handlePayment({
+                            ...data,
+                            selected_address,
+                            total_items,
+                            user_phone: user_detail.phone,
+                            successHandler(response) {
+                              verify_payment_mutation.mutate(
+                                {
+                                  ...response,
+                                  amount: data.amount,
+                                  currency: data.currency,
+                                },
+                                {
+                                  onSuccess(response) {
+                                    handleOrderSuccess(response.order);
+                                  },
+                                },
+                              );
+                            },
+                          });
+                        },
+                      },
+                    );
+                  },
+                },
+              );
+            }
           }}
         >
           <span className="relative z-10">Proceed to Pay</span>
@@ -163,4 +209,4 @@ const CartSummary: FC<IProps> = ({
     </div>
   );
 };
-export default CartSummary;
+export default CheckoutSummary;

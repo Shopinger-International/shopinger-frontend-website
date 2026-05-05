@@ -1,11 +1,15 @@
+import Link from "next/link";
+import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
+import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
+import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // icons
-import { Star } from "lucide-react";
+import { Star, ChevronDown } from "lucide-react";
 
 // local components
 import Badge from "@/components/product/badge.component";
@@ -13,9 +17,15 @@ import VariantSelection from "@/components/product/variant-selection.component";
 import CheckDeliveryAvailability from "@/components/product/product-info/check-delivery-availability.component";
 import ProductDetails from "@/components/product/product-info/product-details.component";
 import MobileProductGallary from "@/components/product/product-gallary/mobile-product-gallary.component";
+import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
+import useCreateBuyingIntentMutation from "@/hooks/axios/checkout/use-create-buying-intent-mutation.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+
+// helpers
+import { generateSlug } from "@/helpers/product.helper";
 
 type IProps = {
   product: IProduct;
@@ -23,6 +33,12 @@ type IProps = {
   selected_attributes: Record<string, any>;
   category_mappings: ICategoryAttributeMapping[];
   is_product_available: boolean;
+  handleLoginModalState: ({
+    open,
+    action_type,
+    onSuccess,
+  }: ILoginModalState) => void;
+  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
 const ProductInfo: FC<IProps> = ({
@@ -31,7 +47,13 @@ const ProductInfo: FC<IProps> = ({
   selected_attributes,
   category_mappings,
   is_product_available,
+  handleLoginModalState,
+  handleReportModalState,
 }) => {
+  const router = useRouter();
+  const { data: user_details } = useUserDetails();
+  const is_logged_in = !!user_details;
+  const create_buying_intent_mutation = useCreateBuyingIntentMutation();
   const add_to_cart_mutation = useAddToCartMutation();
   const { title, brand, sub_sub_category } = product;
   const updated_title =
@@ -44,6 +66,7 @@ const ProductInfo: FC<IProps> = ({
     ((mrp - selling_price_with_commission) / mrp) * 100,
   );
 
+  const product_slug = generateSlug(product.title);
   const nor_visual_variant_attributes = variant.variant_attribute_values
     .filter(
       ({ attribute }) =>
@@ -124,20 +147,31 @@ const ProductInfo: FC<IProps> = ({
       <section className="order-5">
         <h2 className="sr-only">Product rating</h2>
         <p className="mb-4" aria-label="Product rating and reviews">
-          <strong className="font-medium">4.6 </strong>{" "}
-          <span className="sr-only">out of 5 stars</span>{" "}
-          <Star
-            className="inline size-4 fill-amber-300 text-amber-300"
-            aria-hidden="true"
-          />
+          <RatingSummaryPopover
+            product_id={product.id}
+            product_reviews_link={`/${product_slug}/p/${product.id}/reviews`}
+          >
+            <span className="inline-flex cursor-pointer items-center gap-1">
+              <strong className="font-medium">4.6 </strong>{" "}
+              <span className="sr-only">out of 5 stars</span>{" "}
+              <Star
+                className="inline size-4 fill-amber-300 text-amber-300"
+                aria-hidden="true"
+              />
+              <ChevronDown
+                className="inline-block size-4 text-orange-500"
+                strokeWidth={2.5}
+              />
+            </span>
+          </RatingSummaryPopover>
           <span aria-hidden="true"> | </span>{" "}
-          <a
-            href="#reviews"
+          <Link
+            href={`/${product_slug}/p/${product.id}/reviews`}
             className="text-orange-500"
             aria-label={`view all ${2847} reviews`}
           >
             2,847 reviews
-          </a>{" "}
+          </Link>{" "}
           <span className="inline">500+ bought in past month</span>
         </p>
       </section>
@@ -152,7 +186,12 @@ const ProductInfo: FC<IProps> = ({
         Sold by{" "}
         <strong className="font-medium text-orange-500">Himang Retails</strong>
       </p>
-      <ProductDetails product={product} category_mappings={category_mappings} />
+      <ProductDetails
+        product={product}
+        category_mappings={category_mappings}
+        handleLoginModalState={handleLoginModalState}
+        handleReportModalState={handleReportModalState}
+      />
       <div
         id="buy-cta-container"
         className="fixed bottom-0 left-0 z-4 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md lg:sticky lg:border-none lg:px-0 lg:shadow-none"
@@ -166,13 +205,53 @@ const ProductInfo: FC<IProps> = ({
             });
           }}
           disabled={add_to_cart_mutation.isPending || !is_product_available}
-          className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-600"
+          className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600"
         >
           Add to cart
         </button>
         <button
-          className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white"
-          disabled={!is_product_available}
+          className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white disabled:bg-orange-300"
+          disabled={
+            create_buying_intent_mutation.isPending || !is_product_available
+          }
+          onClick={() => {
+            if (is_logged_in) {
+              create_buying_intent_mutation.mutate(
+                {
+                  product_id: product.id,
+                  variant_id: variant.id,
+                  quantity: 1,
+                },
+                {
+                  onSuccess({ intent_id }) {
+                    router.push(`/checkout/${intent_id}`);
+                  },
+                },
+              );
+            } else {
+              handleLoginModalState({
+                open: true,
+                action_type: "buy_intent",
+                onSuccess(user) {
+                  if (user) {
+                    create_buying_intent_mutation.mutate(
+                      {
+                        product_id: product.id,
+                        variant_id: variant.id,
+                        quantity: 1,
+                      },
+                      {
+                        onSuccess({ intent_id }) {
+                          router.push(`/checkout/${intent_id}`);
+                        },
+                      },
+                    );
+                  }
+                },
+                onCancel() {},
+              });
+            }
+          }}
         >
           Buy Now
         </button>

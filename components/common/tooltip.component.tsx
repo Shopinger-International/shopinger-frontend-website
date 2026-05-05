@@ -86,7 +86,7 @@ const Tooltip: FC<TooltipProps> = ({
       <span
         ref={refs.setReference}
         {...getReferenceProps()}
-        className="inline-block"
+        className="item-center inline-flex"
       >
         {children({ open })}
       </span>

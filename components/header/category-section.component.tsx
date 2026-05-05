@@ -1,9 +1,11 @@
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 // types
 import type { FC } from "react";
 import type { ICategory } from "@/types/categories";
+import type { ISubCategory } from "@/types/categories";
 
 // local components
 import Tooltip from "@/components/common/tooltip.component";
@@ -28,8 +30,11 @@ import useCategories from "@/hooks/axios/common/use-categories";
 import clsx from "clsx";
 
 const CategorySection: FC = () => {
-  const { data: categories = [] } = useCategories();
+  const router = useRouter();
+  const { data: categories = [] } = useCategories(true);
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
+  const [selected_sub_category, setSelectedSubCategory] =
+    useState<ISubCategory | null>();
   const [can_scroll_left, setCanScrollLeft] = useState(false);
   const [can_scroll_right, setCanScrollRight] = useState(false);
   const nav_ref = useRef<HTMLDivElement>(null);
@@ -123,7 +128,7 @@ const CategorySection: FC = () => {
                       <Tooltip
                         placement="bottom"
                         key={label}
-                        className="z-50 rounded-xl border border-gray-200 bg-white py-1 font-semibold shadow-lg"
+                        className="z-50 rounded-xl border border-gray-300 bg-white py-1 font-semibold shadow-lg"
                         content={() => (
                           <div className="space-y-1 px-3 py-1.5">
                             <p className="tracking-wide text-orange-500">
@@ -189,7 +194,10 @@ const CategorySection: FC = () => {
                     <button
                       key={`category-${id}`}
                       className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => {
+                        router.push(`/categories/${category.slug}`);
+                        setSelectedCategory(category);
+                      }}
                     >
                       <span
                         className={clsx(
@@ -275,16 +283,24 @@ const CategorySection: FC = () => {
             ref={sub_nav_ref}
             className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap"
           >
-            {selected_category.subCategories.map(({ id, name }) => (
-              <span
-                key={`sub-category-${id}`}
-                className="group flex shrink-0 items-center gap-2 rounded-md py-1.5"
-              >
-                <span className="text-sm font-medium group-hover:underline">
-                  {name}
-                </span>
-              </span>
-            ))}
+            {selected_category.subCategories.map((sub_category) => {
+              const { id, name, slug: sub_slug } = sub_category;
+              return (
+                <Link
+                  key={`sub-category-${id}`}
+                  className={clsx(
+                    "group flex shrink-0 items-center gap-2 rounded-md py-1.5 font-medium hover:underline",
+                    selected_sub_category?.id == id &&
+                      "font-semibold underline",
+                  )}
+                  replace={true}
+                  href={`/categories/${selected_category.slug}/${sub_slug}`}
+                  onClick={() => setSelectedSubCategory(sub_category)}
+                >
+                  <span className="text-sm">{name}</span>
+                </Link>
+              );
+            })}
           </nav>
 
           <button

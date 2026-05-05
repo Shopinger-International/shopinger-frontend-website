@@ -42,7 +42,8 @@ const poppins = Poppins({
 
 const MainLayout: FC<{
   children: ReactNode;
-}> = ({ children }) => {
+  show_filter_sort_bar?: boolean;
+}> = ({ children, show_filter_sort_bar = false }) => {
   const { is_open, is_modal_open, address_id, updateState } =
     useContext(AddressDrawerState);
   const is_mobile = useIsMobile();
@@ -51,7 +52,7 @@ const MainLayout: FC<{
     <div
       className={`${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900`}
     >
-      <Header />
+      <Header show_filter_sort_bar={show_filter_sort_bar} />
       <main>
         {is_mobile ? (
           <MobileAddressModal

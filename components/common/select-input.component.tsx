@@ -18,6 +18,8 @@ type SelectInputProps = {
   options: IOption[];
   updateOptions?: (options: IOption[]) => void;
   block_list?: Array<any>;
+  is_disabled?: boolean;
+  instance_id: string;
 };
 
 const SelectInput: FC<SelectInputProps> = ({
@@ -29,6 +31,8 @@ const SelectInput: FC<SelectInputProps> = ({
   options,
   updateOptions,
   block_list = [],
+  is_disabled,
+  instance_id,
 }) => {
   const SelectComponent = is_custom_allowed ? CreatableSelect : Select;
 
@@ -49,6 +53,7 @@ const SelectInput: FC<SelectInputProps> = ({
 
   return (
     <SelectComponent
+      instanceId={instance_id}
       menuPosition="fixed"
       isOptionDisabled={(option) => block_list.includes(option.value)}
       unstyled
@@ -56,6 +61,7 @@ const SelectInput: FC<SelectInputProps> = ({
       isMulti={is_multi}
       options={options}
       value={mapped_value}
+      isDisabled={is_disabled}
       onCreateOption={
         is_custom_allowed
           ? (input: string) => {
@@ -83,10 +89,11 @@ const SelectInput: FC<SelectInputProps> = ({
       }}
       classNames={{
         container: () => "w-full",
-        control: ({ isFocused }) =>
+        control: ({ isFocused, isDisabled }) =>
           clsx(
             "flex w-full items-center rounded-md border px-3 py-2",
             isFocused ? "border-2 border-orange-500" : "border-gray-300",
+            isDisabled && "cursor-not-allowed bg-gray-100",
           ),
         valueContainer: () => "flex gap-1 flex-wrap",
         placeholder: () => "text-gray-400",

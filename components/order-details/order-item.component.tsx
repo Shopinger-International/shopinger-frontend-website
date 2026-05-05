@@ -7,24 +7,25 @@ import type IProduct from "@/types/product";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
+import clsx from "clsx";
 
 type IProps = {
   product: Omit<IProduct, "variants">;
   variant: IVariant;
-  status: string;
   is_delivered: boolean;
   is_reviewed: boolean;
   quantity: number;
+  cancelled_quantity: number;
   handleShowReviewModal: () => void;
 };
 
 const OrderItem: FC<IProps> = ({
   product,
   variant,
-  status,
   is_delivered,
   is_reviewed,
   quantity,
+  cancelled_quantity,
   handleShowReviewModal,
 }) => {
   const { title, id: product_id } = product;
@@ -44,35 +45,33 @@ const OrderItem: FC<IProps> = ({
     },
   );
   const variant_medias = variant.variant_medias.map(({ media }) => media);
+  const effective_quantity = quantity - cancelled_quantity;
 
   return (
-    <div className="rounded-xl bg-white">
+    <div
+      className={clsx(
+        "rounded-xl bg-white",
+        effective_quantity == 0 && "opacity-60",
+      )}
+    >
       <div className="flex gap-4">
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
-          <Link href={`/${product_slug}/p/${product_id}/${variant_id}`}>
+        <Link href={`/${product_slug}/p/${product_id}/${variant_id}`}>
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100">
             <Image
               src={
                 variant_medias[0]?.url ?? product.product_medias[0].media.url
               }
               alt={title}
-              fill
+              fill={true}
               className="object-contain"
               sizes="80px"
             />
-          </Link>
-        </div>
+          </div>
+        </Link>
 
         {/* CONTENT */}
         <div className="flex flex-1 flex-col space-y-1">
-          {/* TOP */}
-          <div className="flex items-start justify-between gap-2">
-            <h4 className="line-clamp-1 text-sm font-medium">{title}</h4>
-
-            <span className={`shrink-0 text-xs font-medium text-gray-600`}>
-              {status[0] + status.slice(1).toLowerCase()}
-            </span>
-          </div>
-
+          <h4 className="line-clamp-1 text-sm font-medium">{title}</h4>
           {!!formated_variant_attribute_value.length && (
             <>
               <p className="text-xs font-medium text-gray-600">
@@ -82,14 +81,25 @@ const OrderItem: FC<IProps> = ({
               </p>
             </>
           )}
-
-          {/* PRICE ROW */}
           <div className="flex items-center gap-2 text-sm">
-            <span className="font-medium text-gray-900">
-              ₹{variant_pricing.selling_price_with_commission} x{" "}
-            </span>
+            {effective_quantity > 0 ? (
+              <>
+                <span className="font-medium text-gray-900">
+                  ₹{variant_pricing.selling_price_with_commission} ×{" "}
+                  {effective_quantity}
+                </span>
 
-            {quantity}
+                {cancelled_quantity > 0 && (
+                  <span className="text-xs font-medium text-red-500">
+                    ({cancelled_quantity} cancelled)
+                  </span>
+                )}
+              </>
+            ) : (
+              <span className="text-sm font-medium text-red-600">
+                cancelled
+              </span>
+            )}
           </div>
           {is_delivered && (
             <div>

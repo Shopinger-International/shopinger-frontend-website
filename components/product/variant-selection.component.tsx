@@ -105,6 +105,7 @@ const VariantSelection: FC<{
 
                 return (
                   <Link
+                    replace={true}
                     scroll={false}
                     href={`/${product_slug}/p/${product_id}/${variant?.id}`}
                     key={`variant-attribute-value-${value}`}
@@ -133,6 +134,7 @@ const VariantSelection: FC<{
                             src={
                               variant_medias?.[0]?.url ?? product_medias[0].url
                             }
+                            loading="lazy"
                             fill
                             alt={value}
                             className="object-cover object-top transition-transform duration-300 group-hover:scale-105"

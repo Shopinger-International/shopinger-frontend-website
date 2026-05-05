@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -5,7 +6,7 @@ import Image from "next/image";
 // types
 import type { FC } from "react";
 import type { FieldProps } from "formik";
-import type { Country } from "@/data/countries.data";
+import type { ICountry } from "@/data/countries.data";
 import type { CountryCode } from "libphonenumber-js";
 import type { SnackbarOrigin } from "notistack";
 import type IUser from "@/types/user";
@@ -41,7 +42,7 @@ import useVerifyLoginOtp from "@/hooks/axios/login/verify-login-otp-mutation";
 
 export type IInitialValues = {
   identifier: string;
-  country: Country | undefined;
+  country: ICountry | undefined;
 };
 
 const initial_values = {
@@ -114,6 +115,7 @@ const LoginForm: FC<IProps> = ({
   handleOnSuccess,
   anchorOrigin,
 }) => {
+  const query_client = useQueryClient();
   const send_otp_mutation = useSendOTPMutation();
   const verify_otp_mutation = useVerifyLoginOtp(anchorOrigin);
   const router = useRouter();
@@ -185,9 +187,8 @@ const LoginForm: FC<IProps> = ({
             send_otp_mutation.mutate(
               {
                 identifier: values.identifier,
-                country_code: user_details.country?.code
-                  ? getCallingCode(user_details.country.code as CountryCode)
-                  : undefined,
+                country_code:
+                  getCallingCode(values.country?.code as CountryCode) ?? "91",
               },
               {
                 onSuccess(response) {
@@ -220,9 +221,11 @@ const LoginForm: FC<IProps> = ({
                           </PopoverButton>
 
                           <PopoverPanel className="absolute z-20 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                            <div className="max-h-64 overflow-y-auto p-2">
-                              <CountrySelector />
-                            </div>
+                            {({ close }) => (
+                              <div className="max-h-64 overflow-y-auto p-2">
+                                <CountrySelector handleChange={() => close()} />
+                              </div>
+                            )}
                           </PopoverPanel>
                         </Popover>
                       )}
@@ -291,6 +294,9 @@ const LoginForm: FC<IProps> = ({
                   onSuccess(response) {
                     !is_modal && router.push("/");
                     handleOnSuccess?.(response.user);
+                    query_client.invalidateQueries({
+                      queryKey: ["product-reviews"],
+                    });
                   },
                 },
               );

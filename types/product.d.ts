@@ -42,6 +42,7 @@ type IProduct = {
     attribute: IAttributeType;
     value;
   }>;
+  reviews_count: number;
   sub_sub_category_id: number;
   main_category: ICategory;
   sub_category: ISubCategory;

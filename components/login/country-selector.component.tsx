@@ -1,6 +1,8 @@
+import Image from "next/image";
 import { useState, Fragment } from "react";
 
 // types
+import type { FC } from "react";
 import type { IInitialValues } from "@/components/login/login-form.component";
 import type { CountryCode } from "libphonenumber-js";
 
@@ -22,8 +24,11 @@ import { useFormikContext } from "formik";
 import clsx from "clsx";
 import { getCallingCode } from "@/helpers/common.helper";
 
-const CountrySelector = () => {
-  const { values, setFieldValue } = useFormikContext<IInitialValues>();
+const CountrySelector: FC<{
+  handleChange: () => void;
+}> = ({ handleChange }) => {
+  const { values, setFieldValue, validateForm } =
+    useFormikContext<IInitialValues>();
   const [query, setQuery] = useState("");
 
   const filtered_countries =
@@ -38,8 +43,11 @@ const CountrySelector = () => {
   return (
     <Combobox
       value={values.country}
-      onChange={(value) => {
-        value && setFieldValue("country", value);
+      onChange={async (value) => {
+        console.log("value of data", value);
+        value && (await setFieldValue("country", value));
+        await validateForm();
+        handleChange();
       }}
     >
       <div>
@@ -49,7 +57,6 @@ const CountrySelector = () => {
           placeholder="Search country"
           onChange={(e) => setQuery(e.target.value)}
           displayValue={(country) => {
-            console.log("value of country", country);
             return "";
           }}
         />
@@ -72,7 +79,13 @@ const CountrySelector = () => {
                       selected && "bg-orange-500 text-white",
                     )}
                   >
-                    <span>{country.flag}</span>
+                    <Image
+                      src={country.flag}
+                      width={8}
+                      height={8}
+                      alt="flag"
+                      className="size-3 object-cover"
+                    />
                     <span className="font-medium">{country.name}</span>
                     <span className="ml-auto text-gray-500">
                       {getCallingCode(country.code as CountryCode)}

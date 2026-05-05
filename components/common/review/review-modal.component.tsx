@@ -4,6 +4,8 @@ import type { FC } from "react";
 import type { FieldProps } from "formik";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
+import type { IOrderItem } from "@/types/order";
+import type IMedia from "@/types/media";
 
 // external components
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -17,7 +19,8 @@ import { X } from "lucide-react";
 import "@smastrom/react-rating/style.css";
 
 // api hooks
-import useReviewGeneratorMutation from "@/hooks/axios/review/review-generator-mutation.hook";
+import useReviewGeneratorMutation from "@/hooks/axios/review/use-review-generator-mutation.hook";
+import useAddReviewMutation from "@/hooks/axios/review/use-add-review-mutation.hook";
 
 const rating_labels = [
   "Very poor",
@@ -30,20 +33,37 @@ const rating_labels = [
 type IInitialValues = {
   rating: number;
   title: string;
-  description: string;
+  comment: string;
   medias: File[];
+  existing_medias: Array<IMedia>;
 };
 type IProps = {
   product: Omit<IProduct, "variants">;
   variant: IVariant;
+  order_item: IOrderItem;
   is_open: boolean;
   onClose: () => void;
 };
 
-const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
+const ReviewModal: FC<IProps> = ({
+  product,
+  variant,
+  order_item,
+  is_open,
+  onClose,
+}) => {
   const { title } = product;
   const review_generator_mutation = useReviewGeneratorMutation();
   const variant_medias = variant.variant_medias.map(({ media }) => media);
+  const add_review_mutation = useAddReviewMutation();
+  const review = order_item.product_review[0];
+  const initial_values: IInitialValues = {
+    rating: review?.rating ?? 0,
+    title: review?.title ?? "",
+    comment: review?.comment ?? "",
+    medias: [],
+    existing_medias: review?.review_medias?.map(({ media }) => media) ?? [],
+  };
 
   return (
     <Dialog as="div" className="relative z-50" onClose={onClose} open={is_open}>
@@ -85,14 +105,27 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
 
           {/* Form */}
           <Formik<IInitialValues>
-            initialValues={{
-              rating: 0,
-              title: "",
-              description: "",
-              medias: [],
-            }}
-            onSubmit={(values) => {
-              console.log(values);
+            initialValues={initial_values}
+            onSubmit={({ medias, existing_medias, ...values }) => {
+              const form_data = new FormData();
+              const payload = {
+                product_id: product.id,
+                variant_id: variant.id,
+                order_item_id: order_item.item_id,
+                ...values,
+              };
+              existing_medias.forEach((media) => {
+                form_data.append("existing_medias_id[]", String(media.id));
+              });
+              Object.entries(payload).forEach(([key, value]) =>
+                form_data.append(key, String(value)),
+              );
+              medias.forEach((media) => form_data.append("files", media));
+              add_review_mutation.mutate(form_data, {
+                onSuccess() {
+                  onClose();
+                },
+              });
             }}
           >
             {({ values, setValues }) => (
@@ -126,7 +159,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                                     setValues((prev) => ({
                                       ...prev,
                                       title: review_title,
-                                      description: review_description,
+                                      comment: review_description,
                                     }));
                                   },
                                 },
@@ -171,7 +204,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                   </Field>
 
                   {/* Description */}
-                  <Field name="description">
+                  <Field name="comment">
                     {({ field }: FieldProps<string, IInitialValues>) => (
                       <div className="flex flex-col gap-2">
                         <label className="text-sm font-medium">
@@ -201,12 +234,17 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                           (f) => f.size <= MAX_SIZE,
                         );
 
-                        form.setFieldValue(
-                          "medias",
-                          [...files, ...valid].slice(0, MAX_FILES),
-                        );
-                      };
+                        const remainingSlots =
+                          MAX_FILES -
+                          values.existing_medias.length -
+                          files.length;
 
+                        if (remainingSlots <= 0) return;
+
+                        const filesToAdd = valid.slice(0, remainingSlots);
+
+                        form.setFieldValue("medias", [...files, ...filesToAdd]);
+                      };
                       return (
                         <div className="flex flex-col gap-3">
                           <label className="text-sm font-medium">
@@ -241,14 +279,48 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                           </div>
 
                           {/* Preview Grid */}
-                          {files.length > 0 && (
+                          {(files.length > 0 ||
+                            values["existing_medias"].length > 0) && (
                             <div className="grid grid-cols-4 gap-3">
+                              {values["existing_medias"].map((media) => (
+                                <div
+                                  key={`existing-media-${media.id}`}
+                                  className="group relative aspect-square overflow-hidden rounded-md border-2 border-gray-300"
+                                >
+                                  <Image
+                                    src={media.url}
+                                    alt="preview"
+                                    fill
+                                    className="object-cover"
+                                  />
+
+                                  <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/40" />
+
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const existing_medias =
+                                        values["existing_medias"];
+                                      form.setFieldValue(
+                                        "existing_medias",
+                                        existing_medias.filter(
+                                          (existing_media) =>
+                                            existing_media.id != media.id,
+                                        ),
+                                      );
+                                    }}
+                                    className="absolute top-1 right-1 rounded-sm bg-white p-1 text-xs shadow"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
                               {files.map((file, index) => {
                                 const preview = URL.createObjectURL(file);
 
                                 return (
                                   <div
-                                    key={index}
+                                    key={`existing-uploaded-files-${index}`}
                                     className="group relative aspect-square overflow-hidden rounded-md border-2 border-gray-300"
                                   >
                                     <Image
@@ -268,7 +340,7 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                                         );
                                         form.setFieldValue("medias", updated);
                                       }}
-                                      className="absolute top-1 right-1 hidden rounded-md bg-white p-1 text-xs shadow group-hover:block"
+                                      className="absolute top-1 right-1 rounded-sm bg-white p-1 text-xs shadow"
                                     >
                                       ✕
                                     </button>
@@ -276,7 +348,8 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                                 );
                               })}
 
-                              {files.length < 5 && (
+                              {files.length + values["existing_medias"].length <
+                                5 && (
                                 <label className="flex aspect-square cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-orange-400 hover:text-orange-500">
                                   +
                                   <input
@@ -314,7 +387,8 @@ const ReviewModal: FC<IProps> = ({ product, variant, is_open, onClose }) => {
                     type="submit"
                     disabled={
                       values.rating === 0 ||
-                      values.description.trim().length < 10
+                      values.comment.trim().length < 10 ||
+                      add_review_mutation.isPending
                     }
                     className="rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
                   >

@@ -3,6 +3,7 @@ import Head from "next/head";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
+import ProtectedLayout from "@/components/layout/protected-layout.component";
 
 // types
 import type { GetServerSideProps } from "next";
@@ -11,6 +12,9 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type IOrder from "@/types/order";
+import type { IOrderItem } from "@/types/order";
+import type { DehydratedState } from "@tanstack/react-query";
+import type { IAddressSnapshot } from "@/types/order";
 
 // local components
 import OrderItem from "@/components/order-details/order-item.component";
@@ -20,15 +24,19 @@ import HelpSection from "@/components/common/help-section.component";
 import ReviewModal from "@/components/common/review/review-modal.component";
 import CancelOrderModal from "@/components/order-details/cancel-order.component";
 
-// hooks
+// api hooks
+import useOrder from "@/hooks/axios/order/use-order.hook";
 
 // icon
 import { CreditCard, Truck, CheckCircle } from "lucide-react";
 
 // helpers
 import clsx from "clsx";
-import webAxios from "@/lib/axios/web.lib";
-import { formateDate } from "@/helpers/common.helper";
+import { formatDate, capitalizeFirstLetter } from "@/helpers/common.helper";
+import { getOrderDetail } from "@/hooks/axios/order/use-order.hook";
+
+// react query
+import { QueryClient, dehydrate } from "@tanstack/react-query";
 
 const steps = [
   { label: "Confirmed", icon: CreditCard, status: "CONFIRMED" },
@@ -41,42 +49,51 @@ type IBaseReviewType = {
   open: boolean;
   product: Omit<IProduct, "variants"> | null;
   variant: IVariant | null;
+  order_item: IOrderItem | null;
 };
 
-const getOrderDetail = async (
-  order_id: number,
-  cookie: string,
-): Promise<IOrder> => {
-  const {
-    data: { order },
-  } = await webAxios.get<{
-    success: boolean;
-    order: IOrder;
-  }>(`/get-order/${order_id}`, {
-    headers: cookie
-      ? {
-          cookie,
-        }
-      : {},
-  });
-  return order;
+const getFormattedAddress = (address: IAddressSnapshot) => {
+  return [
+    address.house_number,
+    address.area,
+    address.landmark,
+    address.city,
+    address.state,
+    address.pincode,
+  ]
+    .filter(Boolean)
+    .join(", ");
 };
 
 const OrderDetailPage: NextPageWithLayout<{
-  order: IOrder;
-}> = ({ order }) => {
+  order_id: string;
+}> = ({ order_id }) => {
+  const { data: order } = useOrder(order_id) as { data: IOrder };
   const [review_modal_state, setReviewModalState] = useState<IBaseReviewType>({
     open: false,
     product: null,
     variant: null,
+    order_item: null,
   });
   const [cancel_order_modal_state, setCancelOrderModalState] = useState<{
     open: boolean;
   }>({
     open: false,
   });
-  const order_status_history = order.order_status_history;
-  console.log("value of order", order);
+  const order_status_history = order?.order_status_history;
+  const total_order_items = order?.order_items.reduce(
+    (acc, { quantity }) => acc + quantity,
+    0,
+  );
+  const total_cancelled_items = order?.order_items.reduce(
+    (acc, { cancelled_quantity }) => acc + cancelled_quantity,
+    0,
+  );
+  const total_active_items = total_order_items - total_cancelled_items;
+
+  if (!order) {
+    return null;
+  }
 
   return (
     <>
@@ -93,12 +110,14 @@ const OrderDetailPage: NextPageWithLayout<{
         <ReviewModal
           product={review_modal_state.product}
           variant={review_modal_state.variant}
+          order_item={review_modal_state.order_item as IOrderItem}
           is_open={review_modal_state.open}
           onClose={() =>
             setReviewModalState({
               open: false,
               product: null,
               variant: null,
+              order_item: null,
             })
           }
         />
@@ -123,20 +142,21 @@ const OrderDetailPage: NextPageWithLayout<{
                 Order ID: 171-6754116-9353937
               </h1>
               <p className="mt-1 text-sm text-gray-600">
-                Placed on 12 Feb 2026
+                Placed on {formatDate(order.created_at)}
               </p>
             </div>
             {/* ACTIONS */}
             <div className="flex items-center gap-3">
               {order.status === "CONFIRMED" && (
                 <button
+                  disabled={!total_active_items}
                   onClick={() => {
                     // TODO: replace with modal / API call
                     setCancelOrderModalState({
                       open: true,
                     });
                   }}
-                  className="rounded-md border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50"
+                  className="rounded-md border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 disabled:border-red-200 disabled:text-red-200"
                 >
                   Cancel Order
                 </button>
@@ -209,7 +229,7 @@ const OrderDetailPage: NextPageWithLayout<{
                           }`}
                         >
                           {order_status_date &&
-                            formateDate(order_status_date) &&
+                            formatDate(order_status_date) &&
                             ""}
                         </span>
                       </div>
@@ -217,35 +237,51 @@ const OrderDetailPage: NextPageWithLayout<{
                   })}
                 </div>
               </div>
-              <OrderSummary />
+              <OrderSummary
+                username={order.address_snapshot.full_name}
+                phone={order.address_snapshot.phone}
+                payment_method={capitalizeFirstLetter(order.payment_method)}
+                delivery_address={getFormattedAddress(order.address_snapshot)}
+              />
               {/* Order Items */}
               <div className="rounded-xl border border-gray-300 bg-white p-6">
-                <h2 className="mb-4 font-semibold text-gray-900">
-                  {order?.order_items.length} items in this order
+                <h2 className="mb-2 font-semibold text-gray-900">
+                  {total_active_items} items in this order
                 </h2>
+                {total_cancelled_items > 0 && (
+                  <p className="mb-4 text-xs font-medium text-gray-600">
+                    {total_cancelled_items} item
+                    {total_cancelled_items !== 1 ? "s" : ""} cancelled
+                  </p>
+                )}
 
                 <div className="space-y-4">
-                  {order?.order_items?.flatMap(
-                    ({ quantity, item: { variants, ...product }, status }) =>
-                      variants.map((variant) => (
-                        <OrderItem
-                          quantity={quantity}
-                          product={product}
-                          variant={variant}
-                          status={status}
-                          key={`cart-item-${variant.id}`}
-                          is_delivered={true}
-                          is_reviewed={false}
-                          handleShowReviewModal={() =>
-                            setReviewModalState({
-                              open: true,
-                              product,
-                              variant,
-                            })
-                          }
-                        />
-                      )),
-                  )}
+                  {order?.order_items?.flatMap((order_item) => {
+                    const {
+                      quantity,
+                      item: { variants, ...product },
+                      cancelled_quantity,
+                    } = order_item;
+                    return variants.map((variant) => (
+                      <OrderItem
+                        quantity={quantity}
+                        cancelled_quantity={cancelled_quantity}
+                        product={product}
+                        variant={variant}
+                        key={`cart-item-${variant.id}`}
+                        is_delivered={true}
+                        is_reviewed={false}
+                        handleShowReviewModal={() =>
+                          setReviewModalState({
+                            open: true,
+                            product,
+                            variant,
+                            order_item,
+                          })
+                        }
+                      />
+                    ));
+                  })}
                 </div>
               </div>
             </div>
@@ -274,14 +310,63 @@ const OrderDetailPage: NextPageWithLayout<{
 
 export default OrderDetailPage;
 
+type Props = {
+  dehydratedState: DehydratedState;
+  order_id: string;
+};
 export const getServerSideProps = (async (context) => {
-  // Fetch data from external API
   const cookie = context.req.headers.cookie ?? "";
   const { order_id } = context.params as { order_id: string };
-  const order = await getOrderDetail(Number(order_id), cookie);
-  return { props: { order } };
-}) satisfies GetServerSideProps<{ order: IOrder }>;
 
+  const queryClient = new QueryClient();
+
+  try {
+    await queryClient.fetchQuery<IOrder>({
+      queryKey: ["order", order_id],
+      queryFn: async () => {
+        return await getOrderDetail(order_id, cookie);
+      },
+    });
+    return {
+      props: {
+        dehydratedState: dehydrate(queryClient),
+        order_id,
+      },
+    };
+  } catch (error: any) {
+    const status = error?.response?.status;
+
+    if (status === 404) {
+      return {
+        redirect: {
+          destination: "/404",
+          permanent: false,
+        },
+      };
+    }
+
+    if (status === 401) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+
+    // fallback: generic error page
+    return {
+      redirect: {
+        destination: "/500",
+        permanent: false,
+      },
+    };
+  }
+}) satisfies GetServerSideProps<Props>;
 OrderDetailPage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return (
+    <ProtectedLayout>
+      <MainLayout>{page}</MainLayout>
+    </ProtectedLayout>
+  );
 };

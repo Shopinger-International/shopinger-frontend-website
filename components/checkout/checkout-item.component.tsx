@@ -13,6 +13,7 @@ import QuantityStepper from "@/components/common/quantity-stepper.component";
 import useCartItemIncreaseMutation from "@/hooks/axios/cart/use-cart-item-increase-mutation.hook";
 import useCartItemDecreaseMutation from "@/hooks/axios/cart/use-cart-item-decrease-mutation.hook";
 import useCartItemRemoveMutation from "@/hooks/axios/cart/use-cart-item-remove-mutation.hook";
+import useUpdateIntentQuantityMutation from "@/hooks/axios/checkout/use-update-intent-quantity-mutation.hook";
 
 // icons
 import { X } from "lucide-react";
@@ -38,9 +39,11 @@ type IProps = {
     selected_stock: number;
     stock_status: IStockStatus;
   };
+  type: "buy-checkout" | "cart-checkout";
+  intent_id?: string;
 };
 
-const CartItem: FC<IProps> = ({ product, variant }) => {
+const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
   const { title, id: product_id } = product;
   const {
     variant_attribute_values,
@@ -52,6 +55,7 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
   const cart_item_increase_mutation = useCartItemIncreaseMutation();
   const cart_item_decrease_mutation = useCartItemDecreaseMutation();
   const cart_item_remove_mutation = useCartItemRemoveMutation();
+  const update_intent_quantity_mutation = useUpdateIntentQuantityMutation();
   const formated_variant_attribute_value = variant_attribute_values.map(
     ({ attribute, value }) => {
       return {
@@ -82,13 +86,13 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
       <div className="flex gap-4">
         {/* IMAGE */}
 
-        <div
-          className={clsx(
-            "relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100",
-            variant.stock_status == "STOCK_EXCEEDED" && "opacity-80",
-          )}
-        >
-          <Link href={`/${product_slug}/p/${product_id}/${variant.id}`}>
+        <Link href={`/${product_slug}/p/${product_id}/${variant.id}`}>
+          <div
+            className={clsx(
+              "relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-gray-300 bg-gray-100",
+              variant.stock_status == "STOCK_EXCEEDED" && "opacity-80",
+            )}
+          >
             <Image
               src={
                 variant_medias[0]?.url ?? product.product_medias[0].media.url
@@ -98,8 +102,8 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
               className="object-contain"
               sizes="80px"
             />
-          </Link>
-        </div>
+          </div>
+        </Link>
 
         {/* CONTENT */}
         <div className="flex flex-1 flex-col justify-between">
@@ -160,29 +164,47 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
                 }
                 show_decrease_disabled={cart_item_decrease_mutation.isPending}
                 onDecrease={() => {
-                  cart_item_decrease_mutation.mutate({
-                    variant_id,
-                  });
+                  if (type == "cart-checkout") {
+                    cart_item_decrease_mutation.mutate({
+                      variant_id,
+                    });
+                  } else {
+                    update_intent_quantity_mutation.mutate({
+                      intent_id: intent_id as string,
+                      variant_id,
+                      quantity: selected_stock - 1,
+                    });
+                  }
                 }}
                 onIncrease={() => {
-                  cart_item_increase_mutation.mutate({
-                    variant_id,
-                  });
+                  if (type == "cart-checkout") {
+                    cart_item_increase_mutation.mutate({
+                      variant_id,
+                    });
+                  } else {
+                    update_intent_quantity_mutation.mutate({
+                      intent_id: intent_id as string,
+                      variant_id,
+                      quantity: selected_stock + 1,
+                    });
+                  }
                 }}
               />
 
               {/* Remove Button */}
-              <button
-                className="flex size-10 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
-                disabled={cart_item_remove_mutation.isPending}
-                onClick={() =>
-                  cart_item_remove_mutation.mutate({
-                    variant_id,
-                  })
-                }
-              >
-                <X size={18} />
-              </button>
+              {type == "cart-checkout" && (
+                <button
+                  className="flex size-10 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
+                  disabled={cart_item_remove_mutation.isPending}
+                  onClick={() =>
+                    cart_item_remove_mutation.mutate({
+                      variant_id,
+                    })
+                  }
+                >
+                  <X size={18} />
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -197,31 +219,49 @@ const CartItem: FC<IProps> = ({ product, variant }) => {
           show_decrease_disabled={cart_item_decrease_mutation.isPending}
           quantity={selected_stock}
           onDecrease={() => {
-            cart_item_decrease_mutation.mutate({
-              variant_id,
-            });
+            if (type == "cart-checkout") {
+              cart_item_decrease_mutation.mutate({
+                variant_id,
+              });
+            } else {
+              update_intent_quantity_mutation.mutate({
+                intent_id: intent_id as string,
+                variant_id,
+                quantity: selected_stock - 1,
+              });
+            }
           }}
           onIncrease={() => {
-            cart_item_increase_mutation.mutate({
-              variant_id,
-            });
+            if (type == "cart-checkout") {
+              cart_item_increase_mutation.mutate({
+                variant_id,
+              });
+            } else {
+              update_intent_quantity_mutation.mutate({
+                intent_id: intent_id as string,
+                variant_id,
+                quantity: selected_stock + 1,
+              });
+            }
           }}
         />
 
         {/* Remove Button */}
-        <button
-          className="flex size-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
-          disabled={cart_item_remove_mutation.isPending}
-          onClick={() =>
-            cart_item_remove_mutation.mutate({
-              variant_id,
-            })
-          }
-        >
-          <X size={18} />
-        </button>
+        {type == "cart-checkout" && (
+          <button
+            className="flex size-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
+            disabled={cart_item_remove_mutation.isPending}
+            onClick={() =>
+              cart_item_remove_mutation.mutate({
+                variant_id,
+              })
+            }
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
     </div>
   );
 };
-export default CartItem;
+export default CheckoutItem;

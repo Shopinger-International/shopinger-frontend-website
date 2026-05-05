@@ -21,7 +21,7 @@ export const prefetchCommonData = async (
     }),
     queryClient.prefetchQuery({
       queryKey: ["categories-list"],
-      queryFn: () => getCategory(),
+      queryFn: () => getCategory(true),
     }),
   ]);
 };

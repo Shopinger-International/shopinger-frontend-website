@@ -11,10 +11,10 @@ import CategorySection from "@/components/header/category-section.component";
 import Tooltip from "@/components/common/tooltip.component";
 import AIAssistant from "../common/ai-chat-box.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
+import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 
 // icons
 import {
-  Triangle,
   EllipsisVertical,
   Menu,
   Bell,
@@ -28,7 +28,6 @@ import {
 import { clsx } from "clsx";
 
 // data
-import { countries } from "@/data/countries.data";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
@@ -37,7 +36,9 @@ import useCart from "@/hooks/axios/cart/use-cart.hook";
 // context
 import { AddressDrawerState } from "@/context";
 
-const Header: FC = () => {
+const Header: FC<{
+  show_filter_sort_bar?: boolean;
+}> = ({ show_filter_sort_bar }) => {
   const { address_id, is_modal_open, updateState } =
     useContext(AddressDrawerState);
   const { data: user_details } = useUserDetails();
@@ -72,7 +73,7 @@ const Header: FC = () => {
           "gap-3 px-4 py-1.5",
           // "lg:max-w-8xl",
           "lg:grid-cols-[auto_minmax(0,1fr)_auto_auto]",
-          "lg:gap-8",
+          "lg:gap-4",
         )}
       >
         {/* LEFT: Menu + Logo */}
@@ -99,7 +100,7 @@ const Header: FC = () => {
           <Searchbar />
         </div>
         {/* RIGHT: Actions */}
-        <div className="order-2 -mr-3 flex items-center justify-end gap-6 lg:order-3 lg:-mr-8">
+        <div className="order-2 -mr-3 flex items-center justify-end gap-4 lg:order-3 lg:-mr-8">
           <button
             onClick={() =>
               updateState?.({
@@ -140,7 +141,7 @@ const Header: FC = () => {
               </div>
             </div>
           </button>
-          <button className="hidden items-center gap-1.5 text-white lg:flex">
+          {/* <button className="hidden items-center gap-1.5 text-white lg:flex">
             <span className="text-xl">
               {countries.find(({ name }) => name == "India")?.flag}
             </span>
@@ -153,7 +154,7 @@ const Header: FC = () => {
                 )}
               />
             </span>
-          </button>
+          </button> */}
           <div className="hidden lg:inline">
             <AccountDropdown />
           </div>
@@ -173,7 +174,7 @@ const Header: FC = () => {
               <Cart width={30} height={23} aria-hidden="true" />
             </span>
 
-            <span aria-hidden="true">₹{cart_details?.total_amount}</span>
+            <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
           </Link>
           <div className="hidden lg:inline">
             <Tooltip
@@ -240,6 +241,7 @@ const Header: FC = () => {
         </div>
       </div>
       <CategorySection />
+      {show_filter_sort_bar && <FilterSortBar />}
     </header>
   );
 };

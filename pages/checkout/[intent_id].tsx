@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { QueryClient, dehydrate } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { IAddress } from "@/types/address";
+import type { GetServerSideProps } from "next";
+import type { IResponse } from "@/hooks/axios/checkout/use-checkout-intent.hook";
+import type IOrder from "@/types/order";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
+import ProtectedLayout from "@/components/layout/protected-layout.component";
 
 // local components
 import CheckoutDetail from "@/components/checkout/checkout-detail.component";
 import SidebarDrawer from "@/components/common/sidebar-drawer.component";
 import AddressRow from "@/components/cart/address-row.component";
+import OrderSuccessfulModal from "@/components/cart/order-successful-modal.component";
+
 const AddAddressModal = dynamic(
   () =>
     import("@/components/manage-address/add-address-modal/add-address-modal.component"),
@@ -33,9 +40,13 @@ const MobileAddressModal = dynamic(
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
+import useCheckoutIntent from "@/hooks/axios/checkout/use-checkout-intent.hook";
 
 // icons
 import { MapPin } from "lucide-react";
+
+// helpers
+import { getCheckoutIntent } from "@/hooks/axios/checkout/use-checkout-intent.hook";
 
 export type IAddressModalState = {
   open: boolean;
@@ -43,8 +54,13 @@ export type IAddressModalState = {
   action_type?: "checkout";
 };
 
-const Checkout: NextPageWithLayout = () => {
-  const { data: user_addresses = [] } = useUserAddresses();
+type IProps = {
+  intent_id: string;
+};
+
+const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
+  const { data: intent_details } = useCheckoutIntent(intent_id);
+  const { data: user_addresses = [], isPending } = useUserAddresses();
   const is_mobile = useIsMobile();
   const delete_address_mutation = useDeleteAddressMutation();
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(
@@ -57,18 +73,43 @@ const Checkout: NextPageWithLayout = () => {
       open: false,
       data: null,
     });
+  const [order_success_modal_state, setOrderSuccessModalState] = useState<{
+    open: boolean;
+    order?: IOrder;
+  }>({
+    open: false,
+  });
+
+  useEffect(() => {
+    if (!isPending && user_addresses.length) {
+      const default_address = user_addresses.find(
+        (address) => address.is_default,
+      );
+      default_address && setSelectedAddress(default_address);
+    }
+  }, [isPending, user_addresses]);
 
   return (
     <>
       <Head>
-        <title>Your Cart | Shopinger</title>
+        <title>Secure Checkout | Shopinger</title>
         <meta
           name="description"
-          content="Review the items in your cart, update quantities, and proceed to checkout securely on Shopinger."
-          key="desc"
+          content="Complete your purchase securely. Review your order and confirm delivery details on Shopinger."
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+
+      <OrderSuccessfulModal
+        is_open={order_success_modal_state.open}
+        order_id={order_success_modal_state.order?.id}
+        total_amount={order_success_modal_state.order?.total_amount}
+        onClose={() =>
+          setOrderSuccessModalState({
+            open: false,
+          })
+        }
+      />
       {is_mobile ? (
         <MobileAddressModal
           open={address_modal_state.open}
@@ -171,9 +212,20 @@ const Checkout: NextPageWithLayout = () => {
       <section className="w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           <CheckoutDetail
+            intent_id={intent_id}
+            total_amount={intent_details?.total_amount ?? 0}
+            total_discount={intent_details?.total_discount ?? 0}
+            total_items={intent_details?.total_items ?? 0}
+            sub_total={intent_details?.sub_total ?? 0}
+            products={intent_details?.items ?? []}
             selected_address={selected_address}
             handleAddressDrawerState={(open) => setIsAddressDrawerOpen(open)}
-            handleOrderSuccess={() => {}}
+            handleOrderSuccess={(order) => {
+              setOrderSuccessModalState({
+                open: true,
+                order,
+              });
+            }}
           />
         </div>
       </section>
@@ -181,8 +233,64 @@ const Checkout: NextPageWithLayout = () => {
   );
 };
 
-Checkout.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+CheckoutPage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <ProtectedLayout>
+      <MainLayout>{page}</MainLayout>
+    </ProtectedLayout>
+  );
 };
 
-export default Checkout;
+export const getServerSideProps = (async ({ params, req }) => {
+  const intent_id = params?.intent_id as string;
+  const query_client = new QueryClient();
+  const cookie = req.headers.cookie ?? "";
+  if (!intent_id) {
+    return { notFound: true };
+  }
+  try {
+    await query_client.fetchQuery<IResponse>({
+      queryKey: ["buy-intent", intent_id],
+      queryFn: async () => {
+        const { data } = await getCheckoutIntent(intent_id, cookie);
+        return data;
+      },
+    });
+    return {
+      props: {
+        intent_id,
+        dehydratedState: dehydrate(query_client),
+      },
+    };
+  } catch (error: any) {
+    const status = error?.response?.status;
+
+    if (status === 404) {
+      return {
+        redirect: {
+          destination: "/404",
+          permanent: false,
+        },
+      };
+    }
+
+    if (status === 401) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+
+    // fallback: generic error page
+    return {
+      redirect: {
+        destination: "/500",
+        permanent: false,
+      },
+    };
+  }
+}) satisfies GetServerSideProps<IProps>;
+
+export default CheckoutPage;

@@ -1,4 +1,3 @@
-import { useState } from "react";
 // types
 import type { FC } from "react";
 import type IOrder from "@/types/order";
@@ -9,8 +8,8 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // local components
 import AddressBar from "@/components/cart/address-bar.component";
-import CartItem from "@/components/cart/cart-item.component";
-import CartSummary from "@/components/cart/cart-summary.component";
+import CheckoutItem from "@/components/checkout/checkout-item.component";
+import CheckoutSummary from "@/components/checkout/checkout-summary.component";
 import HelpSection from "@/components/common/help-section.component";
 
 // helpers
@@ -53,10 +52,11 @@ const CartDetails: FC<IProps> = ({
           <div className="h-min overflow-hidden rounded-xl border border-gray-300 bg-white">
             {cart?.items?.flatMap(({ variants, ...product }) =>
               variants.map((variant) => (
-                <CartItem
+                <CheckoutItem
                   product={product}
                   variant={variant}
                   key={`cart-item-${variant.id}`}
+                  type="cart-checkout"
                 />
               )),
             )}
@@ -65,7 +65,7 @@ const CartDetails: FC<IProps> = ({
 
         {/* Summary */}
         <div className="flex flex-col gap-4 lg:sticky lg:top-(--header-height)">
-          <CartSummary
+          <CheckoutSummary
             handleShowLoginModal={() => {
               handleShowLoginModal("checkout");
             }}
@@ -77,6 +77,7 @@ const CartDetails: FC<IProps> = ({
             total_discount={cart?.total_discount ?? 0}
             total_items={cart?.total_items ?? 0}
             charges={50}
+            type={"cart-checkout"}
             selected_address={selected_address}
             handleOrderSuccess={handleOrderSuccess}
           />

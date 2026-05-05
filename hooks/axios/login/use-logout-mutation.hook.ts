@@ -30,11 +30,7 @@ const useLogoutMutation = () => {
         key: "user-logout-success",
         variant: "success",
       });
-      query_client.setQueryData(["user-details"], null);
-
-      query_client.invalidateQueries({
-        queryKey: ["carts"],
-      });
+      query_client.invalidateQueries();
     },
 
     onError(error) {

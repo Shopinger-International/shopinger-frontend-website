@@ -1,13 +1,20 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 // types
 import type { FC, ReactNode } from "react";
 import type IAttributeType from "@/types/attribute";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
-import IProduct from "@/types/product";
+import type IProduct from "@/types/product";
+import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
+import type IReview from "@/types/review";
 
 // local components
 import ProductInfoTabs from "@/components/product/product-info/product-info-tabs.component";
 import AttributeInfoCell from "@/components/product/product-info/attribute-info-cell.component";
+
+// api hooks
+import useProductReviews from "@/hooks/axios/review/use-product-reviews.hook";
 
 const ProductReview = dynamic(
   () =>
@@ -16,6 +23,8 @@ const ProductReview = dynamic(
     ssr: false,
   },
 );
+
+import ReviewGallary from "@/components/product/product-info/review/review-gallary.component";
 
 // external components
 import {
@@ -27,6 +36,7 @@ import {
 // helpers
 import clsx from "clsx";
 import { capitalizeFirstLetter } from "@/helpers/common.helper";
+import { generateSlug } from "@/helpers/product.helper";
 
 // const
 import { DISPLAY_AREA } from "@/constants/display-area.constant";
@@ -74,12 +84,38 @@ export const DIMENSION_ATTR = {
   ITEM_HEIGHT: "item_height",
 };
 
-const ProductDetails: FC<{
+type IProps = {
   product: IProduct;
   category_mappings: ICategoryAttributeMapping[];
-}> = ({ product, category_mappings }) => {
+  handleLoginModalState: ({
+    open,
+    action_type,
+    onSuccess,
+  }: ILoginModalState) => void;
+  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
+};
+
+const ProductDetails: FC<IProps> = ({
+  product,
+  category_mappings,
+  handleLoginModalState,
+  handleReportModalState,
+}) => {
+  const review_exist = !!product.reviews_count;
   const { key_features, brand, country_of_origin, product_attribute_values } =
     product;
+  const { data } = useProductReviews({
+    productId: product.id,
+    sort: "helpful",
+  });
+
+  const rating_summary = data?.pages[0].summary;
+  const product_reviews = data?.pages.reduce<IReview[]>((acc, { reviews }) => {
+    return [...acc, ...reviews];
+  }, []);
+
+  const top_medias = rating_summary?.top_media ?? [];
+  const product_slug = generateSlug(product.title);
   let updated_key_features = (JSON.parse(key_features) ?? []) as Array<string>;
   const [show_all, setShowAll] = useState(false);
   const initial_visible = 4;
@@ -220,9 +256,45 @@ const ProductDetails: FC<{
             category_mappings={category_mappings}
           />
         </ExtendedDisclosure>
-        {/* <ExtendedDisclosure default_open={true} heading="Customer Reviews">
-          <ProductReview />
-        </ExtendedDisclosure> */}
+        <ExtendedDisclosure
+          default_open={review_exist}
+          heading="Customer Reviews"
+          is_last={true}
+        >
+          {product_reviews?.length === 0 ? (
+            <div className="flex flex-col items-center justify-center space-y-3 py-10 text-center">
+              <p className="text-lg font-semibold text-gray-900">
+                No reviews yet
+              </p>
+              <p className="text-sm text-gray-600">
+                Be the first to review this product
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {!!top_medias.length && (
+                <ReviewGallary review_medias={top_medias} />
+              )}
+
+              {product_reviews?.map((review) => (
+                <ProductReview
+                  {...review}
+                  product_id={product.id}
+                  key={`review-${review.id}`}
+                  handleLoginModalState={handleLoginModalState}
+                  handleReportModalState={handleReportModalState}
+                />
+              ))}
+
+              <Link
+                href={`/${product_slug}/p/${product.id}/reviews`}
+                className="flex w-full cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-600"
+              >
+                Show all reviews
+              </Link>
+            </div>
+          )}
+        </ExtendedDisclosure>
       </div>
     </section>
   );
@@ -234,7 +306,8 @@ const ExtendedDisclosure: FC<{
   children: ReactNode;
   heading: string;
   default_open: boolean;
-}> = ({ children, heading, default_open }) => {
+  is_last?: boolean;
+}> = ({ children, heading, default_open, is_last = false }) => {
   return (
     <Disclosure defaultOpen={default_open}>
       {({ open }) => (
@@ -263,7 +336,12 @@ const ExtendedDisclosure: FC<{
             </DisclosureButton>
           </h2>
 
-          <DisclosurePanel className="overflow-hidden pb-4 text-gray-600">
+          <DisclosurePanel
+            className={clsx(
+              "overflow-hidden text-gray-600",
+              is_last ? "pb-4 sm:pb-0" : "pb-4",
+            )}
+          >
             {children}
           </DisclosurePanel>
         </div>

@@ -1,5 +1,6 @@
 // types
 import type { ICancelReason } from "@/types/order";
+
 // external components
 import {
   Dialog,
@@ -20,6 +21,9 @@ import useCancelOrderMutation from "@/hooks/axios/order/use-cancel-order-mutatio
 
 // icons
 import { X } from "lucide-react";
+
+// react query
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   is_open: boolean;
@@ -49,15 +53,23 @@ const reasons: { label: string; value: ICancelReason }[] = [
 ];
 
 export default function CancelOrderModal({ is_open, order, onClose }: Props) {
+  const query_client = useQueryClient();
   const cancel_order_mutation = useCancelOrderMutation();
   const [selected_items, setSelectedItems] = useState<
     { item_id: number; quantity: number }[]
   >([]);
   const [reason, setReason] = useState<ICancelReason | "">("");
+  console.log("value of order id", order.id);
 
   return (
     <Transition show={is_open} as={Fragment}>
-      <Dialog onClose={onClose} className="relative z-50">
+      <Dialog
+        onClose={() => {
+          onClose();
+          setSelectedItems([]);
+        }}
+        className="relative z-50"
+      >
         {/* backdrop */}
         <TransitionChild as={Fragment}>
           <div className="fixed inset-0 bg-black/40" />
@@ -72,11 +84,14 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                 </DialogTitle>
 
                 <button
-                  onClick={onClose}
+                  onClick={() => {
+                    onClose();
+                    setSelectedItems([]);
+                  }}
                   className="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                   aria-label="Close modal"
                 >
-                  <X className="size-5"/>
+                  <X className="size-5" />
                 </button>
               </div>
               <p className="mt-1 text-sm text-gray-600">
@@ -84,77 +99,81 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
               </p>
               {/* ITEMS */}
               <div className="mt-4 max-h-64 space-y-3 overflow-y-auto">
-                {order.order_items.flatMap(({ item_id, item, quantity }) =>
-                  item.variants.map((variant) => {
-                    const selected_item = selected_items.find(
-                      (i) => i.item_id === item_id,
-                    );
+                {order.order_items.flatMap(
+                  ({ item_id, item, quantity, cancelled_quantity }) =>
+                    item.variants.map((variant) => {
+                      const selected_item = selected_items.find(
+                        (i) => i.item_id === item_id,
+                      );
 
-                    const is_selected = !!selected_item;
+                      const is_selected = !!selected_item;
 
-                    const selected_quantity = selected_item?.quantity ?? 0;
+                      const selected_quantity = selected_item?.quantity ?? 0;
 
-                    return (
-                      <CancelOrderItem
-                        key={variant.id}
-                        product={item}
-                        variant={variant}
-                        quantity={quantity}
-                        is_selected={is_selected}
-                        selected_quantity={selected_quantity}
-                        onToggle={() => {
-                          setSelectedItems((prev) => {
-                            const exists = prev.find(
-                              (i) => i.item_id === item_id,
-                            );
+                      return (
+                        <CancelOrderItem
+                          key={variant.id}
+                          product={item}
+                          variant={variant}
+                          quantity={quantity - cancelled_quantity}
+                          is_selected={is_selected}
+                          selected_quantity={selected_quantity}
+                          onToggle={() => {
+                            setSelectedItems((prev) => {
+                              const exists = prev.find(
+                                (i) => i.item_id === item_id,
+                              );
 
-                            if (exists) {
-                              // remove item
-                              return prev.filter((i) => i.item_id !== item_id);
-                            }
+                              if (exists) {
+                                // remove item
+                                return prev.filter(
+                                  (i) => i.item_id !== item_id,
+                                );
+                              }
 
-                            // add item with default quantity = 1
-                            return [
-                              ...prev,
-                              {
-                                item_id,
-                                quantity: 1,
-                              },
-                            ];
-                          });
-                        }}
-                        onQuantityChange={(updated_quantity) => {
-                          setSelectedItems((prev) => {
-                            const exists = prev.find(
-                              (i) => i.item_id === item_id,
-                            );
+                              // add item with default quantity = 1
+                              return [
+                                ...prev,
+                                {
+                                  item_id,
+                                  quantity: 1,
+                                },
+                              ];
+                            });
+                          }}
+                          onQuantityChange={(updated_quantity) => {
+                            setSelectedItems((prev) => {
+                              const exists = prev.find(
+                                (i) => i.item_id === item_id,
+                              );
 
-                            if (!exists) return prev;
+                              if (!exists) return prev;
 
-                            return prev.map((i) =>
-                              i.item_id === item_id
-                                ? {
-                                    ...i,
-                                    quantity: Math.max(
-                                      0,
-                                      Math.min(quantity, updated_quantity),
-                                    ),
-                                  }
-                                : i,
-                            );
-                          });
-                        }}
-                      />
-                    );
-                  }),
+                              return prev.map((i) =>
+                                i.item_id === item_id
+                                  ? {
+                                      ...i,
+                                      quantity: Math.max(
+                                        0,
+                                        Math.min(quantity, updated_quantity),
+                                      ),
+                                    }
+                                  : i,
+                              );
+                            });
+                          }}
+                        />
+                      );
+                    }),
                 )}
               </div>
               {/* REASON */}
-              <div className="mt-5">
+              <div className="mt-4">
                 <p className="text-sm font-medium">Reason for cancellation</p>
 
-                <div className="mt-2">
+                <div className="mt-2 space-y-4">
                   <SelectInput
+                    instance_id="reason"
                     options={reasons}
                     value={
                       reasons.find((opt) => opt.value === reason)?.value || null
@@ -164,6 +183,13 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                       setReason(value as ICancelReason);
                     }}
                   />
+                  {reason == "OTHER" && (
+                    <textarea
+                      rows={4}
+                      placeholder="Reason for order cancelling"
+                      className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 focus:outline-orange-500"
+                    />
+                  )}
                 </div>
               </div>
               {/* ACTIONS */}
@@ -190,6 +216,10 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                         {
                           onSuccess() {
                             onClose();
+                            query_client.invalidateQueries({
+                              queryKey: ["order", String(order.id)],
+                            });
+                            setSelectedItems([]);
                           },
                         },
                       );
