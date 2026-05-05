@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 // types
 import type { FC } from "react";
 import type {
@@ -35,7 +33,7 @@ const SideFilters: FC<{
     >,
   ) => void;
 }> = ({ category_type, category_slug, filters, handleFiltersChange }) => {
-  const { data: filters_data, isPending } = useCategorySpecificFilters({
+  const { data: filters_data = [], isPending } = useCategorySpecificFilters({
     category_slug,
     category_type,
   });
@@ -67,7 +65,7 @@ const SideFilters: FC<{
           </div>
         </div>
         <button
-          // onClick={() => setFilters(filters_data)}
+          onClick={() => handleFiltersChange(filters_data)}
           className="cursor-pointer text-xs font-medium text-gray-600 hover:text-gray-900"
         >
           Clear All
