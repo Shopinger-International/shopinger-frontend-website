@@ -173,6 +173,7 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
 
                 <div className="mt-2 space-y-4">
                   <SelectInput
+                    instance_id="reason"
                     options={reasons}
                     value={
                       reasons.find((opt) => opt.value === reason)?.value || null
