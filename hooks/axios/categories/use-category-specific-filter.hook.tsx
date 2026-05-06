@@ -3,6 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 // lib
 import Axios from "@/lib/axios/private.lib";
 
+// helpers
+import { capitalizeValue } from "@/helpers/common.helper";
+
 export type IOption = {
   label: string;
   value: string;
@@ -51,19 +54,33 @@ const useCategorySpecificFilters = ({
     },
     select(data) {
       let count = 0;
-      return data.data.map((filter) => {
-        const { options } = filter;
-        return {
+      return [
+        {
           attribute: {
-            ...filter.attribute,
-            is_open: count++ < 2,
+            name: "Brand",
+            code: "brand",
+            is_open: !!data.brands.length,
           },
-          options: options.map((option) => ({
-            ...option,
+          options: data.brands.map((brand) => ({
+            label: capitalizeValue(brand),
+            value: brand,
             is_enabled: false,
           })),
-        };
-      });
+        },
+        ...data.data.map((filter) => {
+          const { options } = filter;
+          return {
+            attribute: {
+              ...filter.attribute,
+              is_open: count++ < 2 && !!options.length,
+            },
+            options: options.map((option) => ({
+              ...option,
+              is_enabled: false,
+            })),
+          };
+        }),
+      ];
     },
   });
 };

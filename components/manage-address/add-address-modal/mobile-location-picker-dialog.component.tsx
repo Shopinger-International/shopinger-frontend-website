@@ -332,7 +332,11 @@ const MobileAddressModal: FC<IProps> = ({
                                 setShowDrawer(false);
                               }}
                             />
-                            <AddAddressInput name="phone" placeholder="Phone" />
+                            <AddAddressInput
+                              name="phone"
+                              placeholder="Phone"
+                              type="tel"
+                            />
                             <AddAddressInput
                               name="full_name"
                               placeholder="Full Name"
@@ -361,7 +365,7 @@ const MobileAddressModal: FC<IProps> = ({
                         </div>
                         <div
                           id="form-footer"
-                          className="fixed bottom-0 shrink-0 space-y-2 border-t border-gray-300 bg-white p-4 w-full"
+                          className="fixed bottom-0 w-full shrink-0 space-y-2 border-t border-gray-300 bg-white p-4"
                         >
                           {/* Selected Location Hint */}
                           {values.formatted_address ? (

@@ -15,6 +15,7 @@ type GetProductsByCategoryParams = {
   min_price?: number;
   max_price?: number;
   min_rating?: number;
+  brands?: Array<string>;
   filters?: Record<string, string[]>;
 };
 
@@ -41,6 +42,7 @@ const useGetCategoryProducts = ({
   min_price,
   max_price,
   min_rating,
+  brands,
   filters,
 }: GetProductsByCategoryParams) => {
   return useInfiniteQuery({
@@ -53,6 +55,7 @@ const useGetCategoryProducts = ({
       min_price,
       max_price,
       min_rating,
+      brands,
       filters,
     ],
 
@@ -71,6 +74,7 @@ const useGetCategoryProducts = ({
             min_price,
             max_price,
             min_rating,
+            brands,
             filters: filters ? JSON.stringify(filters) : undefined,
           },
 

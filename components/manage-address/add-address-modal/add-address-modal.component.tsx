@@ -353,6 +353,7 @@ const AddAddressModal: FC<IProps> = ({
                           <AddAddressInput
                             name="phone"
                             placeholder="Phone number"
+                            type="tel"
                           />
                           <AddAddressInput
                             name="full_name"

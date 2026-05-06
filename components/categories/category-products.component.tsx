@@ -88,16 +88,22 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       slug: category_slug,
       category_type,
       ...selected_sorting_filters,
-      filters: selected_category_specific_filters.reduce((acc, filter) => {
-        if (filter.options.some(({ is_enabled }) => is_enabled)) {
-          return {
-            [filter.attribute.code]: filter.options
-              .filter(({ is_enabled }) => is_enabled)
-              .map(({ value }) => value),
-          };
-        }
-        return acc;
-      }, {}),
+      brands: selected_category_specific_filters
+        .find(({ attribute }) => attribute.code == "brand")
+        ?.options.filter((option) => option.is_enabled)
+        .map((option) => option.value),
+      filters: selected_category_specific_filters
+        .filter(({ attribute }) => attribute.code !== "brand")
+        .reduce((acc, filter) => {
+          if (filter.options.some(({ is_enabled }) => is_enabled)) {
+            return {
+              [filter.attribute.code]: filter.options
+                .filter(({ is_enabled }) => is_enabled)
+                .map(({ value }) => value),
+            };
+          }
+          return acc;
+        }, {}),
     });
 
   const category_products = data?.pages.reduce<
