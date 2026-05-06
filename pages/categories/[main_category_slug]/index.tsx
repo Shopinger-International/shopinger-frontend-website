@@ -40,28 +40,25 @@ const MainCategoryPage: NextPageWithLayout<IProps> = ({ category_slug }) => {
         <meta property="og:type" content="website" />
         <meta
           property="og:url"
-          content={`${process.env.NEXT_PUBLIC_BASE_URL}/category/${category_slug}`}
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}/categories/${category_slug}`}
         />
         <meta property="og:title" content={`${category_name} | Shopinger`} />
         <meta
           property="og:description"
           content={`Shop the best ${category_name}. Explore top products, deals, and offers.`}
         />
-        {/* <meta property="og:image" content={category_image || fallback_image} />
-        <meta property="og:image:alt" content={category_name} /> */}
 
         {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content="summary" />
         <meta
           name="twitter:url"
-          content={`${process.env.NEXT_PUBLIC_BASE_URL}/category/${category_slug}`}
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}/categories/${category_slug}`}
         />
         <meta name="twitter:title" content={`${category_name} | Shopinger`} />
         <meta
           name="twitter:description"
           content={`Shop the best ${category_name}. Explore top products, deals, and offers.`}
         />
-        {/* <meta name="twitter:image" content={category_image || fallback_image} /> */}
         <meta name="twitter:site" content="@shopinger" />
         <meta name="twitter:creator" content="@shopinger" />
       </Head>

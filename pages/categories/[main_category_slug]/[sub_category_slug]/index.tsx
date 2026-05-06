@@ -18,9 +18,13 @@ import { capitalizeValue } from "@/helpers/common.helper";
 
 type IProps = {
   sub_category_slug: string;
+  category_slug: string;
 };
 
-const SubCategory: NextPageWithLayout<IProps> = ({ sub_category_slug }) => {
+const SubCategory: NextPageWithLayout<IProps> = ({
+  category_slug,
+  sub_category_slug,
+}) => {
   const category_name = sub_category_slug
     .split("-")
     .map((word) => capitalizeValue(word))
@@ -29,6 +33,7 @@ const SubCategory: NextPageWithLayout<IProps> = ({ sub_category_slug }) => {
     <>
       <Head>
         <title>{category_name} | Shopinger</title>
+
         <meta
           name="description"
           content={`Shop the best ${category_name}. Explore top products, deals, and offers in ${category_name}.`}
@@ -40,28 +45,25 @@ const SubCategory: NextPageWithLayout<IProps> = ({ sub_category_slug }) => {
         <meta property="og:type" content="website" />
         <meta
           property="og:url"
-          content={`${process.env.NEXT_PUBLIC_BASE_URL}/category/${sub_category_slug}`}
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}/categories/${category_slug}/${sub_category_slug}`}
         />
         <meta property="og:title" content={`${category_name} | Shopinger`} />
         <meta
           property="og:description"
           content={`Shop the best ${category_name}. Explore top products, deals, and offers.`}
         />
-        {/* <meta property="og:image" content={category_image || fallback_image} />
-        <meta property="og:image:alt" content={category_name} /> */}
 
         {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content="summary" />
         <meta
           name="twitter:url"
-          content={`${process.env.NEXT_PUBLIC_BASE_URL}/category/${sub_category_slug}`}
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}/categories/${category_slug}/${sub_category_slug}`}
         />
         <meta name="twitter:title" content={`${category_name} | Shopinger`} />
         <meta
           name="twitter:description"
           content={`Shop the best ${category_name}. Explore top products, deals, and offers.`}
         />
-        {/* <meta name="twitter:image" content={category_image || fallback_image} /> */}
         <meta name="twitter:site" content="@shopinger" />
         <meta name="twitter:creator" content="@shopinger" />
       </Head>
@@ -81,11 +83,13 @@ export default SubCategory;
 
 export const getServerSideProps = (async ({ params }) => {
   const sub_category_slug = params?.sub_category_slug as string;
+  const main_category_slug = params?.main_category_slug as string;
   if (!sub_category_slug) {
     return { notFound: true };
   }
   return {
     props: {
+      category_slug: main_category_slug,
       sub_category_slug,
     },
   };

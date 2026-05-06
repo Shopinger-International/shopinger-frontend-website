@@ -44,7 +44,6 @@ const CountrySelector: FC<{
     <Combobox
       value={values.country}
       onChange={async (value) => {
-        console.log("value of data", value);
         value && (await setFieldValue("country", value));
         await validateForm();
         handleChange();

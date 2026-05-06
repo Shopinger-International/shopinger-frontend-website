@@ -51,9 +51,9 @@ const ProductCard: FC<IProps> = ({
   return (
     <Link
       href={`${src}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-gray-300 bg-white"
+      className="group flex flex-col overflow-hidden rounded-xl border border-gray-300 bg-white"
     >
-      <div className="relative aspect-square overflow-hidden border-b border-gray-300 bg-gray-100">
+      <div className="relative aspect-3/2 overflow-hidden border-b border-gray-300 bg-gray-100">
         <Image
           src={product_thumbnail.url}
           alt={title}
@@ -81,8 +81,8 @@ const ProductCard: FC<IProps> = ({
       </div>
 
       {/* content */}
-      <div className="flex flex-1 flex-col space-y-3 p-4">
-        <h3 className="line-clamp-3 font-medium text-gray-900">{title}</h3>
+      <div className="flex flex-1 flex-col space-y-2 p-4">
+        <h3 className="line-clamp-2 font-medium text-gray-900">{title}</h3>
 
         {/* rating */}
         <div className="flex items-center gap-2">

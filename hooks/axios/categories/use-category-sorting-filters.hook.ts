@@ -32,7 +32,6 @@ const useCategorySortingFilters = ({
       const { data } = await Axios.get<IResponse>(
         `/get-category-filters-meta?slug=${category_slug}&category_type=${category_type}`,
       );
-      console.log("value of data", data);
       return data;
     },
   });

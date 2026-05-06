@@ -11,8 +11,8 @@ import type {
 import ProductCard from "@/components/categories/product-card.component";
 import ProductCardSkeleton from "@/components/categories/product-card-skeleton.component";
 import SortFilterHeader from "@/components/categories/sort-filter-header.component";
-import SideFilter from "./side-filters.component";
-import FilterDrawer from "./filter-drawer.component";
+import SideFilter from "@/components/categories/side-filters.component";
+import FilterDrawer from "@/components/categories/filter-drawer.component";
 
 // hooks
 import useGetProductsByCategory from "@/hooks/axios/categories/use-get-category-product.hook";
@@ -21,6 +21,7 @@ import useCategorySpecificFilters from "@/hooks/axios/categories/use-category-sp
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
+import clsx from "clsx";
 
 // context
 import { FiltersSortBarState } from "@/context";
@@ -160,7 +161,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       have_variants: variants.length > 1,
       total_reviews: reviews_count,
       product_reviews_link,
-      avg_rating
+      avg_rating,
     };
   });
 
@@ -194,15 +195,19 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   return (
     <>
       <>
-        {/* Overlay */}
         <div
-          className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${state === "filter" ? "visible opacity-100" : "invisible opacity-0"} `}
+          className={clsx(
+            "fixed inset-0 z-40 h-full bg-black/40 transition-opacity duration-300",
+            state == "filter" ? "visible opacity-100" : "invisible opacity-0",
+          )}
           onClick={() => updateState?.(null)}
         />
 
-        {/* Drawer */}
         <div
-          className={`fixed inset-y-0 left-0 z-50 transform bg-white transition-transform duration-300 ease-in-out ${state === "filter" ? "translate-x-0" : "-translate-x-full"} `}
+          className={clsx(
+            "fixed inset-y-0 left-0 z-50 transform bg-white transition-transform duration-300 ease-in-out",
+            state == "filter" ? "translate-x-0" : "-translate-x-full",
+          )}
         >
           <div className="h-screen overflow-y-auto">
             <SideFilter
@@ -228,7 +233,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
           />
         )}
       </FilterDrawer>
-      <div className="flex space-x-3 px-4">
+      <div className="flex space-x-4 px-4">
         <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
           <SideFilter
             filters={selected_category_specific_filters}
@@ -251,7 +256,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
               />
             </div>
           )}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
             {formatted_category_products?.map((product) => (
               <ProductCard
                 {...product}
