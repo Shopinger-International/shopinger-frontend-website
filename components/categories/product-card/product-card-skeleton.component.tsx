@@ -4,7 +4,7 @@ const ProductCardSkeleton: FC = () => {
   return (
     <div className="block overflow-hidden rounded-2xl border border-gray-200 bg-white">
       {/* image */}
-      <div className="relative aspect-square overflow-hidden bg-gray-200">
+      <div className="relative aspect-3/2 overflow-hidden bg-gray-200">
         <div className={`h-full w-full bg-gray-200`} />
 
         {/* top badges */}
@@ -18,7 +18,7 @@ const ProductCardSkeleton: FC = () => {
       </div>
 
       {/* content */}
-      <div className="space-y-3 p-4">
+      <div className="space-y-2 p-4">
         {/* title */}
         <div className="space-y-2">
           <div className="h-4 w-full rounded bg-gray-200" />

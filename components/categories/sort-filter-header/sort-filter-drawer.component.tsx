@@ -17,7 +17,7 @@ import { X } from "lucide-react";
 // context
 import { FiltersSortBarState } from "@/context";
 
-const FilterDrawer: FC<{
+const SortFilterDrawer: FC<{
   children: ReactNode;
 }> = ({ children }) => {
   const { state, updateState } = useContext(FiltersSortBarState);
@@ -76,4 +76,4 @@ const FilterDrawer: FC<{
   );
 };
 
-export default FilterDrawer;
+export default SortFilterDrawer;
