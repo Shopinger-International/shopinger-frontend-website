@@ -51,4 +51,22 @@ type IProduct = {
   created_at: string;
 };
 
+type IAlgoliaProduct = {
+  objectID: string;
+  product_id: number;
+  title: string;
+  category: string;
+  sub_category: string;
+  sub_sub_category: string;
+  price: number;
+  mrp: number;
+  stock: number;
+  reserved_stock: number;
+  url: string;
+  search_keywords: Array<string>;
+  image: string;
+  color: string;
+};
+
+export { IAlgoliaProduct };
 export default IProduct;

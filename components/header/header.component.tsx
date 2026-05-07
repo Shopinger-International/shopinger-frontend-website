@@ -5,7 +5,7 @@ import Image from "next/image";
 import type { FC } from "react";
 
 // local components
-import Searchbar from "@/components/header/searchbar.component";
+import SearchBar from "@/components/header/search-bar/search-bar.component";
 import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
 import Tooltip from "@/components/common/tooltip.component";
@@ -97,7 +97,7 @@ const Header: FC<{
         </div>
         {/* CENTER: Searchbar */}
         <div className="order-3 col-span-3 lg:order-2 lg:col-span-1">
-          <Searchbar />
+          <SearchBar />
         </div>
         {/* RIGHT: Actions */}
         <div className="order-2 -mr-3 flex items-center justify-end gap-4 lg:order-3 lg:-mr-8">
