@@ -240,7 +240,9 @@ const OrderDetailPage: NextPageWithLayout<{
               <OrderSummary
                 username={order.address_snapshot.full_name}
                 phone={order.address_snapshot.phone}
-                payment_method={capitalizeFirstLetter(order.payment_method)}
+                payment_method={capitalizeFirstLetter(
+                  order.payment_method ?? "Razorpay",
+                )}
                 delivery_address={getFormattedAddress(order.address_snapshot)}
               />
               {/* Order Items */}
