@@ -2,34 +2,38 @@
 import type { FC } from "react";
 
 // external components
-import { InstantSearch, Configure, RefinementList } from "react-instantsearch";
+import { InstantSearch, Configure } from "react-instantsearch";
 
 // local components
-import SearchBarContent from "@/components/header/search-bar/search-bar-content.component";
+import Autocomplete from "@/components/header/search-bar/auto-complete.component";
 
 // helpers
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 
-const searchClient = algoliasearch(
+// const
+import { ALGOLIA_INDEX } from "@/constants/algolia.constant";
+
+export const search_client = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID!,
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!,
 );
 
 const SearchBar: FC = () => {
   return (
-    <InstantSearch
-      searchClient={searchClient}
-      indexName="products"
-      stalledSearchDelay={500}
-    >
-      <Configure analytics={false} hitsPerPage={40} />
-      {/* <RefinementList
-        attribute="category" // Must be set to faceting in dashboard
-        limit={10}
-        showMore={true}
-      /> */}
-      <SearchBarContent />
-    </InstantSearch>
+    <div className="relative w-full">
+      <InstantSearch
+        searchClient={search_client}
+        indexName={ALGOLIA_INDEX.PRODUCTS}
+        stalledSearchDelay={500}
+      >
+        <Autocomplete
+          placeholder="Search Products..."
+          className="relative w-full rounded-lg border border-orange-500 bg-white"
+        />
+
+        <Configure hitsPerPage={10} />
+      </InstantSearch>
+    </div>
   );
 };
 

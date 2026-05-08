@@ -9,6 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@algolia/autocomplete-core": "^1.19.8",
+    "@algolia/autocomplete-js": "^1.19.8",
+    "@algolia/autocomplete-plugin-query-suggestions": "^1.19.8",
+    "@algolia/autocomplete-plugin-recent-searches": "^1.19.8",
+    "@algolia/autocomplete-theme-classic": "^1.19.8",
     "@floating-ui/react": "^0.27.16",
     "@google/genai": "^1.47.0",
     "@headlessui/react": "^2.2.9",

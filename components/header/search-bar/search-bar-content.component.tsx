@@ -7,6 +7,7 @@ import type { IAlgoliaProduct } from "@/types/product";
 
 // local components
 import CustomHighlight from "@/components/header/search-bar/custom-highlight.component";
+import { Autocomplete } from "./auto-complete.component";
 
 // external components
 import {
@@ -114,14 +115,20 @@ const SearchBarContent: FC = () => {
       >
         <div className="flex-1">
           {/* INPUT */}
-          <ComboboxInput
+          {/* <ComboboxInput
             className="h-full w-full px-4 outline-none"
             placeholder="Search products..."
             autoComplete="off"
             value={query}
             onChange={(e) => refineQuery(e.target.value)}
-          />
+          /> */}
 
+          <Autocomplete
+            className="h-full w-full px-4 outline-none"
+            placeholder="Search Products..."
+            detachedMediaQuery="none"
+            openOnFocus
+          />
           {/* BUTTON */}
           <ComboboxButton className="absolute inset-y-0 right-0 flex items-center rounded-r-lg bg-orange-500 px-3">
             <Search className="size-5 text-white" />

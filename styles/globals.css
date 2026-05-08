@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@algolia/autocomplete-theme-classic/dist/theme.css";
 
 :root {
   --header-height: 120px; /* adjust to match your header */
