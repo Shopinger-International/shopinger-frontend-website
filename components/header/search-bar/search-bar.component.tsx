@@ -28,7 +28,7 @@ const SearchBar: FC = () => {
       >
         <Autocomplete
           placeholder="Search Products..."
-          className="relative w-full rounded-lg border border-orange-500 bg-white"
+          className="relative w-full rounded-lg bg-white"
         />
 
         <Configure hitsPerPage={10} />

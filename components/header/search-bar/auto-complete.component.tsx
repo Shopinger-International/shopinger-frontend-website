@@ -3,6 +3,7 @@ import { createRoot, Root } from "react-dom/client";
 
 // types
 import type { Hit } from "instantsearch.js";
+import type { IAlgoliaProduct } from "@/types/product";
 
 // hooks
 import { usePagination, useSearchBox } from "react-instantsearch";
@@ -22,7 +23,6 @@ import SearchBarHit from "@/components/header/search-bar/search-bar-hit.componen
 // const
 import { search_client } from "@/components/header/search-bar/search-bar.component";
 import { ALGOLIA_INDEX } from "@/constants/algolia.constant";
-import { IAlgoliaProduct } from "@/types/product";
 
 type AutocompleteItem = Hit<IAlgoliaProduct>;
 
@@ -30,6 +30,36 @@ type AutocompleteProps = Partial<AutocompleteOptions<AutocompleteItem>> & {
   className?: string;
 };
 
+const debouncePromise = <T,>(
+  fn: (...args: any[]) => Promise<T>,
+  delay: number,
+) => {
+  let timer: NodeJS.Timeout;
+
+  return (...args: any[]): Promise<T> =>
+    new Promise((resolve) => {
+      clearTimeout(timer);
+
+      timer = setTimeout(async () => {
+        resolve(await fn(...args));
+      }, delay);
+    });
+};
+
+const debouncedSearch = debouncePromise(async (query: string) => {
+  return getAlgoliaResults<Hit<IAlgoliaProduct>>({
+    searchClient: search_client,
+    queries: [
+      {
+        indexName: "products",
+        params: {
+          hitsPerPage: 5,
+          query,
+        },
+      },
+    ],
+  });
+}, 600);
 function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
@@ -43,9 +73,18 @@ function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
       key: "recent-search",
       limit: 4,
       transformSource({ source }) {
-        console.log("value transform source", source);
         return {
           ...source,
+          templates: {
+            ...source.templates,
+            header() {
+              return (
+                <div className="text-sm font-semibold text-orange-500">
+                  Recent Searches
+                </div>
+              );
+            },
+          },
           onSelect({ item }) {
             setQuery(item.label);
           },
@@ -63,6 +102,16 @@ function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
       transformSource({ source }) {
         return {
           ...source,
+          templates: {
+            ...source.templates,
+            header() {
+              return (
+                <div className="text-sm font-semibold text-orange-500">
+                  Suggested Searches
+                </div>
+              );
+            },
+          },
           sourceId: "query-suggestions-plugin",
           onSelect({ item }) {
             setQuery(item.query);
@@ -96,7 +145,8 @@ function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
 
       classNames: {
         panel:
-          "absolute left-0 right-0 mt-2 bg-white shadow-lg rounded-xl border border-gray-300 z-50 shadow-sm",
+          "absolute left-0 right-0 mt-2 bg-white shadow-lg sm:!rounded-lg sm:border sm:border-gray-300 z-50 shadow-sm overflow-hidden",
+        form: " sm:!border sm:!border-gray-300 !rounded-md outline-none focus-within:!shadow-none",
         list: "py-2 space-y-2",
         item: "px-4 py-2 cursor-pointer hover:bg-gray-100",
       },
@@ -108,20 +158,17 @@ function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
           {
             sourceId: "products-data",
             getItems() {
-              return getAlgoliaResults<Hit<IAlgoliaProduct>>({
-                searchClient: search_client,
-                queries: [
-                  {
-                    indexName: "products",
-                    params: {
-                      hitsPerPage: 5,
-                    },
-                  },
-                ],
-              });
+              return debouncedSearch(query);
             },
 
             templates: {
+              header() {
+                return (
+                  <div className="text-sm font-semibold text-orange-500">
+                    Suggested Products
+                  </div>
+                );
+              },
               item({ item }) {
                 return <SearchBarHit hit={item} />;
               },
