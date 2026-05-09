@@ -120,7 +120,6 @@ const AutoComplete: FC<AutocompleteProps> = ({
   }, []);
 
   useEffect(() => {
-    console.log("inside useeffect")
     if (!autocomplete_container_ref.current) return;
 
     const autocomplete_instance = autocomplete({
@@ -190,10 +189,23 @@ const AutoComplete: FC<AutocompleteProps> = ({
       },
     });
 
+    const handleScroll = (event: Event) => {
+      // Check if the scroll target is NOT inside the autocomplete panel
+      const is_scrolling_inside_panel = root_ref.current?.contains(
+        event.target as Node,
+      );
+
+      if (!is_scrolling_inside_panel) {
+        autocomplete_instance.setIsOpen(false);
+        setQuery("");
+      }
+    };
+    window.addEventListener("scroll", handleScroll, true);
     return () => {
+      window.removeEventListener("scroll", handleScroll, true);
       autocomplete_instance.destroy();
     };
-  }, [auto_complete_props]);
+  }, [auto_complete_props, plugins]);
 
   return <div className={className} ref={autocomplete_container_ref} />;
 };
