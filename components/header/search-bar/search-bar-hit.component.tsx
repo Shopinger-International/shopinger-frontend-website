@@ -6,9 +6,13 @@ import type { Hit } from "instantsearch.js";
 
 const SearchBarHit: FC<{
   hit: Hit<IAlgoliaProduct>;
-}> = ({ hit }) => {
+  onClick: () => void;
+}> = ({ hit, onClick }) => {
   return (
-    <div className="flex w-full min-w-0 items-center gap-3 overflow-hidden">
+    <div
+      className="flex w-full min-w-0 items-center gap-3 overflow-hidden"
+      onClick={onClick}
+    >
       {/* Image */}
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-sm border border-gray-300">
         <Image src={hit.image} alt={hit.title} fill className="object-cover" />

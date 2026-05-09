@@ -2,9 +2,6 @@
 import type { ZodType } from "zod";
 import type { CountryCode } from "libphonenumber-js";
 
-// countries
-import { countries } from "@/data/countries.data";
-
 // helpers/phone.helper.ts
 import { getCountryCallingCode } from "libphonenumber-js";
 
@@ -103,6 +100,15 @@ const debouncePromise = <T>(
     });
 };
 
+function normalizeQuery(str: string) {
+  return str
+    .toLowerCase()
+    .replace(/[“”"']/g, "") // all quotes
+    .replace(/[^a-z0-9\s]/g, " ") // remove special chars
+    .replace(/\s+/g, " ") // collapse spaces
+    .trim();
+}
+
 export {
   normalizeText,
   toFormikValidate,
@@ -114,4 +120,5 @@ export {
   formatDate,
   timeAgo,
   debouncePromise,
+  normalizeQuery,
 };

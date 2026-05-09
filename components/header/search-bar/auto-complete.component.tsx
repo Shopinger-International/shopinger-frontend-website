@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { createElement, Fragment, useEffect, useRef, useMemo } from "react";
 import { createRoot, Root } from "react-dom/client";
 
@@ -18,6 +19,7 @@ import {
 import { createLocalStorageRecentSearchesPlugin } from "@algolia/autocomplete-plugin-recent-searches";
 import { createQuerySuggestionsPlugin } from "@algolia/autocomplete-plugin-query-suggestions";
 import { debouncePromise } from "@/helpers/common.helper";
+import { normalizeQuery } from "@/helpers/common.helper";
 
 // local components
 import SearchBarHit from "@/components/header/search-bar/search-bar-hit.component";
@@ -25,6 +27,9 @@ import SearchBarHit from "@/components/header/search-bar/search-bar-hit.componen
 // const
 import { search_client } from "@/components/header/search-bar/search-bar.component";
 import { ALGOLIA_INDEX } from "@/constants/algolia.constant";
+
+// api hooks
+import useCreateSearchQueryMutation from "@/hooks/axios/search/use-create-search-query-mutation.hook";
 
 type AutocompleteItem = Hit<IAlgoliaProduct>;
 
@@ -50,6 +55,8 @@ const AutoComplete: FC<AutocompleteProps> = ({
   className,
   ...auto_complete_props
 }) => {
+  const router = useRouter();
+  const create_search_query_mutation = useCreateSearchQueryMutation();
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
@@ -159,7 +166,24 @@ const AutoComplete: FC<AutocompleteProps> = ({
                 );
               },
               item({ item }) {
-                return <SearchBarHit hit={item} />;
+                return (
+                  <SearchBarHit
+                    hit={item}
+                    onClick={() => {
+                      router.push(item.url);
+                      create_search_query_mutation.mutate({
+                        object_id: `query-${normalizeQuery(query)
+                          .toLowerCase()
+                          .trim()
+                          .replace(/\s+/g, "-")}`,
+                        query,
+                        main_category: item.category,
+                        sub_category: item.sub_category,
+                        sub_sub_category: item.sub_sub_category,
+                      });
+                    }}
+                  />
+                );
               },
             },
           },
