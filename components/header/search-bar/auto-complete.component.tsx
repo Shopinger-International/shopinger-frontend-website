@@ -2,6 +2,7 @@ import { createElement, Fragment, useEffect, useRef, useMemo } from "react";
 import { createRoot, Root } from "react-dom/client";
 
 // types
+import type { FC } from "react";
 import type { Hit } from "instantsearch.js";
 import type { IAlgoliaProduct } from "@/types/product";
 
@@ -16,6 +17,7 @@ import {
 } from "@algolia/autocomplete-js";
 import { createLocalStorageRecentSearchesPlugin } from "@algolia/autocomplete-plugin-recent-searches";
 import { createQuerySuggestionsPlugin } from "@algolia/autocomplete-plugin-query-suggestions";
+import { debouncePromise } from "@/helpers/common.helper";
 
 // local components
 import SearchBarHit from "@/components/header/search-bar/search-bar-hit.component";
@@ -28,22 +30,6 @@ type AutocompleteItem = Hit<IAlgoliaProduct>;
 
 type AutocompleteProps = Partial<AutocompleteOptions<AutocompleteItem>> & {
   className?: string;
-};
-
-const debouncePromise = <T,>(
-  fn: (...args: any[]) => Promise<T>,
-  delay: number,
-) => {
-  let timer: NodeJS.Timeout;
-
-  return (...args: any[]): Promise<T> =>
-    new Promise((resolve) => {
-      clearTimeout(timer);
-
-      timer = setTimeout(async () => {
-        resolve(await fn(...args));
-      }, delay);
-    });
 };
 
 const debouncedSearch = debouncePromise(async (query: string) => {
@@ -60,10 +46,13 @@ const debouncedSearch = debouncePromise(async (query: string) => {
     ],
   });
 }, 600);
-function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
+const AutoComplete: FC<AutocompleteProps> = ({
+  className,
+  ...auto_complete_props
+}) => {
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
-  const rootRef = useRef<HTMLElement | null>(null);
+  const root_ref = useRef<HTMLElement | null>(null);
 
   const { refine: setQuery } = useSearchBox();
   const { refine: setPage } = usePagination();
@@ -131,10 +120,11 @@ function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
   }, []);
 
   useEffect(() => {
+    console.log("inside useeffect")
     if (!autocomplete_container_ref.current) return;
 
     const autocomplete_instance = autocomplete({
-      ...autocompleteProps,
+      ...auto_complete_props,
 
       plugins,
       container: autocomplete_container_ref.current,
@@ -146,9 +136,9 @@ function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
       classNames: {
         panel:
           "absolute left-0 right-0 mt-2 bg-white shadow-lg sm:!rounded-lg sm:border sm:border-gray-300 z-50 shadow-sm overflow-hidden",
-        form: " sm:!border sm:!border-gray-300 !rounded-md outline-none focus-within:!shadow-none",
-        list: "py-2 space-y-2",
-        item: "px-4 py-2 cursor-pointer hover:bg-gray-100",
+        form: "!border-none sm:!border sm:!border-gray-300 !rounded-md outline-none focus-within:!shadow-none",
+        list: "py-2 space-y-1 w-full ",
+        item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
       },
 
       getSources({ query }) {
@@ -188,10 +178,9 @@ function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
       },
 
       renderer: { createElement, Fragment, render: () => {} },
-
       render({ children }, root) {
-        if (!panel_container_ref.current || rootRef.current !== root) {
-          rootRef.current = root;
+        if (!panel_container_ref.current || root_ref.current !== root) {
+          root_ref.current = root;
 
           panel_container_ref.current?.unmount();
           panel_container_ref.current = createRoot(root);
@@ -201,10 +190,12 @@ function Autocomplete({ className, ...autocompleteProps }: AutocompleteProps) {
       },
     });
 
-    return () => autocomplete_instance.destroy();
-  }, [autocompleteProps, setQuery, setPage]);
+    return () => {
+      autocomplete_instance.destroy();
+    };
+  }, [auto_complete_props]);
 
   return <div className={className} ref={autocomplete_container_ref} />;
-}
+};
 
-export default Autocomplete;
+export default AutoComplete;

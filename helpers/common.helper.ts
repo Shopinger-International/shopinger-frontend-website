@@ -87,6 +87,22 @@ const timeAgo = (dateString: string) => {
   return "just now";
 };
 
+const debouncePromise = <T>(
+  fn: (...args: any[]) => Promise<T>,
+  delay: number,
+) => {
+  let timer: NodeJS.Timeout;
+
+  return (...args: any[]): Promise<T> =>
+    new Promise((resolve) => {
+      clearTimeout(timer);
+
+      timer = setTimeout(async () => {
+        resolve(await fn(...args));
+      }, delay);
+    });
+};
+
 export {
   normalizeText,
   toFormikValidate,
@@ -97,4 +113,5 @@ export {
   formatSeconds,
   formatDate,
   timeAgo,
+  debouncePromise,
 };

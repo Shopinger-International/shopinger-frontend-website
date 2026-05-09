@@ -5,7 +5,7 @@ import type { FC } from "react";
 import { InstantSearch, Configure } from "react-instantsearch";
 
 // local components
-import Autocomplete from "@/components/header/search-bar/auto-complete.component";
+import AutoComplete from "@/components/header/search-bar/auto-complete.component";
 
 // helpers
 import { liteClient as algoliasearch } from "algoliasearch/lite";
@@ -26,7 +26,7 @@ const SearchBar: FC = () => {
         indexName={ALGOLIA_INDEX.PRODUCTS}
         stalledSearchDelay={500}
       >
-        <Autocomplete
+        <AutoComplete
           placeholder="Search Products..."
           className="relative w-full rounded-lg bg-white"
         />
