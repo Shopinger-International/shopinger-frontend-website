@@ -1,4 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
+// types
+import type {
+  ICategory,
+  ISubCategory,
+  ISubSubCategory,
+} from "@/types/categories";
 
 // helpers
 import webAxios from "@/lib/axios/web.lib";
@@ -6,12 +12,14 @@ import webAxios from "@/lib/axios/web.lib";
 type IRequest = {
   object_id: string;
   query: string;
-  main_category: string;
-  sub_category: string;
-  sub_sub_category: string;
 };
 
-type IResponse = {};
+type IResponse = {
+  main_category: ICategory;
+  sub_category: ISubCategory;
+  sub_sub_category: ISubSubCategory;
+  success: boolean;
+};
 const useCreateSearchQueryMutation = () => {
   return useMutation<IResponse, Error, IRequest>({
     async mutationFn(payload) {

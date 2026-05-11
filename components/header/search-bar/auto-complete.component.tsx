@@ -6,6 +6,7 @@ import { createRoot, Root } from "react-dom/client";
 import type { FC } from "react";
 import type { Hit } from "instantsearch.js";
 import type { IAlgoliaProduct } from "@/types/product";
+import type { AutocompleteQuerySuggestionsHit } from "@algolia/autocomplete-plugin-query-suggestions/dist/esm/types";
 
 // hooks
 import { usePagination, useSearchBox } from "react-instantsearch";
@@ -30,6 +31,7 @@ import { ALGOLIA_INDEX } from "@/constants/algolia.constant";
 
 // api hooks
 import useCreateSearchQueryMutation from "@/hooks/axios/search/use-create-search-query-mutation.hook";
+import useCategories from "@/hooks/axios/common/use-categories";
 
 type AutocompleteItem = Hit<IAlgoliaProduct>;
 
@@ -56,6 +58,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
   ...auto_complete_props
 }) => {
   const router = useRouter();
+  const { data: categories = [] } = useCategories();
   const create_search_query_mutation = useCreateSearchQueryMutation();
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
@@ -87,7 +90,13 @@ const AutoComplete: FC<AutocompleteProps> = ({
         };
       },
     });
-    const query_suggestions = createQuerySuggestionsPlugin({
+    const query_suggestions = createQuerySuggestionsPlugin<
+      AutocompleteQuerySuggestionsHit & {
+        main_category: string;
+        sub_category: string;
+        sub_sub_category: string;
+      }
+    >({
       searchClient: search_client,
       indexName: ALGOLIA_INDEX.QUERIES,
       getSearchParams() {
@@ -111,6 +120,20 @@ const AutoComplete: FC<AutocompleteProps> = ({
           sourceId: "query-suggestions-plugin",
           onSelect({ item }) {
             setQuery(item.query);
+            const main_category = categories.find(
+              (category) => category.name == item.main_category,
+            );
+            const sub_category = main_category?.subCategories.find(
+              (sub_category) => sub_category.name == item.sub_category,
+            );
+            const sub_sub_category = sub_category?.subSubCategories.find(
+              (sub_sub_category) =>
+                sub_sub_category.name == item.sub_sub_category,
+            );
+            console.log(item,main_category,sub_category,sub_sub_category);
+            router.push(
+              `/categories/${main_category?.slug}/${sub_category?.slug}/${sub_sub_category?.slug}?query=${item.query}`,
+            );
           },
           getItems(params) {
             if (!params.state.query) {
@@ -177,9 +200,6 @@ const AutoComplete: FC<AutocompleteProps> = ({
                           .trim()
                           .replace(/\s+/g, "-")}`,
                         query,
-                        main_category: item.category,
-                        sub_category: item.sub_category,
-                        sub_sub_category: item.sub_sub_category,
                       });
                     }}
                   />
@@ -191,7 +211,24 @@ const AutoComplete: FC<AutocompleteProps> = ({
       },
 
       onSubmit({ state }) {
-        setQuery(state.query);
+        const query = state.query;
+        setQuery(query);
+        create_search_query_mutation.mutate(
+          {
+            object_id: `query-${normalizeQuery(query)
+              .toLowerCase()
+              .trim()
+              .replace(/\s+/g, "-")}`,
+            query,
+          },
+          {
+            onSuccess(response) {
+              router.push(
+                `/categories/${response.main_category.slug}/${response.sub_category.slug}/${response.sub_sub_category.slug}`,
+              );
+            },
+          },
+        );
         setPage(0);
       },
 
