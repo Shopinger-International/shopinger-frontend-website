@@ -123,10 +123,11 @@ const AutoComplete: FC<AutocompleteProps> = ({
 
             const q = query.toLowerCase();
 
-            return recent_searches.filter((item) => {
+            const filtered = recent_searches.filter((item) => {
               // adjust field name based on your stored structure
               return item.query?.toLowerCase().includes(q);
             });
+            return filtered;
           } catch {
             return [];
           }
@@ -174,14 +175,14 @@ const AutoComplete: FC<AutocompleteProps> = ({
               return (
                 <div
                   onClick={() => {
-                    router.replace(
-                      `/categories/${item.main_category_slug}/${item.sub_category_slug}/${item.sub_sub_category_slug}`,
+                    router.push(
+                      `/categories/${item.main_category_slug}/${item.sub_category_slug}/${item.sub_sub_category_slug}?query=${item.query}`,
                     );
                   }}
                   className="aa-RecentSearchItem flex items-center justify-between"
                 >
                   <div className="flex items-center gap-4">
-                    <Timer className="aa-Icon size-5 text-gray-300" />
+                    <Timer className="aa-Icon size-5 text-[rgb(119,119,163)]" />
                     <span className="aa-QueryText">{item.query}</span>
                   </div>
                   <button
@@ -192,7 +193,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
                     }}
                     className="cursor-pointer"
                   >
-                    <Trash2 className="aa-Icon size-5 text-gray-300" />
+                    <Trash2 className="aa-Icon size-5 text-[rgb(119,119,163)]" />
                   </button>
                 </div>
               );
@@ -285,7 +286,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
                   <SearchBarHit
                     hit={item}
                     onClick={() => {
-                      router.replace(item.url);
+                      router.push(item.url);
                       create_search_query_mutation.mutate({
                         object_id: `query-${normalizeQuery(query)
                           .toLowerCase()
@@ -302,27 +303,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
         ];
       },
 
-      onSubmit({ state }) {
-        const query = state.query;
-        setQuery(query);
-        create_search_query_mutation.mutate(
-          {
-            object_id: `query-${normalizeQuery(query)
-              .toLowerCase()
-              .trim()
-              .replace(/\s+/g, "-")}`,
-            query,
-          },
-          {
-            onSuccess(response) {
-              router.replace(
-                `/categories/${response.main_category.slug}/${response.sub_category.slug}/${response.sub_sub_category.slug}`,
-              );
-            },
-          },
-        );
-        setPage(0);
-      },
+      onSubmit({ state }) {},
 
       onReset() {
         setQuery("");

@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useRef, useEffect, useState, useContext } from "react";
 // types
 import type { FC } from "react";
@@ -56,6 +57,7 @@ type IProps = {
   category_type: "main" | "sub" | "sub_sub";
 };
 const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
+  const router = useRouter();
   const { state, updateState } = useContext(FiltersSortBarState);
   const [selected_sorting_filters, setSelectedSortingFilters] =
     useState<ISelectedFilters | null>(null);
@@ -104,6 +106,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
           }
           return acc;
         }, {}),
+      search: router.query.query as string,
     });
 
   const category_products = data?.pages.reduce<
@@ -284,7 +287,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
             {formatted_category_products?.map((product) => (
               <ProductCard
                 {...product}
-                key={`category-product-${product.product_id}`}
+                key={`category-product-${product?.product_id}`}
               />
             ))}
 
