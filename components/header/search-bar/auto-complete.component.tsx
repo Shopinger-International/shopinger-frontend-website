@@ -7,6 +7,8 @@ import type { FC } from "react";
 import type { Hit } from "instantsearch.js";
 import type { IAlgoliaProduct } from "@/types/product";
 import type { AutocompleteQuerySuggestionsHit } from "@algolia/autocomplete-plugin-query-suggestions/dist/esm/types";
+import type { AlgoliaInsightsHit } from "@algolia/autocomplete-plugin-algolia-insights";
+import type { RecentSearchesItem } from "@algolia/autocomplete-plugin-recent-searches/dist/esm/types";
 
 // hooks
 import { usePagination, useSearchBox } from "react-instantsearch";
@@ -17,30 +19,47 @@ import {
   AutocompleteOptions,
   getAlgoliaResults,
 } from "@algolia/autocomplete-js";
-import { createLocalStorageRecentSearchesPlugin } from "@algolia/autocomplete-plugin-recent-searches";
+import { createRecentSearchesPlugin } from "@algolia/autocomplete-plugin-recent-searches";
 import { createQuerySuggestionsPlugin } from "@algolia/autocomplete-plugin-query-suggestions";
 import { debouncePromise } from "@/helpers/common.helper";
 import { normalizeQuery } from "@/helpers/common.helper";
+import { createAlgoliaInsightsPlugin } from "@algolia/autocomplete-plugin-algolia-insights";
+import insightsClient from "search-insights";
 
 // local components
 import SearchBarHit from "@/components/header/search-bar/search-bar-hit.component";
 
 // const
 import { search_client } from "@/components/header/search-bar/search-bar.component";
-import { ALGOLIA_INDEX } from "@/constants/algolia.constant";
+import {
+  ALGOLIA_INDEX,
+  ALGOLIA_RECENT_SEARCH_ID,
+} from "@/constants/algolia.constant";
 
 // api hooks
 import useCreateSearchQueryMutation from "@/hooks/axios/search/use-create-search-query-mutation.hook";
 import useCategories from "@/hooks/axios/common/use-categories";
 
-type AutocompleteItem = Hit<IAlgoliaProduct>;
+// icons
+import { Timer, Trash2 } from "lucide-react";
 
-type AutocompleteProps = Partial<AutocompleteOptions<AutocompleteItem>> & {
+type IAutocompleteItem = Hit<IAlgoliaProduct> & AlgoliaInsightsHit;
+
+type AutocompleteProps = Partial<AutocompleteOptions<IAutocompleteItem>> & {
   className?: string;
 };
 
+type IAutocompleteSuggestion = AutocompleteQuerySuggestionsHit & {
+  main_category: string;
+  sub_category: string;
+  sub_sub_category: string;
+  main_category_slug: string;
+  sub_category_slug: string;
+  sub_sub_category_slug: string;
+};
+
 const debouncedSearch = debouncePromise(async (query: string) => {
-  return getAlgoliaResults<Hit<IAlgoliaProduct>>({
+  return getAlgoliaResults<IAutocompleteItem>({
     searchClient: search_client,
     queries: [
       {
@@ -48,17 +67,33 @@ const debouncedSearch = debouncePromise(async (query: string) => {
         params: {
           hitsPerPage: 5,
           query,
+          clickAnalytics: true,
         },
       },
     ],
   });
 }, 600);
+
+function addRecentSearch(item: IAutocompleteSuggestion) {
+  const raw = localStorage.getItem(ALGOLIA_RECENT_SEARCH_ID);
+  const existing = (raw ? JSON.parse(raw) : []) as IAutocompleteSuggestion[];
+
+  const filtered = existing.filter(
+    (existing_item) => existing_item.objectID !== item.objectID,
+  );
+  const next = [item, ...filtered].slice(0, 5);
+  localStorage.setItem(ALGOLIA_RECENT_SEARCH_ID, JSON.stringify(next));
+}
+
+insightsClient("init", {
+  appId: process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID!,
+  apiKey: process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!,
+});
 const AutoComplete: FC<AutocompleteProps> = ({
   className,
   ...auto_complete_props
 }) => {
   const router = useRouter();
-  const { data: categories = [] } = useCategories();
   const create_search_query_mutation = useCreateSearchQueryMutation();
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
@@ -68,85 +103,141 @@ const AutoComplete: FC<AutocompleteProps> = ({
   const { refine: setPage } = usePagination();
 
   const plugins = useMemo(() => {
-    const recent_searches = createLocalStorageRecentSearchesPlugin({
-      key: "recent-search",
-      limit: 4,
-      transformSource({ source }) {
-        return {
-          ...source,
-          templates: {
-            ...source.templates,
-            header() {
-              return (
-                <div className="text-sm font-semibold text-orange-500">
-                  Recent Searches
-                </div>
-              );
-            },
-          },
-          onSelect({ item }) {
-            setQuery(item.label);
-          },
-        };
-      },
+    const algolia_insights_plugin = createAlgoliaInsightsPlugin({
+      insightsClient,
     });
-    const query_suggestions = createQuerySuggestionsPlugin<
-      AutocompleteQuerySuggestionsHit & {
-        main_category: string;
-        sub_category: string;
-        sub_sub_category: string;
-      }
+    const recent_searches = createRecentSearchesPlugin<
+      RecentSearchesItem & IAutocompleteSuggestion
     >({
-      searchClient: search_client,
-      indexName: ALGOLIA_INDEX.QUERIES,
-      getSearchParams() {
-        return recent_searches.data!.getAlgoliaSearchParams({
-          hitsPerPage: 6,
-        });
+      storage: {
+        getAll(query) {
+          if (typeof window === "undefined") return [];
+
+          try {
+            const raw = localStorage.getItem(ALGOLIA_RECENT_SEARCH_ID);
+            const recent_searches = (
+              raw ? JSON.parse(raw) : []
+            ) as IAutocompleteSuggestion[];
+
+            if (!query?.trim()) return recent_searches;
+
+            const q = query.toLowerCase();
+
+            return recent_searches.filter((item) => {
+              // adjust field name based on your stored structure
+              return item.query?.toLowerCase().includes(q);
+            });
+          } catch {
+            return [];
+          }
+        },
+        onAdd(item) {
+          if (typeof window === "undefined") return;
+
+          const raw = localStorage.getItem(ALGOLIA_RECENT_SEARCH_ID);
+          const existing = (
+            raw ? JSON.parse(raw) : []
+          ) as IAutocompleteSuggestion[];
+
+          const filtered = existing.filter(
+            (existing_item) => existing_item.objectID !== item.objectID,
+          );
+
+          const next = [item, ...filtered].slice(0, 5);
+
+          localStorage.setItem(ALGOLIA_RECENT_SEARCH_ID, JSON.stringify(next));
+        },
+
+        onRemove(object_id) {
+          if (typeof window === "undefined") return;
+
+          const raw = localStorage.getItem(ALGOLIA_RECENT_SEARCH_ID);
+          if (!raw) return;
+
+          const existing = JSON.parse(raw) as IAutocompleteSuggestion[];
+
+          const updated = existing.filter(
+            (item) => item.objectID !== object_id,
+          );
+
+          localStorage.setItem(
+            ALGOLIA_RECENT_SEARCH_ID,
+            JSON.stringify(updated),
+          );
+        },
       },
       transformSource({ source }) {
         return {
           ...source,
           templates: {
-            ...source.templates,
-            header() {
+            item({ item }) {
               return (
-                <div className="text-sm font-semibold text-orange-500">
-                  Suggested Searches
+                <div
+                  onClick={() => {
+                    router.replace(
+                      `/categories/${item.main_category_slug}/${item.sub_category_slug}/${item.sub_sub_category_slug}`,
+                    );
+                  }}
+                  className="aa-RecentSearchItem flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <Timer className="aa-Icon size-5 text-gray-300" />
+                    <span className="aa-QueryText">{item.query}</span>
+                  </div>
+                  <button
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.preventDefault();
+                      recent_searches.data?.removeItem(item.objectID);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Trash2 className="aa-Icon size-5 text-gray-300" />
+                  </button>
                 </div>
               );
             },
           },
-          sourceId: "query-suggestions-plugin",
-          onSelect({ item }) {
-            setQuery(item.query);
-            const main_category = categories.find(
-              (category) => category.name == item.main_category,
-            );
-            const sub_category = main_category?.subCategories.find(
-              (sub_category) => sub_category.name == item.sub_category,
-            );
-            const sub_sub_category = sub_category?.subSubCategories.find(
-              (sub_sub_category) =>
-                sub_sub_category.name == item.sub_sub_category,
-            );
-            console.log(item,main_category,sub_category,sub_sub_category);
-            router.push(
-              `/categories/${main_category?.slug}/${sub_category?.slug}/${sub_sub_category?.slug}?query=${item.query}`,
-            );
-          },
-          getItems(params) {
-            if (!params.state.query) {
-              return [];
-            }
-
-            return source.getItems(params);
-          },
         };
       },
     });
-
-    return [recent_searches, query_suggestions];
+    const query_suggestions =
+      createQuerySuggestionsPlugin<IAutocompleteSuggestion>({
+        searchClient: search_client,
+        indexName: ALGOLIA_INDEX.QUERIES,
+        transformSource({ source }) {
+          return {
+            ...source,
+            templates: {
+              ...source.templates,
+              header() {
+                return (
+                  <div className="text-sm font-semibold text-orange-500">
+                    Suggested Searches
+                  </div>
+                );
+              },
+            },
+            sourceId: "query-suggestions-plugin",
+            onSelect({ item, navigator, state }) {
+              setQuery(item.query);
+              navigator.navigate({
+                itemUrl: `/categories/${item.main_category_slug}/${item.sub_category_slug}/${item.sub_sub_category_slug}?query=${item.query}`,
+                item,
+                state,
+              });
+              addRecentSearch(item);
+            },
+            getItems(params) {
+              if (!params.state.query) {
+                return [];
+              }
+              return source.getItems(params);
+            },
+          };
+        },
+      });
+    return [recent_searches, query_suggestions, algolia_insights_plugin];
   }, []);
 
   useEffect(() => {
@@ -154,8 +245,9 @@ const AutoComplete: FC<AutocompleteProps> = ({
 
     const autocomplete_instance = autocomplete({
       ...auto_complete_props,
-
+      insights: true,
       plugins,
+
       container: autocomplete_container_ref.current,
 
       initialState: {
@@ -193,7 +285,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
                   <SearchBarHit
                     hit={item}
                     onClick={() => {
-                      router.push(item.url);
+                      router.replace(item.url);
                       create_search_query_mutation.mutate({
                         object_id: `query-${normalizeQuery(query)
                           .toLowerCase()
@@ -223,7 +315,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
           },
           {
             onSuccess(response) {
-              router.push(
+              router.replace(
                 `/categories/${response.main_category.slug}/${response.sub_category.slug}/${response.sub_sub_category.slug}`,
               );
             },

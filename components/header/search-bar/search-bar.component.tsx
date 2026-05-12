@@ -25,6 +25,7 @@ const SearchBar: FC = () => {
         searchClient={search_client}
         indexName={ALGOLIA_INDEX.PRODUCTS}
         stalledSearchDelay={500}
+        insights={true}
       >
         <AutoComplete
           placeholder="Search Products..."
