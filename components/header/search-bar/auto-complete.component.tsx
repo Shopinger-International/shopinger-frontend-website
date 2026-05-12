@@ -8,7 +8,6 @@ import type { Hit } from "instantsearch.js";
 import type { IAlgoliaProduct } from "@/types/product";
 import type { AutocompleteQuerySuggestionsHit } from "@algolia/autocomplete-plugin-query-suggestions/dist/esm/types";
 import type { AlgoliaInsightsHit } from "@algolia/autocomplete-plugin-algolia-insights";
-import type { RecentSearchesItem } from "@algolia/autocomplete-plugin-recent-searches/dist/esm/types";
 
 // hooks
 import { usePagination, useSearchBox } from "react-instantsearch";
@@ -19,7 +18,7 @@ import {
   AutocompleteOptions,
   getAlgoliaResults,
 } from "@algolia/autocomplete-js";
-import { createRecentSearchesPlugin } from "@algolia/autocomplete-plugin-recent-searches";
+import { createLocalStorageRecentSearchesPlugin } from "@algolia/autocomplete-plugin-recent-searches";
 import { createQuerySuggestionsPlugin } from "@algolia/autocomplete-plugin-query-suggestions";
 import { debouncePromise } from "@/helpers/common.helper";
 import { normalizeQuery } from "@/helpers/common.helper";
@@ -31,18 +30,10 @@ import SearchBarHit from "@/components/header/search-bar/search-bar-hit.componen
 
 // const
 import { search_client } from "@/components/header/search-bar/search-bar.component";
-import {
-  ALGOLIA_INDEX,
-  ALGOLIA_RECENT_SEARCH_ID,
-} from "@/constants/algolia.constant";
+import { ALGOLIA_INDEX } from "@/constants/algolia.constant";
 
 // api hooks
 import useCreateSearchQueryMutation from "@/hooks/axios/search/use-create-search-query-mutation.hook";
-import useCategories from "@/hooks/axios/common/use-categories";
-
-// icons
-import { Timer, Trash2 } from "lucide-react";
-
 type IAutocompleteItem = Hit<IAlgoliaProduct> & AlgoliaInsightsHit;
 
 type AutocompleteProps = Partial<AutocompleteOptions<IAutocompleteItem>> & {
@@ -74,17 +65,6 @@ const debouncedSearch = debouncePromise(async (query: string) => {
   });
 }, 600);
 
-function addRecentSearch(item: IAutocompleteSuggestion) {
-  const raw = localStorage.getItem(ALGOLIA_RECENT_SEARCH_ID);
-  const existing = (raw ? JSON.parse(raw) : []) as IAutocompleteSuggestion[];
-
-  const filtered = existing.filter(
-    (existing_item) => existing_item.objectID !== item.objectID,
-  );
-  const next = [item, ...filtered].slice(0, 5);
-  localStorage.setItem(ALGOLIA_RECENT_SEARCH_ID, JSON.stringify(next));
-}
-
 insightsClient("init", {
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID!,
   apiKey: process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!,
@@ -106,98 +86,25 @@ const AutoComplete: FC<AutocompleteProps> = ({
     const algolia_insights_plugin = createAlgoliaInsightsPlugin({
       insightsClient,
     });
-    const recent_searches = createRecentSearchesPlugin<
-      RecentSearchesItem & IAutocompleteSuggestion
-    >({
-      storage: {
-        getAll(query) {
-          if (typeof window === "undefined") return [];
 
-          try {
-            const raw = localStorage.getItem(ALGOLIA_RECENT_SEARCH_ID);
-            const recent_searches = (
-              raw ? JSON.parse(raw) : []
-            ) as IAutocompleteSuggestion[];
-
-            if (!query?.trim()) return recent_searches;
-
-            const q = query.toLowerCase();
-
-            const filtered = recent_searches.filter((item) => {
-              // adjust field name based on your stored structure
-              return item.query?.toLowerCase().includes(q);
-            });
-            return filtered;
-          } catch {
-            return [];
-          }
-        },
-        onAdd(item) {
-          if (typeof window === "undefined") return;
-
-          const raw = localStorage.getItem(ALGOLIA_RECENT_SEARCH_ID);
-          const existing = (
-            raw ? JSON.parse(raw) : []
-          ) as IAutocompleteSuggestion[];
-
-          const filtered = existing.filter(
-            (existing_item) => existing_item.objectID !== item.objectID,
-          );
-
-          const next = [item, ...filtered].slice(0, 5);
-
-          localStorage.setItem(ALGOLIA_RECENT_SEARCH_ID, JSON.stringify(next));
-        },
-
-        onRemove(object_id) {
-          if (typeof window === "undefined") return;
-
-          const raw = localStorage.getItem(ALGOLIA_RECENT_SEARCH_ID);
-          if (!raw) return;
-
-          const existing = JSON.parse(raw) as IAutocompleteSuggestion[];
-
-          const updated = existing.filter(
-            (item) => item.objectID !== object_id,
-          );
-
-          localStorage.setItem(
-            ALGOLIA_RECENT_SEARCH_ID,
-            JSON.stringify(updated),
-          );
-        },
-      },
+    const recent_searches = createLocalStorageRecentSearchesPlugin({
+      key: "recent-search-plugin",
+      limit: 4,
       transformSource({ source }) {
         return {
           ...source,
           templates: {
-            item({ item }) {
+            ...source.templates,
+            header() {
               return (
-                <div
-                  onClick={() => {
-                    router.push(
-                      `/categories/${item.main_category_slug}/${item.sub_category_slug}/${item.sub_sub_category_slug}?query=${item.query}`,
-                    );
-                  }}
-                  className="aa-RecentSearchItem flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-4">
-                    <Timer className="aa-Icon size-5 text-[rgb(119,119,163)]" />
-                    <span className="aa-QueryText">{item.query}</span>
-                  </div>
-                  <button
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      event.preventDefault();
-                      recent_searches.data?.removeItem(item.objectID);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <Trash2 className="aa-Icon size-5 text-[rgb(119,119,163)]" />
-                  </button>
+                <div className="text-sm font-semibold text-orange-500">
+                  Recent Searches
                 </div>
               );
             },
+          },
+          onSelect({ item }) {
+            setQuery(item.label);
           },
         };
       },
@@ -209,6 +116,12 @@ const AutoComplete: FC<AutocompleteProps> = ({
         transformSource({ source }) {
           return {
             ...source,
+
+            getSearchParams() {
+              return recent_searches.data!.getAlgoliaSearchParams({
+                hitsPerPage: 6,
+              });
+            },
             templates: {
               ...source.templates,
               header() {
@@ -220,14 +133,11 @@ const AutoComplete: FC<AutocompleteProps> = ({
               },
             },
             sourceId: "query-suggestions-plugin",
-            onSelect({ item, navigator, state }) {
+            onSelect({ item }) {
               setQuery(item.query);
-              navigator.navigate({
-                itemUrl: `/categories/${item.main_category_slug}/${item.sub_category_slug}/${item.sub_sub_category_slug}?query=${item.query}`,
-                item,
-                state,
-              });
-              addRecentSearch(item);
+              router.push(
+                `/categories/${item.main_category_slug}/${item.sub_category_slug}/${item.sub_sub_category_slug}?query=${item.query}`,
+              );
             },
             getItems(params) {
               if (!params.state.query) {
@@ -247,6 +157,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
     const autocomplete_instance = autocomplete({
       ...auto_complete_props,
       insights: true,
+      openOnFocus: true,
       plugins,
 
       container: autocomplete_container_ref.current,
@@ -264,46 +175,50 @@ const AutoComplete: FC<AutocompleteProps> = ({
       },
 
       getSources({ query }) {
-        if (!query) return [];
+        return query
+          ? [
+              {
+                sourceId: "products-data",
 
-        return [
-          {
-            sourceId: "products-data",
-            getItems() {
-              return debouncedSearch(query);
-            },
+                getItems() {
+                  return debouncedSearch(query);
+                },
 
-            templates: {
-              header() {
-                return (
-                  <div className="text-sm font-semibold text-orange-500">
-                    Suggested Products
-                  </div>
-                );
+                templates: {
+                  header() {
+                    return (
+                      <div className="text-sm font-semibold text-orange-500">
+                        Suggested Products
+                      </div>
+                    );
+                  },
+
+                  item({ item }) {
+                    return (
+                      <SearchBarHit
+                        hit={item}
+                        onClick={() => {
+                          router.push(item.url);
+
+                          create_search_query_mutation.mutate({
+                            object_id: `query-${normalizeQuery(query)
+                              .toLowerCase()
+                              .trim()
+                              .replace(/\s+/g, "-")}`,
+                            query,
+                          });
+                        }}
+                      />
+                    );
+                  },
+                },
               },
-              item({ item }) {
-                return (
-                  <SearchBarHit
-                    hit={item}
-                    onClick={() => {
-                      router.push(item.url);
-                      create_search_query_mutation.mutate({
-                        object_id: `query-${normalizeQuery(query)
-                          .toLowerCase()
-                          .trim()
-                          .replace(/\s+/g, "-")}`,
-                        query,
-                      });
-                    }}
-                  />
-                );
-              },
-            },
-          },
-        ];
+            ]
+          : [];
       },
-
-      onSubmit({ state }) {},
+      onSubmit({ state }) {
+        setQuery(state.query);
+      },
 
       onReset() {
         setQuery("");
