@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
@@ -19,6 +20,9 @@ import CheckoutDetail from "@/components/checkout/checkout-detail.component";
 import SidebarDrawer from "@/components/common/sidebar-drawer.component";
 import AddressRow from "@/components/cart/address-row.component";
 import OrderSuccessfulModal from "@/components/cart/order-successful-modal.component";
+
+// lib
+import insightsClient from "@/lib/algolia/algolia-insight.lib";
 
 const AddAddressModal = dynamic(
   () =>
@@ -59,6 +63,7 @@ type IProps = {
 };
 
 const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
+  const router = useRouter();
   const { data: intent_details } = useCheckoutIntent(intent_id);
   const { data: user_addresses = [], isPending } = useUserAddresses();
   const is_mobile = useIsMobile();
@@ -225,6 +230,42 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
                 open: true,
                 order,
               });
+
+              const query = router.query;
+              const query_id =
+                typeof query.query_id === "string" ? query.query_id : undefined;
+
+              const index_name =
+                typeof query.index_name === "string"
+                  ? query.index_name
+                  : undefined;
+
+              const object_id =
+                typeof query.object_id === "string"
+                  ? query.object_id
+                  : undefined;
+
+              query_id &&
+                index_name &&
+                object_id &&
+                insightsClient("purchasedObjectIDsAfterSearch", {
+                  eventName: "Product Purchased",
+                  index: index_name,
+                  objectIDs: [object_id],
+                  objectData: [
+                    {
+                      queryID: query_id,
+                      price: order.total_amount,
+                      discount: order.discount,
+                      quantity: order.order_items.reduce((acc, item) => {
+                        acc += item.quantity;
+                        return acc;
+                      }, 0),
+                    },
+                  ],
+                  value: order.total_amount,
+                  currency: "INR",
+                });
             }}
           />
         </div>

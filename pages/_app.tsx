@@ -10,6 +10,7 @@ import type { AppProps } from "next/app";
 // provider
 import { SnackbarProvider } from "notistack";
 import SelectedAddressProvider from "@/provider/selected-address-provider.component";
+import AlgoliaInsightsProvider from "@/provider/algolia-insights-provider";
 
 // react query
 import {
@@ -50,21 +51,23 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <QueryClientProvider client={query_client}>
       <HydrationBoundary state={pageProps.dehydratedState}>
-        <SnackbarProvider
-          autoHideDuration={3000}
-          anchorOrigin={{
-            horizontal: "right",
-            vertical: "bottom",
-          }}
-          Components={{
-            success: SuccessSnackbar,
-            error: ErrorSnackbar,
-          }}
-        >
-          <SelectedAddressProvider>
-            {getLayout(<Component {...pageProps} />)}
-          </SelectedAddressProvider>
-        </SnackbarProvider>
+        <AlgoliaInsightsProvider>
+          <SnackbarProvider
+            autoHideDuration={3000}
+            anchorOrigin={{
+              horizontal: "right",
+              vertical: "bottom",
+            }}
+            Components={{
+              success: SuccessSnackbar,
+              error: ErrorSnackbar,
+            }}
+          >
+            <SelectedAddressProvider>
+              {getLayout(<Component {...pageProps} />)}
+            </SelectedAddressProvider>
+          </SnackbarProvider>
+        </AlgoliaInsightsProvider>
       </HydrationBoundary>
 
       {process.env.NODE_ENV == "development" && (

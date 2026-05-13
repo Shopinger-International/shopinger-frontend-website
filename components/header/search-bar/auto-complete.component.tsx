@@ -22,9 +22,8 @@ import {
 import { createLocalStorageRecentSearchesPlugin } from "@algolia/autocomplete-plugin-recent-searches";
 import { createQuerySuggestionsPlugin } from "@algolia/autocomplete-plugin-query-suggestions";
 import { debouncePromise } from "@/helpers/common.helper";
-import { normalizeQuery } from "@/helpers/common.helper";
 import { createAlgoliaInsightsPlugin } from "@algolia/autocomplete-plugin-algolia-insights";
-import insightsClient from "search-insights";
+import insightsClient from "@/lib/algolia/algolia-insight.lib";
 
 // local components
 import SearchBarHit from "@/components/header/search-bar/search-bar-hit.component";
@@ -33,8 +32,6 @@ import SearchBarHit from "@/components/header/search-bar/search-bar-hit.componen
 import { search_client } from "@/components/header/search-bar/search-bar.component";
 import { ALGOLIA_INDEX } from "@/constants/algolia.constant";
 
-// api hooks
-import useCreateSearchQueryMutation from "@/hooks/axios/search/use-create-search-query-mutation.hook";
 type IAutocompleteItem = Hit<IAlgoliaProduct> & AlgoliaInsightsHit;
 
 type AutocompleteProps = Partial<AutocompleteOptions<IAutocompleteItem>> & {
@@ -66,16 +63,11 @@ const debouncedSearch = debouncePromise(async (query: string) => {
   });
 }, 600);
 
-insightsClient("init", {
-  appId: process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID!,
-  apiKey: process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!,
-});
 const AutoComplete: FC<AutocompleteProps> = ({
   className,
   ...auto_complete_props
 }) => {
   const router = useRouter();
-  const create_search_query_mutation = useCreateSearchQueryMutation();
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
@@ -201,15 +193,9 @@ const AutoComplete: FC<AutocompleteProps> = ({
                       <SearchBarHit
                         hit={item}
                         onClick={() => {
-                          router.push(item.url);
-
-                          create_search_query_mutation.mutate({
-                            object_id: `query-${normalizeQuery(query)
-                              .toLowerCase()
-                              .trim()
-                              .replace(/\s+/g, "-")}`,
-                            query,
-                          });
+                          router.push(
+                            `${item.url}?query_id=${item.__autocomplete_queryID}&index_name=${item.__autocomplete_indexName}&object_id=${item.objectID}`,
+                          );
                         }}
                       />
                     );
