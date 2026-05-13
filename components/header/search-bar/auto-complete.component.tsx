@@ -13,6 +13,7 @@ import type { AlgoliaInsightsHit } from "@algolia/autocomplete-plugin-algolia-in
 import { usePagination, useSearchBox } from "react-instantsearch";
 
 // helpers
+import clsx from "clsx";
 import {
   autocomplete,
   AutocompleteOptions,
@@ -105,6 +106,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
           },
           onSelect({ item }) {
             setQuery(item.label);
+            router.push(`/search?query=${item.label}`);
           },
         };
       },
@@ -169,9 +171,10 @@ const AutoComplete: FC<AutocompleteProps> = ({
       classNames: {
         panel:
           "absolute left-0 right-0 mt-2 bg-white shadow-lg sm:!rounded-lg sm:border sm:border-gray-300 z-50 shadow-sm overflow-hidden",
-        form: "!border-none sm:!border sm:!border-gray-300 !rounded-md outline-none focus-within:!shadow-none",
         list: "py-2 space-y-1 w-full ",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
+        form: "focus-within:!border-2 focus-within:!border-orange-500 !rounded-lg outline-none focus-within:!shadow-none",
+        submitButton: "!text-orange-500",
       },
 
       getSources({ query }) {
@@ -218,6 +221,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
       },
       onSubmit({ state }) {
         setQuery(state.query);
+        router.push(`/search?query=${state.query}`);
       },
 
       onReset() {
@@ -256,7 +260,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
     };
   }, [auto_complete_props, plugins]);
 
-  return <div className={className} ref={autocomplete_container_ref} />;
+  return <div className={clsx(className)} ref={autocomplete_container_ref} />;
 };
 
 export default AutoComplete;

@@ -46,9 +46,19 @@ function getStockStatus(variant_inventory: IVariantInventory) {
   return "in_stock";
 }
 
+const isNewProduct = (created_at: string | Date) => {
+  const created = new Date(created_at);
+  const now = new Date();
+
+  const diffInDays =
+    (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24);
+
+  return diffInDays <= 7;
+};
 export {
   generateMetaDescription,
   generateDescription,
   generateSlug,
   getStockStatus,
+  isNewProduct
 };

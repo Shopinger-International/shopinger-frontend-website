@@ -25,19 +25,11 @@ import useCategorySpecificFilters from "@/hooks/axios/categories/use-category-sp
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
 import clsx from "clsx";
+import { isNewProduct } from "@/helpers/product.helper";
 
 // context
 import { FiltersSortBarState } from "@/context";
 
-const isNewProduct = (created_at: string | Date) => {
-  const created = new Date(created_at);
-  const now = new Date();
-
-  const diffInDays =
-    (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24);
-
-  return diffInDays <= 7;
-};
 
 export type ISort =
   | "latest"

@@ -9,7 +9,12 @@ import type IProduct from "@/types/product";
 import MainLayout from "@/components/layout/main-layout.component";
 
 // local components
+
 import ProductCard from "@/components/categories/product-card/product-card.component";
+import ProductCardSkeleton from "@/components/categories/product-card/product-card-skeleton.component";
+import SortFilterHeader from "@/components/categories/sort-filter-header/sort-filter-header.component";
+import SortFilterHeaderSkeleton from "@/components/categories/sort-filter-header/sort-filter-header-skeleton.component";
+import SortFilterDrawer from "@/components/categories/sort-filter-header/sort-filter-drawer.component";
 
 // hooks
 import useGetProductsByCategory from "@/hooks/axios/categories/use-get-category-product.hook";
@@ -17,15 +22,41 @@ import useCategorySortingFilters from "@/hooks/axios/categories/use-category-sor
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
+import { isNewProduct } from "@/helpers/product.helper";
 
 type IProps = {
   category_slug: string;
 };
 
+export type ISort =
+  | "latest"
+  | "price_low_high"
+  | "price_high_low"
+  | "top_rated";
+
+export type ISelectedFilters = {
+  sort?: ISort;
+  min_rating?: number;
+  min_price?: number;
+  max_price?: number;
+};
+
 const MainCategoryPage: NextPageWithLayout<IProps> = ({}) => {
   const router = useRouter();
+  const [selected_sorting_filters, setSelectedSortingFilters] =
+    useState<ISelectedFilters | null>(null);
+
+  const {
+    data: category_sorting_filters,
+    isPending: is_category_sorting_filters_pending,
+  } = useCategorySortingFilters({
+    category_slug: "mobiles",
+    category_type: "main",
+  });
   const { data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useGetProductsByCategory({
+      category_type: "main",
+      slug: "mobiles",
       search: router.query.query as string,
     });
 
@@ -127,19 +158,54 @@ const MainCategoryPage: NextPageWithLayout<IProps> = ({}) => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   return (
     <>
+      <SortFilterDrawer>
+        {category_sorting_filters && (
+          <SortFilterHeader
+            selected_filters={selected_sorting_filters}
+            {...category_sorting_filters}
+            onChange={(selected_filter) =>
+              setSelectedSortingFilters(selected_filter)
+            }
+          />
+        )}
+      </SortFilterDrawer>
       <section className="min-h-screen w-full">
         <div className="mx-auto mt-(--header-height) max-w-6xl space-y-3 pb-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-            {formatted_category_products?.map((product) => (
-              <ProductCard
-                {...product}
-                key={`category-product-${product?.product_id}`}
-              />
-            ))}
+          <div className="flex-1 space-y-4">
+            <div className="hidden lg:block">
+              {is_category_sorting_filters_pending ? (
+                <SortFilterHeaderSkeleton />
+              ) : (
+                category_sorting_filters && (
+                  <SortFilterHeader
+                    selected_filters={selected_sorting_filters}
+                    {...category_sorting_filters}
+                    onChange={(selected_filter) =>
+                      setSelectedSortingFilters(selected_filter)
+                    }
+                  />
+                )
+              )}
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+              {formatted_category_products?.map((product) => (
+                <ProductCard
+                  {...product}
+                  key={`category-product-${product?.product_id}`}
+                />
+              ))}
 
-            {/* observer */}
-            {!isFetchingNextPage && !isPending && (
-              <div ref={load_more_ref} className="h-10" />
+              {/* observer */}
+              {!isFetchingNextPage && !isPending && (
+                <div ref={load_more_ref} className="h-10" />
+              )}
+            </div>
+            {(isPending || hasNextPage) && (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))}
+              </div>
             )}
           </div>
         </div>
