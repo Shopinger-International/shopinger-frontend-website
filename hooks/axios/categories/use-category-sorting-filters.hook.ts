@@ -23,14 +23,19 @@ const useCategorySortingFilters = ({
   category_slug,
   category_type,
 }: {
-  category_slug: string;
-  category_type: string;
+  category_slug?: string;
+  category_type?: string;
 }) => {
   return useQuery({
     queryKey: ["category-filters", category_slug, category_type],
     async queryFn() {
+      const query = new URLSearchParams({
+        ...(category_slug && { slug: category_slug }),
+        ...(category_type && { category_type }),
+      }).toString();
+
       const { data } = await Axios.get<IResponse>(
-        `/get-category-filters-meta?slug=${category_slug}&category_type=${category_type}`,
+        `/get-category-filters-meta?${query}`,
       );
       return data;
     },

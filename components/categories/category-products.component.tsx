@@ -30,7 +30,6 @@ import { isNewProduct } from "@/helpers/product.helper";
 // context
 import { FiltersSortBarState } from "@/context";
 
-
 export type ISort =
   | "latest"
   | "price_low_high"
@@ -277,6 +276,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
             {formatted_category_products?.map((product) => (
+              //@ts-ignore
               <ProductCard
                 {...product}
                 key={`category-product-${product?.product_id}`}

@@ -49,14 +49,9 @@ const MainCategoryPage: NextPageWithLayout<IProps> = ({}) => {
   const {
     data: category_sorting_filters,
     isPending: is_category_sorting_filters_pending,
-  } = useCategorySortingFilters({
-    category_slug: "mobiles",
-    category_type: "main",
-  });
+  } = useCategorySortingFilters({});
   const { data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useGetProductsByCategory({
-      category_type: "main",
-      slug: "mobiles",
       search: router.query.query as string,
     });
 
@@ -189,6 +184,7 @@ const MainCategoryPage: NextPageWithLayout<IProps> = ({}) => {
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
               {formatted_category_products?.map((product) => (
+                //@ts-ignore
                 <ProductCard
                   {...product}
                   key={`category-product-${product?.product_id}`}

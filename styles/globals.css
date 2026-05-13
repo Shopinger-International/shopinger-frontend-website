@@ -126,6 +126,7 @@
   background-color: #f97316;
   width: 40px;
 }
-.aa-Form:focus-within .aa-SubmitIcon {
-  color: #f97316; /* orange-500 */
+
+.aa-SubmitIcon {
+  color: #f97316 !important;
 }

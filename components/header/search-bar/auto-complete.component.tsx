@@ -129,9 +129,20 @@ const AutoComplete: FC<AutocompleteProps> = ({
             sourceId: "query-suggestions-plugin",
             onSelect({ item }) {
               setQuery(item.query);
-              router.push(
-                `/categories/${item.main_category_slug}/${item.sub_category_slug}/${item.sub_sub_category_slug}?query=${item.query}`,
-              );
+              const query_id = item.__autocomplete_queryID;
+              const index_name = item.__autocomplete_indexName;
+              const object_id = item.objectID;
+              router.push({
+                pathname: `/categories/${item.main_category_slug}/${item.sub_category_slug}/${item.sub_sub_category_slug}`,
+                query: {
+                  query: item.query,
+                  //@ts-ignore
+                  query_id,
+                  //@ts-ignore
+                  index_name,
+                  object_id,
+                },
+              });
             },
             getItems(params) {
               if (!params.state.query) {
@@ -165,8 +176,9 @@ const AutoComplete: FC<AutocompleteProps> = ({
           "absolute left-0 right-0 mt-2 bg-white shadow-lg sm:!rounded-lg sm:border sm:border-gray-300 z-50 shadow-sm overflow-hidden",
         list: "py-2 space-y-1 w-full ",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
-        form: "focus-within:!border-2 focus-within:!border-orange-500 !rounded-lg outline-none focus-within:!shadow-none",
-        submitButton: "!text-orange-500",
+        form: "sm:focus-within:!border-2 sm:focus-within:!border-orange-500 !rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none",
+        detachedSearchButton: "!rounded-md",
+        detachedSearchButtonIcon: "!text-orange-500",
       },
 
       getSources({ query }) {
@@ -193,9 +205,17 @@ const AutoComplete: FC<AutocompleteProps> = ({
                       <SearchBarHit
                         hit={item}
                         onClick={() => {
-                          router.push(
-                            `${item.url}?query_id=${item.__autocomplete_queryID}&index_name=${item.__autocomplete_indexName}&object_id=${item.objectID}`,
-                          );
+                          const query_id = item.__autocomplete_queryID;
+                          const index_name = item.__autocomplete_indexName;
+                          const object_id = item.objectID;
+                          router.push({
+                            pathname: item.url,
+                            query: {
+                              query_id,
+                              index_name,
+                              object_id,
+                            },
+                          });
                         }}
                       />
                     );

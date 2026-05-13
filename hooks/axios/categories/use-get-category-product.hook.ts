@@ -8,8 +8,8 @@ import type { ISort } from "@/components/categories/category-products.component"
 type CategoryType = "main" | "sub" | "sub_sub";
 
 type GetProductsByCategoryParams = {
-  slug: string;
-  category_type: CategoryType;
+  slug?: string;
+  category_type?: CategoryType;
   limit?: number;
   sort?: ISort;
   min_price?: number;
@@ -47,7 +47,7 @@ const useGetCategoryProducts = ({
   filters,
   search,
 }: GetProductsByCategoryParams) => {
-  console.log('value of search inside api',search);
+  console.log("value of search inside api", search);
   return useInfiniteQuery({
     queryKey: [
       "products-by-category",
@@ -80,7 +80,7 @@ const useGetCategoryProducts = ({
             min_rating,
             brands,
             filters: filters ? JSON.stringify(filters) : undefined,
-            search
+            search,
           },
 
           withCredentials: true,
