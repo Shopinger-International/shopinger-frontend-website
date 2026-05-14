@@ -40,7 +40,12 @@ const poppins = Poppins({
 const MainLayout: FC<{
   children: ReactNode;
   show_filter_sort_bar?: boolean;
-}> = ({ children, show_filter_sort_bar = false }) => {
+  disable_side_filter?: boolean;
+}> = ({
+  children,
+  show_filter_sort_bar = false,
+  disable_side_filter = false,
+}) => {
   const { is_open, is_modal_open, address_id, updateState } =
     useContext(AddressDrawerState);
   const { show: show_footer } = useContext(FooterStateContext);
@@ -49,7 +54,10 @@ const MainLayout: FC<{
     <div
       className={`${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900`}
     >
-      <Header show_filter_sort_bar={show_filter_sort_bar} />
+      <Header
+        show_filter_sort_bar={show_filter_sort_bar}
+        disable_side_filter={disable_side_filter}
+      />
       <main>
         {is_mobile ? (
           <MobileAddressModal

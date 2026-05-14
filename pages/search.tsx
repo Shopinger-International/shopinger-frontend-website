@@ -11,6 +11,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 import CategoryProducts from "@/components/categories/category-products.component";
 
 // provider
+import FiltersSortBarStateProvider from "@/provider/filter-sort-bar-state.provider";
 import FooterStateProvider from "@/provider/footer-state-provider";
 
 type IProps = {
@@ -127,7 +128,11 @@ export default MainCategoryPage;
 MainCategoryPage.getLayout = function getLayout(page: ReactElement) {
   return (
     <FooterStateProvider default_show={false}>
-      <MainLayout>{page}</MainLayout>
+      <FiltersSortBarStateProvider>
+        <MainLayout show_filter_sort_bar={true} disable_side_filter={true}>
+          {page}
+        </MainLayout>
+      </FiltersSortBarStateProvider>
     </FooterStateProvider>
   );
 };

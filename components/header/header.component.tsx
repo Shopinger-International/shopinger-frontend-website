@@ -38,7 +38,8 @@ import { AddressDrawerState } from "@/context";
 
 const Header: FC<{
   show_filter_sort_bar?: boolean;
-}> = ({ show_filter_sort_bar }) => {
+  disable_side_filter?: boolean;
+}> = ({ show_filter_sort_bar, disable_side_filter = false }) => {
   const { address_id, is_modal_open, updateState } =
     useContext(AddressDrawerState);
   const { data: user_details } = useUserDetails();
@@ -241,7 +242,9 @@ const Header: FC<{
         </div>
       </div>
       <CategorySection />
-      {show_filter_sort_bar && <FilterSortBar />}
+      {show_filter_sort_bar && (
+        <FilterSortBar disable_side_filter={disable_side_filter} />
+      )}
     </header>
   );
 };
