@@ -9,9 +9,6 @@ import Header from "@/components/header/header.component";
 import Footer from "@/components/footer/footer.component";
 import SelectAddressDrawer from "@/components/common/select-address-drawer.component";
 
-// hooks
-import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
-
 const AddAddressModal = dynamic(
   () =>
     import("@/components/manage-address/add-address-modal/add-address-modal.component"),
@@ -32,7 +29,7 @@ const MobileAddressModal = dynamic(
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
 // context
-import { AddressDrawerState } from "@/context";
+import { AddressDrawerState, FooterStateContext } from "@/context";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800"],
@@ -46,8 +43,8 @@ const MainLayout: FC<{
 }> = ({ children, show_filter_sort_bar = false }) => {
   const { is_open, is_modal_open, address_id, updateState } =
     useContext(AddressDrawerState);
+  const { show: show_footer } = useContext(FooterStateContext);
   const is_mobile = useIsMobile();
-  const { data: user_addresses = [] } = useUserAddresses();
   return (
     <div
       className={`${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900`}
@@ -97,7 +94,7 @@ const MainLayout: FC<{
         <SelectAddressDrawer />
         {children}
       </main>
-      <Footer />
+      {show_footer && <Footer />}
     </div>
   );
 };

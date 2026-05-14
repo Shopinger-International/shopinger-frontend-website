@@ -28,7 +28,7 @@ import clsx from "clsx";
 import { isNewProduct } from "@/helpers/product.helper";
 
 // context
-import { FiltersSortBarState } from "@/context";
+import { FiltersSortBarState, FooterStateContext } from "@/context";
 
 export type ISort =
   | "latest"
@@ -44,12 +44,18 @@ export type ISelectedFilters = {
 };
 
 type IProps = {
-  category_slug: string;
-  category_type: "main" | "sub" | "sub_sub";
+  search?: string;
+  category_slug?: string;
+  category_type?: "main" | "sub" | "sub_sub";
 };
-const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
+const CategoryProducts: FC<IProps> = ({
+  search,
+  category_slug,
+  category_type,
+}) => {
   const router = useRouter();
   const { state, updateState } = useContext(FiltersSortBarState);
+  const { updateShow: updateShowFooter } = useContext(FooterStateContext);
   const [selected_sorting_filters, setSelectedSortingFilters] =
     useState<ISelectedFilters | null>(null);
   const {
@@ -193,7 +199,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       },
       {
         root: null,
-        rootMargin: "200px",
+        rootMargin: "400px",
         threshold: 0,
       },
     );
@@ -202,6 +208,10 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
 
     return () => observer_ref.current?.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  useEffect(() => {
+    updateShowFooter?.(!hasNextPage && !isPending);
+  }, [hasNextPage,isPending]);
   return (
     <>
       <>
@@ -213,23 +223,25 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
           onClick={() => updateState?.(null)}
         />
 
-        <div
-          className={clsx(
-            "fixed inset-y-0 left-0 z-50 transform bg-white transition-transform duration-300 ease-in-out",
-            state == "filter" ? "translate-x-0" : "-translate-x-full",
-          )}
-        >
-          <div className="h-screen overflow-y-auto">
-            <SideFilter
-              category_slug={category_slug}
-              category_type={category_type}
-              filters={selected_category_specific_filters}
-              handleFiltersChange={(updated_filters) => {
-                setSelectedCategorySpecificFilters(updated_filters);
-              }}
-            />
+        {category_slug && category_type && (
+          <div
+            className={clsx(
+              "fixed inset-y-0 left-0 z-50 transform bg-white transition-transform duration-300 ease-in-out",
+              state == "filter" ? "translate-x-0" : "-translate-x-full",
+            )}
+          >
+            <div className="h-screen overflow-y-auto">
+              <SideFilter
+                category_slug={category_slug}
+                category_type={category_type}
+                filters={selected_category_specific_filters}
+                handleFiltersChange={(updated_filters) => {
+                  setSelectedCategorySpecificFilters(updated_filters);
+                }}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </>
 
       <SortFilterDrawer>
@@ -244,20 +256,23 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         )}
       </SortFilterDrawer>
       <div className="flex space-x-4 px-4">
-        <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
-          {is_category_specific_filters_pending ? (
-            <SideFiltersSkeleton />
-          ) : (
-            <SideFilter
-              filters={selected_category_specific_filters}
-              handleFiltersChange={(updated_filters) => {
-                setSelectedCategorySpecificFilters(updated_filters);
-              }}
-              category_slug={category_slug}
-              category_type={category_type}
-            />
-          )}
-        </div>
+        {category_type && category_slug && (
+          <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
+            {is_category_specific_filters_pending ? (
+              <SideFiltersSkeleton />
+            ) : (
+              <SideFilter
+                filters={selected_category_specific_filters}
+                handleFiltersChange={(updated_filters) => {
+                  setSelectedCategorySpecificFilters(updated_filters);
+                }}
+                category_slug={category_slug}
+                category_type={category_type}
+              />
+            )}
+          </div>
+        )}
+
         <div className="flex-1 space-y-4">
           <div className="hidden lg:block">
             {is_category_sorting_filters_pending ? (
@@ -283,18 +298,15 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
               />
             ))}
 
-            {/* observer */}
-            {!isFetchingNextPage && !isPending && (
-              <div ref={load_more_ref} className="h-10" />
-            )}
-          </div>
-          {(isPending || hasNextPage) && (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-              {Array.from({ length: 8 }).map((_, i) => (
+            {/* next page skeletons */}
+            {isFetchingNextPage &&
+              Array.from({ length: 8 }).map((_, i) => (
                 <ProductCardSkeleton key={i} />
               ))}
-            </div>
-          )}
+          </div>
+
+          {/* observer */}
+          {hasNextPage && <div ref={load_more_ref} className="h-1" />}
         </div>
       </div>
     </>

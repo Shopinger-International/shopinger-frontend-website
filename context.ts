@@ -12,9 +12,15 @@ export type IAddressDrawerState = {
 };
 
 export type IFilterSortBarStateType = "sort" | "filter" | null;
+
 type IFiltersSortBarState = {
   state: IFilterSortBarStateType;
   updateState?: (state: IFilterSortBarStateType) => void;
+};
+
+type IFooterState = {
+  show: boolean;
+  updateShow?:(val:boolean)=>void;
 };
 
 const AddressDrawerState = createContext<IAddressDrawerState>({
@@ -27,4 +33,8 @@ const FiltersSortBarState = createContext<IFiltersSortBarState>({
   state: null,
 });
 
-export { AddressDrawerState, FiltersSortBarState };
+const FooterStateContext = createContext<IFooterState>({
+  show: true,
+});
+
+export { AddressDrawerState, FiltersSortBarState, FooterStateContext };

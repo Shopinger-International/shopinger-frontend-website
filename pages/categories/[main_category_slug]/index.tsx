@@ -12,6 +12,7 @@ import CategoryProducts from "@/components/categories/category-products.componen
 
 // provider
 import FiltersSortBarStateProvider from "@/provider/filter-sort-bar-state.provider";
+import FooterStateProvider from "@/provider/footer-state-provider";
 
 // helpers
 import { capitalizeValue } from "@/helpers/common.helper";
@@ -90,8 +91,10 @@ export const getServerSideProps = (async ({ params, req }) => {
 
 MainCategoryPage.getLayout = function getLayout(page: ReactElement) {
   return (
-    <FiltersSortBarStateProvider>
-      <MainLayout show_filter_sort_bar={true}>{page}</MainLayout>
-    </FiltersSortBarStateProvider>
+    <FooterStateProvider default_show={false}>
+      <FiltersSortBarStateProvider>
+        <MainLayout show_filter_sort_bar={true}>{page}</MainLayout>
+      </FiltersSortBarStateProvider>
+    </FooterStateProvider>
   );
 };

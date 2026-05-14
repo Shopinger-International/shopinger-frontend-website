@@ -33,8 +33,8 @@ const useCategorySpecificFilters = ({
   category_slug,
   category_type,
 }: {
-  category_slug: string;
-  category_type: string;
+  category_slug?: string;
+  category_type?: string;
 }) => {
   return useQuery<
     IResponse,
