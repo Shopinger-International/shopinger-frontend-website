@@ -285,18 +285,23 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
             )}
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-            {formatted_category_products?.map((product) => (
-              //@ts-ignore
-              <ProductCard
-                {...product}
-                key={`category-product-${product?.product_id}`}
-              />
-            ))}
+            {isPending
+              ? Array.from({ length: 12 }).map((_, i) => (
+                  <ProductCardSkeleton key={`initial-skeleton-${i}`} />
+                ))
+              : formatted_category_products?.map((product) => (
+                  //@ts-ignore
+                  <ProductCard
+                    {...product}
+                    key={`category-product-${product?.product_id}`}
+                  />
+                ))}
 
-            {/* next page skeletons */}
-            {isFetchingNextPage &&
-              Array.from({ length: 8 }).map((_, i) => (
-                <ProductCardSkeleton key={i} />
+            {/* infinite scroll loading */}
+            {!isPending &&
+              isFetchingNextPage &&
+              Array.from({ length: 12 }).map((_, i) => (
+                <ProductCardSkeleton key={`next-page-skeleton-${i}`} />
               ))}
           </div>
 
