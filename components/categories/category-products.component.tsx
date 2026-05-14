@@ -44,15 +44,10 @@ export type ISelectedFilters = {
 };
 
 type IProps = {
-  search?: string;
   category_slug?: string;
   category_type?: "main" | "sub" | "sub_sub";
 };
-const CategoryProducts: FC<IProps> = ({
-  search,
-  category_slug,
-  category_type,
-}) => {
+const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   const router = useRouter();
   const { state, updateState } = useContext(FiltersSortBarState);
   const { updateShow: updateShowFooter } = useContext(FooterStateContext);
@@ -211,7 +206,7 @@ const CategoryProducts: FC<IProps> = ({
 
   useEffect(() => {
     updateShowFooter?.(!hasNextPage && !isPending);
-  }, [hasNextPage,isPending]);
+  }, [hasNextPage, isPending]);
   return (
     <>
       <>
