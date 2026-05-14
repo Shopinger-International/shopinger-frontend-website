@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useRef, useEffect, useState, useContext } from "react";
+import { useRef, useEffect, useState, useContext, useMemo } from "react";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -77,29 +77,44 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     category_slug,
     category_type,
   });
-  const { data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useGetProductsByCategory({
-      slug: category_slug,
-      category_type,
-      ...selected_sorting_filters,
-      brands: selected_category_specific_filters
-        .find(({ attribute }) => attribute.code == "brand")
-        ?.options.filter((option) => option.is_enabled)
-        .map((option) => option.value),
-      filters: selected_category_specific_filters
-        .filter(({ attribute }) => attribute.code !== "brand")
-        .reduce((acc, filter) => {
-          if (filter.options.some(({ is_enabled }) => is_enabled)) {
-            return {
-              [filter.attribute.code]: filter.options
-                .filter(({ is_enabled }) => is_enabled)
-                .map(({ value }) => value),
-            };
+  const brands = useMemo(() => {
+    return selected_category_specific_filters
+      .find(({ attribute }) => attribute.code === "brand")
+      ?.options.filter((o) => o.is_enabled)
+      .map((o) => o.value);
+  }, [selected_category_specific_filters]);
+
+  const filters = useMemo(() => {
+    return selected_category_specific_filters
+      .filter(({ attribute }) => attribute.code !== "brand")
+      .reduce(
+        (acc, filter) => {
+          if (filter.options.some((o) => o.is_enabled)) {
+            acc[filter.attribute.code] = filter.options
+              .filter((o) => o.is_enabled)
+              .map((o) => o.value);
           }
           return acc;
-        }, {}),
-      search: router.query.query as string,
-    });
+        },
+        {} as Record<string, string[]>,
+      );
+  }, [selected_category_specific_filters]);
+
+  const search = router.query.query as string;
+  const {
+    data,
+    isPending: isProductPending,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useGetProductsByCategory({
+    slug: category_slug,
+    category_type,
+    ...selected_sorting_filters,
+    brands: brands,
+    filters: filters,
+    search: router.query.query as string,
+  });
 
   const category_products = data?.pages.reduce<
     Array<
@@ -205,8 +220,8 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useEffect(() => {
-    updateShowFooter?.(!hasNextPage && !isPending);
-  }, [hasNextPage, isPending]);
+    updateShowFooter?.(!hasNextPage && !isProductPending);
+  }, [hasNextPage, isProductPending]);
   return (
     <>
       <>
@@ -285,7 +300,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
             )}
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-            {isPending
+            {isProductPending
               ? Array.from({ length: 12 }).map((_, i) => (
                   <ProductCardSkeleton key={`initial-skeleton-${i}`} />
                 ))
@@ -298,7 +313,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
                 ))}
 
             {/* infinite scroll loading */}
-            {!isPending &&
+            {!isProductPending &&
               isFetchingNextPage &&
               Array.from({ length: 12 }).map((_, i) => (
                 <ProductCardSkeleton key={`next-page-skeleton-${i}`} />
