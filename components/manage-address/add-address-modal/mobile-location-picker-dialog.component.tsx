@@ -1,9 +1,11 @@
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import { AxiosError } from "axios";
 // types
-import { FC } from "react";
+import type { FC } from "react";
 import type { IAddress } from "@/types/address";
 import type { SelectInstance } from "react-select";
 import type IUser from "@/types/user";
+import type { FormikProps } from "formik";
 
 // icons
 import { X, Home, Briefcase, MapPin } from "lucide-react";
@@ -32,6 +34,7 @@ import {
   mapGeocodeToForm,
   getAddressFromCoords,
 } from "@/helpers/address.helper";
+import { enqueueSnackbar } from "notistack";
 
 // const
 import { ADDRESS_TYPE } from "@/constants/display-area.constant";
@@ -40,6 +43,7 @@ import { ADDRESS_TYPE } from "@/constants/display-area.constant";
 import useCreateAddressMutation from "@/hooks/axios/address/use-create-address-mutation.hook";
 import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pincode-serviceability.hook";
 
 const address_types = [
   { id: "home", label: "Home", icon: Home, value: ADDRESS_TYPE.HOME },
@@ -70,12 +74,16 @@ const MobileAddressModal: FC<IProps> = ({
   handleOnSuccess,
   handleLogin,
 }) => {
+  const formik_ref = useRef<FormikProps<IFormAddressType>>(null);
   const { data: user_detail } = useUserDetails();
   const user_addresses = user_detail?.user_addresses ?? [];
   const select_places_ref = useRef<SelectInstance>(null);
   const [show_drawer, setShowDrawer] = useState(false);
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
+  const [is_pincode_serviceable, setIsPincodeServiceable] = useState(true);
+  const verify_pincode_serviceability_mutation =
+    useVerifyPincodeServiceability();
   const { id: address_id, ...initial_values } = initial_data ?? {};
 
   useLayoutEffect(() => {
@@ -97,6 +105,48 @@ const MobileAddressModal: FC<IProps> = ({
     return () => observer.disconnect();
   }, [show_drawer]);
 
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        getAddressFromCoords(latitude, longitude).then((data) => {
+          const mapped = mapGeocodeToForm(data);
+          verify_pincode_serviceability_mutation.mutate(
+            {
+              pin_code: mapped.pincode,
+            },
+            {
+              onSuccess() {
+                setIsPincodeServiceable(true);
+                formik_ref.current?.setValues((prev) => ({
+                  ...prev,
+                  ...mapped,
+                }));
+              },
+              onError(err) {
+                setIsPincodeServiceable(false);
+                let message = "Something went wrong";
+                if (err instanceof AxiosError) {
+                  message = err.response?.data?.message || message;
+                }
+                enqueueSnackbar(message, {
+                  key: `verify-serviceable-pincode-error-${Date.now()}`,
+                  variant: "error",
+                });
+              },
+            },
+          );
+        });
+      },
+      () => alert("Unable to fetch location"),
+    );
+  };
+
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
@@ -116,6 +166,7 @@ const MobileAddressModal: FC<IProps> = ({
             </button>
           </div>
           <Formik<IFormAddressType>
+            innerRef={formik_ref}
             initialValues={
               initial_data
                 ? ({
@@ -199,13 +250,25 @@ const MobileAddressModal: FC<IProps> = ({
                       ref={select_places_ref}
                       handleOnChange={(val) => {
                         const mapped = mapPlaceToForm(val.data);
-
-                        setValues((prev) => ({
-                          ...prev,
-                          ...mapped,
-                          latitude: val.data.location.latitude,
-                          longitude: val.data.location.longitude,
-                        }));
+                        verify_pincode_serviceability_mutation.mutate(
+                          {
+                            pin_code: mapped.pincode,
+                          },
+                          {
+                            onSuccess() {
+                              setIsPincodeServiceable(true);
+                              setValues((prev) => ({
+                                ...prev,
+                                ...mapped,
+                                latitude: val.data.location.latitude,
+                                longitude: val.data.location.longitude,
+                              }));
+                            },
+                            onError() {
+                              setIsPincodeServiceable(false);
+                            },
+                          },
+                        );
                       }}
                     />
                   </div>
@@ -213,29 +276,7 @@ const MobileAddressModal: FC<IProps> = ({
                   {/* CURRENT LOCATION */}
                   <button
                     type="button"
-                    onClick={() => {
-                      if (!navigator.geolocation) {
-                        alert("Geolocation is not supported");
-                        return;
-                      }
-
-                      navigator.geolocation.getCurrentPosition(
-                        (pos) => {
-                          const { latitude, longitude } = pos.coords;
-                          getAddressFromCoords(latitude, longitude).then(
-                            (data) => {
-                              console.log("value fo data", data);
-                              const mapped = mapGeocodeToForm(data);
-                              setValues((prev) => ({
-                                ...prev,
-                                ...mapped,
-                              }));
-                            },
-                          );
-                        },
-                        () => alert("Unable to fetch location"),
-                      );
-                    }}
+                    onClick={handleUseCurrentLocation}
                     className="absolute bottom-42 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
                   >
                     <MapPin
@@ -245,18 +286,52 @@ const MobileAddressModal: FC<IProps> = ({
                     <span>Use Current Location</span>
                   </button>
                   <div className="fixed bottom-0 z-30 w-full space-y-2 border-t border-gray-300 bg-white p-4 shadow-sm">
-                    {values.formatted_address ? (
-                      <p className="text-sm leading-snug font-semibold">
-                        {values.formatted_address}
-                      </p>
-                    ) : (
-                      <div className="text-xs text-gray-400">
-                        Select a location on map to continue
-                      </div>
-                    )}
+                    <div className="space-y-2">
+                      {!is_pincode_serviceable && (
+                        <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2">
+                          <div className="flex items-start gap-2">
+                            <div className="mt-0.5 rounded-full bg-red-100 p-1">
+                              <MapPin className="size-3.5 text-red-500" />
+                            </div>
+
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-red-600">
+                                Location not serviceable
+                              </p>
+
+                              <p className="mt-0.5 text-xs leading-relaxed text-red-500">
+                                We’re not delivering to this area yet. Try
+                                another nearby address or use your current
+                                location.
+                              </p>
+
+                              <button
+                                type="button"
+                                onClick={handleUseCurrentLocation}
+                                className="mt-2 text-xs font-semibold text-orange-500"
+                              >
+                                Use current location
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {values.formatted_address && is_pincode_serviceable ? (
+                        <>
+                          <p className="text-sm leading-snug font-semibold">
+                            {values.formatted_address}
+                          </p>
+                        </>
+                      ) : (
+                        <div className="text-sm font-medium text-gray-600">
+                          Select a location on map to continue
+                        </div>
+                      )}
+                    </div>
                     <button
                       type="button"
-                      className="w-full rounded-md bg-orange-500 py-2 font-semibold text-white shadow-sm"
+                      className="w-full rounded-md bg-orange-500 py-2 font-semibold text-white shadow-sm disabled:bg-orange-300"
+                      disabled={!values.pincode || !is_pincode_serviceable}
                       onClick={() => setShowDrawer(true)}
                     >
                       Confirm & Proceed
@@ -373,7 +448,7 @@ const MobileAddressModal: FC<IProps> = ({
                               {values.formatted_address}
                             </p>
                           ) : (
-                            <div className="text-xs text-gray-400">
+                            <div className="text-xs text-gray-600">
                               Select a location on map to continue
                             </div>
                           )}
