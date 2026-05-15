@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { AxiosError } from "axios";
 // types
 import type { FC } from "react";
@@ -74,6 +74,7 @@ const MobileAddressModal: FC<IProps> = ({
   handleOnSuccess,
   handleLogin,
 }) => {
+  const [bottom_bar_height, setBottomBarHeight] = useState(168); // in pixel;
   const formik_ref = useRef<FormikProps<IFormAddressType>>(null);
   const { data: user_detail } = useUserDetails();
   const user_addresses = user_detail?.user_addresses ?? [];
@@ -277,7 +278,10 @@ const MobileAddressModal: FC<IProps> = ({
                   <button
                     type="button"
                     onClick={handleUseCurrentLocation}
-                    className="absolute bottom-42 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
+                    className="absolute left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
+                    style={{
+                      bottom: `${bottom_bar_height}px`,
+                    }}
                   >
                     <MapPin
                       className="size-3.5 text-orange-500"
@@ -285,7 +289,21 @@ const MobileAddressModal: FC<IProps> = ({
                     />
                     <span>Use Current Location</span>
                   </button>
-                  <div className="fixed bottom-0 z-30 w-full space-y-2 border-t border-gray-300 bg-white p-4 shadow-sm">
+                  <div
+                    ref={(node) => {
+                      const resize_oveserver = new ResizeObserver((entries) => {
+                        for (let entry of entries) {
+                          const height = entry.contentRect.height;
+                          setBottomBarHeight(height + 100);
+                        }
+                      });
+                      node && resize_oveserver.observe(node);
+                      return () => {
+                        resize_oveserver.disconnect();
+                      };
+                    }}
+                    className="fixed bottom-0 z-30 w-full space-y-2 border-t border-gray-300 bg-white p-4 shadow-sm"
+                  >
                     <div className="space-y-2">
                       {!is_pincode_serviceable && (
                         <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2">
