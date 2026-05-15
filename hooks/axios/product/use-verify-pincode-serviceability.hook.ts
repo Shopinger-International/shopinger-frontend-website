@@ -21,7 +21,7 @@ interface VerifyOtpResponse {
 }
 
 const useVerifyPincodeServiceability = () => {
-  return useMutation<VerifyOtpResponse, AxiosError, VerifyOtpPayload>({
+  return useMutation<VerifyOtpResponse, Error, VerifyOtpPayload>({
     mutationKey: ["verify-login-otp"],
     mutationFn: async ({ pin_code }) => {
       const res = await webAxios.get<VerifyOtpResponse>(

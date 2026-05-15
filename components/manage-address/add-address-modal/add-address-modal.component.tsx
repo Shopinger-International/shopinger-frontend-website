@@ -1,12 +1,14 @@
-import { useRef } from "react";
+import { AxiosError } from "axios";
+import { useRef, useState } from "react";
 // types
 import { FC } from "react";
 import type { IAddress } from "@/types/address";
 import type { SelectInstance } from "react-select";
 import type IUser from "@/types/user";
+import type { FormikProps } from "formik";
 
 // icons
-import { X, Home, Briefcase, MapPin } from "lucide-react";
+import { X, Home, Briefcase, MapPin, MapPinned } from "lucide-react";
 
 // external components
 import {
@@ -33,11 +35,14 @@ import {
 } from "@/helpers/address.helper";
 import { z } from "zod";
 import clsx from "clsx";
+import { enqueueSnackbar } from "notistack";
 
 // hooks
 import useCreateAddressMutation from "@/hooks/axios/address/use-create-address-mutation.hook";
 import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pincode-serviceability.hook";
+
 // const
 import { ADDRESS_TYPE } from "@/constants/display-area.constant";
 
@@ -91,12 +96,59 @@ const AddAddressModal: FC<IProps> = ({
   handleOnSuccess,
   handleLogin,
 }) => {
+  const [is_pincode_serviceable, setIsPincodeServiceable] = useState(true);
   const select_places_ref = useRef<SelectInstance>(null);
   const { data: user_detail } = useUserDetails();
   const user_addresses = user_detail?.user_addresses ?? [];
   const create_address_mutation = useCreateAddressMutation();
   const update_address_mutation = useUpdateAddressMutation();
+  const verify_pincode_serviceability_mutation =
+    useVerifyPincodeServiceability();
   const { id: address_id, ...initial_values } = initial_data ?? {};
+  const formik_ref = useRef<FormikProps<IFormAddressType>>(null);
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        getAddressFromCoords(latitude, longitude).then((data) => {
+          const mapped = mapGeocodeToForm(data);
+          verify_pincode_serviceability_mutation.mutate(
+            {
+              pin_code: mapped.pincode,
+            },
+            {
+              onSuccess() {
+                setIsPincodeServiceable(true);
+                formik_ref.current?.setValues((prev) => ({
+                  ...prev,
+                  ...mapped,
+                }));
+              },
+              onError(err) {
+                setIsPincodeServiceable(false);
+                let message = "Something went wrong";
+                if (err instanceof AxiosError) {
+                  message = err.response?.data?.message || message;
+                }
+                enqueueSnackbar(message, {
+                  key: `verify-serviceable-pincode-error-${Date.now()}`,
+                  variant: "error",
+                });
+              },
+            },
+          );
+        });
+      },
+      () => alert("Unable to fetch location"),
+    );
+  };
+
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
@@ -104,6 +156,7 @@ const AddAddressModal: FC<IProps> = ({
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-full max-w-4xl overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-xl">
           <Formik<IFormAddressType>
+            innerRef={formik_ref}
             initialValues={
               initial_data
                 ? ({
@@ -181,13 +234,25 @@ const AddAddressModal: FC<IProps> = ({
                           ref={select_places_ref}
                           handleOnChange={(val) => {
                             const mapped = mapPlaceToForm(val.data);
-
-                            setValues((prev) => ({
-                              ...prev,
-                              ...mapped,
-                              latitude: val.data.location.latitude,
-                              longitude: val.data.location.longitude,
-                            }));
+                            verify_pincode_serviceability_mutation.mutate(
+                              {
+                                pin_code: mapped.pincode,
+                              },
+                              {
+                                onSuccess() {
+                                  setIsPincodeServiceable(true);
+                                  setValues((prev) => ({
+                                    ...prev,
+                                    ...mapped,
+                                    latitude: val.data.location.latitude,
+                                    longitude: val.data.location.longitude,
+                                  }));
+                                },
+                                onError() {
+                                  setIsPincodeServiceable(false);
+                                },
+                              },
+                            );
                           }}
                         />
                       </div>
@@ -214,28 +279,7 @@ const AddAddressModal: FC<IProps> = ({
                         <button
                           type="button"
                           className="flex items-center gap-1 rounded-full border bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm hover:bg-orange-50"
-                          onClick={() => {
-                            if (!navigator.geolocation) {
-                              alert("Geolocation is not supported");
-                              return;
-                            }
-
-                            navigator.geolocation.getCurrentPosition(
-                              (pos) => {
-                                const { latitude, longitude } = pos.coords;
-                                getAddressFromCoords(latitude, longitude).then(
-                                  (data) => {
-                                    const mapped = mapGeocodeToForm(data);
-                                    setValues((prev) => ({
-                                      ...prev,
-                                      ...mapped,
-                                    }));
-                                  },
-                                );
-                              },
-                              () => alert("Unable to fetch location"),
-                            );
-                          }}
+                          onClick={handleUseCurrentLocation}
                         >
                           <MapPin className="size-3.5" />
                           Use Current Location
@@ -246,7 +290,63 @@ const AddAddressModal: FC<IProps> = ({
                     {/* RIGHT - FORM */}
                     <div className="relative flex w-1/2 flex-col">
                       {/* Overlay */}
-                      {!is_location_selected && (
+                      {!is_pincode_serviceable && (
+                        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-linear-to-br from-red-50 via-white to-orange-50 backdrop-blur-sm">
+                          {/* Close */}
+                          <button
+                            type="button"
+                            onClick={onClose}
+                            className="absolute top-4 right-4 rounded-lg p-2 transition hover:bg-gray-100"
+                          >
+                            <X className="size-5 text-gray-500" />
+                          </button>
+
+                          {/* Icon */}
+                          <div className="mb-4 flex items-center justify-center rounded-full bg-red-100 p-4 shadow-sm">
+                            <MapPinned className="size-7 text-red-500" />
+                          </div>
+
+                          {/* Heading */}
+                          <h3 className="text-lg font-semibold text-gray-800">
+                            We’re not delivering here yet
+                          </h3>
+
+                          {/* Subtext */}
+                          <p className="mt-2 max-w-xs text-center text-sm leading-relaxed text-gray-500">
+                            Unfortunately, this location is currently outside
+                            our delivery area. Try selecting a nearby address or
+                            another pincode.
+                          </p>
+
+                          {/* Status pill */}
+                          <div className="mt-5 rounded-full bg-red-500/10 px-4 py-1.5 text-xs font-medium text-red-600">
+                            Location unavailable
+                          </div>
+
+                          {/* Action buttons */}
+                          <div className="mt-6 flex gap-3">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsPincodeServiceable(true);
+                                select_places_ref.current?.focus();
+                              }}
+                              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50"
+                            >
+                              Change location
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={handleUseCurrentLocation}
+                              className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600"
+                            >
+                              Use current location
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {is_pincode_serviceable && !is_location_selected && (
                         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-linear-to-br from-orange-50 via-white to-orange-100 backdrop-blur-sm">
                           <button
                             type="button"

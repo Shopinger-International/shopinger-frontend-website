@@ -1,3 +1,4 @@
+import { AxiosError as AxiosErrorInstance } from "axios";
 import { useState } from "react";
 // types
 import type {
@@ -6,7 +7,6 @@ import type {
   ForwardRefExoticComponent,
   RefAttributes,
 } from "react";
-import type { AxiosError } from "axios";
 import type { LucideProps } from "lucide-react";
 
 // external component
@@ -77,8 +77,8 @@ const CheckDeliveryAvailability: FC = () => {
                   delivery_fee: data.data.delivery_fee,
                 });
               },
-              onError(err: AxiosError) {
-                if (err.status == 404) {
+              onError(err) {
+                if (err instanceof AxiosErrorInstance && err.status == 404) {
                   setDeliveryZoneData({
                     is_delivery_available: false,
                     cod_available: false,
@@ -121,7 +121,10 @@ const CheckDeliveryAvailability: FC = () => {
                         : "border border-gray-300",
                     )}
                     placeholder="Enter pincode"
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setDeliveryZoneData(null);
+                    }}
                     inputMode="numeric"
                     required
                     aria-invalid={!!(touched["pincode"] && errors["pincode"])}
