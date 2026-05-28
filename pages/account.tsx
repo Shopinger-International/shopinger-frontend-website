@@ -78,14 +78,6 @@ const AccountPage: NextPageWithLayout = () => {
             >
               <span className="text-2xl">🛒</span>
             </NavigationCard>
-
-            <NavigationCard
-              title="Your Wishlist"
-              description="Save items for later, manage your wishlist, and move items to cart"
-              href="/wishlisth"
-            >
-              <span className="text-2xl">❤️</span>
-            </NavigationCard>
           </div>
         </div>
       </section>

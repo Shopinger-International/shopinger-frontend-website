@@ -139,7 +139,7 @@ const OrderDetailPage: NextPageWithLayout<{
           <div className="flex justify-between rounded-xl border border-gray-300 bg-white p-5">
             <div>
               <h1 className="text-lg font-semibold text-gray-900">
-                Order ID: 171-6754116-9353937
+                {order.order_name}
               </h1>
               <p className="mt-1 text-sm text-gray-600">
                 Placed on {formatDate(order.created_at)}
@@ -147,7 +147,7 @@ const OrderDetailPage: NextPageWithLayout<{
             </div>
             {/* ACTIONS */}
             <div className="flex items-center gap-3">
-              {order.status === "CONFIRMED" && (
+              {order.status === "ORDER_CREATED" && (
                 <button
                   disabled={!total_active_items}
                   onClick={() => {

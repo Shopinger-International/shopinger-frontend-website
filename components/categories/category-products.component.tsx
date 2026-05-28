@@ -308,7 +308,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
                   //@ts-ignore
                   <ProductCard
                     {...product}
-                    key={`category-product-${product?.product_id}`}
+                    key={`category-product-${product?.variant_id}`}
                   />
                 ))}
 

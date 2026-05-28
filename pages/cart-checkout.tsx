@@ -261,7 +261,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
       <section className="w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           {/* Cart header */}
-
           {!!data?.total_items ? (
             <>
               <CartDetails

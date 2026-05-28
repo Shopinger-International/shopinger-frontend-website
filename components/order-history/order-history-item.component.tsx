@@ -30,7 +30,7 @@ const OrderHistoryItem: FC<IProps> = ({ order }) => {
         <div>
           <div className="flex items-center gap-3">
             <h3 className="text-base font-semibold text-slate-900">
-              Order #{order.id}
+              Order #{order.order_name}
             </h3>
 
             <Badge className="bg-orange-500 text-white">{order.status}</Badge>

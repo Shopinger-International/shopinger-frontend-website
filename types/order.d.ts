@@ -55,9 +55,17 @@ type IAddressSnapshot = {
   address_type: "HOME" | "WORK" | "OTHER";
   delivery_instructions: "Leave at door";
 };
+type IOrderStatus =
+  | "PENDING"
+  | "ORDER_CREATED"
+  | "PROCESSING"
+  | "OUT_FOR_DELIVERY"
+  | "DELIVERED"
+  | "CANCELLED";
 type IOrder = {
   id: number;
-  status: string;
+  order_name: string;
+  status: IOrderStatus;
   payment_status: string;
   payment_method: string;
   sub_total: number;
