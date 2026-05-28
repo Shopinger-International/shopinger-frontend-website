@@ -34,18 +34,36 @@ const Directions = ({ start, end }: DirectionsProps) => {
         const response = await routes_library.Route.computeRoutes(request);
 
         if (response.routes && response.routes.length > 0) {
-          const targetRoute = response.routes[0];
+          const target_route = response.routes[0];
 
-          // 1. Generate the standard Google Maps polyline array
-          const generatedPolylines = targetRoute.createPolylines();
-
-          // 2. Explicitly bind each polyline segment to your active map canvas
-          generatedPolylines.forEach((polyline) => {
-            polyline.setMap(map);
+          // LAYER 1: The Shadow/Casing Layer (Thicker & Deep Rust Orange)
+          const border_polylines = target_route.createPolylines({
+            polylineOptions: {
+              strokeColor: "#ffffff", // Dark Rust Orange (Tailwind orange-900)
+              strokeOpacity: 1, // Soft transparent outline shadow
+              strokeWeight: 10, // Extra wide to peek cleanly out from behind
+              geodesic: true,
+              zIndex: 1, // Anchor directly below the core vector line
+            },
           });
 
-          // 3. Save the active instances to local component state
-          setPolylines(generatedPolylines);
+          // LAYER 2: The Core Active Route (Thinner & Vibrant Orange 500)
+          const core_polylines = target_route.createPolylines({
+            polylineOptions: {
+              strokeColor: "#f97316", // Vibrant Orange (Tailwind orange-500)
+              strokeOpacity: 1, // Sharp, solid color visibility
+              strokeWeight: 5, // Compact thickness to sit dead-center
+              geodesic: true,
+              zIndex: 2, // Force layer stack directly on top
+            },
+          });
+
+          // Render both generated arrays to the active map canvas context
+          border_polylines.forEach((p) => p.setMap(map));
+          core_polylines.forEach((p) => p.setMap(map));
+
+          // Combine both sets of instances into state for flawless unmount cleanups
+          setPolylines([...border_polylines, ...core_polylines]);
         }
       } catch (error) {
         console.error("Error computing routes via modern Routes API:", error);
