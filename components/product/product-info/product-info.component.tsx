@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { use, useEffect } from "react";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -26,6 +27,9 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
+
+// lib
+import insightsClient from "@/lib/algolia/algolia-insight.lib";
 
 type IProps = {
   product: IProduct;
@@ -97,6 +101,7 @@ const ProductInfo: FC<IProps> = ({
         )?.label ?? value,
     );
   const heading = `${updated_title} ${!!nor_visual_variant_attributes.length ? "(" + nor_visual_variant_attributes.join(", ") + ")" : ""} ${!!visual_variant_attributes.length ? " - " + visual_variant_attributes.join(", ") : " "}`;
+
   return (
     <section aria-labelledby="product-title" className="flex flex-col lg:block">
       <div className="mb-4 hidden gap-2 lg:flex">
@@ -198,11 +203,51 @@ const ProductInfo: FC<IProps> = ({
       >
         <button
           onClick={() => {
-            add_to_cart_mutation.mutate({
-              product_id: product.id,
-              variant_id: variant.id,
-              quantity: 1,
-            });
+            add_to_cart_mutation.mutate(
+              {
+                product_id: product.id,
+                variant_id: variant.id,
+                quantity: 1,
+              },
+              {
+                onSuccess() {
+                  const query = router.query;
+                  const query_id =
+                    typeof query.query_id === "string"
+                      ? query.query_id
+                      : undefined;
+
+                  const index_name =
+                    typeof query.index_name === "string"
+                      ? query.index_name
+                      : undefined;
+
+                  const object_id =
+                    typeof query.object_id === "string"
+                      ? query.object_id
+                      : undefined;
+
+                  query_id &&
+                    index_name &&
+                    object_id &&
+                    insightsClient("addedToCartObjectIDsAfterSearch", {
+                      eventName: "Add to Cart",
+                      index: index_name,
+                      queryID: query_id,
+                      objectIDs: [object_id],
+                      objectData: [
+                        {
+                          price: selling_price_with_commission,
+                          discount: mrp - selling_price_with_commission,
+                          quantity: 1,
+                        },
+                      ],
+                      value: selling_price_with_commission,
+                      currency: "INR",
+                    });
+                },
+              },
+            );
           }}
           disabled={add_to_cart_mutation.isPending || !is_product_available}
           className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600"
@@ -224,7 +269,29 @@ const ProductInfo: FC<IProps> = ({
                 },
                 {
                   onSuccess({ intent_id }) {
-                    router.push(`/checkout/${intent_id}`);
+                    const query = router.query;
+                    const query_id =
+                      typeof query.query_id === "string"
+                        ? query.query_id
+                        : undefined;
+
+                    const index_name =
+                      typeof query.index_name === "string"
+                        ? query.index_name
+                        : undefined;
+
+                    const object_id =
+                      typeof query.object_id === "string"
+                        ? query.object_id
+                        : undefined;
+                    router.push({
+                      pathname: `/checkout/${intent_id}`,
+                      query: {
+                        ...(query_id ? { query_id } : {}),
+                        ...(index_name ? { index_name } : {}),
+                        ...(object_id ? { object_id } : {}),
+                      },
+                    });
                   },
                 },
               );
@@ -243,6 +310,29 @@ const ProductInfo: FC<IProps> = ({
                       {
                         onSuccess({ intent_id }) {
                           router.push(`/checkout/${intent_id}`);
+                          const query = router.query;
+                          const query_id =
+                            typeof query.query_id === "string"
+                              ? query.query_id
+                              : undefined;
+
+                          const index_name =
+                            typeof query.index_name === "string"
+                              ? query.index_name
+                              : undefined;
+
+                          const object_id =
+                            typeof query.object_id === "string"
+                              ? query.object_id
+                              : undefined;
+                          router.push({
+                            pathname: `/checkout/${intent_id}`,
+                            query: {
+                              ...(query_id ? { query_id } : {}),
+                              ...(index_name ? { index_name } : {}),
+                              ...(object_id ? { object_id } : {}),
+                            },
+                          });
                         },
                       },
                     );

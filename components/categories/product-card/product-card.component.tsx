@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 import type IMedia from "@/types/media";
@@ -15,6 +16,9 @@ import RatingSummaryPopover from "@/components/categories/rating-summary-popover
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
+
+// lib
+import insightsClient from "@/lib/algolia/algolia-insight.lib";
 
 type IProps = {
   product_id: number;
@@ -48,9 +52,26 @@ const ProductCard: FC<IProps> = ({
   avg_rating,
 }) => {
   const add_to_cart_mutation = useAddToCartMutation();
+  const router = useRouter();
+  const query = router.query;
+  const query_id =
+    typeof query.query_id === "string" ? query.query_id : undefined;
+
+  const index_name =
+    typeof query.index_name === "string" ? query.index_name : undefined;
+
+  const object_id =
+    typeof query.object_id === "string" ? query.object_id : undefined;
   return (
     <Link
-      href={`${src}`}
+      href={{
+        pathname: src,
+        query: {
+          ...(query_id && { query_id }),
+          ...(index_name && { index_name }),
+          ...(object_id && { object_id }),
+        },
+      }}
       className="group flex flex-col overflow-hidden rounded-xl border border-gray-300 bg-white"
     >
       <div className="relative aspect-3/2 overflow-hidden border-b border-gray-300 bg-gray-100">
@@ -139,6 +160,24 @@ const ProductCard: FC<IProps> = ({
                   variant_id: variant_id,
                   quantity: 1,
                 });
+                query_id &&
+                  index_name &&
+                  object_id &&
+                  insightsClient("addedToCartObjectIDsAfterSearch", {
+                    eventName: "Add to Cart",
+                    index: index_name,
+                    queryID: query_id,
+                    objectIDs: [object_id],
+                    objectData: [
+                      {
+                        price: selling_price,
+                        discount: mrp - selling_price,
+                        quantity: 1,
+                      },
+                    ],
+                    value: selling_price,
+                    currency: "INR",
+                  });
               }}
             >
               Add to cart
