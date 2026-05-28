@@ -22,8 +22,8 @@ import { Formik, Form } from "formik";
 
 // local components
 import AddAddressInput from "@/components/manage-address/add-address-modal/add-address-input.component";
-import LocationPicker from "@/components/common/location-picker/location-picker.component";
-import SelectPlaces from "@/components/common/location-picker/select-places.component";
+import LocationPicker from "@/components/common/map/location-picker/location-picker.component";
+import SelectPlaces from "@/components/common/map/location-picker/select-places.component";
 import Switch from "@/components/common/switch.component";
 
 // helpers

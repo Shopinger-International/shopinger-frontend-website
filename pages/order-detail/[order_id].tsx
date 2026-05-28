@@ -1,4 +1,5 @@
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 
 // layout
@@ -23,6 +24,13 @@ import OrderSummary from "@/components/order-details/order-summary.component";
 import HelpSection from "@/components/common/help-section.component";
 import ReviewModal from "@/components/common/review/review-modal.component";
 import CancelOrderModal from "@/components/order-details/cancel-order.component";
+
+const OrderTracking = dynamic(
+  import("@/components/order-details/order-tracking.component"),
+  {
+    ssr: false,
+  },
+);
 
 // api hooks
 import useOrder from "@/hooks/axios/order/use-order.hook";
@@ -237,6 +245,7 @@ const OrderDetailPage: NextPageWithLayout<{
                   })}
                 </div>
               </div>
+              <OrderTracking order_id={Number(order_id)} />
               <OrderSummary
                 username={order.address_snapshot.full_name}
                 phone={order.address_snapshot.phone}

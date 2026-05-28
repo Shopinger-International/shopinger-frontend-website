@@ -97,9 +97,9 @@ const Header: FC<{
           </Link>
         </div>
         {/* CENTER: Searchbar */}
-        <div className="order-3 col-span-3 lg:order-2 lg:col-span-1">
+        {/* <div className="order-3 col-span-3 lg:order-2 lg:col-span-1">
           <SearchBar />
-        </div>
+        </div> */}
         {/* RIGHT: Actions */}
         <div className="order-2 -mr-3 flex items-center justify-end gap-4 lg:order-3 lg:-mr-8">
           <button
