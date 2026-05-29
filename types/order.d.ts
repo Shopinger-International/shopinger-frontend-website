@@ -59,9 +59,12 @@ type IOrderStatus =
   | "PENDING"
   | "ORDER_CREATED"
   | "PROCESSING"
+  | "ASSIGNED"
+  | "PICKED_UP"
   | "OUT_FOR_DELIVERY"
   | "DELIVERED"
   | "CANCELLED";
+
 type IOrder = {
   id: number;
   order_name: string;
@@ -80,4 +83,4 @@ type IOrder = {
 };
 
 export default IOrder;
-export { IOrderItem, IAddressSnapshot };
+export { IOrderItem, IAddressSnapshot, IOrderStatusHistory, IOrderStatus };

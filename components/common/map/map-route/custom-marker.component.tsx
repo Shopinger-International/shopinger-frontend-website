@@ -1,5 +1,7 @@
+// types
 import type { FC } from "react";
-// Import the clean geometric icons from Lucide
+
+// icons
 import { Bike, Home } from "lucide-react";
 
 type MarkerType = "start" | "end";
@@ -13,26 +15,14 @@ const CustomMarker: FC<CustomMarkerProps> = ({ type }) => {
 
   return (
     <div className="relative flex flex-col items-center justify-center">
-      {/* 1. Branded Glow Radar Pulse */}
-      <span
-        className={`absolute inline-flex h-12 w-12 animate-ping rounded-full opacity-30 ${
-          is_delivery ? "bg-amber-400" : "bg-purple-400"
-        }`}
-      />
-
-      {/* 2. Main Icon Badge Wrapper */}
       <div
         className={`relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-white shadow-xl transition-all duration-300 hover:scale-110 ${
-          is_delivery
-            ? "bg-amber-500 text-white" // Blinkit/Zepto active orange-yellow
-            : "bg-orange-500 text-white" // Zepto deep purple theme
+          is_delivery ? "bg-amber-500 text-white" : "bg-orange-500 text-white"
         }`}
       >
         {is_delivery ? (
-          // Lucide Bike Icon
           <Bike size={20} strokeWidth={2.5} className="animate-pulse" />
         ) : (
-          // Lucide Home Icon
           <Home size={18} strokeWidth={2.5} />
         )}
       </div>

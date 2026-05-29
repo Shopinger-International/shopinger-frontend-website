@@ -24,6 +24,7 @@ import OrderSummary from "@/components/order-details/order-summary.component";
 import HelpSection from "@/components/common/help-section.component";
 import ReviewModal from "@/components/common/review/review-modal.component";
 import CancelOrderModal from "@/components/order-details/cancel-order.component";
+import OrderStatus from "@/components/order-details/order-status.component";
 
 const OrderTracking = dynamic(
   import("@/components/order-details/order-tracking.component"),
@@ -99,6 +100,7 @@ const OrderDetailPage: NextPageWithLayout<{
   );
   const total_active_items = total_order_items - total_cancelled_items;
 
+  console.log("value of order status history", order_status_history);
   if (!order) {
     return null;
   }
@@ -147,7 +149,7 @@ const OrderDetailPage: NextPageWithLayout<{
           <div className="flex justify-between rounded-xl border border-gray-300 bg-white p-5">
             <div>
               <h1 className="text-lg font-semibold text-gray-900">
-                {order.order_name}
+                #{order.order_name}
               </h1>
               <p className="mt-1 text-sm text-gray-600">
                 Placed on {formatDate(order.created_at)}
@@ -178,73 +180,10 @@ const OrderDetailPage: NextPageWithLayout<{
             {/* LEFT SECTION */}
             <div className="space-y-4 lg:col-span-2">
               {/* Order Status */}
-              <div className="rounded-xl border border-gray-300 bg-white p-6">
-                <h2 className="mb-4 font-semibold text-gray-900">
-                  Order Status
-                </h2>
-
-                <div className="flex items-center justify-between">
-                  {steps.map((step, index) => {
-                    const Icon = step.icon;
-                    const order_status_date = order_status_history.find(
-                      (status_history) =>
-                        status_history.to_status == step.status,
-                    )?.created_at;
-
-                    return (
-                      <div
-                        key={step.label}
-                        className="relative flex flex-1 flex-col items-center"
-                      >
-                        {index !== steps.length - 1 && (
-                          <div
-                            className={clsx(
-                              "absolute top-5 left-1/2 h-0.5 w-full",
-                              steps[index].status == order.status
-                                ? "bg-orange-500"
-                                : "bg-gray-300",
-                            )}
-                          />
-                        )}
-
-                        <div
-                          className={`z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-                            step.status === order.status
-                              ? "border-orange-500 bg-orange-500 text-white"
-                              : step.status === "current"
-                                ? "scale-110 border-orange-500 bg-white text-orange-500 shadow-md"
-                                : "border-gray-300 bg-white text-gray-300"
-                          }`}
-                        >
-                          <Icon size={18} />
-                        </div>
-
-                        <span
-                          className={clsx(
-                            "mt-2 text-sm transition",
-                            steps[index].status == "current"
-                              ? "font-semibold text-gray-900"
-                              : "text-gray-600",
-                          )}
-                        >
-                          {step.label}
-                        </span>
-
-                        {/* Optional date */}
-                        <span
-                          className={`text-xs text-gray-600 ${
-                            order_status_date ? "" : "invisible"
-                          }`}
-                        >
-                          {order_status_date &&
-                            formatDate(order_status_date) &&
-                            ""}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              <OrderStatus
+                order_status={order.status}
+                order_status_history={order_status_history}
+              />
               <OrderTracking order_id={Number(order_id)} />
               <OrderSummary
                 username={order.address_snapshot.full_name}
