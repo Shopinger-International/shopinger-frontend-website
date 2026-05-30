@@ -46,6 +46,7 @@ import { getOrderDetail } from "@/hooks/axios/order/use-order.hook";
 
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
+import ORDER_STATUS from "@/constants/order-status.constant";
 
 const steps = [
   { label: "Confirmed", icon: CreditCard, status: "CONFIRMED" },
@@ -157,7 +158,13 @@ const OrderDetailPage: NextPageWithLayout<{
             </div>
             {/* ACTIONS */}
             <div className="flex items-center gap-3">
-              {order.status === "ORDER_CREATED" && (
+              {!order.order_status_history.some(({ to_status }) =>
+                [
+                  ORDER_STATUS.OUT_FOR_DELIVERY,
+                  ORDER_STATUS.CANCELLED,
+                  ORDER_STATUS.DELIVERED
+                ].includes(to_status),
+              ) && (
                 <button
                   disabled={!total_active_items}
                   onClick={() => {
@@ -173,7 +180,6 @@ const OrderDetailPage: NextPageWithLayout<{
               )}
             </div>
           </div>
-          {/* ACTIONS */}
 
           {/* Main Layout */}
           <section className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">

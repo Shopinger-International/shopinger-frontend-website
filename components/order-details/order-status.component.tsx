@@ -131,7 +131,7 @@ const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
                   {
                     // completed
                     "border-orange-500 bg-orange-500 text-white":
-                      is_completed && !is_cancelled_step,
+                      !is_current && is_completed && !is_cancelled_step,
 
                     // current active step
                     "scale-110 border-orange-500 bg-white text-orange-500 shadow-md":

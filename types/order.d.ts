@@ -26,12 +26,12 @@ type IOrderItem = {
 type IOrderStatusHistory = {
   actor_id: number;
   created_at: string;
-  from_status: string;
+  from_status: IOrderStatus;
   id: number;
   note: string;
   order_id: number;
   source: string;
-  to_status: string;
+  to_status: IOrderStatus;
 };
 
 type IAddressSnapshot = {
