@@ -15,7 +15,6 @@ import type IVariant from "@/types/variant";
 import type IOrder from "@/types/order";
 import type { IOrderItem } from "@/types/order";
 import type { DehydratedState } from "@tanstack/react-query";
-import type { IAddressSnapshot } from "@/types/order";
 
 // local components
 import OrderItem from "@/components/order-details/order-item.component";
@@ -36,11 +35,7 @@ const OrderTracking = dynamic(
 // api hooks
 import useOrder from "@/hooks/axios/order/use-order.hook";
 
-// icon
-import { CreditCard, Truck, CheckCircle } from "lucide-react";
-
 // helpers
-import clsx from "clsx";
 import { formatDate, capitalizeFirstLetter } from "@/helpers/common.helper";
 import { getOrderDetail } from "@/hooks/axios/order/use-order.hook";
 
@@ -48,31 +43,12 @@ import { getOrderDetail } from "@/hooks/axios/order/use-order.hook";
 import { QueryClient, dehydrate } from "@tanstack/react-query";
 import ORDER_STATUS from "@/constants/order-status.constant";
 
-const steps = [
-  { label: "Confirmed", icon: CreditCard, status: "CONFIRMED" },
-  { label: "Shipped", icon: Truck, status: "SHIPPED" },
-  { label: "Delivered", icon: CheckCircle, status: "DELIVERED" },
-];
-
 // context
 type IBaseReviewType = {
   open: boolean;
   product: Omit<IProduct, "variants"> | null;
   variant: IVariant | null;
   order_item: IOrderItem | null;
-};
-
-const getFormattedAddress = (address: IAddressSnapshot) => {
-  return [
-    address.house_number,
-    address.area,
-    address.landmark,
-    address.city,
-    address.state,
-    address.pincode,
-  ]
-    .filter(Boolean)
-    .join(", ");
 };
 
 const OrderDetailPage: NextPageWithLayout<{
@@ -101,7 +77,6 @@ const OrderDetailPage: NextPageWithLayout<{
   );
   const total_active_items = total_order_items - total_cancelled_items;
 
-  console.log("value of order status history", order_status_history);
   if (!order) {
     return null;
   }
@@ -162,7 +137,7 @@ const OrderDetailPage: NextPageWithLayout<{
                 [
                   ORDER_STATUS.OUT_FOR_DELIVERY,
                   ORDER_STATUS.CANCELLED,
-                  ORDER_STATUS.DELIVERED
+                  ORDER_STATUS.DELIVERED,
                 ].includes(to_status),
               ) && (
                 <button
@@ -193,11 +168,12 @@ const OrderDetailPage: NextPageWithLayout<{
               <OrderTracking order_id={Number(order_id)} />
               <OrderSummary
                 username={order.address_snapshot.full_name}
+                country_code={order.address_snapshot.country_code}
                 phone={order.address_snapshot.phone}
                 payment_method={capitalizeFirstLetter(
                   order.payment_method ?? "Razorpay",
                 )}
-                delivery_address={getFormattedAddress(order.address_snapshot)}
+                address_snapshot={order.address_snapshot}
               />
               {/* Order Items */}
               <div className="rounded-xl border border-gray-300 bg-white p-6">

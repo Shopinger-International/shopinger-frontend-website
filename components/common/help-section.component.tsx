@@ -24,7 +24,15 @@ const HelpSection: FC<IProps> = ({ title, description }) => {
           </p>
 
           {/* CTA */}
-          <button className="mt-3 inline-flex items-center gap-1 rounded-md bg-orange-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-orange-600">
+          <button
+            onClick={() => {
+              window.open(
+                `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
+                "_blank",
+              );
+            }}
+            className="mt-3 inline-flex items-center gap-1 rounded-md bg-orange-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-orange-600"
+          >
             Get help
           </button>
         </div>

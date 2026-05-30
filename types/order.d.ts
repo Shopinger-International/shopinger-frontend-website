@@ -36,6 +36,7 @@ type IOrderStatusHistory = {
 
 type IAddressSnapshot = {
   full_name: string;
+  country_code:number;
   phone: string;
 
   place_id: number;
