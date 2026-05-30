@@ -71,13 +71,6 @@ const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
     <div className="rounded-xl border border-gray-300 bg-white p-6">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="font-semibold text-gray-900">Order Status</h2>
-
-        {is_cancelled && (
-          <div className="flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-sm font-medium text-red-600">
-            <CircleX size={16} />
-            Cancelled
-          </div>
-        )}
       </div>
 
       <div className="flex items-start justify-between">
@@ -155,7 +148,7 @@ const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
 
                   "text-gray-700": is_completed && !is_cancelled_step,
 
-                  "text-red-500": is_cancelled_step,
+                  "text-red-500 font-medium": is_cancelled_step,
 
                   "text-gray-400": is_upcoming,
                 })}

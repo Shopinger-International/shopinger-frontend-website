@@ -3,7 +3,7 @@ import type { IOrderStatus } from "@/types/order";
 const ORDER_STATUS: Partial<Record<IOrderStatus, IOrderStatus>> = {
   ORDER_CREATED: "ORDER_CREATED",
   PROCESSING: "PROCESSING",
-  ASSIGNED: "ASSIGNED",
+  DELIVERY_ASSIGNED: "DELIVERY_ASSIGNED",
   PICKED_UP: "PICKED_UP",
   OUT_FOR_DELIVERY: "OUT_FOR_DELIVERY",
   DELIVERED: "DELIVERED",
