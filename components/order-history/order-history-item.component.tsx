@@ -1,43 +1,69 @@
 import Link from "next/link";
+// types
 import type { FC } from "react";
 import type IOrder from "@/types/order";
+import type { IOrderStatus } from "@/types/order";
 
 // local compoment
 import OrderHistoryProduct from "@/components/order-history/order-history-product.component";
-import Badge from "@/components/product/badge.component";
 
-import { formatDate } from "@/helpers/common.helper";
+// helper
+import { format } from "date-fns";
+import clsx from "clsx";
+
+// const
+import ORDER_STATUS from "@/constants/order-status.constant";
 
 type IProps = {
   order: IOrder;
 };
 
-const statusStyles: Record<string, string> = {
-  completed: "bg-green-100 text-green-700",
-  processing: "bg-yellow-100 text-yellow-700",
-  cancelled: "bg-red-100 text-red-700",
-  default: "bg-slate-100 text-slate-700",
+const STATUS_LABELS: Partial<Record<IOrderStatus, string>> = {
+  ORDER_CREATED: "Confirmed",
+  PROCESSING: "Processing",
+  DELIVERY_ASSIGNED: "Assigned",
+  PICKED_UP: "Picked Up",
+  OUT_FOR_DELIVERY: "Out for delivery",
+  DELIVERED: "Delivered",
+  CANCELLED: "Cancelled",
 };
-
 const OrderHistoryItem: FC<IProps> = ({ order }) => {
-  const statusClass =
-    statusStyles[order.status?.toLowerCase()] || statusStyles.default;
+  const is_cancelled = order.status === ORDER_STATUS.CANCELLED;
+  const is_delivered = order.status === ORDER_STATUS.DELIVERED;
 
   return (
-    <div className="rounded-2xl border border-gray-300 bg-white">
-      {/* Header */}
-      <div className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
+    <div
+      className={clsx(
+        "rounded-2xl transition",
+        is_cancelled
+          ? "border border-red-500 bg-red-50/40"
+          : "border border-gray-300 bg-white",
+      )}
+    >
+      {/* HEADER */}
+      <div className="flex flex-col gap-4 p-5 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h3 className="text-base font-semibold text-slate-900">
+            <h3 className="text-base font-semibold text-gray-900">
               Order #{order.order_name}
             </h3>
 
-            <Badge className="bg-orange-500 text-white">{order.status}</Badge>
+            <span
+              className={clsx(
+                "rounded-full px-2 py-0.5 text-xs font-medium",
+                is_cancelled
+                  ? "bg-red-100 text-red-600"
+                  : is_delivered
+                    ? "bg-green-100 text-green-600"
+                    : "bg-orange-100 text-orange-600",
+              )}
+            >
+              {STATUS_LABELS[order.status]}
+            </span>
           </div>
 
-          <p className="mt-1 text-sm text-slate-500">
-            Placed on {formatDate(order.created_at)}
+          <p className="mt-1 text-sm font-medium text-gray-600">
+            Placed on {format(order.created_at, "dd MMMM, yy")}
           </p>
         </div>
 
@@ -45,56 +71,57 @@ const OrderHistoryItem: FC<IProps> = ({ order }) => {
           <p className="text-lg font-semibold text-slate-900">
             ₹{order.total_amount || "0.00"}
           </p>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm font-medium text-gray-600">
             {order.order_items.length} items
           </p>
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="border-t border-slate-100" />
+      {/* PRODUCTS */}
+      <div className="border-t border-gray-300" />
 
-      {/* Products */}
-      <div className="flex flex-wrap gap-6 p-5">
-        {order?.order_items?.flatMap(
-          ({ quantity, item: { variants, ...product } }) =>
-            variants?.map((variant) => (
-              <OrderHistoryProduct
-                key={`order-${order.id}-variant-${variant.id}`}
-                quantity={quantity}
-                variant={variant}
-                product={product}
-              />
-            )),
-        )}
+      <div className="bg-gray-50/50 py-4">
+        <div className="flex flex-col gap-6">
+          {order?.order_items?.flatMap(
+            ({ quantity, item: { variants, ...product } }) =>
+              variants?.map((variant) => (
+                <>
+                  <OrderHistoryProduct
+                    quantity={quantity}
+                    variant={variant}
+                    product={product}
+                    key={`order-${order.id}-variant-${variant.id}`}
+                  />
+                </>
+              )),
+          )}
+        </div>
       </div>
 
-      {/* Divider */}
-      <div className="border-t border-slate-100" />
+      {/* ACTIONS */}
+      <div className="border-t border-gray-300" />
 
-      {/* Actions */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-5">
-        {/* Left side (secondary actions) */}
         <div className="flex flex-wrap gap-2">
           <Link
             href={`/order-detail/${order.id}`}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             View Details
           </Link>
 
-          <button className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
+          <button className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
             Invoice
           </button>
         </div>
 
-        {/* Right side (primary action) */}
-        <button className="rounded-lg bg-orange-500 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-orange-600">
-          Reorder
-        </button>
+        {!is_cancelled && (
+          <button className="rounded-lg bg-orange-500 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-orange-600">
+            Reorder
+          </button>
+        )}
       </div>
     </div>
   );
 };
-
 export default OrderHistoryItem;

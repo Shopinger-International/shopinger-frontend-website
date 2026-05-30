@@ -60,7 +60,7 @@ type IOrderStatus =
   | "PENDING"
   | "ORDER_CREATED"
   | "PROCESSING"
-  | "ASSIGNED"
+  | "DELIVERY_ASSIGNED"
   | "PICKED_UP"
   | "OUT_FOR_DELIVERY"
   | "DELIVERED"
