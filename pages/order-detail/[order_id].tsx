@@ -24,6 +24,8 @@ import HelpSection from "@/components/common/help-section.component";
 import ReviewModal from "@/components/common/review/review-modal.component";
 import CancelOrderModal from "@/components/order-details/cancel-order.component";
 import OrderStatus from "@/components/order-details/order-status.component";
+import OrderStatusMobile from "@/components/order-details/order-status-mobile.component";
+import DeliveryPartnerDetails from "@/components/order-details/delivery-partner-details.component";
 
 const OrderTracking = dynamic(
   import("@/components/order-details/order-tracking.component"),
@@ -165,7 +167,17 @@ const OrderDetailPage: NextPageWithLayout<{
                 order_status={order.status}
                 order_status_history={order_status_history}
               />
+              <OrderStatusMobile
+                order_status={order.status}
+                order_status_history={order_status_history}
+              />
               <OrderTracking order_id={Number(order_id)} />
+              <DeliveryPartnerDetails
+                partner={{
+                  name: "Ashish Prajapati",
+                  phone: "+919310566574",
+                }}
+              />
               <OrderSummary
                 username={order.address_snapshot.full_name}
                 country_code={order.address_snapshot.country_code}

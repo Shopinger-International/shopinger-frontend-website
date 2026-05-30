@@ -32,7 +32,7 @@ const OrderSummary: FC<IProps> = ({
   } = address_snapshot;
   return (
     <div className="rounded-xl border border-gray-300 bg-white p-6">
-      <h2 className="mb-6 font-semibold text-gray-900">Order Details</h2>
+      <h2 className="mb-4 font-semibold text-gray-900">Order Details</h2>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Customer */}

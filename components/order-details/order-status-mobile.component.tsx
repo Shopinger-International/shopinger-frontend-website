@@ -47,12 +47,15 @@ const steps = [
   },
 ];
 
-type IProps = {
+type Props = {
   order_status: IOrderStatus;
   order_status_history: IOrderStatusHistory[];
 };
 
-const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
+const OrderStatusMobile: FC<Props> = ({
+  order_status_history,
+  order_status,
+}) => {
   const is_cancelled = order_status === ORDER_STATUS.CANCELLED;
 
   const updated_steps = is_cancelled
@@ -67,12 +70,12 @@ const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
     : steps;
 
   return (
-    <div className="hidden rounded-xl border border-gray-300 bg-white p-6 sm:block">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-semibold text-gray-900">Order Status</h2>
-      </div>
+    <div className="rounded-xl border border-gray-300 bg-white p-5 sm:hidden">
+      {/* Header */}
+      <h2 className="mb-5 text-sm font-semibold text-gray-900">Order Status</h2>
 
-      <div className="flex min-w-max items-start justify-between">
+      {/* Timeline */}
+      <div className="relative">
         {updated_steps.map((step, index) => {
           const Icon = step.icon;
 
@@ -99,14 +102,11 @@ const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
             (!is_cancelled && next_step?.status === order_status);
 
           return (
-            <div
-              key={step.status}
-              className="relative flex flex-1 flex-col items-center"
-            >
+            <div key={step.status} className="relative flex gap-4 pb-7">
               {/* connector line */}
               {index !== updated_steps.length - 1 && (
                 <div
-                  className={clsx("absolute top-5 left-1/2 h-0.5 w-full", {
+                  className={clsx("absolute top-10 left-5 h-full w-0.5", {
                     "bg-orange-500": is_connected_completed,
 
                     "bg-gray-300": !is_connected_completed,
@@ -119,7 +119,7 @@ const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
               {/* icon */}
               <div
                 className={clsx(
-                  "z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300",
+                  "z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all",
                   {
                     // completed
                     "border-orange-500 bg-orange-500 text-white":
@@ -140,32 +140,30 @@ const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
                 <Icon size={18} />
               </div>
 
-              {/* label */}
-              <span
-                className={clsx("mt-3 text-center text-sm transition", {
-                  "font-semibold text-gray-900": is_current && !is_cancelled,
+              {/* content */}
+              <div className="flex flex-col pt-0.5">
+                {/* label */}
+                <span
+                  className={clsx("text-sm font-medium", {
+                    "font-semibold text-gray-900": is_current && !is_cancelled,
 
-                  "text-gray-700": is_completed && !is_cancelled_step,
+                    "text-gray-700": is_completed && !is_cancelled_step,
 
-                  "font-medium text-red-500": is_cancelled_step,
+                    "font-medium text-red-500": is_cancelled_step,
 
-                  "text-gray-400": is_upcoming,
-                })}
-              >
-                {step.label}
-              </span>
+                    "text-gray-400": is_upcoming,
+                  })}
+                >
+                  {step.label}
+                </span>
 
-              {/* date */}
-              <span
-                className={clsx(
-                  "mt-1 text-center text-xs",
-                  order_status_date ? "text-gray-600" : "invisible",
+                {/* date */}
+                {order_status_date && (
+                  <span className="mt-1 text-xs text-gray-600">
+                    {format(new Date(order_status_date), "dd MMM yyyy")}
+                  </span>
                 )}
-              >
-                {order_status_date
-                  ? format(new Date(order_status_date), "dd MMM yyyy")
-                  : "placeholder"}
-              </span>
+              </div>
             </div>
           );
         })}
@@ -174,4 +172,4 @@ const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
   );
 };
 
-export default OrderStatus;
+export default OrderStatusMobile;

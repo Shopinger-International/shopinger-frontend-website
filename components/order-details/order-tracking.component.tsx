@@ -34,7 +34,7 @@ const OrderTracking: FC<{
   // }, []);
 
   return (
-    <div className="h-100 w-full rounded-xl border border-gray-300 overflow-hidden">
+    <div className="h-60 sm:h-100 w-full rounded-xl border border-gray-300 overflow-hidden">
       <RouteMap
         start_chords={{
           lat: 28.6129,
