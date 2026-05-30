@@ -19,7 +19,7 @@ type IProps = {
 };
 const LocationPicker: FC<IProps> = ({ position, updatePosition }) => {
   return (
-    <MapProvider>
+    <MapProvider min_zoom={0} max_zoom={21}>
       {position.lat && position.lng && (
         <>
           <MapUpdater position={position as IChord} />

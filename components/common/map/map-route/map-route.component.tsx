@@ -21,7 +21,7 @@ type IProps = {
 
 const RouteMap: FC<IProps> = ({ start_chords, end_chords }) => {
   return (
-    <MapProvider>
+    <MapProvider min_zoom={12} max_zoom={18}>
       <MapViewportBounds start={start_chords} end={end_chords} />
       <AdvancedMarker position={start_chords}>
         <CustomMarker type="start" />

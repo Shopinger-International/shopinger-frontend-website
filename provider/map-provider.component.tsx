@@ -16,9 +16,11 @@ const INDIA_BOUNDS = {
 
 type IProps = {
   children: ReactNode;
+  min_zoom:number;
+  max_zoom:number;
 };
 
-const MapProvider: FC<IProps> = ({ children }) => {
+const MapProvider: FC<IProps> = ({ children, min_zoom,max_zoom }) => {
   return (
     <APIProvider
       apiKey={API_KEY}
@@ -31,6 +33,8 @@ const MapProvider: FC<IProps> = ({ children }) => {
           lat: 28.6139,
           lng: 77.209,
         }}
+        minZoom={min_zoom}
+        maxZoom={max_zoom}
         gestureHandling={"greedy"}
         disableDefaultUI={true}
         restriction={{
