@@ -1,6 +1,6 @@
 // types
 import type { FC } from "react";
-import type IChord from "@/types/chord";
+import type ICoord from "@/types/coord";
 
 // local components
 import MapProvider from "@/provider/map-provider.component";
@@ -10,22 +10,22 @@ import MapUpdater from "@/components/common/map/map-updater.component";
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 
 type INullableChord = {
-  [K in keyof IChord]: IChord[K] | null;
+  [K in keyof ICoord]: ICoord[K] | null;
 };
 
 type IProps = {
   position: INullableChord;
-  updatePosition: (zoom: IChord) => void;
+  updatePosition: (zoom: ICoord) => void;
 };
 const LocationPicker: FC<IProps> = ({ position, updatePosition }) => {
   return (
     <MapProvider min_zoom={0} max_zoom={21}>
       {position.lat && position.lng && (
         <>
-          <MapUpdater position={position as IChord} />
+          <MapUpdater position={position as ICoord} />
           <AdvancedMarker
             draggable
-            position={position as IChord}
+            position={position as ICoord}
             onDragEnd={(e) => {
               let lng = e.latLng?.lng();
               let lat = e.latLng?.lat();

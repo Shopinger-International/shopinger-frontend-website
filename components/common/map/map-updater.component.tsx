@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
-import type IChord from "@/types/chord";
+import type ICoord from "@/types/coord";
 
 // hooks
 import { useMap } from "@vis.gl/react-google-maps";
 
-const MapUpdater = ({ position }: { position: IChord }) => {
+const MapUpdater = ({ position }: { position: ICoord }) => {
   const map = useMap();
 
   useEffect(() => {

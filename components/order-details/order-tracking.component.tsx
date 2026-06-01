@@ -1,51 +1,45 @@
+import { useState } from "react";
+// types
 import type { FC } from "react";
-import { useEffect } from "react";
+import type ICoord from "@/types/coord";
 
 // local components
 import RouteMap from "@/components/common/map/map-route/map-route.component";
 
 // lib
-import { createAblyClient } from "@/lib/ably.lib";
+import { useConnectionStateListener } from "ably/react";
+
+// hooks
+import { useChannel } from "ably/react";
 
 const OrderTracking: FC<{
   order_id: number;
-}> = ({ order_id }) => {
-  // useEffect(() => {
-  //   const ably = createAblyClient(order_id);
-  //   ably.connection.on((stateChange) => {
-  //     console.log("Ably state:", stateChange.current);
-  //   });
-  //   const channel_name = `order-tracking:${order_id}`;
-
-  //   const channel = ably.channels.get(channel_name);
-  //   const event_name = "location-update";
-  //   console.log("value of channel", channel);
-
-  //   const handler = (msg: any) => {
-  //     console.log("Live location:", msg.data);
-  //   };
-
-  //   channel.subscribe(event_name, handler);
-
-  //   return () => {
-  //     channel.unsubscribe(event_name, handler);
-  //     ably.close();
-  //   };
-  // }, []);
+  end_coords: ICoord;
+}> = ({ order_id, end_coords }) => {
+  const [delivery_partner_coords, setDeliveryPartnerCoords] =
+    useState<ICoord>();
+  useConnectionStateListener((state_change) => {
+    console.log(
+      "value of state change",
+      state_change.current,
+      state_change.reason,
+    );
+  });
+  useChannel(`order-tracking:${order_id}`, (message) => {
+    const current_delivery_partner_coords = message.data as ICoord;
+    setDeliveryPartnerCoords(current_delivery_partner_coords);
+  });
+  console.log("value of delivery partner coords",delivery_partner_coords);
 
   return (
-    <div className="h-60 sm:h-100 w-full rounded-xl border border-gray-300 overflow-hidden">
-      <RouteMap
-        start_chords={{
-          lat: 28.6129,
-          lng: 77.2295,
-        }}
-        end_chords={{
-          lat: 28.6139,
-          lng: 77.3708,
-        }}
-        updatePosition={() => {}}
-      />
+    <div className="h-60 w-full overflow-hidden rounded-xl border border-gray-300 sm:h-100">
+      {delivery_partner_coords?.lat && delivery_partner_coords.lng && (
+        <RouteMap
+          start_chords={delivery_partner_coords}
+          end_chords={end_coords}
+          updatePosition={() => {}}
+        />
+      )}
     </div>
   );
 };

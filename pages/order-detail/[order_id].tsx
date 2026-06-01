@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 
@@ -26,6 +26,12 @@ import CancelOrderModal from "@/components/order-details/cancel-order.component"
 import OrderStatus from "@/components/order-details/order-status.component";
 import OrderStatusMobile from "@/components/order-details/order-status-mobile.component";
 import DeliveryPartnerDetails from "@/components/order-details/delivery-partner-details.component";
+
+// provider
+import { AblyProvider, ChannelProvider } from "ably/react";
+
+// lib
+import { createAblyClient } from "@/lib/ably.lib";
 
 const OrderTracking = dynamic(
   import("@/components/order-details/order-tracking.component"),
@@ -78,6 +84,10 @@ const OrderDetailPage: NextPageWithLayout<{
     0,
   );
   const total_active_items = total_order_items - total_cancelled_items;
+  const ably_client = useMemo(() => {
+    const ably_client = createAblyClient(Number(order_id));
+    return ably_client;
+  }, [order_id]);
 
   if (!order) {
     return null;
@@ -120,134 +130,140 @@ const OrderDetailPage: NextPageWithLayout<{
         }
         onConfirm={() => {}}
       />
-
-      <section className="w-full bg-gray-50 py-6">
-        <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
-          {/* Header */}
-          <div className="flex justify-between rounded-xl border border-gray-300 bg-white p-5">
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">
-                #{order.order_name}
-              </h1>
-              <p className="mt-1 text-sm text-gray-600">
-                Placed on {formatDate(order.created_at)}
-              </p>
-            </div>
-            {/* ACTIONS */}
-            <div className="flex items-center gap-3">
-              {!order.order_status_history.some(({ to_status }) =>
-                [
-                  ORDER_STATUS.OUT_FOR_DELIVERY,
-                  ORDER_STATUS.CANCELLED,
-                  ORDER_STATUS.DELIVERED,
-                ].includes(to_status),
-              ) && (
-                <button
-                  disabled={!total_active_items}
-                  onClick={() => {
-                    // TODO: replace with modal / API call
-                    setCancelOrderModalState({
-                      open: true,
-                    });
-                  }}
-                  className="rounded-md border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 disabled:border-red-200 disabled:text-red-200"
-                >
-                  Cancel Order
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Main Layout */}
-          <section className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {/* LEFT SECTION */}
-            <div className="space-y-4 lg:col-span-2">
-              {/* Order Status */}
-              <OrderStatus
-                order_status={order.status}
-                order_status_history={order_status_history}
-              />
-              <OrderStatusMobile
-                order_status={order.status}
-                order_status_history={order_status_history}
-              />
-              <OrderTracking order_id={Number(order_id)} />
-              <DeliveryPartnerDetails
-                partner={{
-                  name: "Ashish Prajapati",
-                  phone: "+919310566574",
-                }}
-              />
-              <OrderSummary
-                username={order.address_snapshot.full_name}
-                country_code={order.address_snapshot.country_code}
-                phone={order.address_snapshot.phone}
-                payment_method={capitalizeFirstLetter(
-                  order.payment_method ?? "Razorpay",
+      <AblyProvider client={ably_client}>
+        <section className="w-full bg-gray-50 py-6">
+          <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
+            {/* Header */}
+            <div className="flex justify-between rounded-xl border border-gray-300 bg-white p-5">
+              <div>
+                <h1 className="text-lg font-semibold text-gray-900">
+                  #{order.order_name}
+                </h1>
+                <p className="mt-1 text-sm text-gray-600">
+                  Placed on {formatDate(order.created_at)}
+                </p>
+              </div>
+              {/* ACTIONS */}
+              <div className="flex items-center gap-3">
+                {!order.order_status_history.some(({ to_status }) =>
+                  [
+                    ORDER_STATUS.OUT_FOR_DELIVERY,
+                    ORDER_STATUS.CANCELLED,
+                    ORDER_STATUS.DELIVERED,
+                  ].includes(to_status),
+                ) && (
+                  <button
+                    disabled={!total_active_items}
+                    onClick={() => {
+                      // TODO: replace with modal / API call
+                      setCancelOrderModalState({
+                        open: true,
+                      });
+                    }}
+                    className="rounded-md border border-red-500 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 disabled:border-red-200 disabled:text-red-200"
+                  >
+                    Cancel Order
+                  </button>
                 )}
-                address_snapshot={order.address_snapshot}
-              />
-              {/* Order Items */}
-              <div className="rounded-xl border border-gray-300 bg-white p-6">
-                <h2 className="mb-2 font-semibold text-gray-900">
-                  {total_active_items} items in this order
-                </h2>
-                {total_cancelled_items > 0 && (
-                  <p className="mb-4 text-xs font-medium text-gray-600">
-                    {total_cancelled_items} item
-                    {total_cancelled_items !== 1 ? "s" : ""} cancelled
-                  </p>
-                )}
-
-                <div className="space-y-4">
-                  {order?.order_items?.flatMap((order_item) => {
-                    const {
-                      quantity,
-                      item: { variants, ...product },
-                      cancelled_quantity,
-                    } = order_item;
-                    return variants.map((variant) => (
-                      <OrderItem
-                        quantity={quantity}
-                        cancelled_quantity={cancelled_quantity}
-                        product={product}
-                        variant={variant}
-                        key={`cart-item-${variant.id}`}
-                        is_delivered={true}
-                        is_reviewed={false}
-                        handleShowReviewModal={() =>
-                          setReviewModalState({
-                            open: true,
-                            product,
-                            variant,
-                            order_item,
-                          })
-                        }
-                      />
-                    ));
-                  })}
-                </div>
               </div>
             </div>
 
-            {/* RIGHT SECTION (SUMMARY CARD) */}
-            <div className="flex flex-col gap-4">
-              <BillSummary
-                sub_total={order.sub_total}
-                total_amount={order.total_amount}
-                total_discount={order.discount}
-                charges={50}
-              />
-              <HelpSection
-                title={"Need help with this order?"}
-                description={
-                  "Get support for delivery, returns, or any issues with your order."
-                }
-              />
-            </div>
-          </section>
-        </div>
-      </section>
+            {/* Main Layout */}
+            <section className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
+              {/* LEFT SECTION */}
+              <div className="space-y-4 lg:col-span-2">
+                {/* Order Status */}
+                <OrderStatus
+                  order_status={order.status}
+                  order_status_history={order_status_history}
+                />
+                <OrderStatusMobile
+                  order_status={order.status}
+                  order_status_history={order_status_history}
+                />
+                <ChannelProvider channelName={`order-tracking:${order.id}`}>
+                  <OrderTracking order_id={Number(order_id)} end_coords={{
+                    lat:order.address_snapshot.latitude,
+                    lng:order.address_snapshot.longitude
+                  }} />
+                </ChannelProvider>
+                <DeliveryPartnerDetails
+                  partner={{
+                    name: "Ashish Prajapati",
+                    phone: "+919310566574",
+                  }}
+                />
+                <OrderSummary
+                  username={order.address_snapshot.full_name}
+                  country_code={order.address_snapshot.country_code}
+                  phone={order.address_snapshot.phone}
+                  payment_method={capitalizeFirstLetter(
+                    order.payment_method ?? "Razorpay",
+                  )}
+                  address_snapshot={order.address_snapshot}
+                />
+                {/* Order Items */}
+                <div className="rounded-xl border border-gray-300 bg-white p-6">
+                  <h2 className="mb-2 font-semibold text-gray-900">
+                    {total_active_items} items in this order
+                  </h2>
+                  {total_cancelled_items > 0 && (
+                    <p className="mb-4 text-xs font-medium text-gray-600">
+                      {total_cancelled_items} item
+                      {total_cancelled_items !== 1 ? "s" : ""} cancelled
+                    </p>
+                  )}
+
+                  <div className="space-y-4">
+                    {order?.order_items?.flatMap((order_item) => {
+                      const {
+                        quantity,
+                        item: { variants, ...product },
+                        cancelled_quantity,
+                      } = order_item;
+                      return variants.map((variant) => (
+                        <OrderItem
+                          quantity={quantity}
+                          cancelled_quantity={cancelled_quantity}
+                          product={product}
+                          variant={variant}
+                          key={`cart-item-${variant.id}`}
+                          is_delivered={true}
+                          is_reviewed={false}
+                          handleShowReviewModal={() =>
+                            setReviewModalState({
+                              open: true,
+                              product,
+                              variant,
+                              order_item,
+                            })
+                          }
+                        />
+                      ));
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT SECTION (SUMMARY CARD) */}
+              <div className="flex flex-col gap-4">
+                <BillSummary
+                  sub_total={order.sub_total}
+                  total_amount={order.total_amount}
+                  total_discount={order.discount}
+                  charges={50}
+                />
+                <HelpSection
+                  title={"Need help with this order?"}
+                  description={
+                    "Get support for delivery, returns, or any issues with your order."
+                  }
+                />
+              </div>
+            </section>
+          </div>
+        </section>
+      </AblyProvider>
     </>
   );
 };

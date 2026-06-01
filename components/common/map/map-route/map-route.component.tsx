@@ -1,6 +1,6 @@
 // types
 import type { FC } from "react";
-import type IChord from "@/types/chord";
+import type ICoord from "@/types/coord";
 
 // local components
 import CustomMarker from "@/components/common/map/map-route/custom-marker.component";
@@ -14,9 +14,9 @@ import { AdvancedMarker } from "@vis.gl/react-google-maps";
 // hooks
 
 type IProps = {
-  start_chords: IChord;
-  end_chords: IChord;
-  updatePosition: (zoom: IChord) => void;
+  start_chords: ICoord;
+  end_chords: ICoord;
+  updatePosition: (zoom: ICoord) => void;
 };
 
 const RouteMap: FC<IProps> = ({ start_chords, end_chords }) => {

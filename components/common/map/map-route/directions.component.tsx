@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import type IChord from "@/types/chord";
+import type ICoord from "@/types/coord";
 
 type DirectionsProps = {
-  start: IChord;
-  end: IChord;
+  start: ICoord;
+  end: ICoord;
 };
 
 const Directions = ({ start, end }: DirectionsProps) => {

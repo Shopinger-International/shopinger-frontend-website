@@ -1,5 +1,5 @@
 import * as Ably from "ably";
-import Axios from "./axios/private.lib";
+import Axios from "@/lib/axios/private.lib";
 
 function createAblyClient(order_id: number) {
   return new Ably.Realtime({

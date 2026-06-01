@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useMap } from "@vis.gl/react-google-maps";
-import type IChord from "@/types/chord";
+import type ICoord from "@/types/coord";
 
 type ViewportProps = {
-  start: IChord;
-  end: IChord;
+  start: ICoord;
+  end: ICoord;
 };
 
 const MapViewportBounds = ({ start, end }: ViewportProps) => {
