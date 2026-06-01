@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // types
 import type { FC } from "react";
 import type ICoord from "@/types/coord";
@@ -11,11 +11,15 @@ import { useConnectionStateListener } from "ably/react";
 
 // hooks
 import { useChannel } from "ably/react";
+import useGetDeliveryPartnerCurrentLocation from "@/hooks/axios/order/use-get-delivery-partner-current-location.hook";
 
 const OrderTracking: FC<{
   order_id: number;
   end_coords: ICoord;
 }> = ({ order_id, end_coords }) => {
+  const { data: current_coords } = useGetDeliveryPartnerCurrentLocation({
+    order_id,
+  });
   const [delivery_partner_coords, setDeliveryPartnerCoords] =
     useState<ICoord>();
   useConnectionStateListener((state_change) => {
@@ -29,7 +33,10 @@ const OrderTracking: FC<{
     const current_delivery_partner_coords = message.data as ICoord;
     setDeliveryPartnerCoords(current_delivery_partner_coords);
   });
-  console.log("value of delivery partner coords",delivery_partner_coords);
+
+  useEffect(() => {
+    current_coords && setDeliveryPartnerCoords(current_coords);
+  }, [current_coords]);
 
   return (
     <div className="h-60 w-full overflow-hidden rounded-xl border border-gray-300 sm:h-100">
