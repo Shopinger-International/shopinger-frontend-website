@@ -1,5 +1,5 @@
 // types
-import type { FC } from "react";
+import { useEffect, type FC } from "react";
 import type { IOrderStatus, IOrderStatusHistory } from "@/types/order";
 
 // helpers
@@ -18,6 +18,10 @@ import {
   PackageX,
   Truck,
 } from "lucide-react";
+
+// hooks
+import { useConnectionStateListener, useChannel } from "ably/react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const steps = [
   {
@@ -48,12 +52,32 @@ const steps = [
 ];
 
 type IProps = {
+  order_id: number;
   order_status: IOrderStatus;
   order_status_history: IOrderStatusHistory[];
 };
 
-const OrderStatus: FC<IProps> = ({ order_status_history, order_status }) => {
+const OrderStatus: FC<IProps> = ({
+  order_id,
+  order_status_history,
+  order_status,
+}) => {
+  const query_client = useQueryClient();
   const is_cancelled = order_status === ORDER_STATUS.CANCELLED;
+  useConnectionStateListener((state_change) => {
+    console.log(
+      "value of state change",
+      state_change.current,
+      state_change.reason,
+    );
+  });
+  useChannel(`order-tracking:${order_id}`, (message) => {
+    if (message.name == "status-updated") {
+      query_client.invalidateQueries({
+        queryKey: ["order", String(order_id)],
+      });
+    }
+  });
 
   const updated_steps = is_cancelled
     ? [

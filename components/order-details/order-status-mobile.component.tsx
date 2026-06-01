@@ -19,6 +19,10 @@ import {
   Truck,
 } from "lucide-react";
 
+// hooks
+import { useConnectionStateListener, useChannel } from "ably/react";
+import { useQueryClient } from "@tanstack/react-query";
+
 const steps = [
   {
     label: "Confirmed",
@@ -48,14 +52,17 @@ const steps = [
 ];
 
 type Props = {
+  order_id: number;
   order_status: IOrderStatus;
   order_status_history: IOrderStatusHistory[];
 };
 
 const OrderStatusMobile: FC<Props> = ({
+  order_id,
   order_status_history,
   order_status,
 }) => {
+  const query_client = useQueryClient();
   const is_cancelled = order_status === ORDER_STATUS.CANCELLED;
 
   const updated_steps = is_cancelled
@@ -68,6 +75,30 @@ const OrderStatusMobile: FC<Props> = ({
         },
       ]
     : steps;
+  useConnectionStateListener((state_change) => {
+    console.log(
+      "value of state change",
+      state_change.current,
+      state_change.reason,
+    );
+  });
+  useChannel(`order-tracking:${order_id}`, (message) => {
+    console.log("value fo message data", message);
+    if (message.name == "status-updated") {
+      console.log("value of data inside it", message, query_client);
+      console.log("invalidate key", ["order", String(order_id)]);
+      console.log(
+        query_client
+          .getQueryCache()
+          .getAll()
+          .map((q) => q.queryKey),
+      );
+      query_client.refetchQueries({
+        queryKey: ["order", order_id],
+      });
+      console.log('invalidated')
+    }
+  });
 
   return (
     <div className="rounded-xl border border-gray-300 bg-white p-5 sm:hidden">

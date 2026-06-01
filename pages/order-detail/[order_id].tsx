@@ -2,6 +2,9 @@ import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 
+// icons
+import { CircleAlert } from "lucide-react";
+
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
 import ProtectedLayout from "@/components/layout/protected-layout.component";
@@ -89,6 +92,7 @@ const OrderDetailPage: NextPageWithLayout<{
     return ably_client;
   }, [order_id]);
 
+
   if (!order) {
     return null;
   }
@@ -169,98 +173,135 @@ const OrderDetailPage: NextPageWithLayout<{
             </div>
 
             {/* Main Layout */}
-            <section className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
-              {/* LEFT SECTION */}
-              <div className="space-y-4 lg:col-span-2">
-                {/* Order Status */}
-                <OrderStatus
-                  order_status={order.status}
-                  order_status_history={order_status_history}
-                />
-                <OrderStatusMobile
-                  order_status={order.status}
-                  order_status_history={order_status_history}
-                />
-                <ChannelProvider channelName={`order-tracking:${order.id}`}>
-                  <OrderTracking order_id={Number(order_id)} end_coords={{
-                    lat:order.address_snapshot.latitude,
-                    lng:order.address_snapshot.longitude
-                  }} />
-                </ChannelProvider>
-                <DeliveryPartnerDetails
-                  partner={{
-                    name: "Ashish Prajapati",
-                    phone: "+919310566574",
-                  }}
-                />
-                <OrderSummary
-                  username={order.address_snapshot.full_name}
-                  country_code={order.address_snapshot.country_code}
-                  phone={order.address_snapshot.phone}
-                  payment_method={capitalizeFirstLetter(
-                    order.payment_method ?? "Razorpay",
-                  )}
-                  address_snapshot={order.address_snapshot}
-                />
-                {/* Order Items */}
-                <div className="rounded-xl border border-gray-300 bg-white p-6">
-                  <h2 className="mb-2 font-semibold text-gray-900">
-                    {total_active_items} items in this order
-                  </h2>
-                  {total_cancelled_items > 0 && (
-                    <p className="mb-4 text-xs font-medium text-gray-600">
-                      {total_cancelled_items} item
-                      {total_cancelled_items !== 1 ? "s" : ""} cancelled
-                    </p>
-                  )}
 
-                  <div className="space-y-4">
-                    {order?.order_items?.flatMap((order_item) => {
-                      const {
-                        quantity,
-                        item: { variants, ...product },
-                        cancelled_quantity,
-                      } = order_item;
-                      return variants.map((variant) => (
-                        <OrderItem
-                          quantity={quantity}
-                          cancelled_quantity={cancelled_quantity}
-                          product={product}
-                          variant={variant}
-                          key={`cart-item-${variant.id}`}
-                          is_delivered={true}
-                          is_reviewed={false}
-                          handleShowReviewModal={() =>
-                            setReviewModalState({
-                              open: true,
-                              product,
-                              variant,
-                              order_item,
-                            })
-                          }
-                        />
-                      ));
-                    })}
+            <ChannelProvider channelName={`order-tracking:${order.id}`}>
+              <section className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
+                {/* LEFT SECTION */}
+                <div className="space-y-4 lg:col-span-2">
+                  {/* Order Status */}
+                  <OrderStatus
+                    order_status={order.status}
+                    order_status_history={order_status_history}
+                    order_id={Number(order_id)}
+                  />
+                  <OrderStatusMobile
+                    order_status={order.status}
+                    order_status_history={order_status_history}
+                    order_id={Number(order_id)}
+                  />
+                  {order.status == "OUT_FOR_DELIVERY" ? (
+                    <OrderTracking
+                      order_id={Number(order_id)}
+                      end_coords={{
+                        lat: order.address_snapshot.latitude,
+                        lng: order.address_snapshot.longitude,
+                      }}
+                    />
+                  ) : (
+                    ![ORDER_STATUS.CANCELLED, ORDER_STATUS.DELIVERED].includes(
+                      order.status,
+                    ) && (
+                      <div className="h-60 w-full overflow-hidden rounded-xl border border-gray-300 bg-white sm:h-100">
+                        <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+                          {/* Icon */}
+                          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                            <CircleAlert className="size-8 text-orange-500" />
+                          </div>
+
+                          {/* Title */}
+                          <p className="font-semibold text-gray-900">
+                            Tracking not available yet
+                          </p>
+
+                          {/* Subtitle */}
+                          <p className="mt-1 max-w-xs text-sm leading-relaxed font-medium text-gray-600">
+                            Your order is being prepared. Live tracking will
+                            start once the delivery partner is out for delivery.
+                          </p>
+
+                          {/* Status pill */}
+                          <div className="mt-3 rounded-full bg-orange-500 px-3 py-1 text-[11px] font-medium text-white">
+                            Preparing order
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  )}
+                  <DeliveryPartnerDetails
+                    partner={{
+                      name: "Ashish Prajapati",
+                      phone: "+919310566574",
+                    }}
+                  />
+                  <OrderSummary
+                    username={order.address_snapshot.full_name}
+                    country_code={order.address_snapshot.country_code}
+                    phone={order.address_snapshot.phone}
+                    payment_method={capitalizeFirstLetter(
+                      order.payment_method ?? "Razorpay",
+                    )}
+                    address_snapshot={order.address_snapshot}
+                  />
+                  {/* Order Items */}
+                  <div className="rounded-xl border border-gray-300 bg-white p-6">
+                    <h2 className="mb-2 font-semibold text-gray-900">
+                      {total_active_items} items in this order
+                    </h2>
+                    {total_cancelled_items > 0 && (
+                      <p className="mb-4 text-xs font-medium text-gray-600">
+                        {total_cancelled_items} item
+                        {total_cancelled_items !== 1 ? "s" : ""} cancelled
+                      </p>
+                    )}
+
+                    <div className="space-y-4">
+                      {order?.order_items?.flatMap((order_item) => {
+                        const {
+                          quantity,
+                          item: { variants, ...product },
+                          cancelled_quantity,
+                        } = order_item;
+                        return variants.map((variant) => (
+                          <OrderItem
+                            quantity={quantity}
+                            cancelled_quantity={cancelled_quantity}
+                            product={product}
+                            variant={variant}
+                            key={`cart-item-${variant.id}`}
+                            is_delivered={true}
+                            is_reviewed={false}
+                            handleShowReviewModal={() =>
+                              setReviewModalState({
+                                open: true,
+                                product,
+                                variant,
+                                order_item,
+                              })
+                            }
+                          />
+                        ));
+                      })}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* RIGHT SECTION (SUMMARY CARD) */}
-              <div className="flex flex-col gap-4">
-                <BillSummary
-                  sub_total={order.sub_total}
-                  total_amount={order.total_amount}
-                  total_discount={order.discount}
-                  charges={50}
-                />
-                <HelpSection
-                  title={"Need help with this order?"}
-                  description={
-                    "Get support for delivery, returns, or any issues with your order."
-                  }
-                />
-              </div>
-            </section>
+                {/* RIGHT SECTION (SUMMARY CARD) */}
+                <div className="flex flex-col gap-4">
+                  <BillSummary
+                    sub_total={order.sub_total}
+                    total_amount={order.total_amount}
+                    total_discount={order.discount}
+                    charges={50}
+                  />
+                  <HelpSection
+                    title={"Need help with this order?"}
+                    description={
+                      "Get support for delivery, returns, or any issues with your order."
+                    }
+                  />
+                </div>
+              </section>
+            </ChannelProvider>
           </div>
         </section>
       </AblyProvider>

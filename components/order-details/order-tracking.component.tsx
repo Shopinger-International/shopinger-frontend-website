@@ -6,11 +6,9 @@ import type ICoord from "@/types/coord";
 // local components
 import RouteMap from "@/components/common/map/map-route/map-route.component";
 
-// lib
-import { useConnectionStateListener } from "ably/react";
-
 // hooks
-import { useChannel } from "ably/react";
+
+import { useConnectionStateListener, useChannel } from "ably/react";
 import useGetDeliveryPartnerCurrentLocation from "@/hooks/axios/order/use-get-delivery-partner-current-location.hook";
 
 const OrderTracking: FC<{
@@ -30,8 +28,10 @@ const OrderTracking: FC<{
     );
   });
   useChannel(`order-tracking:${order_id}`, (message) => {
-    const current_delivery_partner_coords = message.data as ICoord;
-    setDeliveryPartnerCoords(current_delivery_partner_coords);
+    if (message.name == "location-update") {
+      const current_delivery_partner_coords = message.data as ICoord;
+      setDeliveryPartnerCoords(current_delivery_partner_coords);
+    }
   });
 
   useEffect(() => {
