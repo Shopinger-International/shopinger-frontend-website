@@ -1,6 +1,7 @@
+import { AxiosError } from "axios";
 // types
 import type IOrder from "@/types/order";
-import { AxiosError } from "axios";
+import type IDeliveryPartner from "@/types/delivery-partner";
 
 // react query
 import { useQuery } from "@tanstack/react-query";
@@ -8,20 +9,21 @@ import { useQuery } from "@tanstack/react-query";
 // helpers
 import Axios from "@/lib/axios/private.lib";
 
+type IExtendedOrder = IOrder & {
+  delivery_partner: IDeliveryPartner;
+};
+
 export type IResponse = {
-  data: IOrder[];
+  order: IExtendedOrder;
   success: boolean;
 };
 
 export const getOrderDetail = async (
   order_id: string,
   cookie?: string,
-): Promise<IOrder> => {
+): Promise<IResponse["order"]> => {
   try {
-    const { data } = await Axios.get<{
-      success: boolean;
-      order: IOrder;
-    }>(`/get-order/${order_id}`, {
+    const { data } = await Axios.get<IResponse>(`/get-order/${order_id}`, {
       headers: cookie ? { cookie } : {},
     });
 
@@ -34,7 +36,7 @@ export const getOrderDetail = async (
   }
 };
 const useOrder = (order_id: string) => {
-  return useQuery<IOrder, AxiosError>({
+  return useQuery<IResponse["order"], AxiosError>({
     queryKey: ["order", order_id],
     async queryFn() {
       return await getOrderDetail(order_id);

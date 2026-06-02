@@ -66,7 +66,7 @@ type IBaseReviewType = {
 const OrderDetailPage: NextPageWithLayout<{
   order_id: string;
 }> = ({ order_id }) => {
-  const { data: order } = useOrder(order_id) as { data: IOrder };
+  const { data: order } = useOrder(order_id);
   const [review_modal_state, setReviewModalState] = useState<IBaseReviewType>({
     open: false,
     product: null,
@@ -79,14 +79,13 @@ const OrderDetailPage: NextPageWithLayout<{
     open: false,
   });
   const order_status_history = order?.order_status_history;
-  const total_order_items = order?.order_items.reduce(
-    (acc, { quantity }) => acc + quantity,
-    0,
-  );
-  const total_cancelled_items = order?.order_items.reduce(
-    (acc, { cancelled_quantity }) => acc + cancelled_quantity,
-    0,
-  );
+  const total_order_items =
+    order?.order_items.reduce((acc, { quantity }) => acc + quantity, 0) ?? 0;
+  const total_cancelled_items =
+    order?.order_items.reduce(
+      (acc, { cancelled_quantity }) => acc + cancelled_quantity,
+      0,
+    ) ?? 0;
   const total_active_items = total_order_items - total_cancelled_items;
   if (!order) {
     return null;
@@ -174,24 +173,30 @@ const OrderDetailPage: NextPageWithLayout<{
                 {/* LEFT SECTION */}
                 <div className="space-y-4 lg:col-span-2">
                   {/* Order Status */}
-                  <OrderStatus
-                    order_status={order.status}
-                    order_status_history={order_status_history}
-                    order_id={Number(order_id)}
-                  />
-                  <OrderStatusMobile
-                    order_status={order.status}
-                    order_status_history={order_status_history}
-                    order_id={Number(order_id)}
-                  />
+                  {order_status_history?.length && (
+                    <>
+                      <OrderStatus
+                        order_status={order.status}
+                        order_status_history={order_status_history}
+                        order_id={Number(order_id)}
+                      />
+                      <OrderStatusMobile
+                        order_status={order.status}
+                        order_status_history={order_status_history}
+                        order_id={Number(order_id)}
+                      />
+                    </>
+                  )}
                   {order.status == "OUT_FOR_DELIVERY" ? (
-                    <OrderTracking
-                      order_id={Number(order_id)}
-                      end_coords={{
-                        lat: order.address_snapshot.latitude,
-                        lng: order.address_snapshot.longitude,
-                      }}
-                    />
+                    <>
+                      <OrderTracking
+                        order_id={Number(order_id)}
+                        end_coords={{
+                          lat: order.address_snapshot.latitude,
+                          lng: order.address_snapshot.longitude,
+                        }}
+                      />
+                    </>
                   ) : (
                     ![ORDER_STATUS.CANCELLED, ORDER_STATUS.DELIVERED].includes(
                       order.status,
@@ -222,12 +227,14 @@ const OrderDetailPage: NextPageWithLayout<{
                       </div>
                     )
                   )}
-                  <DeliveryPartnerDetails
-                    partner={{
-                      name: "Ashish Prajapati",
-                      phone: "+919310566574",
-                    }}
-                  />
+                  {order.delivery_partner && (
+                    <DeliveryPartnerDetails
+                      partner={{
+                        name: order.delivery_partner.full_name,
+                        phone: order.delivery_partner.phone,
+                      }}
+                    />
+                  )}
                   <OrderSummary
                     username={order.address_snapshot.full_name}
                     country_code={order.address_snapshot.country_code}
