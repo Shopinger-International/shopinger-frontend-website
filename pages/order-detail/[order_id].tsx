@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 
@@ -54,6 +54,7 @@ import { getOrderDetail } from "@/hooks/axios/order/use-order.hook";
 import { QueryClient, dehydrate } from "@tanstack/react-query";
 import ORDER_STATUS from "@/constants/order-status.constant";
 
+const ably_client = createAblyClient();
 // context
 type IBaseReviewType = {
   open: boolean;
@@ -87,12 +88,6 @@ const OrderDetailPage: NextPageWithLayout<{
     0,
   );
   const total_active_items = total_order_items - total_cancelled_items;
-  const ably_client = useMemo(() => {
-    const ably_client = createAblyClient(Number(order_id));
-    return ably_client;
-  }, [order_id]);
-
-
   if (!order) {
     return null;
   }

@@ -1,15 +1,18 @@
 import * as Ably from "ably";
 import Axios from "@/lib/axios/private.lib";
 
-function createAblyClient(order_id: number) {
+// types
+import { TokenRequest } from "ably";
+
+function createAblyClient() {
   return new Ably.Realtime({
     authCallback: async (tokenParams, callback) => {
       try {
-        const { data } = await Axios.get(`/ably/token/${order_id}`);
+        const { data } = await Axios.get<TokenRequest>(`/ably/token`);
         console.log("value of data", data);
         callback(null, data);
       } catch (err) {
-        callback(err, null);
+        callback(err as Ably.ErrorInfo, null);
       }
     },
   });
