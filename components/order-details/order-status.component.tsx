@@ -1,5 +1,5 @@
 // types
-import { useEffect, type FC } from "react";
+import type { FC } from "react";
 import type { IOrderStatus, IOrderStatusHistory } from "@/types/order";
 
 // helpers

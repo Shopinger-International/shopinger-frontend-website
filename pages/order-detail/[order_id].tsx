@@ -270,7 +270,9 @@ const OrderDetailPage: NextPageWithLayout<{
                             product={product}
                             variant={variant}
                             key={`cart-item-${variant.id}`}
-                            is_delivered={true}
+                            is_delivered={
+                              order.status == ORDER_STATUS.DELIVERED
+                            }
                             is_reviewed={false}
                             handleShowReviewModal={() =>
                               setReviewModalState({
