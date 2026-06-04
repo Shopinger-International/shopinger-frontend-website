@@ -19,6 +19,7 @@ import CheckDeliveryAvailability from "@/components/product/product-info/check-d
 import ProductDetails from "@/components/product/product-info/product-details.component";
 import MobileProductGallary from "@/components/product/product-gallary/mobile-product-gallary.component";
 import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
+import DeliveryDetails from "@/components/product/product-info/delivery-details.component";
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
@@ -187,6 +188,7 @@ const ProductInfo: FC<IProps> = ({
         category_mappings={category_mappings}
       />
       <CheckDeliveryAvailability />
+      <DeliveryDetails />
       <p className="order-6 mb-4 font-medium">
         Sold by{" "}
         <strong className="font-medium text-orange-500">Himang Retails</strong>

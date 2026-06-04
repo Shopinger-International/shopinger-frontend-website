@@ -21,7 +21,7 @@ import clsx from "clsx";
 import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pincode-serviceability.hook";
 
 // icons
-import { Truck, CalendarFold, Banknote } from "lucide-react";
+import { Truck, Banknote, MapPin } from "lucide-react";
 
 export const delivery_pincode_schema = z.object({
   pincode: z
@@ -216,7 +216,7 @@ const CheckDeliveryAvailability: FC = () => {
                 </DeliverZoneDataRenderer>
               )}
               {/* Delivery Slot */}
-              <DeliverZoneDataRenderer
+              {/* <DeliverZoneDataRenderer
                 icon={CalendarFold}
                 iconClassName="text-orange-500"
               >
@@ -228,7 +228,7 @@ const CheckDeliveryAvailability: FC = () => {
                     Choose your preferred time slot during checkout
                   </p>
                 </>
-              </DeliverZoneDataRenderer>
+              </DeliverZoneDataRenderer> */}
             </>
           ) : (
             <>
@@ -254,7 +254,7 @@ const CheckDeliveryAvailability: FC = () => {
               </DeliverZoneDataRenderer>
 
               <DeliverZoneDataRenderer
-                icon={CalendarFold}
+                icon={MapPin}
                 iconClassName="text-neutral-500"
               >
                 <>

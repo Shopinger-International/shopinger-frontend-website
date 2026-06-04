@@ -89,11 +89,11 @@ const CartDetails: FC<IProps> = ({
           />
         </div>
       </div>
-      <div className="flex h-30 w-full flex-col space-y-2 rounded-xl border border-gray-300 bg-white">
+      {/* <div className="flex h-30 w-full flex-col space-y-2 rounded-xl border border-gray-300 bg-white">
         <div className="border-b border-gray-300 px-6 py-3">
           <h2 className="text-xl font-medium">Saved for later</h2>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -200,7 +200,7 @@ const ProductDetails: FC<IProps> = ({
   }, []);
 
   return (
-    <section className="order-8 flex h-full flex-col">
+    <section className="order-9 flex h-full flex-col">
       <div className="flex-1">
         {!!full_top_highlights.length && (
           <ExtendedDisclosure default_open={true} heading="Top Highlights">
