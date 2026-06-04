@@ -81,7 +81,7 @@ const OrderSummary: FC<IProps> = ({
 
             {/* house number (high priority) */}
             {house_number && (
-              <p className="mt-2 text-sm font-semibold text-gray-800">
+              <p className="mt-2 text-sm font-semibold text-gray-900">
                 House / Flat: {house_number}
               </p>
             )}
