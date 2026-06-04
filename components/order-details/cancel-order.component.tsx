@@ -59,7 +59,6 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
     { item_id: number; quantity: number }[]
   >([]);
   const [reason, setReason] = useState<ICancelReason | "">("");
-  console.log("value of order id", order.id);
 
   return (
     <Transition show={is_open} as={Fragment}>
@@ -109,13 +108,14 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                       const is_selected = !!selected_item;
 
                       const selected_quantity = selected_item?.quantity ?? 0;
-
+                      const left_quantity = quantity - cancelled_quantity;
+                      if (!left_quantity) return null;
                       return (
                         <CancelOrderItem
                           key={variant.id}
                           product={item}
                           variant={variant}
-                          quantity={quantity - cancelled_quantity}
+                          quantity={left_quantity}
                           is_selected={is_selected}
                           selected_quantity={selected_quantity}
                           onToggle={() => {
