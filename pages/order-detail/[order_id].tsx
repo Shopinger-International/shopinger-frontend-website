@@ -36,9 +36,6 @@ import { AblyProvider, ChannelProvider } from "ably/react";
 // lib
 import { createAblyClient } from "@/lib/ably.lib";
 
-// helpers
-import { differenceInDays } from "date-fns";
-
 const OrderTracking = dynamic(
   import("@/components/order-details/order-tracking.component"),
   {
@@ -89,7 +86,6 @@ const OrderDetailPage: NextPageWithLayout<{
       (acc, { cancelled_quantity }) => acc + cancelled_quantity,
       0,
     ) ?? 0;
-  console.log("value of order", order);
   const total_active_items = total_order_items - total_cancelled_items;
   if (!order) {
     return null;
