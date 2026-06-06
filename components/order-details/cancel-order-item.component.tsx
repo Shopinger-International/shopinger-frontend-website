@@ -34,10 +34,8 @@ const CancelOrderItem: FC<IProps> = ({
   onToggle,
   onQuantityChange,
 }) => {
-  const { title, id: product_id } = product;
-  const { id: variant_id, variant_attribute_values, variant_pricing } = variant;
-
-  const product_slug = generateSlug(title);
+  const { title } = product;
+  const { variant_attribute_values, variant_pricing } = variant;
 
   const formated_variant_attribute_value = variant_attribute_values.map(
     ({ attribute, value }) => ({

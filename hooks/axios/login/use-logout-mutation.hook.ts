@@ -2,7 +2,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // lib
-import publicAxios from "@/lib/axios/public.lib";
+import Axios from "@/lib/axios/private.lib";
 
 // helpers
 import { enqueueSnackbar } from "notistack";
@@ -16,7 +16,7 @@ const useLogoutMutation = () => {
   const query_client = useQueryClient();
   return useMutation<IResponse, Error>({
     async mutationFn() {
-      const { data } = await publicAxios.post<IResponse>(
+      const { data } = await Axios.post<IResponse>(
         "/user-logout",
         {},
         {

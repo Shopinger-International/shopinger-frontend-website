@@ -25,7 +25,7 @@ import BillSummary from "@/components/order-details/bill-summary.component";
 import OrderSummary from "@/components/order-details/order-summary.component";
 import HelpSection from "@/components/common/help-section.component";
 import ReviewModal from "@/components/common/review/review-modal.component";
-import CancelOrderModal from "@/components/order-details/cancel-order.component";
+import CancelOrderModal from "@/components/order-details/cancel-order-modal.component";
 import OrderStatus from "@/components/order-details/order-status.component";
 import OrderStatusMobile from "@/components/order-details/order-status-mobile.component";
 import DeliveryPartnerDetails from "@/components/order-details/delivery-partner-details.component";
@@ -35,6 +35,9 @@ import { AblyProvider, ChannelProvider } from "ably/react";
 
 // lib
 import { createAblyClient } from "@/lib/ably.lib";
+
+// helpers
+import { differenceInDays } from "date-fns";
 
 const OrderTracking = dynamic(
   import("@/components/order-details/order-tracking.component"),

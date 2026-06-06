@@ -5,11 +5,11 @@ import type { FC } from "react";
 import { Package, RotateCw, ShieldCheck, Banknote } from "lucide-react";
 
 const polices = [
-  {
-    icon: RotateCw,
-    label: "7 Days Return",
-    para: "Easy replacement & pickup",
-  },
+  // {
+  //   icon: RotateCw,
+  //   label: "7 Days Return",
+  //   para: "Easy replacement & pickup",
+  // },
   {
     icon: ShieldCheck,
     label: "Secure Delivery",
@@ -55,7 +55,7 @@ const DeliveryDetails: FC = () => {
 
         <div className="grid grid-cols-2 gap-x-4 gap-y-4 border-t border-gray-300 pt-3">
           {polices.map(({ icon: Icon, label, para }, index) => (
-            <div className="space-y-1" key={`policy-${index}`}>
+            <div className="space-y-0.5" key={`policy-${index}`}>
               <div className="flex items-center gap-2">
                 <Icon className="size-4 text-gray-600" />
                 <p className="text-sm font-medium text-gray-900">{label}</p>
