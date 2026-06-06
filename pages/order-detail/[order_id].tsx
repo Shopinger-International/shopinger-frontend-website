@@ -89,6 +89,7 @@ const OrderDetailPage: NextPageWithLayout<{
       (acc, { cancelled_quantity }) => acc + cancelled_quantity,
       0,
     ) ?? 0;
+  console.log("value of order", order);
   const total_active_items = total_order_items - total_cancelled_items;
   if (!order) {
     return null;
@@ -230,14 +231,6 @@ const OrderDetailPage: NextPageWithLayout<{
                       </div>
                     )
                   )}
-                  {order.delivery_partner && (
-                    <DeliveryPartnerDetails
-                      partner={{
-                        name: order.delivery_partner.full_name,
-                        phone: order.delivery_partner.phone,
-                      }}
-                    />
-                  )}
                   <OrderSummary
                     username={order.address_snapshot.full_name}
                     country_code={order.address_snapshot.country_code}
@@ -247,6 +240,14 @@ const OrderDetailPage: NextPageWithLayout<{
                     )}
                     address_snapshot={order.address_snapshot}
                   />
+                  {order.delivery_partner && (
+                    <DeliveryPartnerDetails
+                      partner={{
+                        name: order.delivery_partner.full_name,
+                        phone: order.delivery_partner.phone,
+                      }}
+                    />
+                  )}
                   {/* Order Items */}
                   <div className="rounded-xl border border-gray-300 bg-white p-6">
                     <h2 className="mb-2 font-semibold text-gray-900">

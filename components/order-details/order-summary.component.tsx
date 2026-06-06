@@ -39,7 +39,7 @@ const OrderSummary: FC<IProps> = ({
         <div className="flex gap-3 rounded-lg border border-gray-300 p-4">
           <User className="mt-1 size-5 text-orange-500" />
           <div>
-            <p className="text-sm font-semibold text-gray-900">Customer</p>
+            <p className="text-sm font-semibold text-gray-900">Customer Details</p>
             <p className="text-sm font-medium text-gray-900">
               {username ?? "Unknown User"}
               {phone ? ` / +${country_code} ${phone}` : ""}

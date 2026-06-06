@@ -1,4 +1,8 @@
+import Link from "next/link";
+// types
 import type { FC } from "react";
+
+// icons
 import { Phone, MessageCircle } from "lucide-react";
 
 type IDeliveryPartner = {
@@ -11,60 +15,44 @@ type Props = {
 };
 
 const DeliveryPartnerDetails: FC<Props> = ({ partner }) => {
-  const handleCall = () => {
-    window.location.href = `tel:${partner.phone}`;
-  };
-
-  const handleWhatsApp = () => {
-    window.open(`https://wa.me/${partner.phone}`, "_blank");
-  };
-
   return (
-    <div className="rounded-xl border border-gray-300 bg-white p-6">
-      <h2 className="mb-4 font-semibold text-gray-900">Delivery Partner</h2>
-
-      {/* Info */}
-      <div className="flex items-center justify-between">
+    <div className="rounded-xl border border-orange-200 bg-linear-to-r from-orange-50 to-white px-6 py-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          {/* Avatar */}
-          <div className="flex size-10 items-center justify-center rounded-full bg-orange-100 text-sm font-semibold text-gray-900">
-            {partner.name?.charAt(0)?.toUpperCase()}
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-orange-500 font-semibold text-white sm:size-11">
+            {partner.name.charAt(0).toUpperCase()}
           </div>
 
-          {/* Info */}
           <div>
-            <p className="text-sm leading-tight font-semibold text-gray-900">
-              {partner.name}
+            <p className="text-xs font-medium tracking-wide text-orange-600 uppercase">
+              Assigned Delivery Partner
             </p>
 
-            <p className="mt-0.5 text-xs text-gray-600 font-medium">Delivery Partner</p>
+            <p className="text-sm font-semibold text-gray-900 sm:text-base">
+              {partner.name}
+            </p>
           </div>
         </div>
 
-        {/* Phone */}
-        <div className="text-right">
-          <p className="text-sm font-semibold text-gray-900">{partner.phone}</p>
-          <p className="text-xs text-gray-600">Tap to contact</p>
+        <div className="grid grid-cols-2 gap-2 sm:flex">
+          <Link
+            href={`tel:${partner.phone}`}
+            className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium transition hover:bg-gray-50"
+          >
+            <Phone className="size-4" />
+            Call
+          </Link>
+
+          <Link
+            href={`https://wa.me/${partner.phone}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-green-700"
+          >
+            <MessageCircle className="size-4" />
+            WhatsApp
+          </Link>
         </div>
-      </div>
-
-      {/* Actions */}
-      <div className="mt-4 flex-col sm:flex-row flex gap-3">
-        <button
-          onClick={handleCall}
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 w-full"
-        >
-          <Phone className="size-5" strokeWidth={2} />
-          Call
-        </button>
-
-        <button
-          onClick={handleWhatsApp}
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-orange-500 px-3 py-2 text-sm font-semibold text-white hover:bg-orange-600 w-full"
-        >
-          <MessageCircle className="size-5" strokeWidth={2} />
-          WhatsApp
-        </button>
       </div>
     </div>
   );
