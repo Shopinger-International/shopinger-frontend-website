@@ -27,6 +27,8 @@
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
     "date-fns": "^4.3.0",
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "formik": "^2.4.9",
     "input-otp": "^1.4.2",
     "libphonenumber-js": "^1.12.36",
