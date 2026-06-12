@@ -9,6 +9,7 @@ import type { ISubCategory } from "@/types/categories";
 
 // local components
 import Tooltip from "@/components/common/tooltip.component";
+import CountDownTimer from "@/components/common/count-down-timer.component";
 
 // icons
 
@@ -25,13 +26,18 @@ import {
 
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
+import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
 
 // helpers
 import clsx from "clsx";
 
+// const
+import { CAMPAIGN_TYPE } from "@/constants/campaign.constant";
+
 const CategorySection: FC = () => {
   const router = useRouter();
   const { data: categories = [] } = useCategories(true);
+  const { data: campaigns = [] } = useAllCamapigns();
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
   const [selected_sub_category, setSelectedSubCategory] =
     useState<ISubCategory | null>();
@@ -39,6 +45,11 @@ const CategorySection: FC = () => {
   const [can_scroll_right, setCanScrollRight] = useState(false);
   const nav_ref = useRef<HTMLDivElement>(null);
   const sub_nav_ref = useRef<HTMLDivElement>(null);
+
+  const time_window_campaign = campaigns.find(
+    (campaign) => campaign.type == CAMPAIGN_TYPE.TIME_WINDOW_SALE,
+  );
+
   const updateScrollState = (el: HTMLDivElement | null) => {
     if (!el) return;
     setCanScrollLeft(el.scrollLeft > 0);
@@ -231,16 +242,15 @@ const CategorySection: FC = () => {
 
           {/* Right Section: Sale Timer + Get App + Profile */}
           <div className="hidden shrink-0 items-center gap-2 md:gap-4 lg:flex">
-            {/* Festive Sale Timer */}
-            <div className="hidden items-center gap-2 md:flex">
-              <span className="text-lg font-semibold text-stone-50 capitalize md:text-xl">
-                festive sale Live
-              </span>
-              <span className="text-lg font-semibold text-[#FFC800] md:text-xl">
-                00:15:26
-              </span>
-            </div>
-
+            {/* Festive Sale Timer */}{" "}
+            {time_window_campaign && (
+              <div className="hidden items-center gap-2 md:flex">
+                <span className="text-lg font-semibold text-stone-50 capitalize md:text-md">
+                  {time_window_campaign?.title}
+                </span>
+                <CountDownTimer end_at={new Date(time_window_campaign.end_at)} />
+              </div>
+            )}
             {/* Get App Button */}
             <button className="hidden items-center gap-2 rounded-md px-2 py-2 transition-colors hover:bg-white/10 sm:flex md:px-3">
               <Smartphone
@@ -249,7 +259,6 @@ const CategorySection: FC = () => {
               />
               <span className="text-sm font-medium text-stone-50">Get App</span>
             </button>
-
             {/* Profile/Notification */}
             {/* <div className="hidden lg:inline">
               <Tooltip content={<AIAssistant />} className="z-100">

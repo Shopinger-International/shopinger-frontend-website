@@ -1,19 +1,23 @@
-import IMedia from "@/types/media";
+import type IMedia from "@/types/media";
 
-export type ICampaignType =
-  | "FLASH_SALE"
-  | "SEASONAL_SALE"
-  | "CLEARANCE"
-  | "CATEGORY_SALE"
-  | "TIME_WINDOW_SALE"
-  | "FESTIVAL_SALE"
-  | "PERSONALIZED"
-  | "BANNER_PROMOTION"
-  | "CUSTOM";
+// const
+import {
+  SORTING_STRATEGY,
+  CAMPAIGN_TYPE,
+  SCOPE_TYPE,
+  CATEGORY_LEVEL,
+  DISCOUNT_TYPE,
+} from "@/constants/campaign.constant";
 
-export type IScopeType = "ALL" | "CATEGORY" | "PRODUCT";
-export type ICategoryLevel = "MAIN" | "SUB" | "SUB_SUB";
-export type IDiscountType = "FIXED" | "PERCENTAGE";
+export type ISortingStrategy =
+  (typeof SORTING_STRATEGY)[keyof typeof SORTING_STRATEGY];
+
+export type ICampaignType = (typeof CAMPAIGN_TYPE)[keyof typeof CAMPAIGN_TYPE];
+
+export type IScopeType = (typeof SCOPE_TYPE)[keyof typeof SCOPE_TYPE];
+export type ICategoryLevel =
+  (typeof CATEGORY_LEVEL)[keyof typeof CATEGORY_LEVEL];
+export type IDiscountType = (typeof DISCOUNT_TYPE)[keyof typeof DISCOUNT_TYPE];
 
 export interface ICategoryDetails {
   id: number;
@@ -38,6 +42,7 @@ type ICampaign = {
   discount_amount: ?number;
   max_discount_amount?: number;
   sale_campaign_categories: ISaleCampaignCategory[];
+  sorting_strategy: ISortingStrategy;
   start_at: string;
   end_at: string;
   is_active: boolean;
