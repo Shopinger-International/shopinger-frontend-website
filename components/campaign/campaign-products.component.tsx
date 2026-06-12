@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useContext } from "react";
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -13,10 +13,14 @@ import { isNewProduct, generateSlug } from "@/helpers/product.helper";
 import ProductCard from "@/components/categories/product-card/product-card.component";
 import ProductCardSkeleton from "@/components/categories/product-card/product-card-skeleton.component";
 
+// context
+import { FooterStateContext } from "@/context";
+
 type IProps = {
   campaign_id: number;
 };
 const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
+  const { updateShow: updateShowFooter } = useContext(FooterStateContext);
   const {
     data,
     isPending: isProductPending,
@@ -117,9 +121,12 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
 
     return () => observer_ref.current?.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  useEffect(() => {
+    updateShowFooter?.(!hasNextPage && !isProductPending);
+  }, [hasNextPage, isProductPending]);
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 px-4">
+      <div className="grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
         {isProductPending
           ? Array.from({ length: 12 }).map((_, i) => (
               <ProductCardSkeleton key={`initial-skeleton-${i}`} />
