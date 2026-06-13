@@ -30,6 +30,7 @@ const STATUS_LABELS: Partial<Record<IOrderStatus, string>> = {
 const OrderHistoryItem: FC<IProps> = ({ order }) => {
   const is_cancelled = order.status === ORDER_STATUS.CANCELLED;
   const is_delivered = order.status === ORDER_STATUS.DELIVERED;
+  const invoice_url = order.invoice_url;
 
   return (
     <div
@@ -68,7 +69,7 @@ const OrderHistoryItem: FC<IProps> = ({ order }) => {
         </div>
 
         <div className="text-left md:text-right">
-          <p className="text-lg font-semibold text-slate-900">
+          <p className="text-lg font-semibold text-gray-900">
             ₹{order.total_amount || "0.00"}
           </p>
           <p className="text-sm font-medium text-gray-600">
@@ -105,12 +106,26 @@ const OrderHistoryItem: FC<IProps> = ({ order }) => {
         <div className="flex flex-wrap gap-2">
           <Link
             href={`/order-detail/${order.id}`}
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
           >
             View Details
           </Link>
 
-          <button className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
+          <button
+            type="button"
+            disabled={!invoice_url}
+            className={clsx(
+              "rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium",
+              invoice_url
+                ? "cursor-pointer bg-white text-gray-600 hover:bg-gray-50"
+                : "cursor-not-allowed bg-gray-50 text-gray-400 opacity-60",
+            )}
+            onClick={() => {
+              if (invoice_url) {
+                window.open(invoice_url, "_blank", "noopener,noreferrer");
+              }
+            }}
+          >
             Invoice
           </button>
         </div>

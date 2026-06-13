@@ -198,6 +198,7 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                   disabled={cart_item_remove_mutation.isPending}
                   onClick={() =>
                     cart_item_remove_mutation.mutate({
+                      product_id,
                       variant_id,
                     })
                   }
@@ -253,6 +254,7 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
             disabled={cart_item_remove_mutation.isPending}
             onClick={() =>
               cart_item_remove_mutation.mutate({
+                product_id,
                 variant_id,
               })
             }

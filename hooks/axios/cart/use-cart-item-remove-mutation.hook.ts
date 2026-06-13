@@ -11,6 +11,7 @@ import Axios from "@/lib/axios/private.lib";
 import { enqueueSnackbar } from "notistack";
 
 type IRequest = {
+  product_id: number;
   variant_id: number;
 };
 
@@ -32,9 +33,13 @@ const useCartItemRemoveMutation = () => {
       return data;
     },
 
-    onSuccess(response) {
+    onSuccess(response, { product_id, variant_id }) {
       query_client.invalidateQueries({
         queryKey: ["carts"],
+      });
+
+      query_client.invalidateQueries({
+        queryKey: ["product-availability", product_id, variant_id],
       });
       enqueueSnackbar(response.message, {
         key: `remove-cart-item-success-${Date.now()}`,

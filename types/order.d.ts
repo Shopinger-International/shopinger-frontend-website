@@ -36,7 +36,7 @@ type IOrderStatusHistory = {
 
 type IAddressSnapshot = {
   full_name: string;
-  country_code:number;
+  country_code: number;
   phone: string;
 
   place_id: number;
@@ -73,6 +73,8 @@ type IOrder = {
   payment_status: string;
   payment_method: string;
   sub_total: number;
+  delivery_fee: number;
+  platform_fee: number;
   total_amount: number;
   gst: number;
   discount: number;
@@ -80,6 +82,7 @@ type IOrder = {
   address_snapshot: IAddressSnapshot;
   order_status_history: IOrderStatusHistory[];
   order_items: IOrderItem[];
+  invoice_url?: string;
   created_at: string;
 };
 

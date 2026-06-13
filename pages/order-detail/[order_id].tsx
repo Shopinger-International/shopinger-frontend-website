@@ -173,7 +173,7 @@ const OrderDetailPage: NextPageWithLayout<{
                 {/* LEFT SECTION */}
                 <div className="space-y-4 lg:col-span-2">
                   {/* Order Status */}
-                  {order_status_history?.length && (
+                  {!!order_status_history?.length && (
                     <>
                       <OrderStatus
                         order_status={order.status}
@@ -295,7 +295,9 @@ const OrderDetailPage: NextPageWithLayout<{
                     sub_total={order.sub_total}
                     total_amount={order.total_amount}
                     total_discount={order.discount}
-                    charges={50}
+                    delivery_fee={order.delivery_fee}
+                    platform_fee={order.platform_fee}
+                    invoice_url={order.invoice_url}
                   />
                   <HelpSection
                     title={"Need help with this order?"}

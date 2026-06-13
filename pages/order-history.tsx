@@ -33,7 +33,9 @@ const OrderHistoryPage: NextPageWithLayout = () => {
         {/* Header */}
         <div className="mb-6 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-semibold">Order History</h1>
+            <h1 className="text-lg font-semibold text-gray-900 sm:text-2xl">
+              Order History
+            </h1>
             <p className="mt-1 text-gray-600">
               Track, manage and review your orders
             </p>

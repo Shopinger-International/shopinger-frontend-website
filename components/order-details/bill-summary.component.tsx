@@ -11,14 +11,18 @@ type IProps = {
   total_amount: number;
   sub_total: number;
   total_discount: number;
-  charges: number;
+  delivery_fee: number;
+  platform_fee: number;
+  invoice_url?: string;
 };
 
 const BillSummary: FC<IProps> = ({
   total_amount,
   sub_total,
   total_discount,
-  charges,
+  delivery_fee,
+  platform_fee,
+  invoice_url,
 }) => {
   return (
     <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6">
@@ -37,8 +41,13 @@ const BillSummary: FC<IProps> = ({
             bold: true,
           },
           {
-            label: "Shipping",
-            value: charges ? `₹${charges}` : "FREE",
+            label: "Delivery Fee",
+            value: delivery_fee ? `₹${delivery_fee}` : "FREE",
+            bold: false,
+          },
+          {
+            label: "Platform Fee",
+            value: platform_fee ? `₹${platform_fee}` : "FREE",
             bold: false,
           },
         ].map(({ label, value, bold }) => (
@@ -82,8 +91,16 @@ const BillSummary: FC<IProps> = ({
       {/* ACTIONS */}
       <button
         type="button"
-        className="mt-6 flex w-full cursor-pointer items-center justify-center gap-3 rounded-md bg-orange-500 py-2 font-semibold text-white shadow-sm"
-        onClick={() => {}}
+        disabled={!invoice_url}
+        className={clsx(
+          "mt-6 flex w-full cursor-pointer items-center justify-center gap-3 rounded-md py-2 font-semibold text-white shadow-sm",
+          invoice_url ? "bg-orange-500" : "bg-orange-300",
+        )}
+        onClick={() => {
+          if (invoice_url) {
+            window.open(invoice_url, "_blank", "noopener,noreferrer");
+          }
+        }}
       >
         <FileText className="size-5 text-white" />
         <span className="relative z-10">Download Invoice</span>

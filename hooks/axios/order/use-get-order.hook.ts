@@ -29,7 +29,6 @@ const useGetOrders = () => {
     queryKey: ["orders"],
     async queryFn() {
       const user_orders = await getUserOrders();
-      console.log("value of user orders", user_orders);
       return user_orders;
     },
     staleTime: 1000 * 60 * 5,

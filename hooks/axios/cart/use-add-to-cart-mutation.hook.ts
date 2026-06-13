@@ -36,9 +36,12 @@ const useAddToCartMutation = () => {
       return data.data;
     },
 
-    onSuccess(response) {
+    onSuccess(response, { product_id, variant_id }) {
       query_client.invalidateQueries({
         queryKey: ["carts"],
+      });
+      query_client.invalidateQueries({
+        queryKey: ["product-availability", product_id, variant_id],
       });
       enqueueSnackbar(response.message, {
         key: `add-to-cart-success-${Date.now()}`,
