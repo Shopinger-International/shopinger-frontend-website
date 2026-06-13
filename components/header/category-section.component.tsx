@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 // types
 import type { FC } from "react";
@@ -8,21 +7,12 @@ import type { ICategory } from "@/types/categories";
 import type { ISubCategory } from "@/types/categories";
 
 // local components
-import Tooltip from "@/components/common/tooltip.component";
 import CountDownTimer from "@/components/common/count-down-timer.component";
 
 // icons
 
 // icons
-import {
-  Menu,
-  Phone,
-  Stethoscope,
-  Smartphone,
-  Upload,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Menu, ChevronLeft, ChevronRight } from "lucide-react";
 
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
@@ -117,7 +107,7 @@ const CategorySection: FC = () => {
                 }
               >
                 {/* Grocery */}
-                {[
+                {/* {[
                   {
                     href: "/grocery",
                     label: "Grocery",
@@ -198,7 +188,7 @@ const CategorySection: FC = () => {
                       </span>
                     </Link>
                   );
-                })}
+                })} */}
                 {categories.map((category) => {
                   const { id, name } = category;
                   return (
@@ -245,20 +235,22 @@ const CategorySection: FC = () => {
             {/* Festive Sale Timer */}{" "}
             {time_window_campaign && (
               <div className="hidden items-center gap-2 md:flex">
-                <span className="text-lg font-semibold text-stone-50 capitalize md:text-md">
+                <span className="text-lg font-semibold text-white capitalize md:text-xl">
                   {time_window_campaign?.title}
                 </span>
-                <CountDownTimer end_at={new Date(time_window_campaign.end_at)} />
+                <CountDownTimer
+                  end_at={new Date(time_window_campaign.end_at)}
+                />
               </div>
             )}
             {/* Get App Button */}
-            <button className="hidden items-center gap-2 rounded-md px-2 py-2 transition-colors hover:bg-white/10 sm:flex md:px-3">
+            {/* <button className="hidden items-center gap-2 rounded-md px-2 py-2 transition-colors hover:bg-white/10 sm:flex md:px-3">
               <Smartphone
                 className="text-brand-orange h-6 w-6"
                 strokeWidth={2.5}
               />
               <span className="text-sm font-medium text-stone-50">Get App</span>
-            </button>
+            </button> */}
             {/* Profile/Notification */}
             {/* <div className="hidden lg:inline">
               <Tooltip content={<AIAssistant />} className="z-100">

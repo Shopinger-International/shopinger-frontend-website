@@ -25,6 +25,7 @@ const useAllCamapigns = () => {
       const { data } = await webAxios.get<IResponse>(`/get-campaigns`, {
         params: {
           is_active: true,
+          status:"active"
         },
       });
       return data.data;

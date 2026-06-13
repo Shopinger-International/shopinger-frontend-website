@@ -56,11 +56,11 @@ const Campaign = () => {
   return (
     <div className="relative flex flex-col gap-2">
       <div ref={embla_ref} className="overflow-hidden">
-        <div className="flex gap-4">
+        <div className="flex -ml-4">
           {campaigns.map((campaign) => (
             <div
               key={campaign.id}
-              className="min-w-0 flex-[0_0_100%] md:flex-[0_0_40%] lg:flex-[0_0_35%]"
+              className="min-w-0 flex-[0_0_100%] md:flex-[0_0_40%] lg:flex-[0_0_35%] pl-4"
             >
               <Link href={`/campaign/${campaign.id}/${campaign.slug}`}>
                 <div className="relative aspect-2/1 overflow-hidden rounded-xl border border-gray-300">
