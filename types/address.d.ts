@@ -52,4 +52,6 @@ export interface IAddress {
 
   // Lifecycle
   is_deleted: boolean;
+
+  delivery_fee: number;
 }

@@ -8,7 +8,7 @@ import type { AxiosError } from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 export type IResponse = {
-  data: IAddress[];
+  data: Array<IAddress>;
   success: boolean;
 };
 

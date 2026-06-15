@@ -11,6 +11,7 @@ import CategorySection from "@/components/header/category-section.component";
 import Tooltip from "@/components/common/tooltip.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
+import CampaignTimer from "@/components/header/campaign-timer.component";
 
 // icons
 import {
@@ -64,10 +65,10 @@ const Header: FC<{
     return () => observer.disconnect();
   }, []);
   return (
-    <header className="fixed top-0 z-30 w-full bg-black" id="app-header">
+    <header className="fixed top-0 z-30 w-full" id="app-header">
       <div
         className={clsx(
-          "mx-auto grid w-full items-center",
+          "mx-auto grid w-full items-center bg-black",
           "grid-cols-[auto_1fr_auto]",
           "gap-3 px-4 py-1.5",
           // "lg:max-w-8xl",
@@ -240,6 +241,7 @@ const Header: FC<{
         </div>
       </div>
       <CategorySection />
+      <CampaignTimer />
       {show_filter_sort_bar && (
         <FilterSortBar disable_side_filter={disable_side_filter} />
       )}

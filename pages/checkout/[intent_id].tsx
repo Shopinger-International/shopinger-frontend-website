@@ -72,6 +72,7 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
     null,
   );
 
+
   const [is_address_drawer_open, setIsAddressDrawerOpen] = useState(false);
   const [address_modal_state, setAddressModalState] =
     useState<IAddressModalState>({
@@ -222,6 +223,8 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
             total_discount={intent_details?.total_discount ?? 0}
             total_items={intent_details?.total_items ?? 0}
             sub_total={intent_details?.sub_total ?? 0}
+            total_mrp={intent_details?.total_mrp ?? 0}
+            platform_fee={intent_details?.platform_fee ?? 0}
             products={intent_details?.items ?? []}
             selected_address={selected_address}
             handleAddressDrawerState={(open) => setIsAddressDrawerOpen(open)}

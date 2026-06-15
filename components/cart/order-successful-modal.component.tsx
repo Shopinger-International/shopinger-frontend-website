@@ -112,7 +112,7 @@ const OrderSuccessfulModal: FC<IProps> = ({
                         <Clock size={14} />
                         Delivery
                       </span>
-                      <span className="text-gray-800">5–7 days</span>
+                      <span className="text-gray-800">Same Day</span>
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 // types
 import type { FC } from "react";
 import type IOrder from "@/types/order";
+import type { IAddress } from "@/types/address";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
@@ -11,9 +12,6 @@ import AddressBar from "@/components/cart/address-bar.component";
 import CheckoutItem from "@/components/checkout/checkout-item.component";
 import CheckoutSummary from "@/components/checkout/checkout-summary.component";
 import HelpSection from "@/components/common/help-section.component";
-
-// helpers
-import { IAddress } from "@/types/address";
 
 type IProps = {
   selected_address: IAddress | null;
@@ -76,7 +74,8 @@ const CartDetails: FC<IProps> = ({
             total_amount={cart?.total_amount ?? 0}
             total_discount={cart?.total_discount ?? 0}
             total_items={cart?.total_items ?? 0}
-            charges={50}
+            total_mrp={cart?.total_mrp ?? 0}
+            platform_fee={cart?.platform_fee ?? 0}
             type={"cart-checkout"}
             selected_address={selected_address}
             handleOrderSuccess={handleOrderSuccess}

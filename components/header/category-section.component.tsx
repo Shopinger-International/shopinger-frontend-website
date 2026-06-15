@@ -6,9 +6,6 @@ import type { FC } from "react";
 import type { ICategory } from "@/types/categories";
 import type { ISubCategory } from "@/types/categories";
 
-// local components
-import CountDownTimer from "@/components/common/count-down-timer.component";
-
 // icons
 
 // icons
@@ -232,18 +229,7 @@ const CategorySection: FC = () => {
 
           {/* Right Section: Sale Timer + Get App + Profile */}
           <div className="hidden shrink-0 items-center gap-2 md:gap-4 lg:flex">
-            {/* Festive Sale Timer */}{" "}
-            {time_window_campaign && (
-              <div className="hidden items-center gap-2 md:flex">
-                <span className="text-lg font-semibold text-white capitalize md:text-xl">
-                  {time_window_campaign?.title}
-                </span>
-                <CountDownTimer
-                  end_at={new Date(time_window_campaign.end_at)}
-                />
-              </div>
-            )}
-            {/* Get App Button */}
+            {/* Festive Sale Timer */} {/* Get App Button */}
             {/* <button className="hidden items-center gap-2 rounded-md px-2 py-2 transition-colors hover:bg-white/10 sm:flex md:px-3">
               <Smartphone
                 className="text-brand-orange h-6 w-6"

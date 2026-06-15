@@ -11,6 +11,8 @@ export type ICart = {
   })[];
   total_amount: number;
   total_discount: number;
+  total_mrp: number;
   sub_total: number;
+  platform_fee: number;
   total_items: number;
 };

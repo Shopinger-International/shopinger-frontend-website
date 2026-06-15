@@ -24,7 +24,8 @@ type IProps = {
   total_amount: number;
   total_discount: number;
   total_items: number;
-  charges: number;
+  total_mrp: number;
+  platform_fee: number;
   type: "buy-checkout" | "cart-checkout";
   intent_id?: string;
 };
@@ -34,11 +35,11 @@ const CheckoutSummary: FC<IProps> = ({
   handleShowAddresDrawer,
   handleOrderSuccess,
   selected_address,
-  sub_total,
   total_amount,
   total_discount,
   total_items,
-  charges,
+  total_mrp,
+  platform_fee,
   type,
   intent_id,
 }) => {
@@ -47,6 +48,8 @@ const CheckoutSummary: FC<IProps> = ({
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
   const verify_payment_mutation = useVerifyPaymentMutation();
   const { data: user_detail } = useUserDetails();
+  const delivery_fee = selected_address?.delivery_fee ?? 0;
+  const grand_total = total_amount + delivery_fee + platform_fee;
   return (
     <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6">
       <h3 className="font-bold text-gray-900">Order Summary</h3>
@@ -54,16 +57,20 @@ const CheckoutSummary: FC<IProps> = ({
       <div className="space-y-4 text-sm">
         {[
           {
-            label: "Subtotal",
-            value: `₹${sub_total}`,
+            label: "MRP",
+            value: `₹${total_mrp}`,
           },
           {
             label: "Discount",
             value: `- ₹${total_discount}`,
           },
           {
-            label: "Shipping",
-            value: charges ? `₹${charges}` : "FREE",
+            label: "Delivery Fee",
+            value: !!delivery_fee ? `₹${delivery_fee}` : "FREE",
+          },
+          {
+            label: "Platform Fee",
+            value: !!platform_fee ? `₹${platform_fee}` : "FREE",
           },
         ].map(({ label, value }) => (
           <div className="flex items-center justify-between" key={label}>
@@ -97,7 +104,7 @@ const CheckoutSummary: FC<IProps> = ({
           <div className="text-right">
             <span className="mr-1 text-sm font-semibold text-gray-600">₹</span>
             <span className="text-3xl font-bold tracking-tight text-gray-900">
-              {total_amount.toLocaleString("en-IN")}
+              {grand_total.toLocaleString("en-IN")}
             </span>
           </div>
         </div>

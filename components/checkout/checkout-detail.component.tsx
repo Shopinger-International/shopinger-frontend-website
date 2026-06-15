@@ -17,6 +17,8 @@ type IProps = {
   sub_total: number;
   total_amount: number;
   total_discount: number;
+  total_mrp: number;
+  platform_fee: number;
   total_items: number;
   handleAddressDrawerState: (open: boolean) => void;
   handleOrderSuccess: (order: IOrder) => void;
@@ -28,6 +30,8 @@ const CheckoutDetail: FC<IProps> = ({
   sub_total,
   total_amount,
   total_discount,
+  total_mrp,
+  platform_fee,
   total_items,
   handleAddressDrawerState,
   handleOrderSuccess,
@@ -70,8 +74,9 @@ const CheckoutDetail: FC<IProps> = ({
           sub_total={sub_total ?? 0}
           total_amount={total_amount ?? 0}
           total_discount={total_discount ?? 0}
+          total_mrp={total_mrp}
+          platform_fee={platform_fee}
           total_items={total_items ?? 0}
-          charges={50}
           selected_address={selected_address}
           handleOrderSuccess={handleOrderSuccess}
           intent_id={intent_id}
