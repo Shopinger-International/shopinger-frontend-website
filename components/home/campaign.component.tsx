@@ -57,23 +57,25 @@ const Campaign = () => {
     <div className="relative flex flex-col gap-2">
       <div ref={embla_ref} className="overflow-hidden">
         <div className="-ml-4 flex">
-          {campaigns.map((campaign) => (
-            <div
-              key={campaign.id}
-              className="min-w-0 flex-[0_0_100%] pl-4 md:flex-[0_0_40%] lg:flex-[0_0_35%]"
-            >
-              <Link href={`/campaign/${campaign.id}/${campaign.slug}`}>
-                <div className="relative aspect-2/1 overflow-hidden rounded-xl border border-gray-300">
-                  <Image
-                    src={campaign.banner}
-                    alt={campaign.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </Link>
-            </div>
-          ))}
+          {campaigns
+            .sort((a, b) => b.priority - a.priority)
+            .map((campaign) => (
+              <div
+                key={campaign.id}
+                className="min-w-0 flex-[0_0_100%] pl-4 md:flex-[0_0_40%] lg:flex-[0_0_35%]"
+              >
+                <Link href={`/campaign/${campaign.id}/${campaign.slug}`}>
+                  <div className="relative aspect-2/1 overflow-hidden rounded-xl border border-gray-300">
+                    <Image
+                      src={campaign.banner}
+                      alt={campaign.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </Link>
+              </div>
+            ))}
         </div>
       </div>
 

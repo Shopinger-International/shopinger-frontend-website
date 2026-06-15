@@ -43,6 +43,7 @@ type ICampaign = {
   max_discount_amount?: number;
   sale_campaign_categories: ISaleCampaignCategory[];
   sorting_strategy: ISortingStrategy;
+  priority:number;
   start_at: string;
   end_at: string;
   is_active: boolean;
