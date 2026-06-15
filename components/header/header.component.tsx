@@ -9,7 +9,6 @@ import SearchBar from "@/components/header/search-bar/search-bar.component";
 import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
 import Tooltip from "@/components/common/tooltip.component";
-import AIAssistant from "../common/ai-chat-box.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 
@@ -21,7 +20,6 @@ import {
   CircleQuestionMark,
   Megaphone,
   MapPin,
-  Sparkles,
 } from "lucide-react";
 
 // helpers
@@ -177,7 +175,7 @@ const Header: FC<{
 
             <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
           </Link>
-          <div className="hidden lg:inline">
+          {/* <div className="hidden lg:inline">
             <Tooltip
               content={() => <AIAssistant />}
               className="z-100"
@@ -195,7 +193,7 @@ const Header: FC<{
                 </div>
               )}
             </Tooltip>
-          </div>
+          </div> */}
           <Tooltip
             placement="bottom"
             className="z-100"

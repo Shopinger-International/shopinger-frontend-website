@@ -18,6 +18,8 @@ import { X } from "lucide-react";
 // css
 import "@smastrom/react-rating/style.css";
 
+// hooks
+import { useQueryClient } from "@tanstack/react-query";
 // api hooks
 import useReviewGeneratorMutation from "@/hooks/axios/review/use-review-generator-mutation.hook";
 import useAddReviewMutation from "@/hooks/axios/review/use-add-review-mutation.hook";
@@ -38,6 +40,7 @@ type IInitialValues = {
   existing_medias: Array<IMedia>;
 };
 type IProps = {
+  order_id: number;
   product: Omit<IProduct, "variants">;
   variant: IVariant;
   order_item: IOrderItem;
@@ -46,12 +49,14 @@ type IProps = {
 };
 
 const ReviewModal: FC<IProps> = ({
+  order_id,
   product,
   variant,
   order_item,
   is_open,
   onClose,
 }) => {
+  const query_client = useQueryClient();
   const { title } = product;
   const review_generator_mutation = useReviewGeneratorMutation();
   const variant_medias = variant.variant_medias.map(({ media }) => media);
@@ -124,6 +129,9 @@ const ReviewModal: FC<IProps> = ({
               add_review_mutation.mutate(form_data, {
                 onSuccess() {
                   onClose();
+                  query_client.invalidateQueries({
+                    queryKey: ["order", String(order_id)],
+                  });
                 },
               });
             }}
@@ -271,9 +279,9 @@ const ReviewModal: FC<IProps> = ({
                               type="file"
                               multiple
                               accept="image/*"
-                              onChange={(e) =>
-                                handleFiles(Array.from(e.target.files || []))
-                              }
+                              onChange={(e) => {
+                                handleFiles(Array.from(e.target.files || []));
+                              }}
                               className="absolute inset-0 cursor-pointer opacity-0"
                             />
                           </div>

@@ -56,11 +56,11 @@ const Campaign = () => {
   return (
     <div className="relative flex flex-col gap-2">
       <div ref={embla_ref} className="overflow-hidden">
-        <div className="flex -ml-4">
+        <div className="-ml-4 flex">
           {campaigns.map((campaign) => (
             <div
               key={campaign.id}
-              className="min-w-0 flex-[0_0_100%] md:flex-[0_0_40%] lg:flex-[0_0_35%] pl-4"
+              className="min-w-0 flex-[0_0_100%] pl-4 md:flex-[0_0_40%] lg:flex-[0_0_35%]"
             >
               <Link href={`/campaign/${campaign.id}/${campaign.slug}`}>
                 <div className="relative aspect-2/1 overflow-hidden rounded-xl border border-gray-300">
@@ -79,18 +79,18 @@ const Campaign = () => {
 
       <button
         onClick={() => emabla_api?.scrollPrev()}
-        className="absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60"
+        className="absolute top-1/2 left-4 z-10 hidden -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60 lg:inline-block"
       >
         <ChevronLeft className="size-4 text-white lg:size-6" />
       </button>
 
       <button
         onClick={() => emabla_api?.scrollNext()}
-        className="absolute top-1/2 right-4 z-10 -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60"
+        className="absolute top-1/2 right-4 z-10 hidden -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60 lg:inline-block"
       >
         <ChevronRight className="size-4 text-white lg:size-6" />
       </button>
-      <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/20 px-3 py-2 backdrop-blur-md">
+      <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/10 px-3 py-1 backdrop-blur-md">
         {scroll_snaps.map((_, index) => {
           const active = index === selected_index;
 

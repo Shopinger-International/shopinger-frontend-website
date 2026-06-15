@@ -126,7 +126,7 @@ const AccountDropdown: FC = () => {
             >
               <CircleUserRound className="size-6" />
               <span className="max-w-28 truncate">
-                {user_details.name ?? "My Account"}
+                {user_details.name.split(" ")[0] ?? "My Account"}
               </span>
             </button>
           ) : (

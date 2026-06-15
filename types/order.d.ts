@@ -72,6 +72,7 @@ type IOrder = {
   status: IOrderStatus;
   payment_status: string;
   payment_method: string;
+  total_mrp:number;
   sub_total: number;
   delivery_fee: number;
   platform_fee: number;

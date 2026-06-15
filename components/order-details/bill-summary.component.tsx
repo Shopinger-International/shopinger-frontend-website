@@ -9,7 +9,7 @@ import { FileText } from "lucide-react";
 
 type IProps = {
   total_amount: number;
-  sub_total: number;
+  total_mrp: number;
   total_discount: number;
   delivery_fee: number;
   platform_fee: number;
@@ -18,7 +18,7 @@ type IProps = {
 
 const BillSummary: FC<IProps> = ({
   total_amount,
-  sub_total,
+  total_mrp,
   total_discount,
   delivery_fee,
   platform_fee,
@@ -31,8 +31,8 @@ const BillSummary: FC<IProps> = ({
       <div className="space-y-4 text-sm">
         {[
           {
-            label: "Subtotal",
-            value: `₹${sub_total}`,
+            label: "MRP",
+            value: `₹${total_mrp}`,
             bold: false,
           },
           {

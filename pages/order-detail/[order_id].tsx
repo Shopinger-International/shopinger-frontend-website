@@ -104,6 +104,7 @@ const OrderDetailPage: NextPageWithLayout<{
       </Head>
       {review_modal_state.variant && review_modal_state.product && (
         <ReviewModal
+          order_id={+order_id}
           product={review_modal_state.product}
           variant={review_modal_state.variant}
           order_item={review_modal_state.order_item as IOrderItem}
@@ -292,7 +293,7 @@ const OrderDetailPage: NextPageWithLayout<{
                 {/* RIGHT SECTION (SUMMARY CARD) */}
                 <div className="flex flex-col gap-4">
                   <BillSummary
-                    sub_total={order.sub_total}
+                    total_mrp={order.total_mrp}
                     total_amount={order.total_amount}
                     total_discount={order.discount}
                     delivery_fee={order.delivery_fee}
