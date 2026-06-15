@@ -20,9 +20,13 @@ import "@smastrom/react-rating/style.css";
 
 // hooks
 import { useQueryClient } from "@tanstack/react-query";
+
 // api hooks
 import useReviewGeneratorMutation from "@/hooks/axios/review/use-review-generator-mutation.hook";
 import useAddReviewMutation from "@/hooks/axios/review/use-add-review-mutation.hook";
+
+// helpers
+import { enqueueSnackbar } from "notistack";
 
 const rating_labels = [
   "Very poor",
@@ -364,11 +368,28 @@ const ReviewModal: FC<IProps> = ({
                                     type="file"
                                     multiple
                                     accept="image/*"
-                                    onChange={(e) =>
+                                    onChange={(e) => {
+                                      const files = Array.from(
+                                        e.target.files || [],
+                                      );
+
+                                      files.forEach((file) => {
+                                        const file_size_in_mb =
+                                          file.size / 1024 / 1024;
+                                        if (file_size_in_mb > 2) {
+                                          enqueueSnackbar(
+                                            "File Size should be less than 2MB",
+                                            {
+                                              key: `file-upload-error-${Date.now()}`,
+                                              variant: "error",
+                                            },
+                                          );
+                                        }
+                                      });
                                       handleFiles(
                                         Array.from(e.target.files || []),
-                                      )
-                                    }
+                                      );
+                                    }}
                                     className="hidden"
                                   />
                                 </label>
