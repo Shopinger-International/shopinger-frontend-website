@@ -70,7 +70,7 @@ const address_schema = z.object({
 });
 
 export type IFormAddressType = Omit<
-  IAddress,
+  Omit<IAddress, "delivery_fee">,
   "id" | "user_id" | "is_deleted" | "latitude" | "longitude"
 > & {
   latitude: number | null;
