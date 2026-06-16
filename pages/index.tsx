@@ -1,4 +1,3 @@
-import Head from "next/head";
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
