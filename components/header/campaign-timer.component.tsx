@@ -94,7 +94,7 @@ const CampaignTimer: FC = () => {
   if (campaign_state.status === "UPCOMING") {
     return (
       <div className="relative border-b border-gray-300 bg-black px-4 py-2 text-white">
-        <div className="flex flex-col items-center justify-center gap-1.5 text-xs sm:text-sm md:flex-row md:gap-3">
+        <div className="flex flex-col items-center justify-center gap-1.5 text-xs md:flex-row md:gap-3 sm:text-sm">
           <span className="text-center font-semibold text-orange-500">
             👀 Dropping Soon: {campaign.title}
           </span>
@@ -119,7 +119,7 @@ const CampaignTimer: FC = () => {
   return (
     <div className="relative border-b border-red-500/20 bg-black px-4 py-2 text-white">
       {/* Container wraps nicely on desktop, cleanly stacks/sizes on mobile */}
-      <div className="flex flex-col items-center justify-center gap-1.5 text-xs sm:text-sm md:flex-row md:gap-3">
+      <div className="flex flex-col items-center justify-center gap-1.5 text-xs md:flex-row md:gap-3 sm:text-sm">
         <span className="animate-pulse text-center font-semibold text-red-500">
           🚨 {campaign.title} Live
         </span>
