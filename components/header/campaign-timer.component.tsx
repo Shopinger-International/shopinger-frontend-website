@@ -95,11 +95,13 @@ const CampaignTimer: FC = () => {
     return (
       <div className="relative border-b border-gray-300 bg-black px-4 py-2.5 text-white">
         <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-          <span className="font-semibold text-orange-500">
+          <span className="text-center font-semibold text-orange-500">
             👀 Dropping Soon: {campaign.title}
           </span>
 
-          <span className="text-gray-300">{campaign.description}</span>
+          <span className="text-center text-gray-300">
+            {campaign.description}
+          </span>
 
           <div className="flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1">
             <span className="text-xs font-medium tracking-wider text-orange-500 uppercase">
@@ -116,11 +118,13 @@ const CampaignTimer: FC = () => {
   return (
     <div className="relative border-b border-red-500/20 bg-black px-4 py-2.5 text-white">
       <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-        <span className="animate-pulse font-semibold text-red-500">
+        <span className="animate-pulse text-center font-semibold text-red-500">
           🚨 {campaign.title} Live
         </span>
 
-        <span className="text-neutral-300">{campaign.description}</span>
+        <span className="text-center text-gray-300">
+          {campaign.description}
+        </span>
 
         <div className="flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1">
           <span className="text-xs font-medium tracking-wider text-red-400 uppercase">
