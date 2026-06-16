@@ -241,7 +241,7 @@ const Header: FC<{
         </div>
       </div>
       <CategorySection />
-      {/* <CampaignTimer /> */}
+      <CampaignTimer />
       {show_filter_sort_bar && (
         <FilterSortBar disable_side_filter={disable_side_filter} />
       )}

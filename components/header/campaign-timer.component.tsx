@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+
 // types
 import type { FC } from "react";
 
-// hooks
-import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
-
 // helpers
 import { differenceInSeconds } from "date-fns";
+
+// hooks
+import useGetTimeWindowCampaign from "@/hooks/axios/campaign/use-get-time-window-campaign.hook";
 
 type TimeLeft = {
   days: number;
@@ -15,8 +17,8 @@ type TimeLeft = {
   seconds: number;
 };
 
-function getTimeLeft(end_at: Date): TimeLeft {
-  const diff_in_sec = Math.max(0, differenceInSeconds(end_at, new Date()));
+function getTimeLeft(target_date: Date): TimeLeft {
+  const diff_in_sec = Math.max(0, differenceInSeconds(target_date, new Date()));
 
   return {
     days: Math.floor(diff_in_sec / 86400),
@@ -27,91 +29,115 @@ function getTimeLeft(end_at: Date): TimeLeft {
 }
 
 const CampaignTimer: FC = () => {
-  const { data: campaigns = [] } = useAllCamapigns();
-  const [time_left, setTimeLeft] = useState<TimeLeft | null>();
-  const time_window_campaigns = campaigns.find(
-    (campaign) => campaign.type == "TIME_WINDOW_SALE",
-  );
-  const end_at = time_window_campaigns?.end_at;
-  const end_at_date = end_at ? new Date(end_at) : null;
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (end_at_date) {
-      interval = setInterval(() => {
-        const next = getTimeLeft(end_at_date);
+  const { data: campaign } = useGetTimeWindowCampaign();
 
-        setTimeLeft(next);
+  const [time_left, setTimeLeft] = useState<TimeLeft | null>(null);
 
-        const is_expired =
-          next.days === 0 &&
-          next.hours === 0 &&
-          next.minutes === 0 &&
-          next.seconds === 0;
+  const campaign_state = useMemo(() => {
+    if (!campaign) return null;
 
-        if (is_expired) {
-          clearInterval(interval);
-        }
-      }, 1000);
+    const now = new Date();
+
+    const start_at = new Date(campaign.start_at);
+    const end_at = new Date(campaign.end_at);
+
+    if (now < start_at) {
+      return {
+        status: "UPCOMING" as const,
+        target_date: start_at,
+      };
     }
 
-    return () => interval && clearInterval(interval);
-  }, [end_at_date]);
-  if (!time_window_campaigns) return null;
-  return (
-    <div className="relative border-b border-gray-300 bg-black px-4 py-2.5 text-white">
-      <div className="flex items-center justify-center gap-3 text-sm">
-        {/* Hype Badge */}
-        <span className="flex items-center gap-1 font-semibold">
-          👀 Dropping Soon: {time_window_campaigns.title}
-        </span>
-        <span className="text-neutral-300">
-          {time_window_campaigns.description}
-        </span>
+    if (now < end_at) {
+      return {
+        status: "ACTIVE" as const,
+        target_date: end_at,
+      };
+    }
 
-        {/* "Starts In" Countdown */}
-        {time_left && (
-          <div className="flex items-center gap-1 rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1">
-            <span className="mr-1 text-xs font-medium tracking-wider text-orange-400 uppercase">
-              Starts In:
+    return {
+      status: "ENDED" as const,
+      target_date: null,
+    };
+  }, [campaign]);
+
+  useEffect(() => {
+    if (!campaign_state?.target_date) {
+      setTimeLeft(null);
+      return;
+    }
+
+    const updateTimer = () => {
+      setTimeLeft(getTimeLeft(campaign_state.target_date));
+    };
+
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(interval);
+  }, [campaign_state]);
+
+  if (!campaign || !campaign_state || campaign_state.status === "ENDED") {
+    return null;
+  }
+
+  const countdown = time_left && (
+    <span className="font-mono font-semibold">
+      {time_left.days > 0 && `${time_left.days}d `}
+      {String(time_left.hours).padStart(2, "0")}:
+      {String(time_left.minutes).padStart(2, "0")}:
+      {String(time_left.seconds).padStart(2, "0")}
+    </span>
+  );
+
+  if (campaign_state.status === "UPCOMING") {
+    return (
+      <div className="relative border-b border-gray-300 bg-black px-4 py-2.5 text-white">
+        <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
+          <span className="font-semibold text-orange-500">
+            👀 Dropping Soon: {campaign.title}
+          </span>
+
+          <span className="text-gray-300">{campaign.description}</span>
+
+          <div className="flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1">
+            <span className="text-xs font-medium tracking-wider text-orange-500 uppercase">
+              Starts In
             </span>
-            <span className="font-mono font-semibold text-orange-200">
-              {!!time_left?.days && time_left.days + ":"}
-              {time_left?.hours}:{time_left?.minutes}:{time_left?.seconds}
-            </span>
+
+            <span className="text-orange-200">{countdown}</span>
           </div>
-        )}
+        </div>
+      </div>
+    );
+  }
 
-        {/* Actionable CTA for previewing */}
-        <button className="font-medium text-orange-400 transition-colors hover:text-orange-300">
-          Preview Deals →
-        </button>
+  return (
+    <div className="relative border-b border-red-500/20 bg-black px-4 py-2.5 text-white">
+      <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
+        <span className="animate-pulse font-semibold text-red-500">
+          🚨 {campaign.title} Live
+        </span>
+
+        <span className="text-neutral-300">{campaign.description}</span>
+
+        <div className="flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1">
+          <span className="text-xs font-medium tracking-wider text-red-400 uppercase">
+            Ends In
+          </span>
+
+          <span className="font-bold text-red-200">{countdown}</span>
+        </div>
+
+        <Link
+          href={`campaign/${campaign.id}/${campaign.slug}`}
+          className="font-medium text-orange-400 underline underline-offset-4 transition-colors hover:text-orange-300"
+        >
+          Shop Deals →
+        </Link>
       </div>
     </div>
-    // <div className="relative border-b border-red-500/20 bg-black px-4 py-2.5 text-white">
-    //   <div className="flex items-center justify-center gap-3 text-sm">
-    //     {/* Urgency Badge */}
-    //     <span className="flex animate-pulse items-center gap-1 font-semibold text-red-400">
-    //       🚨 Last Chance
-    //     </span>
-
-    //     <span className="text-neutral-300">
-    //       Flash Sale is ending encoding! Up to 50% off
-    //     </span>
-
-    //     {/* High-Urgency Countdown */}
-    //     <div className="flex items-center gap-1 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1">
-    //       <span className="mr-1 text-xs font-medium tracking-wider text-red-400 uppercase">
-    //         Ends In:
-    //       </span>
-    //       <span className="font-mono font-bold text-red-200">00:45:12</span>
-    //     </div>
-
-    //     {/* Aggressive CTA */}
-    //     <button className="font-medium text-orange-400 underline underline-offset-4 transition-colors hover:text-orange-300">
-    //       Shop Deals Before They're Gone →
-    //     </button>
-    //   </div>
-    // </div>
   );
 };
 
