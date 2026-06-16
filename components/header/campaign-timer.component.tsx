@@ -83,7 +83,7 @@ const CampaignTimer: FC = () => {
   }
 
   const countdown = time_left && (
-    <span className="font-mono font-semibold">
+    <span className="font-mono font-semibold tracking-tight">
       {time_left.days > 0 && `${time_left.days}d `}
       {String(time_left.hours).padStart(2, "0")}:
       {String(time_left.minutes).padStart(2, "0")}:
@@ -93,21 +93,22 @@ const CampaignTimer: FC = () => {
 
   if (campaign_state.status === "UPCOMING") {
     return (
-      <div className="relative border-b border-gray-300 bg-black px-4 py-2.5 text-white">
-        <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
+      <div className="relative border-b border-gray-300 bg-black px-4 py-2 text-white">
+        <div className="flex flex-col items-center justify-center gap-1.5 text-xs sm:text-sm md:flex-row md:gap-3">
           <span className="text-center font-semibold text-orange-500">
             👀 Dropping Soon: {campaign.title}
           </span>
 
-          <span className="text-center text-gray-300">
+          {/* Hidden on mobile, shows up on medium screens and up */}
+          <span className="hidden max-w-md truncate text-center text-gray-300 md:inline">
             {campaign.description}
           </span>
 
-          <div className="flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1">
-            <span className="text-xs font-medium tracking-wider text-orange-500 uppercase">
+          {/* Squeezed padding slightly for mobile */}
+          <div className="flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-orange-500/10 px-2.5 py-0.5 md:px-3 md:py-1">
+            <span className="text-[10px] font-medium tracking-wider text-orange-500 uppercase md:text-xs">
               Starts In
             </span>
-
             <span className="text-orange-200">{countdown}</span>
           </div>
         </div>
@@ -116,30 +117,34 @@ const CampaignTimer: FC = () => {
   }
 
   return (
-    <div className="relative border-b border-red-500/20 bg-black px-4 py-2.5 text-white">
-      <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
+    <div className="relative border-b border-red-500/20 bg-black px-4 py-2 text-white">
+      {/* Container wraps nicely on desktop, cleanly stacks/sizes on mobile */}
+      <div className="flex flex-col items-center justify-center gap-1.5 text-xs sm:text-sm md:flex-row md:gap-3">
         <span className="animate-pulse text-center font-semibold text-red-500">
           🚨 {campaign.title} Live
         </span>
 
-        <span className="text-center text-gray-300">
+        {/* Hidden on mobile to save vertical landscape */}
+        <span className="hidden max-w-md truncate text-center text-gray-300 md:inline">
           {campaign.description}
         </span>
 
-        <div className="flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1">
-          <span className="text-xs font-medium tracking-wider text-red-400 uppercase">
-            Ends In
-          </span>
+        {/* Combined countdown layout and action item wrap logic */}
+        <div className="flex items-center gap-3 md:gap-3">
+          <div className="flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2.5 py-0.5 md:px-3 md:py-1">
+            <span className="text-[10px] font-medium tracking-wider text-red-400 uppercase md:text-xs">
+              Ends In
+            </span>
+            <span className="font-bold text-red-200">{countdown}</span>
+          </div>
 
-          <span className="font-bold text-red-200">{countdown}</span>
+          <Link
+            href={`campaign/${campaign.id}/${campaign.slug}`}
+            className="font-medium text-orange-400 underline underline-offset-4 transition-colors hover:text-orange-300"
+          >
+            Shop Deals →
+          </Link>
         </div>
-
-        <Link
-          href={`campaign/${campaign.id}/${campaign.slug}`}
-          className="font-medium text-orange-400 underline underline-offset-4 transition-colors hover:text-orange-300"
-        >
-          Shop Deals →
-        </Link>
       </div>
     </div>
   );
