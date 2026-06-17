@@ -1,5 +1,5 @@
 // api/product.ts
-import webAxios from "@/lib/axios/web.lib";
+import Axios from "@/lib/axios/private.lib";
 
 // react query
 import { useQuery } from "@tanstack/react-query";
@@ -20,7 +20,7 @@ const getProductAvailability = async (
   product_id: number,
   variant_id: number,
 ): Promise<ProductAvailabilityResponse["data"]> => {
-  const { data } = await webAxios.get<ProductAvailabilityResponse>(
+  const { data } = await Axios.get<ProductAvailabilityResponse>(
     "/get-product-availability",
     {
       params: {
