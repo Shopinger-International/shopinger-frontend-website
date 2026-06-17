@@ -100,7 +100,7 @@ const CampaignTimer: FC = () => {
           </span>
 
           {/* Hidden on mobile, shows up on medium screens and up */}
-          <span className="hidden max-w-md truncate text-center text-gray-300 md:inline">
+          <span className="hidden max-w-md truncate text-center text-gray-300 lg:inline">
             {campaign.description}
           </span>
 
@@ -125,7 +125,7 @@ const CampaignTimer: FC = () => {
         </span>
 
         {/* Hidden on mobile to save vertical landscape */}
-        <span className="hidden max-w-md truncate text-center text-gray-300 md:inline">
+        <span className="hidden max-w-md truncate text-center text-gray-300 lg:inline">
           {campaign.description}
         </span>
 
