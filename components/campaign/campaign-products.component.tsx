@@ -50,6 +50,7 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
         product_medias,
         reviews_count,
         avg_rating,
+        sub_sub_category_id,
       } = product;
       const updated_title =
         !brand ||
@@ -65,8 +66,6 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
       );
 
       const first_variant = sortedVariants[0];
-      console.log("value of first variant", first_variant);
-
       if (!first_variant) return null;
       const { id: variant_id, variant_medias, variant_pricing } = first_variant;
       const { mrp, selling_price_with_commission } = variant_pricing;
@@ -90,6 +89,7 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
         total_reviews: reviews_count,
         product_reviews_link,
         avg_rating,
+        sub_sub_category_id,
       };
     })
     .filter(Boolean);

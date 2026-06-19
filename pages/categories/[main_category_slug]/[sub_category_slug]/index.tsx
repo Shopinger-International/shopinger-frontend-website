@@ -17,6 +17,9 @@ import FooterStateProvider from "@/provider/footer-state-provider";
 // helpers
 import { capitalizeValue } from "@/helpers/common.helper";
 
+// analytics
+import useCategoryViewed from "@/hooks/analytics/use-category-viewed.hook";
+
 type IProps = {
   sub_category_slug: string;
   category_slug: string;
@@ -26,6 +29,10 @@ const SubCategory: NextPageWithLayout<IProps> = ({
   category_slug,
   sub_category_slug,
 }) => {
+  useCategoryViewed({
+    category_slug: sub_category_slug,
+    category_type: "SUB",
+  });
   const category_name = sub_category_slug
     .split("-")
     .map((word) => capitalizeValue(word))

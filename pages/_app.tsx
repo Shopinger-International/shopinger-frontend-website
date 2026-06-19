@@ -11,6 +11,7 @@ import type { AppProps } from "next/app";
 import { SnackbarProvider } from "notistack";
 import SelectedAddressProvider from "@/provider/selected-address-provider.component";
 import AlgoliaInsightsProvider from "@/provider/algolia-insights-provider";
+import AnalyticsProvider from "@/provider/analytics.provider";
 
 // react query
 import {
@@ -52,6 +53,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     <QueryClientProvider client={query_client}>
       <HydrationBoundary state={pageProps.dehydratedState}>
         <AlgoliaInsightsProvider>
+          <AnalyticsProvider />
           <SnackbarProvider
             autoHideDuration={3000}
             anchorOrigin={{

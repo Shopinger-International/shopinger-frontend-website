@@ -34,6 +34,9 @@ import {
 import { getMappings } from "@/hooks/axios/common/use-category-mappings.hook";
 import { useProductAvailability } from "@/hooks/axios/product/use-get-product-availbility.hook";
 
+// analytics
+import useProductViewed from "@/hooks/analytics/use-product-viewed.hook";
+
 export const getProduct = async (
   product_id: number,
 ): Promise<{
@@ -90,6 +93,12 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   product,
   category_mappings,
 }) => {
+  useProductViewed({
+    product_id,
+    variant_id,
+    category_id: product.sub_sub_category_id,
+    category_type: "SUB_SUB",
+  });
   const variant = product.variants?.find(
     (variant) => variant.id == variant_id,
   ) as IVariant;

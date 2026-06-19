@@ -17,11 +17,18 @@ import FooterStateProvider from "@/provider/footer-state-provider";
 // helpers
 import { capitalizeValue } from "@/helpers/common.helper";
 
+// analytics
+import useCategoryViewed from "@/hooks/analytics/use-category-viewed.hook";
+
 type IProps = {
   category_slug: string;
 };
 
 const MainCategoryPage: NextPageWithLayout<IProps> = ({ category_slug }) => {
+  useCategoryViewed({
+    category_slug,
+    category_type: "MAIN",
+  });
   const category_name = category_slug
     .split("-")
     .map((word) => capitalizeValue(word))

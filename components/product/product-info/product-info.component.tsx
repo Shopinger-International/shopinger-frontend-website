@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { use, useEffect } from "react";
+
+// const
+import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
+
 // types
 import type { FC } from "react";
 import type IProduct from "@/types/product";
@@ -32,6 +35,9 @@ import { generateSlug } from "@/helpers/product.helper";
 // lib
 import insightsClient from "@/lib/algolia/algolia-insight.lib";
 
+// analytics events
+import addedToCartEvent from "@/analytics/events/added-to-cart.event";
+
 type IProps = {
   product: IProduct;
   variant: IVariant;
@@ -57,6 +63,7 @@ const ProductInfo: FC<IProps> = ({
 }) => {
   const router = useRouter();
   const { data: user_details } = useUserDetails();
+  const user_id = user_details?.id;
   const is_logged_in = !!user_details;
   const create_buying_intent_mutation = useCreateBuyingIntentMutation();
   const add_to_cart_mutation = useAddToCartMutation();
@@ -213,6 +220,16 @@ const ProductInfo: FC<IProps> = ({
               },
               {
                 onSuccess() {
+                  user_id &&
+                    addedToCartEvent({
+                      user_id,
+                      product_id: product.id,
+                      variant_id: variant.id,
+                      category_id: product.sub_sub_category_id,
+                      category_type: "SUB_SUB",
+                      source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                    });
+
                   const query = router.query;
                   const query_id =
                     typeof query.query_id === "string"

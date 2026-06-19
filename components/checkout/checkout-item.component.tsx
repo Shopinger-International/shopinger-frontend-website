@@ -1,5 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+
+// const
+import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
+
 // types
 import type { FC } from "react";
 import type IVariant from "@/types/variant";
@@ -14,6 +18,7 @@ import useCartItemIncreaseMutation from "@/hooks/axios/cart/use-cart-item-increa
 import useCartItemDecreaseMutation from "@/hooks/axios/cart/use-cart-item-decrease-mutation.hook";
 import useCartItemRemoveMutation from "@/hooks/axios/cart/use-cart-item-remove-mutation.hook";
 import useUpdateIntentQuantityMutation from "@/hooks/axios/checkout/use-update-intent-quantity-mutation.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // icons
 import { X } from "lucide-react";
@@ -21,6 +26,10 @@ import { X } from "lucide-react";
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
 import clsx from "clsx";
+
+// analytics events
+import removedFromCart from "@/analytics/events/removed-from-cart.event";
+import addedToCartEvent from "@/analytics/events/added-to-cart.event";
 
 const getStockAvailabilityText = (stock_status: IStockStatus) => {
   switch (stock_status) {
@@ -44,6 +53,8 @@ type IProps = {
 };
 
 const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
+  const { data: user_details } = useUserDetails();
+  const user_id = user_details?.id;
   const { title, id: product_id } = product;
   const {
     variant_attribute_values,
@@ -165,9 +176,24 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                 show_decrease_disabled={cart_item_decrease_mutation.isPending}
                 onDecrease={() => {
                   if (type == "cart-checkout") {
-                    cart_item_decrease_mutation.mutate({
-                      variant_id,
-                    });
+                    cart_item_decrease_mutation.mutate(
+                      {
+                        variant_id,
+                      },
+                      {
+                        onSuccess() {
+                          user_id &&
+                            removedFromCart({
+                              user_id,
+                              product_id,
+                              variant_id,
+                              category_id: product.sub_sub_category_id,
+                              category_type: "SUB_SUB",
+                              source: ANALYTICS_SOURCE_TYPE.CART,
+                            });
+                        },
+                      },
+                    );
                   } else {
                     update_intent_quantity_mutation.mutate({
                       intent_id: intent_id as string,
@@ -178,9 +204,24 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                 }}
                 onIncrease={() => {
                   if (type == "cart-checkout") {
-                    cart_item_increase_mutation.mutate({
-                      variant_id,
-                    });
+                    cart_item_increase_mutation.mutate(
+                      {
+                        variant_id,
+                      },
+                      {
+                        onSuccess() {
+                          user_id &&
+                            addedToCartEvent({
+                              user_id,
+                              product_id,
+                              variant_id,
+                              category_id: product.sub_sub_category_id,
+                              category_type: "SUB_SUB",
+                              source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                            });
+                        },
+                      },
+                    );
                   } else {
                     update_intent_quantity_mutation.mutate({
                       intent_id: intent_id as string,
@@ -197,10 +238,26 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                   className="flex size-10 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
                   disabled={cart_item_remove_mutation.isPending}
                   onClick={() =>
-                    cart_item_remove_mutation.mutate({
-                      product_id,
-                      variant_id,
-                    })
+                    cart_item_remove_mutation.mutate(
+                      {
+                        product_id,
+                        variant_id,
+                      },
+                      {
+                        onSuccess() {
+                          user_id &&
+                            removedFromCart({
+                              user_id,
+                              product_id,
+                              variant_id,
+                              category_id: product.sub_sub_category_id,
+                              category_type: "SUB_SUB",
+                              source: ANALYTICS_SOURCE_TYPE.CART,
+                              quantity: selected_stock,
+                            });
+                        },
+                      },
+                    )
                   }
                 >
                   <X size={18} />
@@ -221,9 +278,24 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
           quantity={selected_stock}
           onDecrease={() => {
             if (type == "cart-checkout") {
-              cart_item_decrease_mutation.mutate({
-                variant_id,
-              });
+              cart_item_decrease_mutation.mutate(
+                {
+                  variant_id,
+                },
+                {
+                  onSuccess() {
+                    user_id &&
+                      removedFromCart({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: product.sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CART,
+                      });
+                  },
+                },
+              );
             } else {
               update_intent_quantity_mutation.mutate({
                 intent_id: intent_id as string,
@@ -234,9 +306,24 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
           }}
           onIncrease={() => {
             if (type == "cart-checkout") {
-              cart_item_increase_mutation.mutate({
-                variant_id,
-              });
+              cart_item_increase_mutation.mutate(
+                {
+                  variant_id,
+                },
+                {
+                  onSuccess() {
+                    user_id &&
+                      addedToCartEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: product.sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                      });
+                  },
+                },
+              );
             } else {
               update_intent_quantity_mutation.mutate({
                 intent_id: intent_id as string,
@@ -253,10 +340,26 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
             className="flex size-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300"
             disabled={cart_item_remove_mutation.isPending}
             onClick={() =>
-              cart_item_remove_mutation.mutate({
-                product_id,
-                variant_id,
-              })
+              cart_item_remove_mutation.mutate(
+                {
+                  product_id,
+                  variant_id,
+                },
+                {
+                  onSuccess() {
+                    user_id &&
+                      removedFromCart({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: product.sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CART,
+                        quantity: selected_stock,
+                      });
+                  },
+                },
+              )
             }
           >
             <X size={18} />

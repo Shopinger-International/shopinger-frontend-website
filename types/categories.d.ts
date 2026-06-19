@@ -1,3 +1,4 @@
+
 interface IBaseCategory {
   id: number;
   name: string;

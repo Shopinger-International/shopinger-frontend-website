@@ -143,6 +143,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         product_medias,
         reviews_count,
         avg_rating,
+        sub_sub_category_id
       } = product;
       const updated_title =
         !brand ||
@@ -187,6 +188,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         total_reviews: reviews_count,
         product_reviews_link,
         avg_rating,
+        sub_sub_category_id
       };
     })
     .filter(Boolean);

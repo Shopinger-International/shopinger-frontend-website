@@ -47,7 +47,6 @@ const useGetCategoryProducts = ({
   filters,
   search,
 }: GetProductsByCategoryParams) => {
-  console.log("value of search inside api", search);
   return useInfiniteQuery({
     queryKey: [
       "products-by-category",
