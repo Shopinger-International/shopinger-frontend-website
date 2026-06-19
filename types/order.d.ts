@@ -74,7 +74,6 @@ type IOrder = {
   payment_method: string;
   total_mrp:number;
   sub_total: number;
-  delivery_fee: number;
   platform_fee: number;
   total_amount: number;
   gst: number;

@@ -37,6 +37,7 @@ import insightsClient from "@/lib/algolia/algolia-insight.lib";
 
 // analytics events
 import addedToCartEvent from "@/analytics/events/added-to-cart.event";
+import buyNowClickedEvent from "@/analytics/events/buy-now-clicked.event";
 
 type IProps = {
   product: IProduct;
@@ -279,6 +280,15 @@ const ProductInfo: FC<IProps> = ({
             create_buying_intent_mutation.isPending || !is_product_available
           }
           onClick={() => {
+            user_id &&
+              buyNowClickedEvent({
+                user_id,
+                product_id: product.id,
+                variant_id: variant.id,
+                category_id: product.sub_sub_category_id,
+                category_type: "SUB_SUB",
+                source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+              });
             if (is_logged_in) {
               create_buying_intent_mutation.mutate(
                 {

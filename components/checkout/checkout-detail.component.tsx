@@ -1,8 +1,8 @@
 // types
 import type { FC } from "react";
 import type { IAddress } from "@/types/address";
-import type IOrder from "@/types/order";
 import type { ICart } from "@/types/cart";
+import type { IResponse as IVerifyPaymentResponse } from "@/hooks/axios/cart/verify-payment-mutation.hook";
 
 // local components
 import AddressBar from "@/components/cart/address-bar.component";
@@ -21,7 +21,7 @@ type IProps = {
   platform_fee: number;
   total_items: number;
   handleAddressDrawerState: (open: boolean) => void;
-  handleOrderSuccess: (order: IOrder) => void;
+  handleOrderSuccess: (order: IVerifyPaymentResponse["order"]) => void;
 };
 const CheckoutDetail: FC<IProps> = ({
   intent_id,

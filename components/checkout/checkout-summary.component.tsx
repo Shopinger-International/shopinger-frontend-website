@@ -1,8 +1,12 @@
 import Link from "next/link";
+
+// const
+import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
+
 // types
 import type { FC } from "react";
 import type { IAddress } from "@/types/address";
-import type IOrder from "@/types/order";
+import type { IResponse as IVerifyPaymentResponse } from "@/hooks/axios/cart/verify-payment-mutation.hook";
 
 // helpers
 import clsx from "clsx";
@@ -15,10 +19,13 @@ import useBuyNowCheckoutMutation from "@/hooks/axios/checkout/use-buy-now-checko
 import useCreateRazorpayOrderMutation from "@/hooks/axios/cart/create-razorpay-order-mutation.hook";
 import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation.hook";
 
+// analytics event
+import orderCompletedEvent from "@/analytics/events/order-completed.event";
+
 type IProps = {
   handleShowLoginModal: () => void;
   handleShowAddresDrawer: () => void;
-  handleOrderSuccess: (order: IOrder) => void;
+  handleOrderSuccess: (order: IVerifyPaymentResponse["order"]) => void;
   selected_address: IAddress | null;
   sub_total: number;
   total_amount: number;
@@ -48,6 +55,7 @@ const CheckoutSummary: FC<IProps> = ({
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
   const verify_payment_mutation = useVerifyPaymentMutation();
   const { data: user_detail } = useUserDetails();
+  const user_id = user_detail?.id;
   const delivery_fee = selected_address?.delivery_fee ?? 0;
   const grand_total = total_amount + delivery_fee + platform_fee;
   return (
@@ -128,9 +136,10 @@ const CheckoutSummary: FC<IProps> = ({
                 },
                 {
                   onSuccess(data) {
+                    const order_id = data.order_id;
                     create_razorpay_order_mutation.mutate(
                       {
-                        order_id: data.order_id,
+                        order_id,
                       },
                       {
                         onSuccess(data) {
@@ -148,6 +157,29 @@ const CheckoutSummary: FC<IProps> = ({
                                 },
                                 {
                                   onSuccess(response) {
+                                    if (user_id) {
+                                      response.order.order_items.forEach(
+                                        ({
+                                          product_id,
+                                          variant_id,
+                                          quantity,
+                                          ...item
+                                        }) => {
+                                          orderCompletedEvent({
+                                            user_id,
+                                            product_id,
+                                            variant_id,
+                                            order_id: Number(order_id),
+                                            category_id:
+                                              item.product.sub_sub_category_id,
+                                            category_type: "SUB_SUB",
+                                            quantity,
+                                            source:
+                                              ANALYTICS_SOURCE_TYPE.CHECKOUT,
+                                          });
+                                        },
+                                      );
+                                    }
                                     handleOrderSuccess(response.order);
                                   },
                                 },
@@ -168,9 +200,10 @@ const CheckoutSummary: FC<IProps> = ({
                 },
                 {
                   onSuccess(data) {
+                    const order_id = data.order_id;
                     create_razorpay_order_mutation.mutate(
                       {
-                        order_id: data.order_id,
+                        order_id,
                       },
                       {
                         onSuccess(data) {
@@ -188,6 +221,29 @@ const CheckoutSummary: FC<IProps> = ({
                                 },
                                 {
                                   onSuccess(response) {
+                                    if (user_id) {
+                                      response.order.order_items.forEach(
+                                        ({
+                                          product_id,
+                                          variant_id,
+                                          quantity,
+                                          ...item
+                                        }) => {
+                                          orderCompletedEvent({
+                                            user_id,
+                                            product_id,
+                                            variant_id,
+                                            order_id: Number(order_id),
+                                            category_id:
+                                              item.product.sub_sub_category_id,
+                                            category_type: "SUB_SUB",
+                                            quantity,
+                                            source:
+                                              ANALYTICS_SOURCE_TYPE.CHECKOUT,
+                                          });
+                                        },
+                                      );
+                                    }
                                     handleOrderSuccess(response.order);
                                   },
                                 },
