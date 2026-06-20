@@ -1,12 +1,9 @@
-import { FC, useRef } from "react";
+import { FC, useCallback } from "react";
 import Link from "next/link";
-import { Swiper, SwiperSlide } from "swiper/react";
+import useEmblaCarousel from "embla-carousel-react";
 
-import { Navigation } from "swiper/modules";
-
-// css
-import "swiper/css";
-import "swiper/css/navigation";
+// types
+import type { IResponse } from "@/hooks/axios/home/use-feed.hook";
 
 // icons
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -14,16 +11,24 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // local components
 import BestDealsCard from "@/components/home/best-deals/best-deals-card.component";
 
-const BestDeals: FC = () => {
-  const swiperRef = useRef<any>(null);
+type IProps = {
+  products: IResponse["data"]["deals_of_the_day"];
+};
 
-  const handlePrev = () => {
-    swiperRef.current?.slidePrev();
-  };
+const BestDeals: FC<IProps> = ({ products }) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: true, // Emulates Swiper's free-flowing auto slides view
+  });
 
-  const handleNext = () => {
-    swiperRef.current?.slideNext();
-  };
+  const handlePrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const handleNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
 
   return (
     <section className="bg-[#FFE2D0]">
@@ -31,11 +36,11 @@ const BestDeals: FC = () => {
         {/* Section Header */}
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-semibold text-gray-900 md:text-3xl">
-            Best Deals for you
+            Deals of the day
           </h2>
         </div>
 
-        {/* Swiper Container */}
+        {/* Carousel Wrapper */}
         <div className="relative mb-2">
           {/* Left Arrow */}
           <button
@@ -46,19 +51,17 @@ const BestDeals: FC = () => {
             <ChevronLeft className="h-6 w-6" />
           </button>
 
-          {/* Swiper */}
-          <Swiper
-            modules={[Navigation]}
-            spaceBetween={16}
-            onSwiper={(swiper) => (swiperRef.current = swiper)}
-            slidesPerView="auto"
-          >
-            {Array.from({ length: 9 }).map((_, i) => (
-              <SwiperSlide key={i} className="w-auto!">
-                <BestDealsCard />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          {/* Embla Viewport */}
+          <div className="overflow-hidden" ref={emblaRef}>
+            {/* Embla Container */}
+            <div className="flex gap-4">
+              {products.map((product, i) => (
+                <div key={i} className="w-auto shrink-0">
+                  <BestDealsCard {...product} />
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Right Arrow */}
           <button

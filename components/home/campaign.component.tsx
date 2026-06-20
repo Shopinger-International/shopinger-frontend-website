@@ -52,7 +52,7 @@ const Campaign = () => {
     return () => {
       emabla_api.off("select", onSelect);
     };
-  }, [emabla_api, campaigns, onSelect]);
+  }, [emabla_api, campaigns.length, onSelect]);
   return (
     <div className="relative flex flex-col gap-2">
       <div ref={embla_ref} className="overflow-hidden">
