@@ -34,10 +34,9 @@ const useCategoryViewed = ({
         event.category_type == category_type,
     );
     !already_viewed &&
-      user_id &&
       category_id &&
       analytics.track({
-        user_id,
+        ...(user_id ? { user_id } : {}),
         event_name: ANALYTICS_EVENT_TYPE.CATEGORY_VIEWED,
         category_id,
         category_type,

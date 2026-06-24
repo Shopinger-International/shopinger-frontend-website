@@ -182,15 +182,14 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                       },
                       {
                         onSuccess() {
-                          user_id &&
-                            removedFromCart({
-                              user_id,
-                              product_id,
-                              variant_id,
-                              category_id: product.sub_sub_category_id,
-                              category_type: "SUB_SUB",
-                              source: ANALYTICS_SOURCE_TYPE.CART,
-                            });
+                          removedFromCart({
+                            user_id,
+                            product_id,
+                            variant_id,
+                            category_id: product.sub_sub_category_id,
+                            category_type: "SUB_SUB",
+                            source: ANALYTICS_SOURCE_TYPE.CART,
+                          });
                         },
                       },
                     );
@@ -210,15 +209,14 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                       },
                       {
                         onSuccess() {
-                          user_id &&
-                            addedToCartEvent({
-                              user_id,
-                              product_id,
-                              variant_id,
-                              category_id: product.sub_sub_category_id,
-                              category_type: "SUB_SUB",
-                              source: ANALYTICS_SOURCE_TYPE.CATEGORY,
-                            });
+                          addedToCartEvent({
+                            user_id,
+                            product_id,
+                            variant_id,
+                            category_id: product.sub_sub_category_id,
+                            category_type: "SUB_SUB",
+                            source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                          });
                         },
                       },
                     );
@@ -245,16 +243,15 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                       },
                       {
                         onSuccess() {
-                          user_id &&
-                            removedFromCart({
-                              user_id,
-                              product_id,
-                              variant_id,
-                              category_id: product.sub_sub_category_id,
-                              category_type: "SUB_SUB",
-                              source: ANALYTICS_SOURCE_TYPE.CART,
-                              quantity: selected_stock,
-                            });
+                          removedFromCart({
+                            user_id,
+                            product_id,
+                            variant_id,
+                            category_id: product.sub_sub_category_id,
+                            category_type: "SUB_SUB",
+                            source: ANALYTICS_SOURCE_TYPE.CART,
+                            quantity: selected_stock,
+                          });
                         },
                       },
                     )
@@ -284,15 +281,14 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                 },
                 {
                   onSuccess() {
-                    user_id &&
-                      removedFromCart({
-                        user_id,
-                        product_id,
-                        variant_id,
-                        category_id: product.sub_sub_category_id,
-                        category_type: "SUB_SUB",
-                        source: ANALYTICS_SOURCE_TYPE.CART,
-                      });
+                    removedFromCart({
+                      user_id,
+                      product_id,
+                      variant_id,
+                      category_id: product.sub_sub_category_id,
+                      category_type: "SUB_SUB",
+                      source: ANALYTICS_SOURCE_TYPE.CART,
+                    });
                   },
                 },
               );
@@ -312,15 +308,14 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                 },
                 {
                   onSuccess() {
-                    user_id &&
-                      addedToCartEvent({
-                        user_id,
-                        product_id,
-                        variant_id,
-                        category_id: product.sub_sub_category_id,
-                        category_type: "SUB_SUB",
-                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
-                      });
+                    addedToCartEvent({
+                      user_id,
+                      product_id,
+                      variant_id,
+                      category_id: product.sub_sub_category_id,
+                      category_type: "SUB_SUB",
+                      source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                    });
                   },
                 },
               );
@@ -347,16 +342,15 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                 },
                 {
                   onSuccess() {
-                    user_id &&
-                      removedFromCart({
-                        user_id,
-                        product_id,
-                        variant_id,
-                        category_id: product.sub_sub_category_id,
-                        category_type: "SUB_SUB",
-                        source: ANALYTICS_SOURCE_TYPE.CART,
-                        quantity: selected_stock,
-                      });
+                    removedFromCart({
+                      user_id,
+                      product_id,
+                      variant_id,
+                      category_id: product.sub_sub_category_id,
+                      category_type: "SUB_SUB",
+                      source: ANALYTICS_SOURCE_TYPE.CART,
+                      quantity: selected_stock,
+                    });
                   },
                 },
               )

@@ -33,7 +33,7 @@ const useProductViewed = ({
     );
     !already_viewed &&
       analytics.track({
-        user_id,
+        ...(user_id ? { user_id } : {}),
         event_name: ANALYTICS_EVENT_TYPE.PRODUCT_VIEWED,
         product_id,
         variant_id,

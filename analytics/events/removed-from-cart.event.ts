@@ -17,7 +17,7 @@ function removedFromCart({
   source,
   quantity = 1,
 }: {
-  user_id: number;
+  user_id?: number;
   product_id: number;
   variant_id: number;
   category_id: number;
@@ -26,7 +26,7 @@ function removedFromCart({
   quantity?: number;
 }) {
   analytics.track({
-    user_id,
+    ...(user_id ? { user_id } : {}),
     event_name: ANALYTICS_EVENT_TYPE.REMOVED_FROM_CART,
     product_id,
     variant_id,

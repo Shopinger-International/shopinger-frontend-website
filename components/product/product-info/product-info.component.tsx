@@ -221,15 +221,14 @@ const ProductInfo: FC<IProps> = ({
               },
               {
                 onSuccess() {
-                  user_id &&
-                    addedToCartEvent({
-                      user_id,
-                      product_id: product.id,
-                      variant_id: variant.id,
-                      category_id: product.sub_sub_category_id,
-                      category_type: "SUB_SUB",
-                      source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                    });
+                  addedToCartEvent({
+                    user_id,
+                    product_id: product.id,
+                    variant_id: variant.id,
+                    category_id: product.sub_sub_category_id,
+                    category_type: "SUB_SUB",
+                    source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                  });
 
                   const query = router.query;
                   const query_id =

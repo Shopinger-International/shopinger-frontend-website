@@ -16,7 +16,7 @@ function addedToCartEvent({
   category_type,
   source,
 }: {
-  user_id: number;
+  user_id?: number;
   product_id: number;
   variant_id: number;
   category_id: number;
@@ -24,13 +24,13 @@ function addedToCartEvent({
   source: IAnalyticsSourceType;
 }) {
   analytics.track({
-    user_id,
+    ...(user_id ? { user_id } : {}),
     event_name: ANALYTICS_EVENT_TYPE.ADDED_TO_CART,
     product_id,
     variant_id,
     category_id,
     category_type,
-    quantity:1,
+    quantity: 1,
     source,
   });
 }

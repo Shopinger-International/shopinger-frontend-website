@@ -175,15 +175,14 @@ const ProductCard: FC<IProps> = ({
                   },
                   {
                     onSuccess() {
-                      user_id &&
-                        addedToCartEvent({
-                          user_id,
-                          product_id,
-                          variant_id,
-                          category_id: sub_sub_category_id,
-                          category_type: "SUB_SUB",
-                          source: ANALYTICS_SOURCE_TYPE.CATEGORY,
-                        });
+                      addedToCartEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                      });
                       query_id &&
                         index_name &&
                         object_id &&
