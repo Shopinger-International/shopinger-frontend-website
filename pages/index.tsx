@@ -27,6 +27,7 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // helpers
 import { getCampaigns } from "@/hooks/axios/campaign/use-campaigns.hook";
+import { getFeed } from "@/hooks/axios/home/use-feed.hook";
 
 type IProps = {
   dehydratedState: DehydratedState;
@@ -124,14 +125,15 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
       queryKey: ["campaigns"],
       queryFn: () => getCampaigns(),
     }),
+    queryClient.prefetchQuery({
+      queryKey: ["feed"],
+      queryFn: () => getFeed(),
+    }),
   ]);
   const dehydratedState = dehydrate(queryClient);
-  const stringifiedData = JSON.stringify(dehydratedState);
-  const sizeInBytes = Buffer.byteLength(stringifiedData, "utf8");
-  const sizeInKB = (sizeInBytes / 1024).toFixed(2);
   return {
     props: {
-      dehydratedState: dehydratedState,
+      dehydratedState,
     },
   };
 };

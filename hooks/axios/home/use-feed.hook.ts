@@ -40,12 +40,17 @@ export type IResponse = {
     category_recommendations: Array<ICategoryRecommendation>;
   };
 };
+
+export const getFeed = async () => {
+  const { data } = await Axios.get<IResponse>("/home-feed");
+  return data.data;
+};
+
 const useFeed = () => {
   return useQuery<IResponse["data"]>({
     queryKey: ["feed"],
     async queryFn() {
-      const { data } = await Axios.get<IResponse>("/home-feed");
-      return data.data;
+      return getFeed();
     },
   });
 };
