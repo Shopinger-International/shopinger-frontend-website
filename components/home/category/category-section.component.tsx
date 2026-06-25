@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useCallback, useState, useEffect } from "react";
 // types
 import type { FC } from "react";
@@ -55,12 +54,19 @@ const CategorySection: FC<{
   }, [embla_api]);
 
   return (
-    <section>
+    <section aria-labelledby="recommended-categories">
       <div className="max-w-8xl mx-auto space-y-6 p-4">
         {/* Header */}
-        <h2 className="text-xl font-semibold text-gray-900 md:text-3xl">
+        <h2
+          id="recommended-categories"
+          className="text-xl font-semibold text-gray-900 md:text-3xl"
+        >
           Categories you might like
         </h2>
+        <p className="sr-only">
+          Browse categories recommended for you based on popular and relevant
+          products.
+        </p>
 
         {/* Carousel Wrapper */}
         <div className="relative">
@@ -77,13 +83,18 @@ const CategorySection: FC<{
           {/* Embla Viewport */}
           <div className="overflow-hidden" ref={embla_ref}>
             {/* Embla Container */}
-            <div className="flex gap-4">
-              {category_recommendations.map((categroy_recommendation, i) => (
-                <div key={i} className="min-w-0 shrink-0 grow-0 select-none">
-                  <CategoryCard {...categroy_recommendation} />
-                </div>
-              ))}
-            </div>
+            <ul className="flex gap-4">
+              {category_recommendations.map(
+                (categroy_recommendation, index) => (
+                  <li
+                    key={`category-section-${index}`}
+                    className="min-w-0 shrink-0 grow-0 select-none"
+                  >
+                    <CategoryCard {...categroy_recommendation} />
+                  </li>
+                ),
+              )}
+            </ul>
           </div>
 
           {/* Right arrow */}

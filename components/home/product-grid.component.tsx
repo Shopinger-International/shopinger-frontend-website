@@ -25,7 +25,7 @@ const ProductGrid: FC<IProps> = ({ title, products }) => {
   return (
     <section
       aria-labelledby={`product-grid-${title}`}
-      className="space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-3"
+      className="space-y-3 rounded-xl border border-gray-300 bg-gray-100 p-3"
     >
       {/* Header */}
       <div className="flex items-center justify-between">

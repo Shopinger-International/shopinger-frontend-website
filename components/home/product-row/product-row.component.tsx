@@ -56,7 +56,7 @@ const ProductRow: FC<IProps> = ({ title, products, background_style }) => {
     <section
       aria-labelledby={`section-${title}`}
       className={clsx(
-        "space-y-2 rounded-xl border border-gray-300 p-4",
+        "space-y-2 rounded-xl border border-gray-300 p-3",
         background_style,
       )}
     >
