@@ -93,6 +93,7 @@ const Campaign: FC = () => {
       <button
         onClick={() => emabla_api?.scrollPrev()}
         className="absolute top-1/2 left-4 z-10 hidden -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60 lg:inline-block"
+        aria-label="Previous campaign"
       >
         <ChevronLeft className="size-4 text-white lg:size-6" />
       </button>
@@ -100,6 +101,7 @@ const Campaign: FC = () => {
       <button
         onClick={() => emabla_api?.scrollNext()}
         className="absolute top-1/2 right-4 z-10 hidden -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60 lg:inline-block"
+        aria-label="Next campaign"
       >
         <ChevronRight className="size-4 text-white lg:size-6" />
       </button>

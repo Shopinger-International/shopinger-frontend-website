@@ -74,6 +74,7 @@ const ProductRow: FC<IProps> = ({ title, products, background_style }) => {
               onClick={() => embla_api?.scrollPrev()}
               disabled={!cta_state.can_scroll_prev}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white transition hover:bg-orange-500 hover:text-white disabled:text-gray-300 disabled:hover:bg-white"
+              aria-label="Show previous products"
             >
               <ChevronLeft size={18} />
             </button>
@@ -82,6 +83,7 @@ const ProductRow: FC<IProps> = ({ title, products, background_style }) => {
               onClick={() => embla_api?.scrollNext()}
               disabled={!cta_state.can_scroll_next}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white transition hover:bg-orange-500 hover:text-white disabled:text-gray-300 disabled:hover:bg-white"
+              aria-label="Show next products"
             >
               <ChevronRight size={18} />
             </button>
