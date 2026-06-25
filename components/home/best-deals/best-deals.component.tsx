@@ -35,7 +35,7 @@ const BestDeals: FC<IProps> = ({ products }) => {
       <div className="max-w-8xl mx-auto p-4">
         {/* Section Header */}
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-gray-900 md:text-3xl">
+          <h2 className="text-xl font-semibold text-gray-900 md:text-3xl">
             Deals of the day
           </h2>
         </div>

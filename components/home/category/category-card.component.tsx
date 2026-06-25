@@ -18,7 +18,7 @@ const CategoryCard: FC<ICategoryRecommendation> = ({
   sub_sub_category_slug,
   products = [],
 }) => {
-  const category_url = `categories/${main_category_slug}/${["SUB", "SUB_SUB"].includes(category_type) ? sub_category_slug : ""}/${category_type == "SUB_SUB" ? sub_sub_category_slug : ""}`;
+  const category_url = `categories/${main_category_slug}${["SUB", "SUB_SUB"].includes(category_type) ? "/" + sub_category_slug : ""}${category_type == "SUB_SUB" ? "/" + sub_sub_category_slug : ""}`;
   const formatted_products = products.map(
     ({ product_id, variant_id, title, media_url }) => ({
       href: `/${generateSlug(title)}/p/${product_id}/${variant_id}`,

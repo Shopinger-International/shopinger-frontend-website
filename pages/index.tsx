@@ -13,6 +13,7 @@ import ProductGrid from "@/components/home/product-grid.component";
 import ProductMarquee from "@/components/home/product-marquee.component";
 import BestDeals from "@/components/home/best-deals/best-deals.component";
 import CategorySection from "@/components/home/category/category-section.component";
+import ProductRow from "@/components/home/product-row/product-row.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -22,12 +23,21 @@ import { QueryClient, dehydrate } from "@tanstack/react-query";
 
 // hooks
 import useFeed from "@/hooks/axios/home/use-feed.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+
+// helpers
+import { getCampaigns } from "@/hooks/axios/campaign/use-campaigns.hook";
+
+type IProps = {
+  dehydratedState: DehydratedState;
+};
 
 const HomePage: NextPageWithLayout = () => {
   const { data: home_feed } = useFeed();
   const product_recommendations = home_feed?.product_recommendations ?? [];
   const continue_shopping_recommendations =
     home_feed?.continue_shopping_recommendations ?? [];
+  const featured_products = home_feed?.featured_products ?? [];
   const buy_again_recommendations = home_feed?.buy_again_recommendations ?? [];
   const category_recommendations = home_feed?.category_recommendations ?? [];
   const trending_product_recommendations =
@@ -37,68 +47,91 @@ const HomePage: NextPageWithLayout = () => {
 
   const best_seller_products = home_feed?.best_seller_products ?? [];
   const deals_of_the_day = home_feed?.deals_of_the_day ?? [];
+
+  const show_trending_section = trending_product_recommendations.length >= 6;
+  const show_new_arrivals_section = new_arrivals.length >= 6;
+  const show_featured_section = featured_products.length >= 6;
+  const show_best_seller_section = best_seller_products.length >= 6;
+  const { data: user } = useUserDetails();
   return (
     <>
       <div className="space-y-4 pt-(--header-height)">
         <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
           <Campaign />
-          <ProductMarquee />
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {product_recommendations.length >= 6 && (
-              <ProductGrid
-                title={"Recommended for you"}
-                products={product_recommendations}
-              />
-            )}
-            {continue_shopping_recommendations.length >= 6 && (
-              <ProductGrid
-                title={"Continue Shopping"}
-                products={continue_shopping_recommendations}
-              />
-            )}
-            {buy_again_recommendations.length >= 6 && (
-              <ProductGrid
-                title={"Buy Again"}
-                products={buy_again_recommendations}
-              />
-            )}
-
-            <ProductGrid
-              title={"Trending Products"}
-              products={trending_product_recommendations}
+          {/* <ProductMarquee /> */}
+          {continue_shopping_recommendations.length >= 6 && (
+            <ProductRow
+              products={continue_shopping_recommendations}
+              title={
+                user?.name
+                  ? `${user.name}, pick up where you left off`
+                  : "Based on your recent browsing activity"
+              }
+              background_style="bg-[#FFE2D0]"
             />
-
-            <ProductGrid title={"New Arrivals"} products={new_arrivals} />
-            <ProductGrid
-              title={"Best Seller"}
-              products={best_seller_products}
-            />
+          )}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {show_trending_section && (
+              <ProductGrid
+                title={"Trending Products"}
+                products={trending_product_recommendations}
+              />
+            )}
+            {show_new_arrivals_section && (
+              <ProductGrid title={"New Arrivals"} products={new_arrivals} />
+            )}
+            {show_featured_section ? (
+              <ProductGrid title={"Featured"} products={featured_products} />
+            ) : show_best_seller_section ? (
+              <ProductGrid
+                title={"Best Seller"}
+                products={best_seller_products}
+              />
+            ) : (
+              <></>
+            )}
           </div>
+
+          {product_recommendations.length >= 6 && (
+            <ProductRow
+              products={product_recommendations}
+              title={"Handpicked for You"}
+              background_style="bg-lime-200"
+            />
+          )}
         </div>
-        <BestDeals products = {deals_of_the_day} />
+
         {category_recommendations.length >= 5 && (
           <CategorySection
             category_recommendations={category_recommendations}
           />
         )}
+        <BestDeals products={deals_of_the_day} />
       </div>
     </>
   );
 };
 
-type Props = {
-  dehydratedState: DehydratedState;
-};
-export const getServerSideProps: GetServerSideProps<Props> = async (
+export const getServerSideProps: GetServerSideProps<IProps> = async (
   context,
 ) => {
   const cookie = context.req.headers.cookie ?? "";
   const queryClient = new QueryClient();
 
-  await prefetchCommonData(queryClient, cookie);
+  await Promise.all([
+    prefetchCommonData(queryClient, cookie),
+    queryClient.prefetchQuery({
+      queryKey: ["campaigns"],
+      queryFn: () => getCampaigns(),
+    }),
+  ]);
+  const dehydratedState = dehydrate(queryClient);
+  const stringifiedData = JSON.stringify(dehydratedState);
+  const sizeInBytes = Buffer.byteLength(stringifiedData, "utf8");
+  const sizeInKB = (sizeInBytes / 1024).toFixed(2);
   return {
     props: {
-      dehydratedState: dehydrate(queryClient),
+      dehydratedState: dehydratedState,
     },
   };
 };

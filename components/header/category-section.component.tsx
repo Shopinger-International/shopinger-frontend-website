@@ -13,18 +13,13 @@ import { Menu, ChevronLeft, ChevronRight } from "lucide-react";
 
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
-import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
 
 // helpers
 import clsx from "clsx";
 
-// const
-import { CAMPAIGN_TYPE } from "@/constants/campaign.constant";
-
 const CategorySection: FC = () => {
   const router = useRouter();
   const { data: categories = [] } = useCategories(true);
-  const { data: campaigns = [] } = useAllCamapigns();
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
   const [selected_sub_category, setSelectedSubCategory] =
     useState<ISubCategory | null>();
@@ -32,10 +27,6 @@ const CategorySection: FC = () => {
   const [can_scroll_right, setCanScrollRight] = useState(false);
   const nav_ref = useRef<HTMLDivElement>(null);
   const sub_nav_ref = useRef<HTMLDivElement>(null);
-
-  const time_window_campaign = campaigns.find(
-    (campaign) => campaign.type == CAMPAIGN_TYPE.TIME_WINDOW_SALE,
-  );
 
   const updateScrollState = (el: HTMLDivElement | null) => {
     if (!el) return;

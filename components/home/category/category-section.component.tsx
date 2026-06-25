@@ -1,8 +1,14 @@
-import { useCallback } from "react";
 import Link from "next/link";
+import { useCallback, useState, useEffect } from "react";
+// types
 import type { FC } from "react";
+// hooks
 import useEmblaCarousel from "embla-carousel-react";
+
+// icons
 import { ChevronLeft, ChevronRight } from "lucide-react";
+
+// components
 
 // types
 import type { ICategoryRecommendation } from "@/hooks/axios/home/use-feed.hook";
@@ -12,51 +18,64 @@ import CategoryCard from "@/components/home/category/category-card.component";
 const CategorySection: FC<{
   category_recommendations: Array<ICategoryRecommendation>;
 }> = ({ category_recommendations }) => {
-  // Initialize Embla with your configurations (similar to slidesPerView="auto" and spaceBetween)
-  const [emblaRef, emblaApi] = useEmblaCarousel({
+  const [cta_state, updateCtaState] = useState<{
+    can_scroll_prev?: boolean;
+    can_scroll_next?: boolean;
+  }>({});
+  const [embla_ref, embla_api] = useEmblaCarousel({
     align: "start",
-    dragFree: true, // Allows smooth, grab-and-flick scrolling like Swiper's grabCursor
+    dragFree: true,
     containScroll: "trimSnaps",
   });
 
   // Navigation handlers
   const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
+    if (embla_api) embla_api.scrollPrev();
+  }, [embla_api]);
 
   const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
+    if (embla_api) embla_api.scrollNext();
+  }, [embla_api]);
+
+  useEffect(() => {
+    const update = () => {
+      updateCtaState({
+        can_scroll_prev: embla_api?.canScrollPrev(),
+        can_scroll_next: embla_api?.canScrollNext(),
+      });
+    };
+    update();
+    embla_api?.on("select", update);
+    embla_api?.on("reInit", update);
+
+    return () => {
+      embla_api?.off("select", update);
+      embla_api?.off("reInit", update);
+    };
+  }, [embla_api]);
 
   return (
     <section>
       <div className="max-w-8xl mx-auto space-y-6 p-4">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold md:text-3xl">
-            Categories you might like
-          </h2>
-          <Link
-            href="/testing"
-            className="text-sm font-semibold text-orange-500 hover:underline md:text-base"
-          >
-            View All
-          </Link>
-        </div>
+        <h2 className="text-xl font-semibold text-gray-900 md:text-3xl">
+          Categories you might like
+        </h2>
 
         {/* Carousel Wrapper */}
         <div className="relative">
           {/* Left arrow */}
           <button
             onClick={scrollPrev}
-            className="absolute top-1/2 -left-2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
+            disabled={!cta_state.can_scroll_prev}
+            className="absolute top-1/2 -left-2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300 md:flex"
             aria-label="Previous slide"
           >
             <ChevronLeft />
           </button>
 
           {/* Embla Viewport */}
-          <div className="overflow-hidden" ref={emblaRef}>
+          <div className="overflow-hidden" ref={embla_ref}>
             {/* Embla Container */}
             <div className="flex gap-4">
               {category_recommendations.map((categroy_recommendation, i) => (
@@ -70,7 +89,8 @@ const CategorySection: FC<{
           {/* Right arrow */}
           <button
             onClick={scrollNext}
-            className="absolute top-1/2 -right-2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
+            disabled={!cta_state.can_scroll_next}
+            className="absolute top-1/2 -right-2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300 md:flex"
             aria-label="Next slide"
           >
             <ChevronRight />

@@ -27,6 +27,7 @@ export type IResponse = {
   data: {
     product_recommendations: Array<IProductRecommendation>;
     continue_shopping_recommendations: Array<IProductRecommendation>;
+    featured_products: Array<IProductRecommendation>;
     buy_again_recommendations: Array<IProductRecommendation>;
     trending_product_recommendations: Array<IProductRecommendation>;
     new_arrivals: Array<IProductRecommendation>;
