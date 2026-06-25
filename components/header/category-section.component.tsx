@@ -77,6 +77,7 @@ const CategorySection: FC = () => {
                 onClick={() =>
                   nav_ref.current?.scrollBy({ left: -200, behavior: "smooth" })
                 }
+                aria-label="Scroll categories left"
                 className={clsx(
                   "shrink-0 rounded-full bg-white/20 p-1.5 transition-opacity",
                   can_scroll_left
@@ -84,15 +85,14 @@ const CategorySection: FC = () => {
                     : "pointer-events-none hidden",
                 )}
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft aria-hidden={true} className="h-5 w-5" />
               </button>
 
               {/* Navigation Items */}
               <nav
                 ref={nav_ref}
-                className={
-                  "no-scrollbar flex min-w-0 items-center gap-6 overflow-x-auto whitespace-nowrap"
-                }
+                aria-label="Main product categories"
+                className="no-scrollbar overflow-x-auto"
               >
                 {/* Grocery */}
                 {/* {[
@@ -177,35 +177,43 @@ const CategorySection: FC = () => {
                     </Link>
                   );
                 })} */}
-                {categories.map((category) => {
-                  const { id, name } = category;
-                  return (
-                    <button
-                      key={`category-${id}`}
-                      className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                      onClick={() => {
-                        router.push(`/categories/${category.slug}`);
-                        setSelectedCategory(category);
-                      }}
-                    >
-                      <span
-                        className={clsx(
-                          "text-sm font-medium text-white group-hover:underline",
-                          selected_category?.id == id &&
-                            "font-semibold underline",
-                        )}
-                      >
-                        {name}
-                      </span>
-                    </button>
-                  );
-                })}
+                <ul
+                  className={
+                    "flex min-w-0 items-center gap-6 whitespace-nowrap"
+                  }
+                >
+                  {categories.map((category) => {
+                    const { id, name } = category;
+                    return (
+                      <li key={`category-${id}`}>
+                        <Link
+                          href={`/categories/${category.slug}`}
+                          className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
+                          onClick={() => {
+                            setSelectedCategory(category);
+                          }}
+                        >
+                          <span
+                            className={clsx(
+                              "text-sm font-medium text-white group-hover:underline",
+                              selected_category?.id == id &&
+                                "font-semibold underline",
+                            )}
+                          >
+                            {name}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
               </nav>
               {/* Right Arrow */}
               <button
                 onClick={() =>
                   nav_ref.current?.scrollBy({ left: 200, behavior: "smooth" })
                 }
+                aria-label="Scroll categories right"
                 className={clsx(
                   "shrink-0 rounded-full bg-white/20 p-1.5 transition-opacity",
                   can_scroll_right
@@ -213,7 +221,7 @@ const CategorySection: FC = () => {
                     : "pointer-events-none opacity-0",
                 )}
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight aria-hidden={true} className="h-5 w-5" />
               </button>
             </div>
           </div>
@@ -259,32 +267,36 @@ const CategorySection: FC = () => {
 
           <nav
             ref={sub_nav_ref}
-            className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap"
+            aria-label={`${selected_category.name} subcategories`}
           >
-            {selected_category.subCategories.map((sub_category) => {
-              const { id, name, slug: sub_slug } = sub_category;
-              return (
-                <Link
-                  key={`sub-category-${id}`}
-                  className={clsx(
-                    "group flex shrink-0 items-center gap-2 rounded-md py-1.5 font-medium hover:underline",
-                    selected_sub_category?.id == id &&
-                      "font-semibold underline",
-                  )}
-                  replace={true}
-                  href={`/categories/${selected_category.slug}/${sub_slug}`}
-                  onClick={() => setSelectedSubCategory(sub_category)}
-                >
-                  <span className="text-sm">{name}</span>
-                </Link>
-              );
-            })}
+            <ul className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap">
+              {selected_category.subCategories.map((sub_category) => {
+                const { id, name, slug: sub_slug } = sub_category;
+                return (
+                  <li key={`sub-category-${id}`}>
+                    <Link
+                      className={clsx(
+                        "group flex shrink-0 items-center gap-2 rounded-md py-1.5 font-medium hover:underline",
+                        selected_sub_category?.id == id &&
+                          "font-semibold underline",
+                      )}
+                      replace={true}
+                      href={`/categories/${selected_category.slug}/${sub_slug}`}
+                      onClick={() => setSelectedSubCategory(sub_category)}
+                    >
+                      <span className="text-sm">{name}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
 
           <button
             onClick={() =>
               sub_nav_ref.current?.scrollBy({ left: 200, behavior: "smooth" })
             }
+            aria-label="Scroll categories right"
             className="shrink-0 rounded-full p-1 hover:bg-gray-100"
           >
             <ChevronRight className="h-6 w-6" />
