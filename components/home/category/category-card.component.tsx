@@ -45,9 +45,12 @@ const CategoryCard: FC<ICategoryRecommendation> = ({
       </div>
 
       <ul className="mb-4 grid grid-cols-2 gap-4 md:mb-7">
-        {formatted_products.slice(0, 4).map(({ href, src, alt }) => (
-          <li className="aspect-square overflow-hidden rounded-lg border border-gray-300 hover:opacity-95">
-            <Link key={href} href={href} className="relative inline-block w-full h-full">
+        {formatted_products.slice(0, 4).map(({ href, src, alt }, index) => (
+          <li
+            key={`${category_name} product ${index}`}
+            className="aspect-square overflow-hidden rounded-lg border border-gray-300 hover:opacity-95"
+          >
+            <Link href={href} className="relative inline-block h-full w-full">
               <Image
                 sizes={"100px"}
                 src={src}
@@ -62,7 +65,7 @@ const CategoryCard: FC<ICategoryRecommendation> = ({
       <div className="relative">
         <Link
           href={category_url}
-          className="inline-block font-semibold text-orange-500 hover:underline hover:underline-offset-2 transition-colors hover:text-orange-600"
+          className="inline-block font-semibold text-orange-500 transition-colors hover:text-orange-600 hover:underline hover:underline-offset-2"
           title={`Explore ${category_name}`}
         >
           Explore All

@@ -54,13 +54,19 @@ const BestDeals: FC<IProps> = ({ products }) => {
   }, [embla_api]);
 
   return (
-    <section className="bg-orange-100">
+    <section aria-labelledby="deals-of-the-day" className="bg-orange-100">
       <div className="max-w-8xl mx-auto p-4">
         {/* Section Header */}
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900 md:text-3xl">
+          <h2
+            id="deals-of-the-day"
+            className="text-xl font-semibold text-gray-900 md:text-3xl"
+          >
             Deals of the day
           </h2>
+          <p className="sr-only">
+            Explore today's best discounted products and limited-time offers.
+          </p>
         </div>
 
         {/* Carousel Wrapper */}
@@ -78,13 +84,13 @@ const BestDeals: FC<IProps> = ({ products }) => {
           {/* Embla Viewport */}
           <div className="overflow-hidden" ref={embla_ref}>
             {/* Embla Container */}
-            <div className="flex gap-4">
+            <ul className="flex gap-4">
               {products.map((product, i) => (
-                <div key={i} className="w-auto shrink-0">
+                <li key={i} className="w-auto shrink-0">
                   <BestDealsCard {...product} />
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
           {/* Right Arrow */}
@@ -97,13 +103,6 @@ const BestDeals: FC<IProps> = ({ products }) => {
             <ChevronRight className="h-6 w-6" />
           </button>
         </div>
-
-        <Link
-          href="/fashion"
-          className="inline-block font-semibold text-orange-500 hover:underline"
-        >
-          See All Offers
-        </Link>
       </div>
     </section>
   );

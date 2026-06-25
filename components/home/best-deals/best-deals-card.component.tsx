@@ -22,12 +22,11 @@ const BestDealsCard: FC<IResponse["data"]["deals_of_the_day"][number]> = ({
       <div className="overflow-hidden rounded-2xl border border-gray-100/50 bg-white shadow-md transition-all duration-300 group-hover:-translate-y-0.5 group-focus-visible:ring-2 group-focus-visible:ring-orange-500 group-focus-visible:ring-offset-2">
         <div className="flex aspect-square items-center justify-center bg-linear-to-br from-orange-50/60 to-orange-100/20 p-4 md:p-6">
           <div className="relative h-full w-full overflow-hidden rounded-xl">
-            {/* Swapped standard img for Next.js Image component */}
             <Image
               src={media_url}
-              alt="Yellow floral dress"
+              alt={`${title} product image`}
               fill
-              sizes="(max-width: 768px) 240px, 288px"
+              sizes="(max-width: 640px) 260px, 220px"
               className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
               priority={false}
             />
