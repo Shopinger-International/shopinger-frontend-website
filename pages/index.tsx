@@ -58,7 +58,7 @@ const HomePage: NextPageWithLayout = () => {
   return (
     <>
       <HomeSeo
-        is_prod={is_prod}
+        is_prod={true}
         title="Shopinger | Everything Delivered in Minutes"
         description="Get groceries, fashion, electronics, beauty products, home essentials, and more delivered to your doorstep in minutes. Experience fast and reliable quick commerce with Shopinger."
         image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
