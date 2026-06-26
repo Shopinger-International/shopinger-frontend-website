@@ -18,12 +18,21 @@ import MainLayout from "@/components/layout/main-layout.component";
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
 import { QueryClient, dehydrate } from "@tanstack/react-query";
-
-// helpers
-import { getCampaigns } from "@/hooks/axios/campaign/use-campaigns.hook";
+import webAxios from "@/lib/axios/web.lib";
 
 // hooks
-import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
+
+export const getCampaign = async (campaign_id: number) => {
+  try {
+    const { data } = await webAxios.get<{
+      success: boolean;
+      data: ICampaign;
+    }>(`/get-campaign/${campaign_id}`);
+    return data.data;
+  } catch {
+    return null;
+  }
+};
 
 type IParams = {
   campaign_id: string;
@@ -33,13 +42,16 @@ type IParams = {
 type IProps = {
   dehydratedState: DehydratedState;
   campaign_id: number;
+  campaign: ICampaign;
 };
-const CampaignPage: NextPageWithLayout<IProps> = ({ campaign_id }) => {
-  const { data: campaigns = [] } = useAllCamapigns();
-  const campaign = campaigns.find(
-    (campaign) => campaign.id == campaign_id,
-  ) as ICampaign;
+const CampaignPage: NextPageWithLayout<IProps> = ({
+  campaign_id,
+  campaign,
+}) => {
   const is_prod = process.env.NODE_ENV == "production";
+  if (!campaign) {
+    return null;
+  }
   return (
     <>
       <Seo
@@ -50,6 +62,8 @@ const CampaignPage: NextPageWithLayout<IProps> = ({ campaign_id }) => {
         image={campaign.banner}
       />
       <section className="min-h-screen w-full">
+        <h1 className="sr-only">{campaign.title}</h1>
+        <p className="sr-only">{campaign.description}</p>
         <div className="mx-auto mt-(--header-height) max-w-6xl space-y-3 pb-4">
           <CampaignProducts campaign_id={campaign_id} />
         </div>
@@ -75,18 +89,19 @@ export const getServerSideProps = (async ({ params, req }) => {
   const cookie = req.headers.cookie ?? "";
   const campaign_id = Number(params.campaign_id);
   const query_client = new QueryClient();
-  await Promise.all([
-    prefetchCommonData(query_client, cookie),
-    query_client.prefetchQuery({
-      queryKey: ["campaigns"],
-      queryFn: () => getCampaigns(),
-    }),
-  ]);
+  await prefetchCommonData(query_client, cookie);
+  const campaign = await getCampaign(campaign_id);
+  if (!campaign) {
+    return {
+      notFound: true,
+    };
+  }
   const dehydratedState = dehydrate(query_client);
   return {
     props: {
       dehydratedState,
       campaign_id,
+      campaign,
     },
   };
 }) satisfies GetServerSideProps<IProps, IParams>;
