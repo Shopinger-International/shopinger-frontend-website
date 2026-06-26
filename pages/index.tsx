@@ -10,10 +10,10 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import Campaign from "@/components/home/campaign.component";
 import ProductGrid from "@/components/home/product-grid.component";
-import ProductMarquee from "@/components/home/product-marquee.component";
 import BestDeals from "@/components/home/best-deals/best-deals.component";
 import CategorySection from "@/components/home/category/category-section.component";
 import ProductRow from "@/components/home/product-row/product-row.component";
+import HomeSeo from "@/components/common/seo/home.seo";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -54,8 +54,16 @@ const HomePage: NextPageWithLayout = () => {
   const show_featured_section = featured_products.length >= 6;
   const show_best_seller_section = best_seller_products.length >= 6;
   const { data: user } = useUserDetails();
+  const is_prod = process.env.NODE_ENV == "production";
   return (
     <>
+      <HomeSeo
+        is_prod={is_prod}
+        title="Shopinger | Everything Delivered in Minutes"
+        description="Get groceries, fashion, electronics, beauty products, home essentials, and more delivered to your doorstep in minutes. Experience fast and reliable quick commerce with Shopinger."
+        image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
+        url="https://shopinger.com/"
+      />
       <div className="space-y-4 pt-(--header-height)">
         <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
           <Campaign />
