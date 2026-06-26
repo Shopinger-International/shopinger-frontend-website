@@ -41,8 +41,14 @@ export type IResponse = {
   };
 };
 
-export const getFeed = async () => {
-  const { data } = await Axios.get<IResponse>("/home-feed");
+export const getFeed = async (cookie?: string) => {
+  const { data } = await Axios.get<IResponse>("/home-feed", {
+    headers: cookie
+      ? {
+          cookie,
+        }
+      : {},
+  });
   return data.data;
 };
 

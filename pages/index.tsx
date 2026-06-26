@@ -84,17 +84,27 @@ const HomePage: NextPageWithLayout = () => {
               <ProductGrid
                 title={"Trending Products"}
                 products={trending_product_recommendations}
+                view_all_href="section/trending-products"
               />
             )}
             {show_new_arrivals_section && (
-              <ProductGrid title={"New Arrivals"} products={new_arrivals} />
+              <ProductGrid
+                title={"New Arrivals"}
+                products={new_arrivals}
+                view_all_href="section/new-arrivals"
+              />
             )}
             {show_featured_section ? (
-              <ProductGrid title={"Featured"} products={featured_products} />
+              <ProductGrid
+                title={"Featured"}
+                products={featured_products}
+                view_all_href="section/featured-products"
+              />
             ) : show_best_seller_section ? (
               <ProductGrid
                 title={"Best Seller"}
                 products={best_seller_products}
+                view_all_href="section/best-seller"
               />
             ) : (
               <></>
@@ -135,7 +145,7 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
     }),
     queryClient.prefetchQuery({
       queryKey: ["feed"],
-      queryFn: () => getFeed(),
+      queryFn: () => getFeed(cookie),
     }),
   ]);
   const dehydratedState = dehydrate(queryClient);

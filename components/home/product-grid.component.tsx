@@ -11,9 +11,10 @@ import { generateSlug } from "@/helpers/product.helper";
 type IProps = {
   title: string;
   products: Array<IProductRecommendation>;
+  view_all_href: string;
 };
 
-const ProductGrid: FC<IProps> = ({ title, products }) => {
+const ProductGrid: FC<IProps> = ({ title, products, view_all_href }) => {
   const formatted_products = products.map(
     ({ product_id, variant_id, title, media_url }) => ({
       href: `/${generateSlug(title)}/p/${product_id}/${variant_id}`,
@@ -36,12 +37,14 @@ const ProductGrid: FC<IProps> = ({ title, products }) => {
           {title}
         </h2>
 
-        {/* <Link
-          href={viewAllHref}
+        <Link
+          href={view_all_href}
+          title={`View all ${title}`}
+          aria-label={`View all ${title}`}
           className="text-sm font-semibold text-orange-500 hover:underline md:text-base"
         >
           View All
-        </Link> */}
+        </Link>
       </div>
       <ul className="grid grid-cols-3 gap-4">
         {formatted_products
