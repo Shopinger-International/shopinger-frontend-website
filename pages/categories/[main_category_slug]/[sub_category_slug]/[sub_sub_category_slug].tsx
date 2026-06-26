@@ -38,7 +38,7 @@ const SubSubCategory: NextPageWithLayout<IProps> = ({
       <Seo
         title={`Shop ${category_name} Online | Shopinger`}
         description={`Discover ${category_name} products at great prices on Shopinger. Browse top brands, exclusive deals, and get fast delivery in minutes.`}
-        url={`${process.env.NEXT_PUBLIC_BASE_URL}/categories/${category_slug}`}
+        url={`${process.env.NEXT_PUBLIC_BASE_URL}/categories/${category_slug}/${sub_category_slug}/${sub_sub_category_slug}`}
         image={
           "https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
         }

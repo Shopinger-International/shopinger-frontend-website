@@ -19,6 +19,7 @@ import ProductInfo from "@/components/product/product-info/product-info.componen
 import RelatedProducts from "@/components/product/related-products/related-products.component";
 import LoginModal from "@/components/login/login-modal.component";
 import ReportModal from "@/components/review/report-modal.component";
+import Seo from "@/components/common/seo";
 
 // icons
 import { ChevronRight } from "lucide-react";
@@ -99,6 +100,8 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     category_id: product.sub_sub_category_id,
     category_type: "SUB_SUB",
   });
+
+  const is_prod = process.env.NODE_ENV == "production";
   const variant = product.variants?.find(
     (variant) => variant.id == variant_id,
   ) as IVariant;
@@ -167,48 +170,14 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   };
   return (
     <>
-      <Head>
-        <title>{main_title}</title>
-        <meta name="description" content={meta_description} key="desc" />
-        <meta property="og:site_name" content="Shopinger" />
-        <meta
-          property="og:url"
-          content={`${process.env.NEXT_PUBLIC_BASE_URL}/${product_slug}/p/${product_id}/${variant_id}`}
-        />
-        <meta property="og:type" content="product" />
-        <meta property="og:title" content={main_title} />
-        <meta property="og:description" content={meta_description} />
-        <meta
-          property="og:image"
-          content={
-            variant_medias[0]?.url ?? product.product_medias[0].media.url
-          }
-        />
-        <meta property="og:image:alt" content={`${main_title}`} />
+      <Seo
+        title={main_title}
+        description={meta_description}
+        image={variant_medias[0]?.url ?? product.product_medias[0].media.url}
+        url={`${process.env.NEXT_PUBLIC_BASE_URL}/${product_slug}/p/${product_id}/${variant_id}`}
+        is_prod={is_prod}
+      />
 
-        {/* TWITTER OPEN GRAPH TAGS */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:url"
-          content={`${process.env.NEXT_PUBLIC_BASE_URL}/${product_slug}/p/${product_id}/${variant_id}`}
-        />
-        <meta name="twitter:title" content={main_title} />
-        <meta name="twitter:description" content={meta_description} />
-        <meta
-          name="twitter:image"
-          content={
-            variant_medias[0]?.url ?? product.product_medias[0].media.url
-          }
-        />
-        <meta
-          name="twitter:image"
-          content={
-            variant_medias[0]?.url ?? product.product_medias[0].media.url
-          }
-        />
-        <meta name="twitter:site" content="@shopinger" />
-        <meta name="twitter:creator" content="@shopinger" />
-      </Head>
       <LoginModal
         open={login_modal_state.open}
         handleClose={() => {

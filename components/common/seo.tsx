@@ -63,6 +63,7 @@ const Seo: FC<IProps> = ({ title, description, is_prod, url, image }) => {
 
       <meta key="twitter:image" name="twitter:image" content={image} />
       <meta key="twitter:image:alt" name="twitter:image:alt" content={title} />
+      <meta name="twitter:site" content="@shopinger" />
     </Head>
   );
 };

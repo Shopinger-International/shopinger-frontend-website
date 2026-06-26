@@ -135,20 +135,20 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
   context,
 ) => {
   const cookie = context.req.headers.cookie ?? "";
-  const queryClient = new QueryClient();
+  const query_client = new QueryClient();
 
   await Promise.all([
-    prefetchCommonData(queryClient, cookie),
-    queryClient.prefetchQuery({
+    prefetchCommonData(query_client, cookie),
+    query_client.prefetchQuery({
       queryKey: ["campaigns"],
       queryFn: () => getCampaigns(),
     }),
-    queryClient.prefetchQuery({
+    query_client.prefetchQuery({
       queryKey: ["feed"],
       queryFn: () => getFeed(cookie),
     }),
   ]);
-  const dehydratedState = dehydrate(queryClient);
+  const dehydratedState = dehydrate(query_client);
   return {
     props: {
       dehydratedState,
