@@ -13,7 +13,7 @@ import ProductGrid from "@/components/home/product-grid.component";
 import BestDeals from "@/components/home/best-deals/best-deals.component";
 import CategorySection from "@/components/home/category/category-section.component";
 import ProductRow from "@/components/home/product-row/product-row.component";
-import HomeSeo from "@/components/common/seo/home.seo";
+import Seo from "@/components/common/seo";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -57,8 +57,8 @@ const HomePage: NextPageWithLayout = () => {
   const is_prod = process.env.NODE_ENV == "production";
   return (
     <>
-      <HomeSeo
-        is_prod={true}
+      <Seo
+        is_prod={is_prod}
         title="Shopinger | Everything Delivered in Minutes"
         description="Get groceries, fashion, electronics, beauty products, home essentials, and more delivered to your doorstep in minutes. Experience fast and reliable quick commerce with Shopinger."
         image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"

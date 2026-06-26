@@ -9,7 +9,7 @@ type IProps = {
   url: string;
   image: string;
 };
-const HomeSeo: FC<IProps> = ({ title, description, is_prod, url, image }) => {
+const Seo: FC<IProps> = ({ title, description, is_prod, url, image }) => {
   return (
     <Head>
       <title key="title">{title}</title>
@@ -67,4 +67,4 @@ const HomeSeo: FC<IProps> = ({ title, description, is_prod, url, image }) => {
   );
 };
 
-export default HomeSeo;
+export default Seo;
