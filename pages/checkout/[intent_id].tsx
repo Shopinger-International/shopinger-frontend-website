@@ -9,7 +9,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import type { IAddress } from "@/types/address";
 import type { GetServerSideProps } from "next";
 import type { IResponse } from "@/hooks/axios/checkout/use-checkout-intent.hook";
-import type IOrder from "@/types/order";
+import type { IResponse as IVerifyPaymentResponse } from "@/hooks/axios/cart/verify-payment-mutation.hook";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -72,7 +72,6 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
     null,
   );
 
-
   const [is_address_drawer_open, setIsAddressDrawerOpen] = useState(false);
   const [address_modal_state, setAddressModalState] =
     useState<IAddressModalState>({
@@ -81,7 +80,7 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
     });
   const [order_success_modal_state, setOrderSuccessModalState] = useState<{
     open: boolean;
-    order?: IOrder;
+    order?: IVerifyPaymentResponse["order"];
   }>({
     open: false,
   });

@@ -113,7 +113,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     ...selected_sorting_filters,
     brands: brands,
     filters: filters,
-    search: router.query.query as string,
+    search: search,
   });
 
   const category_products = data?.pages.reduce<
@@ -143,6 +143,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         product_medias,
         reviews_count,
         avg_rating,
+        sub_sub_category_id,
       } = product;
       const updated_title =
         !brand ||
@@ -163,7 +164,6 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       const {
         id: variant_id,
         variant_medias,
-        variant_inventory,
         variant_pricing,
       } = first_variant;
       const { mrp, selling_price_with_commission } = variant_pricing;
@@ -187,6 +187,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         total_reviews: reviews_count,
         product_reviews_link,
         avg_rating,
+        sub_sub_category_id,
       };
     })
     .filter(Boolean);

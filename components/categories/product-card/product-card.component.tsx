@@ -1,4 +1,8 @@
 import { useRouter } from "next/router";
+
+// const
+import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
+
 // types
 import type { FC } from "react";
 import type IMedia from "@/types/media";
@@ -15,10 +19,14 @@ import Rating from "@/components/common/rating.component";
 import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
 
 // api hooks
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
 
 // lib
 import insightsClient from "@/lib/algolia/algolia-insight.lib";
+
+// analytics events
+import addedToCartEvent from "@/analytics/events/added-to-cart.event";
 
 type IProps = {
   product_id: number;
@@ -34,6 +42,7 @@ type IProps = {
   total_reviews: number;
   product_reviews_link: string;
   avg_rating: number;
+  sub_sub_category_id: number;
 };
 
 const ProductCard: FC<IProps> = ({
@@ -50,7 +59,10 @@ const ProductCard: FC<IProps> = ({
   total_reviews,
   product_reviews_link,
   avg_rating,
+  sub_sub_category_id,
 }) => {
+  const { data: user_details } = useUserDetails();
+  const user_id = user_details?.id;
   const add_to_cart_mutation = useAddToCartMutation();
   const router = useRouter();
   const query = router.query;
@@ -155,29 +167,43 @@ const ProductCard: FC<IProps> = ({
               onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                add_to_cart_mutation.mutate({
-                  product_id: product_id,
-                  variant_id: variant_id,
-                  quantity: 1,
-                });
-                query_id &&
-                  index_name &&
-                  object_id &&
-                  insightsClient("addedToCartObjectIDsAfterSearch", {
-                    eventName: "Add to Cart",
-                    index: index_name,
-                    queryID: query_id,
-                    objectIDs: [object_id],
-                    objectData: [
-                      {
-                        price: selling_price,
-                        discount: mrp - selling_price,
-                        quantity: 1,
-                      },
-                    ],
-                    value: selling_price,
-                    currency: "INR",
-                  });
+                add_to_cart_mutation.mutate(
+                  {
+                    product_id: product_id,
+                    variant_id: variant_id,
+                    quantity: 1,
+                  },
+                  {
+                    onSuccess() {
+                      addedToCartEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                      });
+                      query_id &&
+                        index_name &&
+                        object_id &&
+                        insightsClient("addedToCartObjectIDsAfterSearch", {
+                          eventName: "Add to Cart",
+                          index: index_name,
+                          queryID: query_id,
+                          objectIDs: [object_id],
+                          objectData: [
+                            {
+                              price: selling_price,
+                              discount: mrp - selling_price,
+                              quantity: 1,
+                            },
+                          ],
+                          value: selling_price,
+                          currency: "INR",
+                        });
+                    },
+                  },
+                );
               }}
             >
               Add to cart

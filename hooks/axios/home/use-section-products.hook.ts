@@ -4,8 +4,8 @@ import Axios from "@/lib/axios/private.lib";
 // types
 import type IProduct from "@/types/product";
 
-type IGetProductsByCampaignParams = {
-  campaign_id: number;
+type IGetProductsBySectionParams = {
+  section: string;
   limit?: number;
 };
 
@@ -24,18 +24,18 @@ type IResponseType = {
   >;
 };
 
-const useCampaignProducts = ({
+const useSectionProducts = ({
   limit = 12,
-  campaign_id,
-}: IGetProductsByCampaignParams) => {
+  section,
+}: IGetProductsBySectionParams) => {
   return useInfiniteQuery({
-    queryKey: ["campaign-product", limit, campaign_id],
+    queryKey: ["section-products", limit, section],
 
     initialPageParam: 1,
 
     queryFn: async ({ pageParam }) => {
       const response = await Axios.get<IResponseType>(
-        `/get-campaign-product/${campaign_id}`,
+        `/get-section-products/${section}`,
         {
           params: {
             page: pageParam,
@@ -62,4 +62,4 @@ const useCampaignProducts = ({
   });
 };
 
-export default useCampaignProducts;
+export default useSectionProducts;

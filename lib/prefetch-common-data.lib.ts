@@ -20,7 +20,7 @@ export const prefetchCommonData = async (
       queryFn: () => getCart(cookie),
     }),
     queryClient.prefetchQuery({
-      queryKey: ["categories-list"],
+      queryKey: ["categories-list", true],
       queryFn: () => getCategory(true),
     }),
   ]);

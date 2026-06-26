@@ -1,7 +1,7 @@
 // types
 import type { FC } from "react";
-import type IOrder from "@/types/order";
 import type { IAddress } from "@/types/address";
+import type { IResponse as IVerifyPaymentResponse } from "@/hooks/axios/cart/verify-payment-mutation.hook";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
@@ -17,7 +17,7 @@ type IProps = {
   selected_address: IAddress | null;
   handleAddressDrawerState: (open: boolean) => void;
   handleShowLoginModal: (action_type: "checkout" | "change_address") => void;
-  handleOrderSuccess: (order: IOrder) => void;
+  handleOrderSuccess: (order: IVerifyPaymentResponse["order"]) => void;
 };
 
 const CartDetails: FC<IProps> = ({

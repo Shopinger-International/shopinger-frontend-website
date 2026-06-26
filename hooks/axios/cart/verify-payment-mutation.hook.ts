@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 // types
 import type { AxiosError } from "axios";
 import type IOrder from "@/types/order";
+import type { IOrderStatus } from "@/types/order";
 
 // lib
 import Axios from "@/lib/axios/private.lib";
@@ -20,7 +21,22 @@ type IRequest = {
 };
 
 export type IResponse = {
-  order: IOrder;
+  order: Omit<IOrder, "order_items"> & {
+    order_items: Array<{
+      id: number;
+      product_id: number;
+      product:{
+        sub_sub_category_id:number;
+      }
+      variant_id: number;
+      product_name: string;
+      variant_sku: string;
+      quantity: number;
+      price: number;
+      vendor_id: number;
+      order_item_status: IOrderStatus;
+    }>;
+  };
 };
 
 const useVerifyPaymentMutation = () => {
@@ -38,7 +54,6 @@ const useVerifyPaymentMutation = () => {
       query_client.invalidateQueries({
         queryKey: ["carts"],
       });
-      console.log("value of response", response);
     },
     onError(error) {
       // @ts-ignore

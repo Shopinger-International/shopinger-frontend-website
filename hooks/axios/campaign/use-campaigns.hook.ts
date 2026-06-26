@@ -17,18 +17,22 @@ export type IResponse = {
   error?: string;
 };
 
+export const getCampaigns = async () => {
+  const { data } = await webAxios.get<IResponse>(`/get-campaigns`, {
+    params: {
+      is_active: true,
+      status: "active",
+    },
+  });
+  return data.data;
+};
+
 // 4. Your final, clean type
 const useAllCamapigns = () => {
   return useQuery({
     queryKey: ["campaigns"],
     async queryFn() {
-      const { data } = await webAxios.get<IResponse>(`/get-campaigns`, {
-        params: {
-          is_active: true,
-          status:"active"
-        },
-      });
-      return data.data;
+      return getCampaigns();
     },
   });
 };

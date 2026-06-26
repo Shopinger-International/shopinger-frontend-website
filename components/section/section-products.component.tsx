@@ -4,7 +4,7 @@ import type { FC } from "react";
 import type IProduct from "@/types/product";
 
 // hooks
-import useCampaignProducts from "@/hooks/axios/campaign/use-campaign-product.hook";
+import useSectionProducts from "@/hooks/axios/home/use-section-products.hook";
 
 // helpers
 import { isNewProduct, generateSlug } from "@/helpers/product.helper";
@@ -17,9 +17,9 @@ import ProductCardSkeleton from "@/components/categories/product-card/product-ca
 import { FooterStateContext } from "@/context";
 
 type IProps = {
-  campaign_id: number;
+  section: string;
 };
-const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
+const SectionProducts: FC<IProps> = ({section}) => {
   const { updateShow: updateShowFooter } = useContext(FooterStateContext);
   const {
     data,
@@ -27,7 +27,7 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useCampaignProducts({ campaign_id });
+  } = useSectionProducts({section});
 
   const campaign_products = data?.pages.reduce<
     Array<
@@ -151,4 +151,4 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
     </>
   );
 };
-export default CampaignProducts;
+export default SectionProducts;

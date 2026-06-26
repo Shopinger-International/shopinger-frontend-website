@@ -82,12 +82,13 @@ const Header: FC<{
           {/** LOGO SECTION */}
           <Link
             href="/"
+            title="Shopinger Home"
             aria-label="Shopinger Home"
             className="relative flex h-8 w-34 shrink-0 items-center justify-center lg:h-13 lg:w-57"
           >
             <Image
               src="/light-logo.png"
-              alt="Shopinger – Online Shopping Platform"
+              alt="Shopinger"
               fill
               priority
               sizes="(max-width: 640px) 112px, (max-width: 1024px) 160px, 216px"
@@ -211,11 +212,11 @@ const Header: FC<{
                     href: "/advertise",
                     icon: Megaphone,
                   },
-                  {
-                    label: "Notification Setting",
-                    href: "notification-setting",
-                    icon: Bell,
-                  },
+                  // {
+                  //   label: "Notification Setting",
+                  //   href: "notification-setting",
+                  //   icon: Bell,
+                  // },
                 ].map(({ label, href, icon: Icon }) => (
                   <Link
                     key={label}
@@ -233,7 +234,7 @@ const Header: FC<{
             )}
           >
             {({ open }) => (
-              <button>
+              <button aria-label="More options">
                 <EllipsisVertical className="size-6 text-white" />
               </button>
             )}

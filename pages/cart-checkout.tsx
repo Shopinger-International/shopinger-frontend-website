@@ -8,7 +8,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import type { GetServerSideProps } from "next";
 import type { DehydratedState } from "@tanstack/react-query";
 import type { IAddress } from "@/types/address";
-import type IOrder from "@/types/order";
+import type { IResponse as IVerifyPaymentResponse } from "@/hooks/axios/cart/verify-payment-mutation.hook";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -83,7 +83,7 @@ const CartCheckoutPage: NextPageWithLayout = () => {
 
   const [order_success_modal_state, setOrderSuccessModalState] = useState<{
     open: boolean;
-    order?: IOrder;
+    order?: IVerifyPaymentResponse["order"];
   }>({
     open: false,
   });
