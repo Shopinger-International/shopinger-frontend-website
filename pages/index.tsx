@@ -104,7 +104,7 @@ const HomePage: NextPageWithLayout = () => {
               <ProductGrid
                 title={"Best Seller"}
                 products={best_seller_products}
-                view_all_href="section/best-seller"
+                view_all_href="section/best-sellers"
               />
             ) : (
               <></>
