@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type IMedia from "@/types/media";
-import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
+import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // helpers
 
@@ -19,7 +19,7 @@ interface IInjectedProps {
 interface IWithGalleryControlProps {
   product: IProduct;
   variant: IVariant;
-  category_mappings: ICategoryAttributeMapping[];
+  category_mappings: Array<IFormattedCategoryMapping>;
 }
 const withProductGalleryFunctionality = <P extends object>(
   BaseComponent: ComponentType<P & IInjectedProps>,
@@ -39,8 +39,7 @@ const withProductGalleryFunctionality = <P extends object>(
       .filter(
         ({ attribute }) =>
           category_mappings.find(
-            ({ attribute: mapping_attribute }) =>
-              mapping_attribute.id == attribute.id,
+            (mapping) => mapping.attribute_id == attribute.id,
           )?.is_visual,
       )
       .map(({ value }) => value);

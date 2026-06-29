@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 // types
 import type { FC, ReactNode } from "react";
 import type IAttributeType from "@/types/attribute";
-import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type IProduct from "@/types/product";
 import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 import type IReview from "@/types/review";
+import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import ProductInfoTabs from "@/components/product/product-info/product-info-tabs.component";
@@ -86,7 +86,7 @@ export const DIMENSION_ATTR = {
 
 type IProps = {
   product: IProduct;
-  category_mappings: ICategoryAttributeMapping[];
+  category_mappings: Array<IFormattedCategoryMapping>;
   handleLoginModalState: ({
     open,
     action_type,
@@ -129,7 +129,7 @@ const ProductDetails: FC<IProps> = ({
     .filter((mapping) =>
       mapping.display_area.includes(DISPLAY_AREA.TOP_HIGHLIGHTS),
     )
-    .map((mapping) => mapping.attribute.id);
+    .map((mapping) => mapping.attribute_id);
 
   let top_highlights = [
     ...product_attribute_values.filter(({ attribute }) =>
@@ -160,7 +160,7 @@ const ProductDetails: FC<IProps> = ({
       value: getReadableValue({ attribute, value }),
       unit: attribute.is_unit
         ? category_mappings.find(
-            (mapping) => mapping.attribute.code == attribute.code,
+            (mapping) => mapping.attribute_code == attribute.code,
           )?.unit_code
         : null,
     })),

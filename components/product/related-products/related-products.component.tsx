@@ -2,8 +2,7 @@ import Link from "next/link";
 import { useRef } from "react";
 // types
 import type { FC } from "react";
-import type IProduct from "@/types/product";
-import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
+import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import ProductCard from "@/components/product/related-products/product-card.component";
@@ -30,7 +29,7 @@ import useRelatedProducts from "@/hooks/axios/product/use-related-products.hook"
 
 type IProps = {
   product_id: number;
-  category_mappings: ICategoryAttributeMapping[];
+  category_mappings: Array<IFormattedCategoryMapping>;
 };
 const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
   const { data: related_products = [] } = useRelatedProducts(product_id);
@@ -50,8 +49,7 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
         .filter(
           ({ attribute }) =>
             category_mappings.find(
-              ({ attribute: mapping_attribute }) =>
-                mapping_attribute.id == attribute.id,
+              (mapping) => mapping.attribute_id == attribute.id,
             )?.is_visual,
         )
         .map(({ value }) => value);

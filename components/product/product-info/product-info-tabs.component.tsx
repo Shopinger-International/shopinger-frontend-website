@@ -1,8 +1,8 @@
 import { useState } from "react";
 // types
-import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type { FC } from "react";
 import type IProduct from "@/types/product";
+import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import AttributeInfoCell from "@/components/product/product-info/attribute-info-cell.component";
@@ -51,7 +51,7 @@ const Description: FC<{
 
 const ProductInfoTabs: FC<{
   product: IProduct;
-  category_mappings: ICategoryAttributeMapping[];
+  category_mappings: Array<IFormattedCategoryMapping>;
 }> = ({ product, category_mappings }) => {
   const {
     product_attribute_values,
@@ -67,7 +67,7 @@ const ProductInfoTabs: FC<{
     importer_pincode,
   } = product;
   const mapped_by_attribute_id = new Map(
-    category_mappings.map((mapping) => [mapping.attribute.id, mapping]),
+    category_mappings.map((mapping) => [mapping.attribute_id, mapping]),
   );
 
   const manufacturer_info_exist = !!(
