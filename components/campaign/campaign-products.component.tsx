@@ -1,7 +1,7 @@
 import { useRef, useEffect, useContext } from "react";
 // types
 import type { FC } from "react";
-import type IProduct from "@/types/product";
+import type { IResponseType } from "@/hooks/axios/campaign/use-campaign-product.hook";
 
 // hooks
 import useCampaignProducts from "@/hooks/axios/campaign/use-campaign-product.hook";
@@ -29,15 +29,12 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
     isFetchingNextPage,
   } = useCampaignProducts({ campaign_id });
 
-  const campaign_products = data?.pages.reduce<
-    Array<
-      IProduct & {
-        avg_rating: number;
-      }
-    >
-  >((acc, { products }) => {
-    return [...acc, ...products];
-  }, []);
+  const campaign_products = data?.pages.reduce<IResponseType["products"]>(
+    (acc, { products }) => {
+      return [...acc, ...products];
+    },
+    [],
+  );
 
   const formatted_campaign_products = campaign_products
     ?.map((product) => {
@@ -50,6 +47,7 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
         product_medias,
         reviews_count,
         avg_rating,
+        bought_last_month,
         sub_sub_category_id,
       } = product;
       const updated_title =
@@ -89,6 +87,7 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
         total_reviews: reviews_count,
         product_reviews_link,
         avg_rating,
+        bought_last_month,
         sub_sub_category_id,
       };
     })
@@ -131,13 +130,15 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
           ? Array.from({ length: 12 }).map((_, i) => (
               <ProductCardSkeleton key={`initial-skeleton-${i}`} />
             ))
-          : formatted_campaign_products?.map((product) => (
-              // @ts-ignore
-              <ProductCard
-                {...product}
-                key={`category-product-${product?.variant_id}`}
-              />
-            ))}
+          : formatted_campaign_products?.map((product, index) =>
+              product ? (
+                <ProductCard
+                  {...product}
+                  index={index}
+                  key={`category-product-${product?.variant_id}`}
+                />
+              ) : null,
+            )}
 
         {/* infinite scroll loading */}
         {!isProductPending &&

@@ -1,7 +1,7 @@
 import { useRef, useEffect, useContext } from "react";
 // types
 import type { FC } from "react";
-import type IProduct from "@/types/product";
+import type { IResponseType } from "@/hooks/axios/home/use-section-products.hook";
 
 // hooks
 import useSectionProducts from "@/hooks/axios/home/use-section-products.hook";
@@ -19,7 +19,7 @@ import { FooterStateContext } from "@/context";
 type IProps = {
   section: string;
 };
-const SectionProducts: FC<IProps> = ({section}) => {
+const SectionProducts: FC<IProps> = ({ section }) => {
   const { updateShow: updateShowFooter } = useContext(FooterStateContext);
   const {
     data,
@@ -27,17 +27,14 @@ const SectionProducts: FC<IProps> = ({section}) => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useSectionProducts({section});
+  } = useSectionProducts({ section });
 
-  const campaign_products = data?.pages.reduce<
-    Array<
-      IProduct & {
-        avg_rating: number;
-      }
-    >
-  >((acc, { products }) => {
-    return [...acc, ...products];
-  }, []);
+  const campaign_products = data?.pages.reduce<IResponseType["products"]>(
+    (acc, { products }) => {
+      return [...acc, ...products];
+    },
+    [],
+  );
 
   const formatted_campaign_products = campaign_products
     ?.map((product) => {
@@ -50,6 +47,7 @@ const SectionProducts: FC<IProps> = ({section}) => {
         product_medias,
         reviews_count,
         avg_rating,
+        bought_last_month,
         sub_sub_category_id,
       } = product;
       const updated_title =
@@ -89,6 +87,7 @@ const SectionProducts: FC<IProps> = ({section}) => {
         total_reviews: reviews_count,
         product_reviews_link,
         avg_rating,
+        bought_last_month,
         sub_sub_category_id,
       };
     })
@@ -131,13 +130,15 @@ const SectionProducts: FC<IProps> = ({section}) => {
           ? Array.from({ length: 12 }).map((_, i) => (
               <ProductCardSkeleton key={`initial-skeleton-${i}`} />
             ))
-          : formatted_campaign_products?.map((product) => (
-              // @ts-ignore
-              <ProductCard
-                {...product}
-                key={`category-product-${product?.variant_id}`}
-              />
-            ))}
+          : formatted_campaign_products?.map((product, index) =>
+              product ? (
+                <ProductCard
+                  {...product}
+                  index={index}
+                  key={`category-product-${product?.variant_id}`}
+                />
+              ) : null,
+            )}
 
         {/* infinite scroll loading */}
         {!isProductPending &&

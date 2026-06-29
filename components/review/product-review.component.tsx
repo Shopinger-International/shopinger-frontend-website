@@ -79,9 +79,8 @@ const ProductReview: FC<IProps> = ({
       </div>
       <div className="space-y-2">
         <Rating
-          totalStars={5}
+          total_stars={5}
           custom_rating={rating}
-          onChange={() => {}}
           size={16}
         />
         <div className="space-y-0.5">

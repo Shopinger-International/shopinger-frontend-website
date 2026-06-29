@@ -2,11 +2,11 @@ import { useRouter } from "next/router";
 import { useRef, useEffect, useState, useContext, useMemo } from "react";
 // types
 import type { FC } from "react";
-import type IProduct from "@/types/product";
 import type {
   IFilterAttribute,
   IOption,
 } from "@/hooks/axios/categories/use-category-specific-filter.hook";
+import type { IResponseType } from "@/hooks/axios/categories/use-get-category-product.hook";
 
 // local components
 import ProductCard from "@/components/categories/product-card/product-card.component";
@@ -116,15 +116,12 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
     search: search,
   });
 
-  const category_products = data?.pages.reduce<
-    Array<
-      IProduct & {
-        avg_rating: number;
-      }
-    >
-  >((acc, { products }) => {
-    return [...acc, ...products];
-  }, []);
+  const category_products = data?.pages.reduce<IResponseType["products"]>(
+    (acc, { products }) => {
+      return [...acc, ...products];
+    },
+    [],
+  );
 
   useEffect(() => {
     if (is_category_specific_filters_pending || !category_sorting_filters)
@@ -144,6 +141,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         reviews_count,
         avg_rating,
         sub_sub_category_id,
+        bought_last_month,
       } = product;
       const updated_title =
         !brand ||
@@ -161,11 +159,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       const first_variant = sortedVariants[0];
 
       if (!first_variant) return null;
-      const {
-        id: variant_id,
-        variant_medias,
-        variant_pricing,
-      } = first_variant;
+      const { id: variant_id, variant_medias, variant_pricing } = first_variant;
       const { mrp, selling_price_with_commission } = variant_pricing;
 
       const discount_percentage = Math.round(
@@ -187,6 +181,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         total_reviews: reviews_count,
         product_reviews_link,
         avg_rating,
+        bought_last_month,
         sub_sub_category_id,
       };
     })
@@ -305,13 +300,15 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
               ? Array.from({ length: 12 }).map((_, i) => (
                   <ProductCardSkeleton key={`initial-skeleton-${i}`} />
                 ))
-              : formatted_category_products?.map((product) => (
-                  //@ts-ignore
-                  <ProductCard
-                    {...product}
-                    key={`category-product-${product?.variant_id}`}
-                  />
-                ))}
+              : formatted_category_products?.map((product, index) =>
+                  product ? (
+                    <ProductCard
+                      {...product}
+                      index={index}
+                      key={`category-product-${product?.variant_id}`}
+                    />
+                  ) : null,
+                )}
 
             {/* infinite scroll loading */}
             {!isProductPending &&

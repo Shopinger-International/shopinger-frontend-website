@@ -1,48 +1,40 @@
-import { useState } from "react";
-// types
 import type { FC } from "react";
-
-// icons
 import { Star } from "lucide-react";
 
-const Rating: FC<{
-  totalStars: number;
-  onChange: (index: number) => void;
+type IProps = {
+  total_stars: number;
   size: number;
-  custom_rating?: number;
+  custom_rating: number;
   gap?: number;
-}> = ({ totalStars, onChange, size, custom_rating, gap = 2 }) => {
-  const [rating, setRating] = useState(0);
-  const [hover, setHover] = useState(0);
+};
 
-  const handleClick = (index: number) => {
-    setRating(index);
-    onChange?.(index); // callback to parent if provided
-  };
+const Rating: FC<IProps> = ({ total_stars, size, custom_rating, gap = 2 }) => {
   return (
-    <div className={`flex gap-${gap}`}>
-      {Array.from({ length: totalStars }, (_, i) => {
+    <div
+      className="flex"
+      style={{ gap }}
+      role="img"
+      aria-label={`${custom_rating.toFixed(1)} out of ${total_stars} stars`}
+    >
+      {Array.from({ length: total_stars }, (_, i) => {
         const index = i + 1;
+
         return (
-          <button
-            key={index}
-            type="button"
-            onClick={() => handleClick(index)}
-            onMouseEnter={() => !custom_rating && setHover(index)}
-            onMouseLeave={() => !custom_rating && setHover(0)}
-          >
+          <span key={index}>
             <Star
+              aria-hidden={true}
               size={size}
-              className={`transition-colors ${
-                index <= (custom_rating ?? hover ?? rating)
-                  ? "fill-orange-500 text-orange-400"
+              className={
+                index <= custom_rating
+                  ? "fill-orange-500 text-orange-500"
                   : "fill-none text-gray-400"
-              }`}
+              }
             />
-          </button>
+          </span>
         );
       })}
     </div>
   );
 };
+
 export default Rating;

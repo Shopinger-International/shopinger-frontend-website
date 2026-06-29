@@ -48,10 +48,9 @@ const RatingSummary: FC<IProps> = ({
 
         {is_mounted && (
           <Rating
-            totalStars={5}
+            total_stars={5}
             custom_rating={average_rating}
             size={is_mobile ? 18 : 20}
-            onChange={() => {}}
           />
         )}
       </div>

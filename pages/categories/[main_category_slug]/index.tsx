@@ -1,4 +1,3 @@
-import Head from "next/head";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
@@ -47,6 +46,13 @@ const MainCategoryPage: NextPageWithLayout<IProps> = ({ category_slug }) => {
         is_prod={is_prod}
       />
       <section className="min-h-screen w-full">
+        <h1 className="sr-only">Shop {category_name} Online</h1>
+
+        <p className="sr-only">
+          Browse {category_name} products on Shopinger. Discover top brands,
+          great deals, and fast delivery on a wide range of{" "}
+          {category_name.toLowerCase()}.
+        </p>
         <div className="max-w-8xl mx-auto mt-(--header-height) space-y-3 pb-4">
           <CategoryProducts
             category_slug={category_slug}
