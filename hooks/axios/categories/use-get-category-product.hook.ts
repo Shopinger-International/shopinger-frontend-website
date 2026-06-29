@@ -20,7 +20,7 @@ type GetProductsByCategoryParams = {
   search?: string;
 };
 
-type IResponseType = {
+export type IResponseType = {
   message: string;
   pagination: {
     limit: number;
@@ -31,6 +31,7 @@ type IResponseType = {
   products: Array<
     IProduct & {
       avg_rating: number;
+      bought_last_month: number;
     }
   >;
 };

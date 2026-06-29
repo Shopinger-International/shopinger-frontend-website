@@ -42,6 +42,7 @@ type IProps = {
   total_reviews: number;
   product_reviews_link: string;
   avg_rating: number;
+  bought_last_month: number;
   sub_sub_category_id: number;
 };
 
@@ -60,6 +61,7 @@ const ProductCard: FC<IProps> = ({
   product_reviews_link,
   avg_rating,
   sub_sub_category_id,
+  bought_last_month
 }) => {
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
@@ -76,6 +78,8 @@ const ProductCard: FC<IProps> = ({
     typeof query.object_id === "string" ? query.object_id : undefined;
   return (
     <Link
+      title={`View ${title}`}
+      aria-label={`View product ${title}`}
       href={{
         pathname: src,
         query: {
@@ -89,7 +93,7 @@ const ProductCard: FC<IProps> = ({
       <div className="relative aspect-3/2 overflow-hidden border-b border-gray-300 bg-gray-100">
         <Image
           src={product_thumbnail.url}
-          alt={title}
+          alt={`${title} product image`}
           fill
           className="object-contain object-top"
           sizes="300px"
@@ -121,7 +125,7 @@ const ProductCard: FC<IProps> = ({
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <span className="text-base font-medium">
-              {total_reviews.toFixed(1)}
+              {avg_rating.toFixed(1)}
             </span>
             <Rating
               totalStars={5}
@@ -141,7 +145,7 @@ const ProductCard: FC<IProps> = ({
           </div>
         </div>
         <p className="text-sm font-medium text-gray-700">
-          20+ bought in last month
+          {bought_last_month} bought in last month
         </p>
         {/* price */}
         <div className="flex items-center gap-2">
