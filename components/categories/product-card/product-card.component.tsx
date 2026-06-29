@@ -43,6 +43,7 @@ type IProps = {
   avg_rating: number;
   bought_last_month: number;
   sub_sub_category_id: number;
+  index: number;
 };
 
 const ProductCard: FC<IProps> = ({
@@ -60,6 +61,7 @@ const ProductCard: FC<IProps> = ({
   avg_rating,
   sub_sub_category_id,
   bought_last_month,
+  index,
 }) => {
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
@@ -107,6 +109,7 @@ const ProductCard: FC<IProps> = ({
       >
         <div className="relative aspect-3/2 overflow-hidden border-b border-gray-300 bg-gray-100">
           <Image
+            priority={index <= 3}
             src={product_thumbnail.url}
             alt={`${title}`}
             fill

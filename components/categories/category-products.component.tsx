@@ -300,13 +300,15 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
               ? Array.from({ length: 12 }).map((_, i) => (
                   <ProductCardSkeleton key={`initial-skeleton-${i}`} />
                 ))
-              : formatted_category_products?.map((product) => (
-                  //@ts-ignore
-                  <ProductCard
-                    {...product}
-                    key={`category-product-${product?.variant_id}`}
-                  />
-                ))}
+              : formatted_category_products?.map((product, index) =>
+                  product ? (
+                    <ProductCard
+                      {...product}
+                      index={index}
+                      key={`category-product-${product?.variant_id}`}
+                    />
+                  ) : null,
+                )}
 
             {/* infinite scroll loading */}
             {!isProductPending &&
