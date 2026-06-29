@@ -8,6 +8,7 @@ import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 import type IUser from "@/types/user";
+import type { IDisplayAreaType } from "@/types/category-attribute-mapping";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -83,11 +84,27 @@ export type ILoginModalState = {
   onCancel?: () => void;
 };
 
+export type IFormattedCategoryMapping = {
+  display_area: IDisplayAreaType[];
+  display_group: string;
+  display_order: number;
+  unit_code: string | null;
+  is_visual: boolean;
+  attribute_id: number | undefined;
+  attribute_code: string;
+  options:
+    | {
+        label: string;
+        value: string;
+      }[]
+    | undefined;
+};
+
 type IProps = {
   product_id: number;
   variant_id: number;
   product: IProduct;
-  category_mappings: ICategoryAttributeMapping[];
+  category_mappings: IFormattedCategoryMapping[];
 };
 
 const ProductPage: NextPageWithLayout<IProps> = ({
@@ -141,8 +158,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     .filter(
       ({ attribute }) =>
         category_mappings.find(
-          ({ attribute: mapping_attribute }) =>
-            mapping_attribute.id == attribute.id,
+          (mapping) => mapping.attribute_id == attribute.id,
         )?.is_visual,
     )
     .map(({ value }) => value);
@@ -300,16 +316,43 @@ export const getStaticProps = (async ({ params }) => {
 
   let { product } = await getProduct(product_id);
   let category_mappings = await getMappings(product.sub_sub_category.id);
+  const formatted_mappings = category_mappings
+    .filter(
+      ({ attribute, is_hidden }) =>
+        attribute.status !== "deprecated" || is_hidden == false,
+    )
+    .map(
+      ({
+        display_area,
+        display_group,
+        display_order,
+        unit_code,
+        is_visual,
+        attribute: { id, code, options },
+      }) => ({
+        display_area,
+        display_group,
+        display_order,
+        unit_code,
+        is_visual,
+        attribute_id: id,
+        attribute_code: code,
+        options: options?.map(({ label, value }) => ({
+          label,
+          value,
+        })),
+      }),
+    );
+
   if (!product) {
     return { notFound: true };
   }
-
   return {
     props: {
       product_id,
       variant_id,
       product,
-      category_mappings,
+      category_mappings: formatted_mappings,
     },
     revalidate: 43200, // 🔥 enable ISR
   };

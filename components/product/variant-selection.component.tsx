@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { FC } from "react";
 import type IAttributeType from "@/types/attribute";
 import type IProduct from "@/types/product";
-import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
+import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
@@ -19,7 +19,7 @@ type AttributeGroup = {
 const VariantSelection: FC<{
   product: IProduct;
   selected_attributes: Record<string, any>;
-  category_mappings: ICategoryAttributeMapping[];
+  category_mappings: Array<IFormattedCategoryMapping>;
 }> = ({
   product: { id: product_id, title, variants, brand, ...product },
   selected_attributes,
@@ -48,10 +48,10 @@ const VariantSelection: FC<{
         .sort((a, b) => {
           // visual attributes first
           const mapping_a = category_mappings.find(
-            ({ attribute }) => attribute.id == a.attribute.id,
+            (mapping) => mapping.attribute_id == a.attribute.id,
           );
           const mapping_b = category_mappings.find(
-            ({ attribute }) => attribute.id == b.attribute.id,
+            (mapping) => mapping.attribute_id == b.attribute.id,
           );
           if (mapping_a?.is_visual == mapping_b?.is_visual) return 0;
           return mapping_a?.is_visual ? -1 : 1;

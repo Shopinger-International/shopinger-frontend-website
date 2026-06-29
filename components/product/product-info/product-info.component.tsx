@@ -8,9 +8,9 @@ import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
 import type { FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
-import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
+import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // icons
 import { Star, ChevronDown } from "lucide-react";
@@ -43,7 +43,7 @@ type IProps = {
   product: IProduct;
   variant: IVariant;
   selected_attributes: Record<string, any>;
-  category_mappings: ICategoryAttributeMapping[];
+  category_mappings: Array<IFormattedCategoryMapping>;
   is_product_available: boolean;
   handleLoginModalState: ({
     open,
@@ -84,8 +84,7 @@ const ProductInfo: FC<IProps> = ({
     .filter(
       ({ attribute }) =>
         !category_mappings.find(
-          ({ attribute: mapping_attribute }) =>
-            mapping_attribute.id == attribute.id,
+          (mapping) => mapping.attribute_id == attribute.id,
         )?.is_visual,
     )
     .map(
@@ -99,8 +98,7 @@ const ProductInfo: FC<IProps> = ({
     .filter(
       ({ attribute }) =>
         category_mappings.find(
-          ({ attribute: mapping_attribute }) =>
-            mapping_attribute.id == attribute.id,
+          (mapping) => mapping.attribute_id == attribute.id,
         )?.is_visual,
     )
     .map(

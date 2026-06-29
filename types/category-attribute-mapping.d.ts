@@ -1,8 +1,11 @@
 // types
-import { IAttributeType } from "../types/attribute";
+import type IAttributeType from "@/types/attribute";
 
 type ICategoryType = "main" | "sub" | "subsub";
-type IDisplayAreaType = "specifications" | "additional info" | "top highlights";
+export type IDisplayAreaType =
+  | "specifications"
+  | "additional info"
+  | "top highlights";
 type IStatus = "added" | "inherited" | "overridden";
 
 type ICategoryAttributeMapping = {
@@ -20,7 +23,7 @@ type ICategoryAttributeMapping = {
 
   is_filterable: boolean;
   is_required: boolean;
-  is_visual:boolean;
+  is_visual: boolean;
   is_variant: boolean;
   is_hidden: boolean;
   show_on_pdp: boolean;
