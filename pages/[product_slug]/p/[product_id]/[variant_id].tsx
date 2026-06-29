@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Head from "next/head";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
@@ -57,14 +56,17 @@ export const getProduct = async (
   };
 };
 
-const getAllProducts = async (): Promise<IProduct[]> => {
-  const {
-    data: { products },
-  } = await webAxios.get<{
+type IProductObject = {
+  product_id: number;
+  variant_id: number;
+  title: string;
+};
+const getAllProducts = async (): Promise<Array<IProductObject>> => {
+  const { data } = await webAxios.get<{
     success: boolean;
-    products: IProduct[];
+    products: Array<IProductObject>;
   }>(`/get-all-products`);
-  return products;
+  return data.products;
 };
 
 type IParams = {
@@ -269,20 +271,17 @@ export default ProductPage;
 
 export const getStaticPaths = (async () => {
   const products = await getAllProducts();
-  const paths = products.flatMap(({ id: product_id, title, variants }) => {
-    const product_slug = generateSlug(title);
-    return variants.map(({ id: variant_id }) => {
-      return {
-        params: {
-          product_slug,
-          product_id: String(product_id),
-          variant_id: String(variant_id),
-        },
-      };
-    });
-  });
+  const formatted_product = products.map(
+    ({ product_id, variant_id, title }) => ({
+      params: {
+        product_id: String(product_id),
+        variant_id: String(variant_id),
+        product_slug: generateSlug(title),
+      },
+    }),
+  );
   return {
-    paths,
+    paths: formatted_product,
     fallback: "blocking",
   };
 }) satisfies GetStaticPaths;
