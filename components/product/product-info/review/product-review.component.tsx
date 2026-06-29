@@ -62,9 +62,8 @@ const ProductReview: FC<IProps> = ({
   return (
     <div className="space-y-2 rounded-xl border border-gray-300 bg-gray-50 p-6">
       <Rating
-        totalStars={5}
+        total_stars={5}
         custom_rating={rating}
-        onChange={() => {}}
         size={16}
       />
       <h4 className="text-sm font-medium text-gray-900">{title}</h4>

@@ -66,10 +66,9 @@ const RatingSummaryPopover: FC<IProps> = ({
                     {average_rating}
                   </span>
                   <Rating
-                    totalStars={5}
+                    total_stars={5}
                     custom_rating={average_rating}
                     size={20}
-                    onChange={() => {}}
                   />
                 </div>
 
