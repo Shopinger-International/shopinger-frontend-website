@@ -8,8 +8,16 @@ type IProps = {
   is_prod: boolean;
   url: string;
   image: string;
+  json_ld?: string;
 };
-const Seo: FC<IProps> = ({ title, description, is_prod, url, image }) => {
+const Seo: FC<IProps> = ({
+  title,
+  description,
+  is_prod,
+  url,
+  image,
+  json_ld,
+}) => {
   return (
     <Head>
       <title key="title">{title}</title>
@@ -64,6 +72,13 @@ const Seo: FC<IProps> = ({ title, description, is_prod, url, image }) => {
       <meta key="twitter:image" name="twitter:image" content={image} />
       <meta key="twitter:image:alt" name="twitter:image:alt" content={title} />
       <meta name="twitter:site" content="@shopinger" />
+      {json_ld && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: json_ld }}
+          key="product-jsonld"
+        />
+      )}
     </Head>
   );
 };

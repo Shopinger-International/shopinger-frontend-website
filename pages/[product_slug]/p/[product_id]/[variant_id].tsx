@@ -30,6 +30,7 @@ import {
   generateMetaDescription,
   generateSlug,
 } from "@/helpers/product.helper";
+import createProductJSONLD from "@/seo/product.jsonld";
 
 // hooks
 import { getMappings } from "@/hooks/axios/common/use-category-mappings.hook";
@@ -172,6 +173,21 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     acc[attribute.code] = value;
     return acc;
   }, {});
+  const product_json_ld = createProductJSONLD({
+    title: main_title,
+    description: meta_description,
+    sku: variant.seller_sku ?? variant.system_sku,
+    images_url: variant_medias.length
+      ? variant_medias.map((media) => media.url)
+      : product.product_medias.map(({ media }) => media.url),
+    brand: product.brand,
+    category: product.sub_sub_category.name,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/${product_slug}/p/${product_id}/${variant_id}`,
+    price: variant.variant_pricing.selling_price_with_commission,
+    in_stock: variant.variant_inventory.stock > 0,
+    manufacture:product.manufacturer_name
+  });
+  console.log(product_json_ld);
 
   const openLoginModal = () => {
     return new Promise<IUser>((resolve, reject) => {
@@ -194,6 +210,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         image={variant_medias[0]?.url ?? product.product_medias[0].media.url}
         url={`${process.env.NEXT_PUBLIC_BASE_URL}/${product_slug}/p/${product_id}/${variant_id}`}
         is_prod={is_prod}
+        json_ld={JSON.stringify(product_json_ld)}
       />
 
       <LoginModal
