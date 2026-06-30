@@ -39,6 +39,7 @@
     "react-dom": "19.2.3",
     "react-instantsearch": "^7.32.2",
     "react-select": "^5.10.2",
+    "schema-dts": "^2.0.0",
     "search-insights": "^2.17.3",
     "swiper": "^12.0.3",
     "world-countries": "^5.1.0",
