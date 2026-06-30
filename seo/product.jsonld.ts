@@ -27,6 +27,7 @@ const createProductJSONLD = ({
 }: IProductArgs): WithContext<Product> => {
   return {
     "@context": "https://schema.org",
+    "@id": `${url}#product`,
     "@type": "Product",
     name: title,
     description: description,

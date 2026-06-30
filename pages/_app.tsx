@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 // types
@@ -19,6 +20,9 @@ import {
   QueryClientProvider,
   HydrationBoundary,
 } from "@tanstack/react-query";
+
+// helpers
+import createOrganizationJSONLD from "@/seo/organization.jsonld";
 
 const ReactQueryDevtools =
   process.env.NODE_ENV === "development"
@@ -49,32 +53,43 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [query_client] = useState(() => new QueryClient());
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
+  const json_ld = createOrganizationJSONLD();
   return (
-    <QueryClientProvider client={query_client}>
-      <HydrationBoundary state={pageProps.dehydratedState}>
-        <AlgoliaInsightsProvider>
-          <AnalyticsProvider />
-          <SnackbarProvider
-            autoHideDuration={3000}
-            anchorOrigin={{
-              horizontal: "right",
-              vertical: "bottom",
-            }}
-            Components={{
-              success: SuccessSnackbar,
-              error: ErrorSnackbar,
-            }}
-          >
-            <SelectedAddressProvider>
-              {getLayout(<Component {...pageProps} />)}
-            </SelectedAddressProvider>
-          </SnackbarProvider>
-        </AlgoliaInsightsProvider>
-      </HydrationBoundary>
+    <>
+      <Script
+        id="organization-jsonld"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(json_ld),
+        }}
+      />
+      <QueryClientProvider client={query_client}>
+        <HydrationBoundary state={pageProps.dehydratedState}>
+          <AlgoliaInsightsProvider>
+            <AnalyticsProvider />
+            <SnackbarProvider
+              autoHideDuration={3000}
+              anchorOrigin={{
+                horizontal: "right",
+                vertical: "bottom",
+              }}
+              Components={{
+                success: SuccessSnackbar,
+                error: ErrorSnackbar,
+              }}
+            >
+              <SelectedAddressProvider>
+                {getLayout(<Component {...pageProps} />)}
+              </SelectedAddressProvider>
+            </SnackbarProvider>
+          </AlgoliaInsightsProvider>
+        </HydrationBoundary>
 
-      {process.env.NODE_ENV == "development" && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
-    </QueryClientProvider>
+        {process.env.NODE_ENV == "development" && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
+      </QueryClientProvider>
+    </>
   );
 }

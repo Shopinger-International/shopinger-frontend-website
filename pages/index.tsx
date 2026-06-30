@@ -28,6 +28,7 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 // helpers
 import { getCampaigns } from "@/hooks/axios/campaign/use-campaigns.hook";
 import { getFeed } from "@/hooks/axios/home/use-feed.hook";
+import createHomeJSONLD from "@/seo/home.jsonld";
 
 type IProps = {
   dehydratedState: DehydratedState;
@@ -55,14 +56,23 @@ const HomePage: NextPageWithLayout = () => {
   const show_best_seller_section = best_seller_products.length >= 6;
   const { data: user } = useUserDetails();
   const is_prod = process.env.NODE_ENV == "production";
+  const description =
+    "Get groceries, fashion, electronics, beauty products, home essentials, and more delivered to your doorstep in minutes. Experience fast and reliable quick commerce with Shopinger.";
+  const page_url = `${process.env.NEXT_PUBLIC_BASE_URL}/`;
+  const json_ld = createHomeJSONLD({
+    title: "Shopinger",
+    description,
+    url: page_url,
+  });
   return (
     <>
       <Seo
         is_prod={is_prod}
-        title="Shopinger | Everything Delivered in Minutes"
-        description="Get groceries, fashion, electronics, beauty products, home essentials, and more delivered to your doorstep in minutes. Experience fast and reliable quick commerce with Shopinger."
+        title={"Shopinger | Everything Delivered in Minutes"}
+        description={description}
         image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
-        url="https://shopinger.com/"
+        url={page_url}
+        json_ld={JSON.stringify(json_ld)}
       />
       <div className="space-y-4 pt-(--header-height)">
         <div className="max-w-8xl mx-auto w-full space-y-4 px-4">

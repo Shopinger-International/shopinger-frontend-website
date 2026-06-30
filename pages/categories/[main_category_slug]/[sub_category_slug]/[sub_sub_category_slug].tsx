@@ -16,6 +16,7 @@ import FooterStateProvider from "@/provider/footer-state-provider";
 
 // helpers
 import { capitalizeValue } from "@/helpers/common.helper";
+import createCategoryJSONLD from "@/seo/category.jsonld";
 
 type IProps = {
   sub_sub_category_slug: string;
@@ -33,16 +34,24 @@ const SubSubCategory: NextPageWithLayout<IProps> = ({
     .map((word) => capitalizeValue(word))
     .join(" ");
   const is_prod = process.env.NODE_ENV == "production";
+  const page_url = `${process.env.NEXT_PUBLIC_BASE_URL}/categories/${category_slug}/${sub_category_slug}/${sub_sub_category_slug}`;
+  const description = `Discover ${category_name} products at great prices on Shopinger. Browse top brands, exclusive deals, and get fast delivery in minutes.`;
+  const json_ld = createCategoryJSONLD({
+    title: category_name,
+    description,
+    url: page_url,
+  });
   return (
     <>
       <Seo
         title={`Shop ${category_name} Online | Shopinger`}
-        description={`Discover ${category_name} products at great prices on Shopinger. Browse top brands, exclusive deals, and get fast delivery in minutes.`}
-        url={`${process.env.NEXT_PUBLIC_BASE_URL}/categories/${category_slug}/${sub_category_slug}/${sub_sub_category_slug}`}
+        description={description}
+        url={page_url}
         image={
           "https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
         }
         is_prod={is_prod}
+        json_ld={JSON.stringify(json_ld)}
       />
 
       <section className="min-h-screen w-full">
