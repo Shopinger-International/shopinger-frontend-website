@@ -185,9 +185,8 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/${product_slug}/p/${product_id}/${variant_id}`,
     price: variant.variant_pricing.selling_price_with_commission,
     in_stock: variant.variant_inventory.stock > 0,
-    manufacture:product.manufacturer_name
+    manufacture: product.manufacturer_name,
   });
-  console.log(product_json_ld);
 
   const openLoginModal = () => {
     return new Promise<IUser>((resolve, reject) => {
