@@ -6,6 +6,7 @@ import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type { IOrderItem } from "@/types/order";
 import type IMedia from "@/types/media";
+import type { ChangeEvent, DragEvent } from "react";
 
 // external components
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -242,21 +243,47 @@ const ReviewModal: FC<IProps> = ({
                         const MAX_FILES = 5;
                         const MAX_SIZE = 2 * 1024 * 1024;
 
-                        const valid = uploaded_files.filter(
-                          (f) => f.size <= MAX_SIZE,
-                        );
+                        const valid = uploaded_files.filter((file) => {
+                          if (file.size > MAX_SIZE) {
+                            enqueueSnackbar(
+                              "File Size should be less than 2MB",
+                              {
+                                key: `file-upload-error-${Date.now()}`,
+                                variant: "error",
+                              },
+                            );
+                            return false;
+                          }
 
-                        const remainingSlots =
+                          return true;
+                        });
+
+                        const remaining_slots =
                           MAX_FILES -
                           values.existing_medias.length -
                           files.length;
 
-                        if (remainingSlots <= 0) return;
+                        if (remaining_slots <= 0) return;
 
-                        const filesToAdd = valid.slice(0, remainingSlots);
+                        const filesToAdd = valid.slice(0, remaining_slots);
 
                         form.setFieldValue("medias", [...files, ...filesToAdd]);
                       };
+                      const onChangeHandler = (
+                        event: ChangeEvent<HTMLInputElement>,
+                      ) => {
+                        const files = Array.from(event.target.files || []);
+                        handleFiles(files);
+                        event.target.value = "";
+                      };
+                      const onDropHandler = (
+                        event: DragEvent<HTMLDivElement>,
+                      ) => {
+                        event.preventDefault();
+                        const files = Array.from(event.dataTransfer.files);
+                        handleFiles(files);
+                      };
+
                       return (
                         <div className="flex flex-col gap-3">
                           <label className="text-sm font-medium">
@@ -266,10 +293,7 @@ const ReviewModal: FC<IProps> = ({
                           {/* Upload Box */}
                           <div
                             onDragOver={(e) => e.preventDefault()}
-                            onDrop={(e) => {
-                              e.preventDefault();
-                              handleFiles(Array.from(e.dataTransfer.files));
-                            }}
+                            onDrop={onDropHandler}
                             className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-gray-300 p-6 text-center transition hover:border-orange-500 hover:bg-orange-50"
                           >
                             <p className="text-sm font-medium text-gray-900">
@@ -283,9 +307,7 @@ const ReviewModal: FC<IProps> = ({
                               type="file"
                               multiple
                               accept="image/*"
-                              onChange={(e) => {
-                                handleFiles(Array.from(e.target.files || []));
-                              }}
+                              onChange={onChangeHandler}
                               className="absolute inset-0 cursor-pointer opacity-0"
                             />
                           </div>
@@ -368,28 +390,7 @@ const ReviewModal: FC<IProps> = ({
                                     type="file"
                                     multiple
                                     accept="image/*"
-                                    onChange={(e) => {
-                                      const files = Array.from(
-                                        e.target.files || [],
-                                      );
-
-                                      files.forEach((file) => {
-                                        const file_size_in_mb =
-                                          file.size / 1024 / 1024;
-                                        if (file_size_in_mb > 2) {
-                                          enqueueSnackbar(
-                                            "File Size should be less than 2MB",
-                                            {
-                                              key: `file-upload-error-${Date.now()}`,
-                                              variant: "error",
-                                            },
-                                          );
-                                        }
-                                      });
-                                      handleFiles(
-                                        Array.from(e.target.files || []),
-                                      );
-                                    }}
+                                    onChange={onChangeHandler}
                                     className="hidden"
                                   />
                                 </label>
