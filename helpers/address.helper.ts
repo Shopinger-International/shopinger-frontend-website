@@ -86,6 +86,5 @@ export const getAddressFromCoords = async (
       },
     },
   );
-
   return data.results[0]; // most relevant result
 };

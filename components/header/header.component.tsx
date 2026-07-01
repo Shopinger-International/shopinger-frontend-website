@@ -165,10 +165,16 @@ const Header: FC<{
                 className="shrink-0 lg:hidden"
                 aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
               >
-                <ShoppingCart
-                  className="size-8 text-white"
-                  aria-hidden="true"
-                />
+                <span className="relative">
+                  <span
+                    className="absolute left-1/2 -translate-x-1/3 -translate-y-1/3 font-bold text-white"
+                    aria-hidden="true"
+                  >
+                    {cart_details?.total_items ?? 0}
+                  </span>
+
+                  <Cart width={36} height={30} aria-hidden="true" />
+                </span>
               </Link>
             )}
           </div>

@@ -6,6 +6,12 @@ import type { LucideProps } from "lucide-react";
 // icons
 import { Home, CircleUserRound, ShoppingCart } from "lucide-react";
 
+// hooks
+import useCart from "@/hooks/axios/cart/use-cart.hook";
+
+// local components
+import Cart from "@/components/common/icons/cart.icon";
+
 type NavItemProps = {
   icon: FC<LucideProps>;
   title: string;
@@ -21,6 +27,39 @@ const NavItem: FC<NavItemProps> = ({
   active,
   showBadge,
 }) => {
+  const { data: cart_details } = useCart();
+  if (title == "Cart") {
+    return (
+      <Link
+        href={href}
+        aria-label={`View ${title}`}
+        className="flex flex-1 flex-col items-center justify-center py-2 transition-transform active:scale-95"
+      >
+        <div className="relative">
+          <span className="relative">
+            <span
+              className="absolute left-1/2 -translate-x-1/3 -translate-y-1/3 font-bold text-orange-500"
+              aria-hidden="true"
+            >
+              {cart_details?.total_items ?? 0}
+            </span>
+
+            <Cart width={30} height={23} aria-hidden="true" fill="#6B7280" />
+          </span>
+        </div>
+
+        <span
+          className={`mt-1 text-xs transition-colors ${
+            active ? "font-medium text-orange-500" : "text-gray-500"
+          }`}
+        >
+          {title}
+        </span>
+
+        {active && <span className="mt-1 h-1 w-1 rounded-full bg-orange-500" />}
+      </Link>
+    );
+  }
   return (
     <Link
       href={href}
