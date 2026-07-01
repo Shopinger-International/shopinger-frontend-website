@@ -17,16 +17,15 @@ import CampaignTimer from "@/components/header/campaign-timer.component";
 import {
   EllipsisVertical,
   Menu,
-  Bell,
   CircleQuestionMark,
   Megaphone,
   MapPin,
+  ShoppingCart,
+  ChevronRight,
 } from "lucide-react";
 
 // helpers
 import { clsx } from "clsx";
-
-// data
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
@@ -35,16 +34,75 @@ import useCart from "@/hooks/axios/cart/use-cart.hook";
 // context
 import { AddressDrawerState } from "@/context";
 
-const Header: FC<{
-  show_filter_sort_bar?: boolean;
-  disable_side_filter?: boolean;
-}> = ({ show_filter_sort_bar, disable_side_filter = false }) => {
+const LocationBlock: FC<{
+  className: string;
+}> = ({ className }) => {
   const { address_id, is_modal_open, updateState } =
     useContext(AddressDrawerState);
   const { data: user_details } = useUserDetails();
   const user_address = user_details?.user_addresses?.find(
     (address) => address.id == address_id,
   );
+  return (
+    <button
+      onClick={() =>
+        updateState?.({
+          address_id,
+          is_modal_open,
+          open: true,
+        })
+      }
+      className={clsx("items-center gap-2 text-white", className)}
+      aria-label={
+        user_address
+          ? `Update delivery location. Current location: ${user_address.state} ${user_address.pincode}`
+          : "Add delivery location"
+      }
+    >
+      <MapPin className="size-4 shrink-0 lg:mt-1 lg:size-6" aria-hidden />
+
+      <div className="flex min-w-0 items-center gap-2 lg:flex-col lg:items-start lg:gap-0">
+        {user_address ? (
+          <>
+            <span className="w-fit truncate text-sm lg:text-xs">
+              Delivering to {user_address.state} {user_address.pincode}
+            </span>
+            <span className="hidden text-sm font-semibold lg:block">
+              Update Location
+            </span>
+          </>
+        ) : (
+          <>
+            {/* Mobile */}
+            <span className="text-sm lg:hidden">Choose delivery location</span>
+
+            {/* Desktop */}
+            <>
+              <span className="hidden text-xs lg:block">
+                No delivery address selected
+              </span>
+              <span className="hidden text-sm font-semibold lg:block">
+                Add your location
+              </span>
+            </>
+          </>
+        )}
+      </div>
+
+      <ChevronRight className="size-4 shrink-0 lg:hidden" aria-hidden />
+    </button>
+  );
+};
+
+const Header: FC<{
+  show_filter_sort_bar?: boolean;
+  disable_side_filter?: boolean;
+  is_bottom_navigation_showing: boolean;
+}> = ({
+  show_filter_sort_bar,
+  disable_side_filter = false,
+  is_bottom_navigation_showing,
+}) => {
   const { data: cart_details } = useCart();
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
@@ -97,65 +155,27 @@ const Header: FC<{
           </Link>
         </div>
         {/* CENTER: Searchbar */}
-        <div className="order-3 col-span-3 lg:order-2 lg:col-span-1">
-          <SearchBar />
+        <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1">
+          <LocationBlock className="flex lg:hidden" />
+          <div className="flex items-center gap-3">
+            <SearchBar />
+            {!is_bottom_navigation_showing && (
+              <Link
+                href="/cart-checkout"
+                className="shrink-0 lg:hidden"
+                aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
+              >
+                <ShoppingCart
+                  className="size-8 text-white"
+                  aria-hidden="true"
+                />
+              </Link>
+            )}
+          </div>
         </div>
         {/* RIGHT: Actions */}
         <div className="order-2 -mr-3 flex items-center justify-end gap-4 lg:order-3 lg:-mr-8">
-          <button
-            onClick={() =>
-              updateState?.({
-                address_id,
-                is_modal_open,
-                open: true,
-              })
-            }
-            className="hidden cursor-pointer rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:inline-block"
-            aria-label={
-              user_address
-                ? `Update delivery location. Current location: ${user_address.state} ${user_address.pincode}`
-                : "Add delivery location"
-            }
-          >
-            <div className="flex gap-2">
-              <MapPin className="mt-1 size-6 text-white" aria-hidden={true} />
-              <div className="flex flex-col items-start text-white">
-                {user_address ? (
-                  <>
-                    <span className="text-xs">
-                      Delivering to {user_address.state} {user_address.pincode}
-                    </span>
-                    <span className="text-sm font-semibold">
-                      Update Location
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-xs">
-                      No delivery address selected
-                    </span>
-                    <span className="text-sm font-semibold">
-                      Add your location
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-          </button>
-          {/* <button className="hidden items-center gap-1.5 text-white lg:flex">
-            <span className="text-xl">
-              {countries.find(({ name }) => name == "India")?.flag}
-            </span>
-            <span className="font-semibold underline">EN</span>
-            <span>
-              <Triangle
-                className={clsx(
-                  "size-2.5 fill-white transition-transform",
-                  false ? "rotate-0" : "rotate-180",
-                )}
-              />
-            </span>
-          </button> */}
+          <LocationBlock className="hidden lg:flex" />
           <div className="hidden lg:inline">
             <AccountDropdown />
           </div>
@@ -177,25 +197,6 @@ const Header: FC<{
 
             <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
           </Link>
-          {/* <div className="hidden lg:inline">
-            <Tooltip
-              content={() => <AIAssistant />}
-              className="z-100"
-              placement="bottom"
-            >
-              {({ open }) => (
-                <div className="flex flex-col items-center gap-1">
-                  <div className="relative h-5 w-5">
-                    <Sparkles className="absolute top-0 left-0 animate-pulse text-yellow-300" />
-                  </div>
-
-                  <span className="hidden text-xs font-medium text-white capitalize sm:block">
-                    Barsati
-                  </span>
-                </div>
-              )}
-            </Tooltip>
-          </div> */}
           <Tooltip
             placement="bottom"
             className="z-100"
@@ -212,11 +213,6 @@ const Header: FC<{
                     href: "/advertise",
                     icon: Megaphone,
                   },
-                  // {
-                  //   label: "Notification Setting",
-                  //   href: "notification-setting",
-                  //   icon: Bell,
-                  // },
                 ].map(({ label, href, icon: Icon }) => (
                   <Link
                     key={label}

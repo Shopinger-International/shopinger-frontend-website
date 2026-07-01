@@ -310,5 +310,5 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   };
 };
 CartCheckoutPage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return <MainLayout show_bottom_navigation = {true}>{page}</MainLayout>;
 };

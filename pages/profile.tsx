@@ -24,7 +24,6 @@ import profile_faqs from "@/data/profile/faq.data";
 // helpers
 import { getUser } from "@/hooks/axios/common/use-user-details.hook";
 
-
 type IAlertModalState = {
   open: boolean;
   onSuccess?: () => void;
@@ -134,7 +133,7 @@ export default ProfilePage;
 ProfilePage.getLayout = function getLayout(page: ReactElement) {
   return (
     <ProtectedLayout>
-      <MainLayout>{page}</MainLayout>
+      <MainLayout show_bottom_navigation={true}>{page}</MainLayout>
     </ProtectedLayout>
   );
 };

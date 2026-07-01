@@ -167,7 +167,7 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
 };
 
 HomePage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return <MainLayout show_bottom_navigation={true}>{page}</MainLayout>;
 };
 
 export default HomePage;
