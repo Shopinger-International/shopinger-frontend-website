@@ -77,7 +77,7 @@ const BottomMobileNav: FC = () => {
 
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full border-t border-gray-300 bg-white shadow-xl lg:hidden">
-      <div className="mx-auto flex h-16 max-w-lg">
+      <div className="flex h-16 w-full border border-gray-300">
         {itemsList.map((item) => (
           <NavItem key={item.title} {...item} active={pathname === item.href} />
         ))}
