@@ -57,7 +57,10 @@ const VariantSelection: FC<{
           return mapping_a?.is_visual ? -1 : 1;
         })
         .map(({ attribute, values }, index) => (
-          <div className="space-y-2" key={`variant-attribute-${attribute.id}`}>
+          <div
+            className="space-y-2"
+            key={`variant-attribute-${attribute.code}`}
+          >
             <h3 className="font-bold">
               {attribute.name} <span aria-hidden="true"> : </span>
               <span className="font-normal">

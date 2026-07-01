@@ -6,6 +6,7 @@ import type { FC, ReactNode } from "react";
 
 // local components
 import Header from "@/components/header/header.component";
+import BottomMobileNav from "@/components/common/bottom-mobile-nav.component";
 import Footer from "@/components/footer/footer.component";
 import SelectAddressDrawer from "@/components/common/select-address-drawer.component";
 
@@ -31,6 +32,9 @@ import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 // context
 import { AddressDrawerState, FooterStateContext } from "@/context";
 
+// helpers
+import clsx from "clsx";
+
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
@@ -41,10 +45,12 @@ const MainLayout: FC<{
   children: ReactNode;
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
+  show_bottom_navigation?: boolean;
 }> = ({
   children,
   show_filter_sort_bar = false,
   disable_side_filter = false,
+  show_bottom_navigation = false,
 }) => {
   const { is_open, is_modal_open, address_id, updateState } =
     useContext(AddressDrawerState);
@@ -52,11 +58,15 @@ const MainLayout: FC<{
   const is_mobile = useIsMobile();
   return (
     <div
-      className={`${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900`}
+      className={clsx(
+        `${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900 lg:mb-0`,
+        show_bottom_navigation && "mb-16.5",
+      )}
     >
       <Header
         show_filter_sort_bar={show_filter_sort_bar}
         disable_side_filter={disable_side_filter}
+        is_bottom_navigation_showing={show_bottom_navigation}
       />
       <main>
         {is_mobile ? (
@@ -102,6 +112,7 @@ const MainLayout: FC<{
         <SelectAddressDrawer />
         {children}
       </main>
+      {show_bottom_navigation && <BottomMobileNav />}
       {show_footer && <Footer />}
     </div>
   );
