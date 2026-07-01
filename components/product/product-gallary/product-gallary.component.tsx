@@ -128,10 +128,6 @@ const ProductGallary: FC<IProps> = ({
                       .image_title
                   }`}
                   priority={selected_thumbnail_index == 0}
-                  fetchPriority={
-                    selected_thumbnail_index == 0 ? "high" : "auto"
-                  }
-                  quality={75}
                 />
               </div>
 
