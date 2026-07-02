@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 // types
 import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
@@ -80,6 +80,35 @@ const MainLayout: FC<{
       });
     });
   };
+
+  useEffect(() => {
+    if (!is_open && !is_modal_open) return;
+
+    const handlePopState = () => {
+      if (is_modal_open) {
+        updateState?.({
+          open: true,
+          address_id,
+          is_modal_open: false,
+        });
+        return;
+      }
+
+      if (is_open) {
+        updateState?.({
+          open: false,
+          address_id,
+          is_modal_open: false,
+        });
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [is_open, is_modal_open, address_id, updateState]);
   return (
     <div
       className={clsx(
@@ -111,42 +140,31 @@ const MainLayout: FC<{
         {is_mobile ? (
           <MobileAddressModal
             open={is_modal_open}
-            onClose={() =>
-              updateState?.({
-                open: is_open,
-                is_modal_open: false,
-                address_id,
-              })
-            }
+            onClose={() => history.back()}
             initial_data={null}
             handleLogin={openLoginModal}
             handleOnSuccess={(address) => {
               updateState?.({
-                open: false,
-                is_modal_open: false,
+                open: is_open,
+                is_modal_open,
                 address_id: address.id,
               });
+              history.back();
             }}
           />
         ) : (
           <AddAddressModal
             open={is_modal_open}
-            onClose={() =>
-              updateState?.({
-                open: is_open,
-                is_modal_open: false,
-                address_id,
-              })
-            }
+            onClose={() => history.back()}
             initial_data={null}
             handleLogin={openLoginModal}
             handleOnSuccess={(address) => {
-              console.log("new address id", address, address.id);
               updateState?.({
-                open: false,
-                is_modal_open: false,
+                open: is_open,
+                is_modal_open,
                 address_id: address.id,
               });
+              history.back();
             }}
           />
         )}

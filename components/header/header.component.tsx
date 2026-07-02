@@ -44,13 +44,14 @@ const LocationBlock: FC<{
   );
   return (
     <button
-      onClick={() =>
+      onClick={() => {
+        window.history.pushState({ drawer: true }, "");
         updateState?.({
           address_id,
           is_modal_open,
           open: true,
-        })
-      }
+        });
+      }}
       className={clsx("items-center gap-2 text-white", className)}
       aria-label={
         user_address

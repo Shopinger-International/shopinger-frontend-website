@@ -52,7 +52,7 @@ const Footer: FC = () => {
                 width={16}
                 height={16}
               />
-              Become a Seller
+              Become a shopinger business partner - call & whatsapp
             </Link>
 
             <Link

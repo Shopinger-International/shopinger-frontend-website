@@ -16,9 +16,7 @@ type AddressBarProps = {
   address: IAddress | null;
 };
 
-const AddressBar: FC<AddressBarProps> = ({
-  address,
-}) => {
+const AddressBar: FC<AddressBarProps> = ({ address }) => {
   const { is_modal_open, address_id, updateState } =
     useContext(AddressDrawerState);
   return (
@@ -46,13 +44,14 @@ const AddressBar: FC<AddressBarProps> = ({
 
       <button
         className="w-full cursor-pointer rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition active:scale-[0.98] sm:w-auto"
-        onClick={() =>
+        onClick={() => {
+          window.history.pushState({ drawer: true }, "");
           updateState?.({
             address_id,
             is_modal_open,
             open: true,
-          })
-        }
+          });
+        }}
       >
         Change
       </button>
