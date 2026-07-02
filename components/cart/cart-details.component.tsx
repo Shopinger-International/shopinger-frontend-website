@@ -5,7 +5,6 @@ import type { IResponse as IVerifyPaymentResponse } from "@/hooks/axios/cart/ver
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
-import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // local components
 import AddressBar from "@/components/cart/address-bar.component";
@@ -15,7 +14,6 @@ import HelpSection from "@/components/common/help-section.component";
 
 type IProps = {
   selected_address: IAddress | null;
-  handleAddressDrawerState: (open: boolean) => void;
   handleShowLoginModal: (action_type: "checkout" | "change_address") => void;
   handleOrderSuccess: (order: IVerifyPaymentResponse["order"]) => void;
 };
@@ -23,10 +21,8 @@ type IProps = {
 const CartDetails: FC<IProps> = ({
   selected_address,
   handleShowLoginModal,
-  handleAddressDrawerState,
   handleOrderSuccess,
 }) => {
-  const { data: user_detail } = useUserDetails();
   const { data: cart } = useCart();
 
   return (
@@ -35,16 +31,7 @@ const CartDetails: FC<IProps> = ({
         {/* Left Section */}
         <div className="col-span-1 space-y-4 lg:col-span-2">
           {/* Address Bar */}
-          <AddressBar
-            address={selected_address}
-            handleShowAddressDrawer={() => {
-              if (user_detail) {
-                handleAddressDrawerState(true);
-                return;
-              }
-              handleShowLoginModal("change_address");
-            }}
-          />
+          <AddressBar address={selected_address} />
 
           {/* Cart Items */}
           <div className="h-min overflow-hidden rounded-xl border border-gray-300 bg-white">
@@ -66,9 +53,6 @@ const CartDetails: FC<IProps> = ({
           <CheckoutSummary
             handleShowLoginModal={() => {
               handleShowLoginModal("checkout");
-            }}
-            handleShowAddresDrawer={() => {
-              handleAddressDrawerState(true);
             }}
             sub_total={cart?.sub_total ?? 0}
             total_amount={cart?.total_amount ?? 0}

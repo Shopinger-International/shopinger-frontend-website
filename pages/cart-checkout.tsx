@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import { useState, useEffect, useContext } from "react";
 import Head from "next/head";
 
@@ -17,39 +16,16 @@ import MainLayout from "@/components/layout/main-layout.component";
 import CartDetails from "@/components/cart/cart-details.component";
 import EmptyCart from "@/components/cart/empty-cart.component";
 import LoginModal from "@/components/login/login-modal.component";
-import SidebarDrawer from "@/components/common/sidebar-drawer.component";
-import AddressRow from "@/components/cart/address-row.component";
-const AddAddressModal = dynamic(
-  () =>
-    import("@/components/manage-address/add-address-modal/add-address-modal.component"),
-  {
-    ssr: false,
-  },
-);
 import OrderSuccessfulModal from "@/components/cart/order-successful-modal.component";
-
-const MobileAddressModal = dynamic(
-  () =>
-    import("@/components/manage-address/add-address-modal/mobile-location-picker-dialog.component"),
-  {
-    ssr: false,
-  },
-);
-
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
-import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
-import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
 
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
-
-// icons
-import { MapPin } from "lucide-react";
 
 // context
 import { AddressDrawerState } from "@/context";
@@ -61,9 +37,6 @@ export type IAddressModalState = {
 };
 const CartCheckoutPage: NextPageWithLayout = () => {
   const { data: user_addresses = [] } = useUserAddresses();
-  const delete_address_mutation = useDeleteAddressMutation();
-  const is_mobile = useIsMobile();
-  const [is_address_drawer_open, setIsAddressDrawerOpen] = useState(false);
   const { address_id } = useContext(AddressDrawerState);
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(
     null,
@@ -74,13 +47,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
   }>({
     open: false,
   });
-
-  const [address_modal_state, setAddressModalState] =
-    useState<IAddressModalState>({
-      open: false,
-      data: null,
-    });
-
   const [order_success_modal_state, setOrderSuccessModalState] = useState<{
     open: boolean;
     order?: IVerifyPaymentResponse["order"];
@@ -121,16 +87,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Head>
 
-      <OrderSuccessfulModal
-        is_open={order_success_modal_state.open}
-        order_id={order_success_modal_state.order?.id}
-        total_amount={order_success_modal_state.order?.total_amount}
-        onClose={() =>
-          setOrderSuccessModalState({
-            open: false,
-          })
-        }
-      />
       <LoginModal
         open={login_modal_state.open}
         anchorOrigin={
@@ -150,114 +106,22 @@ const CartCheckoutPage: NextPageWithLayout = () => {
           });
         }}
         handleOnSuccess={() => {
-          if (login_modal_state.action_type == "change_address") {
-            setIsAddressDrawerOpen(true);
-          }
           setLoginModalState({
             open: false,
           });
         }}
       />
 
-      {is_mobile ? (
-        <MobileAddressModal
-          open={address_modal_state.open}
-          onClose={() =>
-            setAddressModalState({
-              open: false,
-              data: null,
-            })
-          }
-          initial_data={address_modal_state.data}
-          handleOnSuccess={(address) => {
-            setSelectedAddress(address);
-            setIsAddressDrawerOpen(false);
-          }}
-        />
-      ) : (
-        <AddAddressModal
-          open={address_modal_state.open}
-          onClose={() =>
-            setAddressModalState({
-              open: false,
-              data: null,
-            })
-          }
-          initial_data={address_modal_state.data}
-          handleOnSuccess={(address) => {
-            setSelectedAddress(address);
-            setIsAddressDrawerOpen(false);
-          }}
-        />
-      )}
-      <SidebarDrawer
-        is_open={is_address_drawer_open}
-        handleClose={() => setIsAddressDrawerOpen(false)}
-        title={"Change Address"}
-      >
-        <div className="flex-1 overflow-y-auto px-6">
-          <div className="h-full space-y-2">
-            {user_addresses.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center px-6 py-10 text-center">
-                {/* Icon */}
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-orange-50">
-                  <MapPin className="h-5 w-5 text-orange-500" />
-                </div>
-
-                {/* Title */}
-                <h3 className="text-base font-semibold text-gray-800">
-                  No addresses yet
-                </h3>
-
-                {/* Subtitle */}
-                <p className="mt-1 max-w-xs text-sm text-gray-500">
-                  Add an address to make checkout faster and easier.
-                </p>
-
-                {/* CTA (important) */}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {user_addresses.map((address) => (
-                  <AddressRow
-                    key={`address-row-${address.id}`}
-                    address={address}
-                    is_selected={address.id == selected_address?.id}
-                    onClick={() => {
-                      setSelectedAddress(address);
-                      setIsAddressDrawerOpen(false);
-                    }}
-                    onDelete={(data) => {
-                      delete_address_mutation.mutate({
-                        address_id: data.id,
-                      });
-                    }}
-                    onEdit={(data) => {
-                      setAddressModalState({
-                        open: true,
-                        data,
-                      });
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="mt-4 border-t border-gray-300 px-6 py-4 shadow-sm">
-          <button
-            className="w-full rounded-lg bg-orange-500 py-2 font-semibold text-white hover:bg-orange-600"
-            onClick={() =>
-              setAddressModalState({
-                open: true,
-                data: null,
-              })
-            }
-          >
-            Add New Address
-          </button>
-        </div>
-      </SidebarDrawer>
+      <OrderSuccessfulModal
+        is_open={order_success_modal_state.open}
+        order_id={order_success_modal_state.order?.id}
+        total_amount={order_success_modal_state.order?.total_amount}
+        onClose={() =>
+          setOrderSuccessModalState({
+            open: false,
+          })
+        }
+      />
       <section className="w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           {/* Cart header */}
@@ -265,9 +129,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
             <>
               <CartDetails
                 selected_address={selected_address}
-                handleAddressDrawerState={(open) =>
-                  setIsAddressDrawerOpen(open)
-                }
                 handleShowLoginModal={(action_type) =>
                   setLoginModalState({
                     open: true,
@@ -310,5 +171,5 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   };
 };
 CartCheckoutPage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout show_bottom_navigation = {true}>{page}</MainLayout>;
+  return <MainLayout show_bottom_navigation={true}>{page}</MainLayout>;
 };

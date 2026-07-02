@@ -95,7 +95,7 @@ const ProductRow: FC<IProps> = ({ title, products, background_style }) => {
         <ul className="flex gap-5">
           {products.map(({ product_id, variant_id, title, media_url }) => (
             <li
-              className="group w-40 shrink-0 sm:w-55"
+              className="group w-36 sm:w-40 shrink-0 lg:w-55"
               key={`product-${product_id}-${variant_id}`}
             >
               <Link

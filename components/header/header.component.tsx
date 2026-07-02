@@ -20,7 +20,6 @@ import {
   CircleQuestionMark,
   Megaphone,
   MapPin,
-  ShoppingCart,
   ChevronRight,
 } from "lucide-react";
 
@@ -165,15 +164,12 @@ const Header: FC<{
                 className="shrink-0 lg:hidden"
                 aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
               >
-                <span className="relative">
-                  <span
-                    className="absolute left-1/2 -translate-x-1/3 -translate-y-1/3 font-bold text-white"
-                    aria-hidden="true"
-                  >
+                <span className="relative inline-block">
+                  <Cart width={36} height={30} />
+
+                  <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-white">
                     {cart_details?.total_items ?? 0}
                   </span>
-
-                  <Cart width={36} height={30} aria-hidden="true" />
                 </span>
               </Link>
             )}
@@ -190,19 +186,16 @@ const Header: FC<{
             className="hidden items-center gap-2 font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
             aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
           >
-            <span className="relative">
-              <span
-                className="absolute left-1/2 -translate-x-1/3 -translate-y-1/3 font-bold"
-                aria-hidden="true"
-              >
+            <span className="relative inline-block">
+              <Cart width={36} height={30} />
+
+              <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-white">
                 {cart_details?.total_items ?? 0}
               </span>
-
-              <Cart width={30} height={23} aria-hidden="true" />
             </span>
-
             <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
           </Link>
+
           <Tooltip
             placement="bottom"
             className="z-100"
