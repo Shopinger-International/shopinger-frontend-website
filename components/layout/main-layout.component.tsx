@@ -1,13 +1,15 @@
 import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 // types
 import type { FC, ReactNode } from "react";
+import type IUser from "@/types/user";
 
 // local components
 import Header from "@/components/header/header.component";
 import BottomMobileNav from "@/components/common/bottom-mobile-nav.component";
 import Footer from "@/components/footer/footer.component";
+import LoginModal from "@/components/login/login-modal.component";
 import SelectAddressDrawer from "@/components/common/select-address-drawer.component";
 
 const AddAddressModal = dynamic(
@@ -54,8 +56,30 @@ const MainLayout: FC<{
 }) => {
   const { is_open, is_modal_open, address_id, updateState } =
     useContext(AddressDrawerState);
+
+  const [login_modal_state, setLoginModalState] = useState<{
+    open: boolean;
+    onSuccess?: (value: any) => void;
+    onCancel?: () => void;
+  }>({
+    open: false,
+  });
   const { show: show_footer } = useContext(FooterStateContext);
   const is_mobile = useIsMobile();
+
+  const openLoginModal = () => {
+    return new Promise<IUser>((resolve, reject) => {
+      setLoginModalState({
+        open: true,
+        onSuccess: (user: IUser) => {
+          resolve(user);
+        },
+        onCancel: () => {
+          reject();
+        },
+      });
+    });
+  };
   return (
     <div
       className={clsx(
@@ -69,6 +93,21 @@ const MainLayout: FC<{
         is_bottom_navigation_showing={show_bottom_navigation}
       />
       <main>
+        <LoginModal
+          open={login_modal_state.open}
+          handleClose={() => {
+            login_modal_state.onCancel?.();
+            setLoginModalState({
+              open: false,
+            });
+          }}
+          handleOnSuccess={(user) => {
+            login_modal_state.onSuccess?.(user);
+            setLoginModalState({
+              open: false,
+            });
+          }}
+        />
         {is_mobile ? (
           <MobileAddressModal
             open={is_modal_open}
@@ -80,6 +119,7 @@ const MainLayout: FC<{
               })
             }
             initial_data={null}
+            handleLogin={openLoginModal}
             handleOnSuccess={(address) => {
               updateState?.({
                 open: false,
@@ -99,6 +139,7 @@ const MainLayout: FC<{
               })
             }
             initial_data={null}
+            handleLogin={openLoginModal}
             handleOnSuccess={(address) => {
               console.log("new address id", address, address.id);
               updateState?.({

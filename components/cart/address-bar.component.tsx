@@ -1,3 +1,4 @@
+import { useContext } from "react";
 // types
 import type { FC } from "react";
 import type { IAddress } from "@/types/address";
@@ -8,15 +9,18 @@ import { MapPin } from "lucide-react";
 // helpers
 import clsx from "clsx";
 
+// context
+import { AddressDrawerState } from "@/context";
+
 type AddressBarProps = {
   address: IAddress | null;
-  handleShowAddressDrawer: () => void;
 };
 
 const AddressBar: FC<AddressBarProps> = ({
   address,
-  handleShowAddressDrawer,
 }) => {
+  const { is_modal_open, address_id, updateState } =
+    useContext(AddressDrawerState);
   return (
     <div
       className={clsx(
@@ -42,7 +46,13 @@ const AddressBar: FC<AddressBarProps> = ({
 
       <button
         className="w-full cursor-pointer rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition active:scale-[0.98] sm:w-auto"
-        onClick={handleShowAddressDrawer}
+        onClick={() =>
+          updateState?.({
+            address_id,
+            is_modal_open,
+            open: true,
+          })
+        }
       >
         Change
       </button>

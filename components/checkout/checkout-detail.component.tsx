@@ -20,7 +20,6 @@ type IProps = {
   total_mrp: number;
   platform_fee: number;
   total_items: number;
-  handleAddressDrawerState: (open: boolean) => void;
   handleOrderSuccess: (order: IVerifyPaymentResponse["order"]) => void;
 };
 const CheckoutDetail: FC<IProps> = ({
@@ -33,7 +32,6 @@ const CheckoutDetail: FC<IProps> = ({
   total_mrp,
   platform_fee,
   total_items,
-  handleAddressDrawerState,
   handleOrderSuccess,
 }) => {
   return (
@@ -41,10 +39,7 @@ const CheckoutDetail: FC<IProps> = ({
       {/* Left Section */}
       <div className="col-span-1 space-y-4 lg:col-span-2">
         {/* Address Bar */}
-        <AddressBar
-          address={selected_address}
-          handleShowAddressDrawer={() => handleAddressDrawerState(true)}
-        />
+        <AddressBar address={selected_address} />
 
         {/* Cart Items */}
         <div className="h-min overflow-hidden rounded-xl border border-gray-300 bg-white">
@@ -67,9 +62,6 @@ const CheckoutDetail: FC<IProps> = ({
         <CheckoutSummary
           handleShowLoginModal={() => {
             // handleShowLoginModal("checkout");
-          }}
-          handleShowAddresDrawer={() => {
-            handleAddressDrawerState(true);
           }}
           sub_total={sub_total ?? 0}
           total_amount={total_amount ?? 0}

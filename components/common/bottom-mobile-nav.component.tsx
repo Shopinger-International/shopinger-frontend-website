@@ -35,18 +35,13 @@ const NavItem: FC<NavItemProps> = ({
         aria-label={`View ${title}`}
         className="flex flex-1 flex-col items-center justify-center py-2 transition-transform active:scale-95"
       >
-        <div className="relative">
-          <span className="relative">
-            <span
-              className="absolute left-1/2 -translate-x-1/3 -translate-y-1/3 font-bold text-orange-500"
-              aria-hidden="true"
-            >
-              {cart_details?.total_items ?? 0}
-            </span>
+        <span className="relative inline-block">
+          <Cart width={32} height={24} fill="#6B7280" />
 
-            <Cart width={30} height={23} aria-hidden="true" fill="#6B7280" />
+          <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-orange-500">
+            {cart_details?.total_items ?? 0}
           </span>
-        </div>
+        </span>
 
         <span
           className={`mt-1 text-xs transition-colors ${

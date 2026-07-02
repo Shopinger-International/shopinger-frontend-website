@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import Link from "next/link";
 
 // const
@@ -22,9 +23,11 @@ import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation
 // analytics event
 import orderCompletedEvent from "@/analytics/events/order-completed.event";
 
+// context
+import { AddressDrawerState } from "@/context";
+
 type IProps = {
   handleShowLoginModal: () => void;
-  handleShowAddresDrawer: () => void;
   handleOrderSuccess: (order: IVerifyPaymentResponse["order"]) => void;
   selected_address: IAddress | null;
   sub_total: number;
@@ -39,7 +42,6 @@ type IProps = {
 
 const CheckoutSummary: FC<IProps> = ({
   handleShowLoginModal,
-  handleShowAddresDrawer,
   handleOrderSuccess,
   selected_address,
   total_amount,
@@ -50,6 +52,8 @@ const CheckoutSummary: FC<IProps> = ({
   type,
   intent_id,
 }) => {
+  const { address_id, is_modal_open, updateState } =
+    useContext(AddressDrawerState);
   const buy_now_checkout_mutation = useBuyNowCheckoutMutation();
   const cart_checkout_mutation = useCartCheckoutMutation();
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
@@ -126,7 +130,11 @@ const CheckoutSummary: FC<IProps> = ({
           onClick={() => {
             if (!user_detail) return handleShowLoginModal();
             if (!selected_address) {
-              handleShowAddresDrawer();
+              updateState?.({
+                address_id,
+                is_modal_open,
+                open: true,
+              });
               return;
             }
             if (type == "cart-checkout") {
