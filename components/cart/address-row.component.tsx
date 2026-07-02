@@ -50,7 +50,7 @@ const AddressRow: FC<AddressRowProps> = ({
 
             {address.is_default && (
               <span className="rounded-full border border-orange-500 bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-500">
-                Default
+                Primary
               </span>
             )}
           </div>

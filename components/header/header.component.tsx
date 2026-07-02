@@ -44,13 +44,14 @@ const LocationBlock: FC<{
   );
   return (
     <button
-      onClick={() =>
+      onClick={() => {
+        window.history.pushState({ drawer: true }, "");
         updateState?.({
           address_id,
           is_modal_open,
           open: true,
-        })
-      }
+        });
+      }}
       className={clsx("items-center gap-2 text-white", className)}
       aria-label={
         user_address
@@ -63,7 +64,7 @@ const LocationBlock: FC<{
       <div className="flex min-w-0 items-center gap-2 lg:flex-col lg:items-start lg:gap-0">
         {user_address ? (
           <>
-            <span className="w-fit truncate text-sm lg:text-xs">
+            <span className="w-fit truncate text-xs">
               Delivering to {user_address.state} {user_address.pincode}
             </span>
             <span className="hidden text-sm font-semibold lg:block">
@@ -127,7 +128,7 @@ const Header: FC<{
         className={clsx(
           "mx-auto grid w-full items-center bg-black",
           "grid-cols-[auto_1fr_auto]",
-          "gap-3 px-4 py-1.5",
+          "gap-2 px-4 py-1.5",
           // "lg:max-w-8xl",
           "lg:grid-cols-[auto_minmax(0,1fr)_auto_auto]",
           "lg:gap-4",

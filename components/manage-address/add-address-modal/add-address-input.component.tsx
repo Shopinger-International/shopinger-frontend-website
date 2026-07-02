@@ -7,6 +7,9 @@ import { Field, ErrorMessage } from "formik";
 // helpers
 import clsx from "clsx";
 
+// hooks
+import { useFormikContext } from "formik";
+
 type IProps = {
   name: string;
   type?: string;
@@ -17,6 +20,13 @@ type IProps = {
   disabled?: boolean;
   read_only?: boolean;
   handleOnClick?: () => void;
+};
+const normalizePhone = (phone: string) => {
+  const digits = phone.replace(/\D/g, "");
+
+  return digits.length > 12 && digits.startsWith("91")
+    ? digits.slice(2)
+    : digits;
 };
 
 const AddAddressInput: FC<IProps> = ({
@@ -29,6 +39,7 @@ const AddAddressInput: FC<IProps> = ({
   handleOnClick,
   ...props
 }) => {
+  const { setFieldValue } = useFormikContext();
   switch (type) {
     case "checkbox":
       return (
@@ -50,6 +61,37 @@ const AddAddressInput: FC<IProps> = ({
             disabled={disabled}
             {...props}
           />
+
+          <ErrorMessage
+            name={props.name}
+            component="p"
+            className="text-sm text-red-500"
+          />
+        </div>
+      );
+    case "tel":
+      return (
+        <div className="space-y-1.5">
+          {label && <label className="font-medium">{label}</label>}
+
+          <Field
+            type={type}
+            className={clsx(
+              "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-orange-500 disabled:bg-gray-50",
+              read_only && "bg-gray-50",
+            )}
+            onClick={handleOnClick}
+            disabled={disabled}
+            readOnly={read_only}
+            {...props}
+            autoComplete="tel"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = normalizePhone(e.target.value);
+              setFieldValue(props.name, value);
+            }}
+          />
+
+          {helper && <p className="mt-1 text-xs text-gray-500">{helper}</p>}
 
           <ErrorMessage
             name={props.name}

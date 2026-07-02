@@ -34,12 +34,13 @@ const SelectedAddressProvider: FC<{
     <AddressDrawerState.Provider
       value={{
         ...address_drawer_state,
-        updateState: ({ open, is_modal_open, address_id }) =>
+        updateState: ({ open, is_modal_open, address_id }) => {
           setAddressDrawerState({
             is_open: open,
             is_modal_open,
             address_id,
-          }),
+          });
+        },
       }}
     >
       {children}

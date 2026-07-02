@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 
 // types
@@ -71,6 +71,23 @@ const ManageAddress: NextPageWithLayout = () => {
       });
     });
   };
+
+  useEffect(() => {
+    if (!address_modal_state.open) return;
+
+    const handlePopState = () => {
+      setAddressModalState({
+        open: false,
+        data: null,
+      });
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [address_modal_state.open]);
   return (
     <>
       <Head>
@@ -111,24 +128,14 @@ const ManageAddress: NextPageWithLayout = () => {
           open={address_modal_state.open}
           initial_data={address_modal_state.data}
           handleLogin={openLoginModal}
-          onClose={() =>
-            setAddressModalState({
-              open: false,
-              data: null,
-            })
-          }
+          onClose={() => history.back()}
         />
       ) : (
         <AddAddressModal
           open={address_modal_state.open}
           initial_data={address_modal_state.data}
           handleLogin={openLoginModal}
-          onClose={() =>
-            setAddressModalState({
-              open: false,
-              data: null,
-            })
-          }
+          onClose={() => history.back()}
         />
       )}
       <section className="min-h-screen w-full py-4">

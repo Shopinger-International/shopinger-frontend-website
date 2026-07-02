@@ -130,6 +130,7 @@ const CheckoutSummary: FC<IProps> = ({
           onClick={() => {
             if (!user_detail) return handleShowLoginModal();
             if (!selected_address) {
+              window.history.pushState({ drawer: true }, "");
               updateState?.({
                 address_id,
                 is_modal_open,
