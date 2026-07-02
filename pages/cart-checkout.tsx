@@ -33,7 +33,6 @@ import { AddressDrawerState } from "@/context";
 export type IAddressModalState = {
   open: boolean;
   data: IAddress | null;
-  action_type?: "checkout";
 };
 const CartCheckoutPage: NextPageWithLayout = () => {
   const { data: user_addresses = [] } = useUserAddresses();
@@ -43,7 +42,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
   );
   const [login_modal_state, setLoginModalState] = useState<{
     open: boolean;
-    action_type?: "checkout" | "change_address";
   }>({
     open: false,
   });
@@ -89,17 +87,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
 
       <LoginModal
         open={login_modal_state.open}
-        anchorOrigin={
-          login_modal_state.action_type == "change_address"
-            ? {
-                horizontal: "left",
-                vertical: "bottom",
-              }
-            : {
-                horizontal: "right",
-                vertical: "bottom",
-              }
-        }
         handleClose={() => {
           setLoginModalState({
             open: false,
@@ -129,10 +116,9 @@ const CartCheckoutPage: NextPageWithLayout = () => {
             <>
               <CartDetails
                 selected_address={selected_address}
-                handleShowLoginModal={(action_type) =>
+                handleShowLoginModal={() =>
                   setLoginModalState({
                     open: true,
-                    action_type,
                   })
                 }
                 handleOrderSuccess={(order) => {

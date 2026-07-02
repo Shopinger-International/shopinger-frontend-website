@@ -14,7 +14,7 @@ import HelpSection from "@/components/common/help-section.component";
 
 type IProps = {
   selected_address: IAddress | null;
-  handleShowLoginModal: (action_type: "checkout" | "change_address") => void;
+  handleShowLoginModal: () => void;
   handleOrderSuccess: (order: IVerifyPaymentResponse["order"]) => void;
 };
 
@@ -52,7 +52,7 @@ const CartDetails: FC<IProps> = ({
         <div className="flex flex-col gap-4 lg:sticky lg:top-(--header-height)">
           <CheckoutSummary
             handleShowLoginModal={() => {
-              handleShowLoginModal("checkout");
+              handleShowLoginModal();
             }}
             sub_total={cart?.sub_total ?? 0}
             total_amount={cart?.total_amount ?? 0}

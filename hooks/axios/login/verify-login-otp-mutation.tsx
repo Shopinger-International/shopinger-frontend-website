@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 // types
 import type { AxiosError } from "axios";
 import type IUser from "@/types/user";
-import type { SnackbarOrigin } from "notistack";
 
 // lib
 import publicAxios from "@/lib/axios/public.lib";
@@ -24,7 +23,7 @@ interface VerifyOtpResponse {
   message: string;
 }
 
-const useVerifyLoginOtp = (anchorOrigin?: SnackbarOrigin) => {
+const useVerifyLoginOtp = () => {
   const query_client = useQueryClient();
   return useMutation<
     VerifyOtpResponse,
@@ -67,11 +66,6 @@ const useVerifyLoginOtp = (anchorOrigin?: SnackbarOrigin) => {
       enqueueSnackbar(response.message, {
         key: "user-verify-login-otp-success",
         variant: "success",
-        ...(anchorOrigin
-          ? {
-              anchorOrigin,
-            }
-          : {}),
       });
     },
 

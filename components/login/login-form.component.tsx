@@ -8,7 +8,6 @@ import type { FC } from "react";
 import type { FieldProps } from "formik";
 import type { ICountry } from "@/data/countries.data";
 import type { CountryCode } from "libphonenumber-js";
-import type { SnackbarOrigin } from "notistack";
 import type IUser from "@/types/user";
 
 // external components
@@ -106,18 +105,16 @@ type IProps = {
   is_modal?: boolean;
   heading_text?: string;
   handleOnSuccess?: (user: IUser) => void;
-  anchorOrigin?: SnackbarOrigin;
 };
 
 const LoginForm: FC<IProps> = ({
   is_modal = false,
   heading_text,
   handleOnSuccess,
-  anchorOrigin,
 }) => {
   const query_client = useQueryClient();
   const send_otp_mutation = useSendOTPMutation();
-  const verify_otp_mutation = useVerifyLoginOtp(anchorOrigin);
+  const verify_otp_mutation = useVerifyLoginOtp();
   const router = useRouter();
   const [show_otp, setShowOtp] = useState<boolean>(false);
   const [user_details, setUserDetails] =
