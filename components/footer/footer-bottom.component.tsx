@@ -30,7 +30,7 @@ const FooterBottom: FC = () => {
               width={16}
               height={16}
             />
-            Become a shopinger business partner - Call & whatsapp
+            Become a shopinger business partner
           </Link>
 
           <Link

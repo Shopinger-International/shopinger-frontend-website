@@ -21,6 +21,13 @@ type IProps = {
   read_only?: boolean;
   handleOnClick?: () => void;
 };
+const normalizePhone = (phone: string) => {
+  const digits = phone.replace(/\D/g, "");
+
+  return digits.length > 12 && digits.startsWith("91")
+    ? digits.slice(2)
+    : digits;
+};
 
 const AddAddressInput: FC<IProps> = ({
   type = "text",
@@ -79,7 +86,7 @@ const AddAddressInput: FC<IProps> = ({
             {...props}
             autoComplete="tel"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const value = e.target.value.replace(/\D/g, "");
+              const value = normalizePhone(e.target.value);
               setFieldValue(props.name, value);
             }}
           />

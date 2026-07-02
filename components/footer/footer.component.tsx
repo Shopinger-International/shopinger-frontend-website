@@ -40,21 +40,7 @@ const Footer: FC = () => {
           <FooterAddress />
         </div>
         <div className="mb-8 flex flex-col space-y-3 px-4 lg:hidden">
-          <div className="flex flex-wrap items-center gap-6">
-            <Link
-              href="/sell"
-              className="flex items-center gap-2 font-medium hover:underline"
-            >
-              <Image
-                className="size-4 lg:size-5"
-                src="/footer/handbag.svg"
-                alt="seller"
-                width={16}
-                height={16}
-              />
-              Become a shopinger business partner - Call & Whatsapp
-            </Link>
-
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/advertise"
               className="flex items-center gap-2 font-medium hover:underline"
@@ -67,6 +53,19 @@ const Footer: FC = () => {
                 height={16}
               />
               Advertise with us
+            </Link>
+            <Link
+              href="/sell"
+              className="flex items-center gap-2 font-medium hover:underline"
+            >
+              <Image
+                className="size-4 lg:size-5"
+                src="/footer/handbag.svg"
+                alt="seller"
+                width={16}
+                height={16}
+              />
+              Become a shopinger business partner
             </Link>
           </div>
           <div className="flex flex-wrap items-center gap-3">
