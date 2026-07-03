@@ -9,6 +9,21 @@ import { getCountryCallingCode } from "libphonenumber-js";
 const normalizeText = (str: string) =>
   str.toLowerCase().replace(/[’‘]/g, "'").trim();
 
+const normalizePhone = (phone: string) => {
+  const digits = (phone || "").replace(/\D/g, "");
+  let normalized = digits.replace(/^0+/, ""); // drop leading zeros
+
+  if (normalized.length > 10 && normalized.startsWith("91")) {
+    normalized = normalized.slice(2); // drop country code
+  }
+
+  if (normalized.length > 10) {
+    normalized = normalized.slice(-10); // keep last 10 digits
+  }
+
+  return normalized.slice(0, 10); // ensure max 10
+};
+
 function toFormikValidate<T>(schema: ZodType<T, any, any>) {
   return (values: unknown) => {
     const result = schema.safeParse(values);
@@ -111,6 +126,7 @@ function normalizeQuery(str: string) {
 
 export {
   normalizeText,
+  normalizePhone,
   toFormikValidate,
   capitalizeValue,
   capitalizeFirstLetter,
