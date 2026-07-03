@@ -73,6 +73,12 @@ const MainLayout: FC<{
   const is_mobile = useIsMobile();
 
   const openLoginModal = () => {
+    history.pushState(
+      {
+        login_modal: true,
+      },
+      "",
+    );
     return new Promise<IUser>((resolve, reject) => {
       setLoginModalState({
         open: true,
@@ -87,9 +93,15 @@ const MainLayout: FC<{
   };
 
   useEffect(() => {
-    if (!is_open && !is_modal_open) return;
+    if (!is_open && !is_modal_open && !login_modal_state.open) return;
 
     const handlePopState = () => {
+      if (login_modal_state.open) {
+        setLoginModalState({
+          open: false,
+        });
+        return;
+      }
       if (is_modal_open) {
         updateState?.({
           is_open: true,
@@ -113,7 +125,7 @@ const MainLayout: FC<{
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [is_open, is_modal_open, address_id, updateState]);
+  }, [is_open, is_modal_open, login_modal_state.open, address_id, updateState]);
   return (
     <div
       className={clsx(
@@ -131,15 +143,11 @@ const MainLayout: FC<{
           open={login_modal_state.open}
           handleClose={() => {
             login_modal_state.onCancel?.();
-            setLoginModalState({
-              open: false,
-            });
+            history.back();
           }}
           handleOnSuccess={(user) => {
             login_modal_state.onSuccess?.(user);
-            setLoginModalState({
-              open: false,
-            });
+            history.back();
           }}
         />
         {is_mobile ? (

@@ -75,6 +75,24 @@ const CartCheckoutPage: NextPageWithLayout = () => {
     }
   }, [user_addresses.length, address_id]);
 
+  useEffect(() => {
+    if (!login_modal_state.open) return;
+
+    const handlePopState = () => {
+      if (login_modal_state.open) {
+        setLoginModalState({
+          open: false,
+        });
+        return;
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [login_modal_state.open]);
   return (
     <>
       <Head>
@@ -89,16 +107,8 @@ const CartCheckoutPage: NextPageWithLayout = () => {
 
       <LoginModal
         open={login_modal_state.open}
-        handleClose={() => {
-          setLoginModalState({
-            open: false,
-          });
-        }}
-        handleOnSuccess={() => {
-          setLoginModalState({
-            open: false,
-          });
-        }}
+        handleClose={() => history.back()}
+        handleOnSuccess={() => history.back()}
       />
 
       <OrderSuccessfulModal
@@ -118,11 +128,17 @@ const CartCheckoutPage: NextPageWithLayout = () => {
             <>
               <CartDetails
                 selected_address={selected_address}
-                handleShowLoginModal={() =>
+                handleShowLoginModal={() => {
+                  history.pushState(
+                    {
+                      login_modal: true,
+                    },
+                    "",
+                  );
                   setLoginModalState({
                     open: true,
-                  })
-                }
+                  });
+                }}
                 handleOrderSuccess={(order) => {
                   setOrderSuccessModalState({
                     open: true,
