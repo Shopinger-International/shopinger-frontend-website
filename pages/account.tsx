@@ -16,8 +16,10 @@ import { getUser } from "@/hooks/axios/common/use-user-details.hook";
 
 // hooks
 import useLogoutMutation from "@/hooks/axios/login/use-logout-mutation.hook";
+import { useSnackbarOffset } from "@/components/common/use-snackbar-offset.hook";
 
 const AccountPage: NextPageWithLayout = () => {
+  useSnackbarOffset();
   const logout_mutation = useLogoutMutation();
   return (
     <>

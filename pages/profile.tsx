@@ -133,7 +133,7 @@ export default ProfilePage;
 ProfilePage.getLayout = function getLayout(page: ReactElement) {
   return (
     <ProtectedLayout>
-      <MainLayout show_bottom_navigation={true}>{page}</MainLayout>
+      <MainLayout>{page}</MainLayout>
     </ProtectedLayout>
   );
 };
