@@ -14,7 +14,11 @@ import NavigationCard from "@/components/account/navigation-card.component";
 // helpers
 import { getUser } from "@/hooks/axios/common/use-user-details.hook";
 
+// hooks
+import useLogoutMutation from "@/hooks/axios/login/use-logout-mutation.hook";
+
 const AccountPage: NextPageWithLayout = () => {
+  const logout_mutation = useLogoutMutation();
   return (
     <>
       <Head>
@@ -79,6 +83,13 @@ const AccountPage: NextPageWithLayout = () => {
               <span className="text-2xl">🛒</span>
             </NavigationCard>
           </div>
+          <button
+            onClick={() => logout_mutation.mutate()}
+            disabled={logout_mutation.isPending}
+            className="w-full rounded-md bg-red-500 py-2 font-semibold text-white disabled:bg-red-300 lg:hidden"
+          >
+            Logout
+          </button>
         </div>
       </section>
     </>
@@ -90,7 +101,7 @@ export default AccountPage;
 AccountPage.getLayout = function getLayout(page: ReactElement) {
   return (
     <ProtectedLayout>
-      <MainLayout>{page}</MainLayout>
+      <MainLayout show_bottom_navigation={true}>{page}</MainLayout>
     </ProtectedLayout>
   );
 };
