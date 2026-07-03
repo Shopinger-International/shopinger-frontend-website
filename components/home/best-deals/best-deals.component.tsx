@@ -12,11 +12,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // local components
 import BestDealsCard from "@/components/home/best-deals/best-deals-card.component";
 
+// hooks
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+
 type IProps = {
   products: IResponse["data"]["deals_of_the_day"];
 };
 
 const BestDeals: FC<IProps> = ({ products }) => {
+  const is_mobile = useIsMobile();
   const [cta_state, updateCtaState] = useState<{
     can_scroll_prev?: boolean;
     can_scroll_next?: boolean;
@@ -25,6 +29,7 @@ const BestDeals: FC<IProps> = ({ products }) => {
     align: "start",
     dragFree: true,
     containScroll: "trimSnaps",
+    slidesToScroll: is_mobile ? 1 : 4,
   });
 
   // Navigation handlers

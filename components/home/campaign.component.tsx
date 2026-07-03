@@ -18,8 +18,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Campaign: FC = () => {
   const { data: campaigns = [] } = useAllCamapigns();
-  const [embla_ref, emabla_api] = useEmblaCarousel({ loop: true }, [
-    Autoplay(),
+  const [embla_ref, emabla_api] = useEmblaCarousel({ loop: true, align:"start" }, [
+    Autoplay({
+      delay: 3000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+    }),
   ]);
 
   const [selected_index, setSelectedIndex] = useState(0);
