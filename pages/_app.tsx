@@ -1,6 +1,7 @@
 import Script from "next/script";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 // types
 import type { ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
@@ -89,6 +90,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         {process.env.NODE_ENV == "development" && (
           <ReactQueryDevtools initialIsOpen={false} />
         )}
+        <SpeedInsights />
       </QueryClientProvider>
     </>
   );
