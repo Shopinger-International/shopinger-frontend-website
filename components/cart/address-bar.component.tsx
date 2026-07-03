@@ -17,8 +17,7 @@ type AddressBarProps = {
 };
 
 const AddressBar: FC<AddressBarProps> = ({ address }) => {
-  const { is_modal_open, address_id, updateState } =
-    useContext(AddressDrawerState);
+  const { updateState } = useContext(AddressDrawerState);
   return (
     <div
       className={clsx(
@@ -47,9 +46,7 @@ const AddressBar: FC<AddressBarProps> = ({ address }) => {
         onClick={() => {
           window.history.pushState({ drawer: true }, "");
           updateState?.({
-            address_id,
-            is_modal_open,
-            open: true,
+            is_open: true,
           });
         }}
       >

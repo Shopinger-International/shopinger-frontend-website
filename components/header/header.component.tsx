@@ -36,8 +36,7 @@ import { AddressDrawerState } from "@/context";
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
-  const { address_id, is_modal_open, updateState } =
-    useContext(AddressDrawerState);
+  const { address_id, updateState } = useContext(AddressDrawerState);
   const { data: user_details } = useUserDetails();
   const user_address = user_details?.user_addresses?.find(
     (address) => address.id == address_id,
@@ -47,9 +46,7 @@ const LocationBlock: FC<{
       onClick={() => {
         window.history.pushState({ drawer: true }, "");
         updateState?.({
-          address_id,
-          is_modal_open,
-          open: true,
+          is_open: true,
         });
       }}
       className={clsx("items-center gap-2 text-white", className)}

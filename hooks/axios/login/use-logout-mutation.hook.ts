@@ -30,7 +30,7 @@ const useLogoutMutation = () => {
         key: "user-logout-success",
         variant: "success",
       });
-      query_client.invalidateQueries();
+      query_client.resetQueries();
     },
 
     onError(error) {

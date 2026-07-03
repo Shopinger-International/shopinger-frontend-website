@@ -1,14 +1,19 @@
+import type { IAddress } from "@/types/address";
 import { createContext } from "react";
 
 export type IAddressDrawerState = {
   is_open: boolean;
   is_modal_open: boolean;
   address_id: number | null;
-  updateState?: (payload: {
-    open: boolean;
-    is_modal_open: boolean;
-    address_id: number | null;
-  }) => void;
+  updateState?: (
+    payload: Partial<{
+      is_open: boolean;
+      is_modal_open: boolean;
+      address_id: number | null;
+      data: IAddress | null; // for storing updating related data
+    }>,
+  ) => void;
+  data?: IAddress | null;
 };
 
 export type IFilterSortBarStateType = "sort" | "filter" | null;
@@ -20,7 +25,7 @@ type IFiltersSortBarState = {
 
 type IFooterState = {
   show: boolean;
-  updateShow?:(val:boolean)=>void;
+  updateShow?: (val: boolean) => void;
 };
 
 const AddressDrawerState = createContext<IAddressDrawerState>({

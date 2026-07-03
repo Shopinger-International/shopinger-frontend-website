@@ -54,8 +54,13 @@ const MainLayout: FC<{
   disable_side_filter = false,
   show_bottom_navigation = false,
 }) => {
-  const { is_open, is_modal_open, address_id, updateState } =
-    useContext(AddressDrawerState);
+  const {
+    is_open,
+    is_modal_open,
+    address_id,
+    data: address_data,
+    updateState,
+  } = useContext(AddressDrawerState);
 
   const [login_modal_state, setLoginModalState] = useState<{
     open: boolean;
@@ -87,18 +92,18 @@ const MainLayout: FC<{
     const handlePopState = () => {
       if (is_modal_open) {
         updateState?.({
-          open: true,
-          address_id,
+          is_open: true,
           is_modal_open: false,
+          data: null,
         });
         return;
       }
 
       if (is_open) {
         updateState?.({
-          open: false,
-          address_id,
+          is_open: false,
           is_modal_open: false,
+          data: null,
         });
       }
     };
@@ -141,13 +146,12 @@ const MainLayout: FC<{
           <MobileAddressModal
             open={is_modal_open}
             onClose={() => history.back()}
-            initial_data={null}
+            initial_data={address_data ?? null}
             handleLogin={openLoginModal}
             handleOnSuccess={(address) => {
               updateState?.({
-                open: is_open,
-                is_modal_open,
                 address_id: address.id,
+                data: null,
               });
               history.back();
             }}
@@ -156,13 +160,12 @@ const MainLayout: FC<{
           <AddAddressModal
             open={is_modal_open}
             onClose={() => history.back()}
-            initial_data={null}
+            initial_data={address_data ?? null}
             handleLogin={openLoginModal}
             handleOnSuccess={(address) => {
               updateState?.({
-                open: is_open,
-                is_modal_open,
                 address_id: address.id,
+                data: null,
               });
               history.back();
             }}

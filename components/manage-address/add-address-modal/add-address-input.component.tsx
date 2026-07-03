@@ -51,7 +51,7 @@ const AddAddressInput: FC<IProps> = ({
 
           <Field
             as="textarea"
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-orange-500 disabled:bg-gray-50"
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-orange-500 disabled:bg-gray-50"
             disabled={disabled}
             {...props}
           />
@@ -71,7 +71,7 @@ const AddAddressInput: FC<IProps> = ({
           <Field
             type={type}
             className={clsx(
-              "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-orange-500 disabled:bg-gray-50",
+              "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-orange-500 disabled:bg-gray-50",
               read_only && "bg-gray-50",
             )}
             onClick={handleOnClick}
@@ -103,7 +103,7 @@ const AddAddressInput: FC<IProps> = ({
           <Field
             type={type}
             className={clsx(
-              "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-orange-500 disabled:bg-gray-50",
+              "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-orange-500 disabled:bg-gray-50",
               read_only && "bg-gray-50",
             )}
             onClick={handleOnClick}
