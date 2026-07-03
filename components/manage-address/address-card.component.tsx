@@ -124,7 +124,7 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
             disabled={update_address_mutation.isPending}
             className="ml-auto text-xs font-medium text-orange-600 hover:underline disabled:opacity-50"
           >
-            Set as default
+            Set as primary
           </button>
         )}
       </div>

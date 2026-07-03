@@ -96,6 +96,7 @@ const AddAddressModal: FC<IProps> = ({
   handleOnSuccess,
   handleLogin,
 }) => {
+  const [is_current_location_fetching, setIsCurrentFetching] = useState(false);
   const [is_pincode_serviceable, setIsPincodeServiceable] = useState(true);
   const select_places_ref = useRef<SelectInstance>(null);
   const { data: user_detail } = useUserDetails();
@@ -112,7 +113,7 @@ const AddAddressModal: FC<IProps> = ({
       alert("Geolocation is not supported");
       return;
     }
-
+    setIsCurrentFetching(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -141,11 +142,17 @@ const AddAddressModal: FC<IProps> = ({
                   variant: "error",
                 });
               },
+              onSettled() {
+                setIsCurrentFetching(false);
+              },
             },
           );
         });
       },
-      () => alert("Unable to fetch location"),
+      () => {
+        alert("Unable to fetch location");
+        setIsCurrentFetching(false);
+      },
     );
   };
 
@@ -282,7 +289,9 @@ const AddAddressModal: FC<IProps> = ({
                           onClick={handleUseCurrentLocation}
                         >
                           <MapPin className="size-3.5" />
-                          Use Current Location
+                          {is_current_location_fetching
+                            ? "Fetching location..."
+                            : "Use current Location"}
                         </button>
                       </div>
                     </div>
@@ -341,7 +350,9 @@ const AddAddressModal: FC<IProps> = ({
                               onClick={handleUseCurrentLocation}
                               className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600"
                             >
-                              Use current location
+                              {is_current_location_fetching
+                                ? "Fetching location..."
+                                : "Use current location"}
                             </button>
                           </div>
                         </div>

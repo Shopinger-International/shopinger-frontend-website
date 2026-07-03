@@ -52,7 +52,7 @@ const address_types = [
 ];
 
 export type IFormAddressType = Omit<
-  Omit<IAddress,"delivery_fee">,
+  Omit<IAddress, "delivery_fee">,
   "id" | "user_id" | "is_deleted" | "latitude" | "longitude"
 > & {
   latitude: number | null;
@@ -74,6 +74,7 @@ const MobileAddressModal: FC<IProps> = ({
   handleOnSuccess,
   handleLogin,
 }) => {
+  const [is_current_location_fetching, setIsCurrentFetching] = useState(false);
   const [bottom_bar_height, setBottomBarHeight] = useState(168); // in pixel;
   const formik_ref = useRef<FormikProps<IFormAddressType>>(null);
   const { data: user_detail } = useUserDetails();
@@ -112,6 +113,7 @@ const MobileAddressModal: FC<IProps> = ({
       return;
     }
 
+    setIsCurrentFetching(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -140,11 +142,17 @@ const MobileAddressModal: FC<IProps> = ({
                   variant: "error",
                 });
               },
+              onSettled() {
+                setIsCurrentFetching(false);
+              },
             },
           );
         });
       },
-      () => alert("Unable to fetch location"),
+      () => {
+        alert("Unable to fetch location");
+        setIsCurrentFetching(false);
+      },
     );
   };
 
@@ -287,7 +295,11 @@ const MobileAddressModal: FC<IProps> = ({
                       className="size-3.5 text-orange-500"
                       strokeWidth={2.5}
                     />
-                    <span>Use Current Location</span>
+                    <span>
+                      {is_current_location_fetching
+                        ? "Fetching Location..."
+                        : "Use current location"}
+                    </span>
                   </button>
                   <div
                     ref={(node) => {
@@ -328,7 +340,9 @@ const MobileAddressModal: FC<IProps> = ({
                                 onClick={handleUseCurrentLocation}
                                 className="mt-2 text-xs font-semibold text-orange-500"
                               >
-                                Use current location
+                                {is_current_location_fetching
+                                  ? "Fetching location..."
+                                  : "Use current location"}
                               </button>
                             </div>
                           </div>

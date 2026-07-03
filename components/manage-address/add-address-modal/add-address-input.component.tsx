@@ -6,6 +6,7 @@ import { Field, ErrorMessage } from "formik";
 
 // helpers
 import clsx from "clsx";
+import { normalizePhone } from "@/helpers/common.helper";
 
 // hooks
 import { useFormikContext } from "formik";
@@ -20,13 +21,6 @@ type IProps = {
   disabled?: boolean;
   read_only?: boolean;
   handleOnClick?: () => void;
-};
-const normalizePhone = (phone: string) => {
-  const digits = phone.replace(/\D/g, "");
-
-  return digits.length > 12 && digits.startsWith("91")
-    ? digits.slice(2)
-    : digits;
 };
 
 const AddAddressInput: FC<IProps> = ({
