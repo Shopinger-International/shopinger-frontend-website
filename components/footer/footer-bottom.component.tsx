@@ -25,7 +25,7 @@ const FooterBottom: FC = () => {
           >
             <Image
               className="size-4 lg:size-5"
-              src="/footer/handbag.svg"
+              src="/footer/rupee-circle.svg"
               alt="seller"
               width={16}
               height={16}
