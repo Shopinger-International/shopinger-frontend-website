@@ -52,8 +52,7 @@ const CheckoutSummary: FC<IProps> = ({
   type,
   intent_id,
 }) => {
-  const { address_id, is_modal_open, updateState } =
-    useContext(AddressDrawerState);
+  const { updateState } = useContext(AddressDrawerState);
   const buy_now_checkout_mutation = useBuyNowCheckoutMutation();
   const cart_checkout_mutation = useCartCheckoutMutation();
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
@@ -132,9 +131,7 @@ const CheckoutSummary: FC<IProps> = ({
             if (!selected_address) {
               window.history.pushState({ drawer: true }, "");
               updateState?.({
-                address_id,
-                is_modal_open,
-                open: true,
+                is_open: true,
               });
               return;
             }

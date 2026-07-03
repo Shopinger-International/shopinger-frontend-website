@@ -164,7 +164,7 @@ const MobileAddressModal: FC<IProps> = ({
         <DialogPanel className="h-full w-full bg-white">
           <div className="flex items-center justify-between border-b border-gray-300 px-4 py-2">
             <DialogTitle className="font-semibold text-orange-500">
-              Add new address
+              {initial_data ? "Update address" : "Add new address"}
             </DialogTitle>
 
             <button

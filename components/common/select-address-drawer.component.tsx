@@ -1,5 +1,4 @@
-import { useRouter } from "next/router";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 // types
 import type { FC } from "react";
 
@@ -18,11 +17,9 @@ import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
 
 const SelectAddressDrawer: FC = () => {
-  const router = useRouter();
   const delete_address_mutation = useDeleteAddressMutation();
   const { data: user_addresses = [] } = useUserAddresses();
-  const { address_id, is_open, updateState } =
-    useContext(AddressDrawerState);
+  const { address_id, is_open, updateState } = useContext(AddressDrawerState);
   return (
     <SidebarDrawer
       is_open={is_open}
@@ -57,13 +54,24 @@ const SelectAddressDrawer: FC = () => {
                   key={`address-row-${address.id}`}
                   address={address}
                   is_selected={address.id == address_id}
-                  onClick={() => history.back()}
+                  onClick={() => {
+                    updateState?.({
+                      address_id: address.id,
+                    });
+                    history.back();
+                  }}
                   onDelete={(data) => {
                     delete_address_mutation.mutate({
                       address_id: data.id,
                     });
                   }}
-                  onEdit={(data) => {}}
+                  onEdit={(data) => {
+                    window.history.pushState({ address_modal: true }, "");
+                    updateState?.({
+                      is_modal_open: true,
+                      data,
+                    });
+                  }}
                 />
               ))}
             </div>
@@ -76,9 +84,7 @@ const SelectAddressDrawer: FC = () => {
           onClick={() => {
             window.history.pushState({ address_modal: true }, "");
             updateState?.({
-              address_id,
               is_modal_open: true,
-              open: is_open,
             });
           }}
         >
