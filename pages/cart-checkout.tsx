@@ -20,7 +20,7 @@ import OrderSuccessfulModal from "@/components/cart/order-successful-modal.compo
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
-import { useSnackbarOffset } from "@/components/common/use-snackbar-offset.hook";
+import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -36,7 +36,7 @@ export type IAddressModalState = {
   data: IAddress | null;
 };
 const CartCheckoutPage: NextPageWithLayout = () => {
-  useSnackbarOffset();
+  useSnackbarOffset({});
   const { data: user_addresses = [] } = useUserAddresses();
   const { address_id } = useContext(AddressDrawerState);
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(

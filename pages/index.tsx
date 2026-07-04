@@ -24,7 +24,7 @@ import { QueryClient, dehydrate } from "@tanstack/react-query";
 // hooks
 import useFeed from "@/hooks/axios/home/use-feed.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
-import { useSnackbarOffset } from "@/components/common/use-snackbar-offset.hook";
+import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 
 // helpers
 import { getCampaigns } from "@/hooks/axios/campaign/use-campaigns.hook";
@@ -36,7 +36,7 @@ type IProps = {
 };
 
 const HomePage: NextPageWithLayout = () => {
-  useSnackbarOffset();
+  useSnackbarOffset({});
   const { data: home_feed } = useFeed();
   const product_recommendations = home_feed?.product_recommendations ?? [];
   const continue_shopping_recommendations =
