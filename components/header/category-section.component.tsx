@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 // types
@@ -13,12 +12,13 @@ import { Menu, ChevronLeft, ChevronRight } from "lucide-react";
 
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
+import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 
 // helpers
 import clsx from "clsx";
 
 const CategorySection: FC = () => {
-  const router = useRouter();
+  const { updateState } = useMegaMenuContext();
   const { data: categories = [] } = useCategories(true);
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
   const [selected_sub_category, setSelectedSubCategory] =
@@ -67,8 +67,11 @@ const CategorySection: FC = () => {
           {/* Left Section: Menu + Navigation */}
           <div className="flex min-w-0 items-center gap-4">
             {/* Menu Button */}
-            <button className="hidden shrink-0 items-center gap-2.5 lg:flex">
-              <Menu className="h-7 w-7" strokeWidth={2} />
+            <button
+              className="hidden shrink-0 items-center gap-2.5 lg:flex cursor-pointer"
+              onClick={() => updateState?.(true)}
+            >
+              <Menu className="h-7 w-7" strokeWidth={2} aria-hidden={true} />
               <span className="hidden font-semibold sm:block">Menu</span>
             </button>
             <div className="flex min-w-0 items-center">
@@ -261,14 +264,14 @@ const CategorySection: FC = () => {
       </div>
       {selected_category && (
         <div className="flex items-center gap-6 bg-gray-100 px-4 py-2 text-gray-900 shadow-lg">
-          <span className="text-md shrink-0 font-semibold text-orange-500 lg:text-lg lg:inline-block hidden">
+          <span className="text-md hidden shrink-0 font-semibold text-orange-500 lg:inline-block lg:text-lg">
             {selected_category.name}
           </span>
 
           <nav
             ref={sub_nav_ref}
             aria-label={`${selected_category.name} subcategories`}
-            className="min-w-0 flex-1 overflow-x-auto no-scrollbar"
+            className="no-scrollbar min-w-0 flex-1 overflow-x-auto"
           >
             <ul className="flex items-center gap-6 whitespace-nowrap">
               {selected_category.subCategories.map((sub_category) => {

@@ -29,6 +29,7 @@ import { clsx } from "clsx";
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
+import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 
 // context
 import { AddressDrawerState } from "@/context";
@@ -100,6 +101,7 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
+  const { updateState: updateMegaMenuState } = useMegaMenuContext();
   const { data: cart_details } = useCart();
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
@@ -133,7 +135,14 @@ const Header: FC<{
       >
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
-          <Menu className="inline h-6 w-6 text-white lg:hidden" />
+          <button
+            onClick={() => {
+              console.log("value of testing");
+              updateMegaMenuState?.(true);
+            }}
+          >
+            <Menu className="inline h-6 w-6 text-white lg:hidden" />
+          </button>
           {/** LOGO SECTION */}
           <Link
             href="/"
