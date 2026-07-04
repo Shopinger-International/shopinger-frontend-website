@@ -199,56 +199,61 @@ const LoginForm: FC<IProps> = ({
           {({ values, errors, setFieldValue, handleSubmit }) => (
             <Form onSubmit={handleSubmit} className="w-full space-y-4">
               <Field name="identifier">
-                {({ field, meta }: FieldProps<string, IInitialValues>) => (
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="identifier"
-                      className="text-md block font-medium text-gray-700"
-                    >
-                      Enter mobile number or email
-                    </label>
-                    <div className="flex items-center gap-1">
-                      {startsWithNumber(field.value) && (
-                        <Popover className="relative">
-                          <PopoverButton className="flex h-10 items-center gap-1 rounded-l-md border border-gray-400 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-orange-400 focus:outline-none">
-                            {getCallingCode(
-                              values.country?.code as CountryCode,
-                            )}
-                            <ChevronDown className="size-4" />
-                          </PopoverButton>
+                {({ field, meta }: FieldProps<string, IInitialValues>) => {
+                  const is_phone = startsWithNumber(field.value);
+                  return (
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="identifier"
+                        className="text-md block font-medium text-gray-700"
+                      >
+                        Enter mobile number or email
+                      </label>
+                      <div className="flex items-center gap-1">
+                        {is_phone && (
+                          <Popover className="relative">
+                            <PopoverButton className="flex h-10 items-center gap-1 rounded-l-md border border-gray-400 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-orange-400 focus:outline-none">
+                              {getCallingCode(
+                                values.country?.code as CountryCode,
+                              )}
+                              <ChevronDown className="size-4" />
+                            </PopoverButton>
 
-                          <PopoverPanel className="absolute z-20 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                            {({ close }) => (
-                              <div className="max-h-64 overflow-y-auto p-2">
-                                <CountrySelector handleChange={() => close()} />
-                              </div>
-                            )}
-                          </PopoverPanel>
-                        </Popover>
-                      )}
-
-                      <input
-                        id="identifier"
-                        type="text"
-                        placeholder="Mobile number or email"
-                        className={clsx(
-                          "h-10 w-full rounded-r-md border border-gray-300 px-3 hover:outline-orange-500 focus:outline-orange-500",
-                          startsWithNumber(field.value)
-                            ? "rounded-r-md"
-                            : "rounded-md",
+                            <PopoverPanel className="absolute z-20 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                              {({ close }) => (
+                                <div className="max-h-64 overflow-y-auto p-2">
+                                  <CountrySelector
+                                    handleChange={() => close()}
+                                  />
+                                </div>
+                              )}
+                            </PopoverPanel>
+                          </Popover>
                         )}
-                        {...field}
-                        onChange={(e) => {
-                          const value = e.target.value.toLowerCase();
-                          setFieldValue(field.name, value);
-                        }}
-                      />
+
+                        <input
+                          key="identifier-input"
+                          id="identifier"
+                          type={"text"}
+                          inputMode={is_phone ? "tel" : "email"}
+                          placeholder="Mobile number or email"
+                          className={clsx(
+                            "h-10 w-full rounded-r-md border border-gray-300 px-3 hover:outline-orange-500 focus:outline-orange-500",
+                            is_phone ? "rounded-r-md" : "rounded-md",
+                          )}
+                          {...field}
+                          onChange={(e) => {
+                            const value = e.target.value.toLowerCase();
+                            setFieldValue(field.name, value);
+                          }}
+                        />
+                      </div>
+                      {meta.touched && meta.error && (
+                        <p className="text-red-500">{meta.error}</p>
+                      )}
                     </div>
-                    {meta.touched && meta.error && (
-                      <p className="text-red-500">{meta.error}</p>
-                    )}
-                  </div>
-                )}
+                  );
+                }}
               </Field>
               <button
                 onClick={() => console.log(errors)}
