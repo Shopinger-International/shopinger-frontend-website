@@ -15,11 +15,15 @@ import { MapPin } from "lucide-react";
 // hooks
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
+import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 
 const SelectAddressDrawer: FC = () => {
   const delete_address_mutation = useDeleteAddressMutation();
   const { data: user_addresses = [] } = useUserAddresses();
   const { address_id, is_open, updateState } = useContext(AddressDrawerState);
+  useSnackbarOffset({
+    enabled: is_open,
+  });
   return (
     <SidebarDrawer
       is_open={is_open}

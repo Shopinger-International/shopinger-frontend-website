@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
@@ -35,7 +35,7 @@ import createProductJSONLD from "@/seo/product.jsonld";
 // hooks
 import { getMappings } from "@/hooks/axios/common/use-category-mappings.hook";
 import { useProductAvailability } from "@/hooks/axios/product/use-get-product-availbility.hook";
-import { useSnackbarOffset } from "@/components/common/use-snackbar-offset.hook";
+import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 
 // analytics
 import useProductViewed from "@/hooks/analytics/use-product-viewed.hook";
@@ -115,7 +115,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   product,
   category_mappings,
 }) => {
-  useSnackbarOffset();
+  useSnackbarOffset({});
   useProductViewed({
     product_id,
     variant_id,
