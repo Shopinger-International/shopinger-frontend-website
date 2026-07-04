@@ -261,15 +261,16 @@ const CategorySection: FC = () => {
       </div>
       {selected_category && (
         <div className="flex items-center gap-6 bg-gray-100 px-4 py-2 text-gray-900 shadow-lg">
-          <span className="text-md shrink-0 font-semibold text-orange-500 lg:text-lg">
+          <span className="text-md shrink-0 font-semibold text-orange-500 lg:text-lg lg:inline-block hidden">
             {selected_category.name}
           </span>
 
           <nav
             ref={sub_nav_ref}
             aria-label={`${selected_category.name} subcategories`}
+            className="min-w-0 flex-1 overflow-x-auto no-scrollbar"
           >
-            <ul className="no-scrollbar flex min-w-0 flex-1 items-center gap-6 overflow-x-auto whitespace-nowrap">
+            <ul className="flex items-center gap-6 whitespace-nowrap">
               {selected_category.subCategories.map((sub_category) => {
                 const { id, name, slug: sub_slug } = sub_category;
                 return (
