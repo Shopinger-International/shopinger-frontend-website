@@ -14,6 +14,7 @@ import { SnackbarProvider } from "notistack";
 import SelectedAddressProvider from "@/provider/selected-address-provider.component";
 import AlgoliaInsightsProvider from "@/provider/algolia-insights-provider";
 import AnalyticsProvider from "@/provider/analytics.provider";
+import MegaMenuProvider from "@/provider/mega-menu-provider";
 
 // react query
 import {
@@ -80,9 +81,11 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                 error: ErrorSnackbar,
               }}
             >
-              <SelectedAddressProvider>
-                {getLayout(<Component {...pageProps} />)}
-              </SelectedAddressProvider>
+              <MegaMenuProvider>
+                <SelectedAddressProvider>
+                  {getLayout(<Component {...pageProps} />)}
+                </SelectedAddressProvider>
+              </MegaMenuProvider>
             </SnackbarProvider>
           </AlgoliaInsightsProvider>
         </HydrationBoundary>

@@ -95,7 +95,7 @@ const ProductRow: FC<IProps> = ({ title, products, background_style }) => {
         <ul className="flex gap-5">
           {products.map(({ product_id, variant_id, title, media_url }) => (
             <li
-              className="group w-36 sm:w-40 shrink-0 lg:w-48"
+              className="group w-36 shrink-0 sm:w-40 lg:w-48"
               key={`product-${product_id}-${variant_id}`}
             >
               <Link
@@ -103,7 +103,7 @@ const ProductRow: FC<IProps> = ({ title, products, background_style }) => {
                 title={`View ${title}`}
                 href={`/${generateSlug(title)}/p/${product_id}/${variant_id}`}
               >
-                <div className="relative aspect-square overflow-hidden rounded-2xl border border-gray-300">
+                <div className="relative aspect-square overflow-hidden rounded-xl border border-gray-300 sm:rounded-2xl">
                   <Image
                     src={media_url}
                     alt={`${title} product image`}
