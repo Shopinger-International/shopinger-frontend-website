@@ -34,17 +34,11 @@ const MegaMenuProvider: FC<IProps> = ({ children }) => {
   const [is_open, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!login_modal_state.open && !is_open) return;
+    if (!login_modal_state.open) return;
     const handlePopState = () => {
-      if (login_modal_state.open) {
-        setLoginModalState({
-          open: false,
-        });
-        return;
-      }
-      if (is_open) {
-        setIsOpen(false);
-      }
+      setLoginModalState({
+        open: false,
+      });
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -52,20 +46,19 @@ const MegaMenuProvider: FC<IProps> = ({ children }) => {
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [login_modal_state.open, is_open]);
+  }, [login_modal_state.open]);
   return (
     <MegaMenuContext.Provider
       value={{
         is_open,
         updateState: (val) => {
-          val && history.pushState({ mega_menu: true }, "");
           setIsOpen(val);
         },
       }}
     >
       <MegaMenu
         is_open={is_open}
-        handleClose={() => history.back()}
+        handleClose={() => setIsOpen(false)}
         handleShowLoginModal={() => {
           history.pushState(
             {
@@ -85,6 +78,7 @@ const MegaMenuProvider: FC<IProps> = ({ children }) => {
         }}
         handleOnSuccess={(user) => {
           history.back();
+          setIsOpen(false);
         }}
       />
       {children}
