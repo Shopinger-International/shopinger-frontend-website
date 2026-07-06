@@ -69,6 +69,7 @@ const Reviews: NextPageWithLayout = () => {
                 rating,
                 created_at,
                 review_medias,
+                helpful_count,
               }) => (
                 <UserReview
                   key={review_id}
@@ -77,6 +78,7 @@ const Reviews: NextPageWithLayout = () => {
                   rating={rating}
                   created_at={created_at}
                   medias={review_medias.map(({ media }) => media)}
+                  helpful_count={helpful_count}
                 />
               ),
             )

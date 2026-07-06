@@ -18,6 +18,7 @@ type IProps = {
   rating: number;
   created_at: string;
   medias: IMedia[];
+  helpful_count:number;
 };
 const UserReview: FC<IProps> = ({
   title,
@@ -25,6 +26,7 @@ const UserReview: FC<IProps> = ({
   rating,
   created_at,
   medias,
+  helpful_count
 }) => {
   return (
     <div className="rounded-xl border border-gray-300 bg-white px-6 pt-6 pb-4">
@@ -67,7 +69,7 @@ const UserReview: FC<IProps> = ({
       <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-gray-300 pt-4">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <ThumbsUp size={16} />
-          <span>18 Helpful</span>
+          <span>{helpful_count} Helpful</span>
         </div>
 
         <div className="flex gap-2">
