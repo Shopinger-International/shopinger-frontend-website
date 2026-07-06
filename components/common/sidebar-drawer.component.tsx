@@ -78,7 +78,7 @@ const SidebarDrawer: FC<SidebarDrawerProps> = ({
               )}
             >
               {/* Header */}
-              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white px-6 py-4">
+              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white px-6 py-3">
                 <DialogTitle className="pr-4 text-xl font-semibold tracking-tight text-orange-500">
                   {title}
                 </DialogTitle>

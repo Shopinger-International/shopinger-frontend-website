@@ -26,6 +26,7 @@ import useLogoutMutation from "@/hooks/axios/login/use-logout-mutation.hook";
 // helpers
 import clsx from "clsx";
 
+// icons
 import {
   ChevronDown,
   ChevronRight,
@@ -37,8 +38,11 @@ import {
   ShoppingBag,
   MapPin,
   CircleUser,
+  Stethoscope,
+  TestTubeDiagonal,
+  ShieldPlus,
+  Pill,
 } from "lucide-react";
-
 const account_section = [
   {
     label: "Home",
@@ -67,6 +71,31 @@ const account_section = [
   },
 ];
 
+const consultancy_section = [
+  {
+    label: "Book Doctor Consultation",
+    href: "/",
+    icon: Stethoscope,
+  },
+  {
+    label: "Book Pathology Test",
+    href: "/",
+    icon: TestTubeDiagonal,
+  },
+  {
+    label: "Health Packages",
+    href: "/",
+    icon: ShieldPlus,
+  },
+];
+
+const pharmacy_section = [
+  {
+    label: "Order Medicines (Prescription Required)",
+    href: "/",
+    icon: Pill,
+  },
+];
 interface IProps {
   is_open: boolean;
   handleClose: () => void;
@@ -107,7 +136,7 @@ const MenuGroup: FC<IMenuGroupProps> = ({
       {({ open }) => (
         <>
           <DisclosureButton className="flex w-full items-center justify-between px-6 py-3 text-left transition-colors hover:bg-gray-50">
-            <span className="text-base font-semibold text-gray-900">
+            <span className="text-md font-bold text-gray-900">
               {title}
             </span>
 
@@ -161,7 +190,7 @@ const MegaMenu: FC<IProps> = ({
       is_open={is_open}
       handleClose={handleClose}
       position="left"
-      title={user ? `Hello, ${user.name}` : "Sign In to Get Started ⭐"}
+      title={user ? `Hello, ${user.name}` : "Welcome to Shopinger!"}
       panelClassName="max-w-80"
     >
       <div className="flex h-full flex-col overflow-y-auto">
@@ -176,7 +205,7 @@ const MegaMenu: FC<IProps> = ({
                 logout_mutation.mutate();
                 handleClose();
               }}
-              className="group flex w-full items-center gap-4 px-6 py- hover:bg-gray-50"
+              className="group py- flex w-full items-center gap-4 px-6 hover:bg-gray-50"
               disabled={logout_mutation.isPending}
             >
               <LogOut className="size-5 text-gray-600" />
@@ -205,6 +234,20 @@ const MegaMenu: FC<IProps> = ({
             </button>
           )}
         </MenuGroup>
+
+        <MenuGroup
+          title={"Online consultancy"}
+          handleClose={handleClose}
+          default_open={true}
+          list_items={consultancy_section}
+        />
+
+        <MenuGroup
+          title={"Pharmacy"}
+          handleClose={handleClose}
+          default_open={true}
+          list_items={pharmacy_section}
+        />
 
         <MenuGroup
           title={"Shop by Category"}
