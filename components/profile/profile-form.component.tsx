@@ -220,7 +220,7 @@ const ProfileForm: FC = () => {
       </OTPModal>
       <div className="flex items-center justify-between border-b border-gray-300 px-6 py-4">
         <div>
-          <h1 className="text-base font-semibold sm:text-xl">Your Profile</h1>
+          <h1 className="text-base font-semibold sm:text-xl">My Profile</h1>
           <p className="hidden text-sm text-gray-600 sm:block">
             View and manage your personal information
           </p>

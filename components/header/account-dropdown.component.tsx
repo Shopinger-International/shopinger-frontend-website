@@ -68,7 +68,7 @@ const AccountDropdown: FC = () => {
                   icon: User,
                 },
                 {
-                  label: "Orders",
+                  label: "My Orders",
                   href: "/order-history",
                   icon: Handbag,
                 },

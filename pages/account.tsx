@@ -46,7 +46,7 @@ const AccountPage: NextPageWithLayout = () => {
           <h1 className="text-xl font-semibold sm:text-2xl">Your Account</h1>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <NavigationCard
-              title="Your Orders"
+              title="My Orders"
               description="Track, return, or cancel orders, download invoices, and buy items again"
               href="/order-history"
             >
@@ -54,7 +54,7 @@ const AccountPage: NextPageWithLayout = () => {
             </NavigationCard>
 
             <NavigationCard
-              title="Your Addresses"
+              title="My Addresses"
               description="Add, edit, or remove delivery addresses and set a default address"
               href="/manage-address"
             >
@@ -62,7 +62,7 @@ const AccountPage: NextPageWithLayout = () => {
             </NavigationCard>
 
             <NavigationCard
-              title="Your Profile"
+              title="My Profile"
               description="Update your personal details like name, email, and phone number"
               href="/profile"
             >
@@ -70,15 +70,15 @@ const AccountPage: NextPageWithLayout = () => {
             </NavigationCard>
 
             <NavigationCard
-              title="Your Reviews"
+              title="My Reviews"
               description="View, edit, or delete your product reviews and ratings"
-              href="/your-reviews"
+              href="/reviews"
             >
               <span className="text-2xl">⭐</span>
             </NavigationCard>
 
             <NavigationCard
-              title="Your Cart"
+              title="My Cart"
               description="Review items in your cart, update quantities, or proceed to checkout"
               href="/cart-checkout"
             >
