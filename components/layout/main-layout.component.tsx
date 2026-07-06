@@ -30,9 +30,10 @@ const MobileAddressModal = dynamic(
 
 // hooks
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
 // context
-import { AddressDrawerState, FooterStateContext } from "@/context";
+import {  FooterStateContext } from "@/context";
 
 // helpers
 import clsx from "clsx";
@@ -60,7 +61,7 @@ const MainLayout: FC<{
     address_id,
     data: address_data,
     updateState,
-  } = useContext(AddressDrawerState);
+  } = useAddressDrawerContext();
 
   const [login_modal_state, setLoginModalState] = useState<{
     open: boolean;

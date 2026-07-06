@@ -1,4 +1,4 @@
-import { useLayoutEffect, useContext } from "react";
+import { useLayoutEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -30,14 +30,12 @@ import { clsx } from "clsx";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
-
-// context
-import { AddressDrawerState } from "@/context";
+import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
-  const { address_id, updateState } = useContext(AddressDrawerState);
+  const { address_id, updateState } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
   const user_address = user_details?.user_addresses?.find(
     (address) => address.id == address_id,

@@ -9,15 +9,15 @@ import { MapPin } from "lucide-react";
 // helpers
 import clsx from "clsx";
 
-// context
-import { AddressDrawerState } from "@/context";
+// hooks
+import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
 type AddressBarProps = {
   address: IAddress | null;
 };
 
 const AddressBar: FC<AddressBarProps> = ({ address }) => {
-  const { updateState } = useContext(AddressDrawerState);
+  const { updateState } = useAddressDrawerContext();
   return (
     <div
       className={clsx(

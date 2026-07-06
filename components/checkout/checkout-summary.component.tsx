@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import Link from "next/link";
 
 // const
@@ -19,12 +18,10 @@ import useCartCheckoutMutation from "@/hooks/axios/cart/use-cart-checkout-mutati
 import useBuyNowCheckoutMutation from "@/hooks/axios/checkout/use-buy-now-checkout.hook";
 import useCreateRazorpayOrderMutation from "@/hooks/axios/cart/create-razorpay-order-mutation.hook";
 import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation.hook";
+import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
 // analytics event
 import orderCompletedEvent from "@/analytics/events/order-completed.event";
-
-// context
-import { AddressDrawerState } from "@/context";
 
 type IProps = {
   handleShowLoginModal: () => void;
@@ -52,7 +49,7 @@ const CheckoutSummary: FC<IProps> = ({
   type,
   intent_id,
 }) => {
-  const { updateState } = useContext(AddressDrawerState);
+  const { updateState } = useAddressDrawerContext();
   const buy_now_checkout_mutation = useBuyNowCheckoutMutation();
   const cart_checkout_mutation = useCartCheckoutMutation();
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
