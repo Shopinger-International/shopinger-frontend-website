@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 
 // types
@@ -21,15 +21,13 @@ import OrderSuccessfulModal from "@/components/cart/order-successful-modal.compo
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
+import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
 
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
-
-// context
-import { AddressDrawerState } from "@/context";
 
 export type IAddressModalState = {
   open: boolean;
@@ -38,7 +36,7 @@ export type IAddressModalState = {
 const CartCheckoutPage: NextPageWithLayout = () => {
   useSnackbarOffset({});
   const { data: user_addresses = [] } = useUserAddresses();
-  const { address_id } = useContext(AddressDrawerState);
+  const { address_id } = useAddressDrawerContext();
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(
     null,
   );

@@ -1,13 +1,9 @@
-import { useContext } from "react";
 // types
 import type { FC } from "react";
 
 // local components
 import SidebarDrawer from "@/components//common/sidebar-drawer.component";
 import AddressRow from "@/components/cart/address-row.component";
-
-// context
-import { AddressDrawerState } from "@/context";
 
 // icons
 import { MapPin } from "lucide-react";
@@ -16,11 +12,12 @@ import { MapPin } from "lucide-react";
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
 import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
+import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
 const SelectAddressDrawer: FC = () => {
   const delete_address_mutation = useDeleteAddressMutation();
   const { data: user_addresses = [] } = useUserAddresses();
-  const { address_id, is_open, updateState } = useContext(AddressDrawerState);
+  const { address_id, is_open, updateState } = useAddressDrawerContext();
   useSnackbarOffset({
     enabled: is_open,
   });
@@ -29,8 +26,9 @@ const SelectAddressDrawer: FC = () => {
       is_open={is_open}
       handleClose={() => history.back()}
       title={"Change Address"}
+      panelClassName="max-w-90"
     >
-      <div className="flex h-full min-h-0 flex-col">
+      <div className="flex h-full min-h-0 flex-col pt-4">
         <div className="flex-1 overflow-y-auto px-6">
           <div className="h-full space-y-2">
             {user_addresses.length === 0 ? (

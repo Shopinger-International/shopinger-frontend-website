@@ -1,13 +1,36 @@
-import { useState } from "react";
+import { useState, useContext, createContext } from "react";
 // types
 import type { FC, ReactNode } from "react";
-import type { IAddressDrawerState } from "@/context";
-
-// context
-import { AddressDrawerState } from "@/context";
+import type { IAddress } from "@/types/address";
 
 // hooks
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
+
+export type IAddressDrawerState = {
+  is_open: boolean;
+  is_modal_open: boolean;
+  address_id: number | null;
+  updateState?: (
+    payload: Partial<{
+      is_open: boolean;
+      is_modal_open: boolean;
+      address_id: number | null;
+      data: IAddress | null; // for storing updating related data
+    }>,
+  ) => void;
+  data?: IAddress | null;
+};
+
+const AddressDrawerContext = createContext<IAddressDrawerState>({
+  is_open: false,
+  is_modal_open: false,
+  address_id: null,
+});
+
+export const useAddressDrawerContext = () => {
+  const data = useContext(AddressDrawerContext);
+  return data;
+};
 
 const SelectedAddressProvider: FC<{
   children: ReactNode;
@@ -31,7 +54,7 @@ const SelectedAddressProvider: FC<{
   }
 
   return (
-    <AddressDrawerState.Provider
+    <AddressDrawerContext.Provider
       value={{
         ...address_drawer_state,
         updateState: (payload) => {
@@ -43,7 +66,7 @@ const SelectedAddressProvider: FC<{
       }}
     >
       {children}
-    </AddressDrawerState.Provider>
+    </AddressDrawerContext.Provider>
   );
 };
 
