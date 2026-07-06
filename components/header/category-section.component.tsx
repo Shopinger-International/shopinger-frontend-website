@@ -1,3 +1,4 @@
+import { useParams } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 // types
@@ -18,6 +19,7 @@ import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import clsx from "clsx";
 
 const CategorySection: FC = () => {
+  const params = useParams<{ main_category_slug: string }>();
   const { updateState } = useMegaMenuContext();
   const { data: categories = [] } = useCategories(true);
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
@@ -60,6 +62,13 @@ const CategorySection: FC = () => {
     };
   }, [categories]);
 
+  useEffect(() => {
+    const selected_category = categories.find(
+      (category) => category.slug == params.main_category_slug,
+    );
+    selected_category && setSelectedCategory(selected_category);
+  }, [params, categories]);
+
   return (
     <>
       <div className="bg-orange-500 px-4 py-0.5">
@@ -68,7 +77,7 @@ const CategorySection: FC = () => {
           <div className="flex min-w-0 items-center gap-4">
             {/* Menu Button */}
             <button
-              className="hidden shrink-0 items-center gap-2.5 lg:flex cursor-pointer"
+              className="hidden shrink-0 cursor-pointer items-center gap-2.5 lg:flex"
               onClick={() => updateState?.(true)}
             >
               <Menu className="h-7 w-7" strokeWidth={2} aria-hidden={true} />
@@ -192,9 +201,9 @@ const CategorySection: FC = () => {
                         <Link
                           href={`/categories/${category.slug}`}
                           className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                          onClick={() => {
-                            setSelectedCategory(category);
-                          }}
+                          // onClick={() => {
+                          //   setSelectedCategory(category);
+                          // }}
                         >
                           <span
                             className={clsx(
@@ -227,38 +236,6 @@ const CategorySection: FC = () => {
                 <ChevronRight aria-hidden={true} className="h-5 w-5" />
               </button>
             </div>
-          </div>
-
-          {/* Right Section: Sale Timer + Get App + Profile */}
-          <div className="hidden shrink-0 items-center gap-2 md:gap-4 lg:flex">
-            {/* Festive Sale Timer */} {/* Get App Button */}
-            {/* <button className="hidden items-center gap-2 rounded-md px-2 py-2 transition-colors hover:bg-white/10 sm:flex md:px-3">
-              <Smartphone
-                className="text-brand-orange h-6 w-6"
-                strokeWidth={2.5}
-              />
-              <span className="text-sm font-medium text-stone-50">Get App</span>
-            </button> */}
-            {/* Profile/Notification */}
-            {/* <div className="hidden lg:inline">
-              <Tooltip content={<AIAssistant />} className="z-100">
-                {({ open }) => (
-                  <div className="w flex flex-col items-center gap-0.5">
-                    <span className="flex size-8 items-center justify-center rounded-full bg-white">
-                      <Image
-                        src="/header/barsati.png"
-                        alt="barsati"
-                        width={17}
-                        height={20}
-                      />
-                    </span>
-                    <span className="hidden text-[10px] font-medium text-white capitalize sm:block">
-                      Barsati
-                    </span>
-                  </div>
-                )}
-              </Tooltip>
-            </div> */}
           </div>
         </div>
       </div>

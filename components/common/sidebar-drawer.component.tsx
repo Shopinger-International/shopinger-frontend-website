@@ -1,9 +1,14 @@
 import { Fragment } from "react";
+// types
 import type { FC, ReactNode } from "react";
 
+// helpers
 import clsx from "clsx";
+
+// icons
 import { X } from "lucide-react";
 
+// external components
 import {
   Dialog,
   DialogPanel,
@@ -18,6 +23,7 @@ interface SidebarDrawerProps {
   handleClose: () => void;
   position?: "left" | "right";
   title: string;
+  panelClassName?: string;
 }
 
 const SidebarDrawer: FC<SidebarDrawerProps> = ({
@@ -26,6 +32,7 @@ const SidebarDrawer: FC<SidebarDrawerProps> = ({
   handleClose,
   title,
   position = "right",
+  panelClassName,
 }) => {
   const is_left = position === "left";
 
@@ -62,11 +69,12 @@ const SidebarDrawer: FC<SidebarDrawerProps> = ({
           >
             <DialogPanel
               className={clsx(
-                "flex h-full w-full max-w-90 flex-col bg-white shadow-2xl",
+                "flex h-full w-full flex-col bg-white shadow-2xl",
                 "pb-[env(safe-area-inset-bottom)]",
                 is_left
                   ? "border-r border-gray-300 sm:rounded-r-2xl"
                   : "border-l border-gray-300 sm:rounded-l-2xl",
+                panelClassName,
               )}
             >
               {/* Header */}

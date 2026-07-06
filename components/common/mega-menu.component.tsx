@@ -106,7 +106,7 @@ const MenuGroup: FC<IMenuGroupProps> = ({
     >
       {({ open }) => (
         <>
-          <DisclosureButton className="flex w-full items-center justify-between px-6 py-4 text-left transition-colors hover:bg-gray-50">
+          <DisclosureButton className="flex w-full items-center justify-between px-6 py-3 text-left transition-colors hover:bg-gray-50">
             <span className="text-base font-semibold text-gray-900">
               {title}
             </span>
@@ -162,6 +162,7 @@ const MegaMenu: FC<IProps> = ({
       handleClose={handleClose}
       position="left"
       title={user ? `Hello, ${user.name}` : "Sign In to Get Started ⭐"}
+      panelClassName="max-w-80"
     >
       <div className="flex h-full flex-col overflow-y-auto">
         <MenuGroup
@@ -175,7 +176,7 @@ const MegaMenu: FC<IProps> = ({
                 logout_mutation.mutate();
                 handleClose();
               }}
-              className="group flex w-full items-center gap-4 px-6 py-3 hover:bg-gray-50"
+              className="group flex w-full items-center gap-4 px-6 py- hover:bg-gray-50"
               disabled={logout_mutation.isPending}
             >
               <LogOut className="size-5 text-gray-600" />
