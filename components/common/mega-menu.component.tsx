@@ -136,9 +136,7 @@ const MenuGroup: FC<IMenuGroupProps> = ({
       {({ open }) => (
         <>
           <DisclosureButton className="flex w-full items-center justify-between px-6 py-3 text-left transition-colors hover:bg-gray-50">
-            <span className="text-md font-bold text-gray-900">
-              {title}
-            </span>
+            <span className="text-md font-bold text-gray-900">{title}</span>
 
             <ChevronDown
               className={`size-5 text-gray-500 transition-transform duration-200 ${
@@ -205,7 +203,7 @@ const MegaMenu: FC<IProps> = ({
                 logout_mutation.mutate();
                 handleClose();
               }}
-              className="group py- flex w-full items-center gap-4 px-6 hover:bg-gray-50"
+              className="group flex w-full items-center gap-4 px-6 py-3 hover:bg-gray-50"
               disabled={logout_mutation.isPending}
             >
               <LogOut className="size-5 text-gray-600" />
