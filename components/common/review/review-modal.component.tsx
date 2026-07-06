@@ -2,11 +2,9 @@ import Image from "next/image";
 // types
 import type { FC } from "react";
 import type { FieldProps } from "formik";
-import type IProduct from "@/types/product";
-import type IVariant from "@/types/variant";
-import type { IOrderItem } from "@/types/order";
 import type IMedia from "@/types/media";
 import type { ChangeEvent, DragEvent } from "react";
+import type IReview from "@/types/review";
 
 // external components
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -46,27 +44,32 @@ type IInitialValues = {
 };
 type IProps = {
   order_id: number;
-  product: Omit<IProduct, "variants">;
-  variant: IVariant;
-  order_item: IOrderItem;
+  product_id: number;
+  variant_id: number;
+  order_item_id: number;
+  product_title: string;
+  product_description: string;
+  product_media_url: string;
+  review: IReview;
   is_open: boolean;
   onClose: () => void;
 };
 
 const ReviewModal: FC<IProps> = ({
   order_id,
-  product,
-  variant,
-  order_item,
+  product_id,
+  variant_id,
+  order_item_id,
+  product_title,
+  product_description,
+  product_media_url,
+  review,
   is_open,
   onClose,
 }) => {
   const query_client = useQueryClient();
-  const { title } = product;
   const review_generator_mutation = useReviewGeneratorMutation();
-  const variant_medias = variant.variant_medias.map(({ media }) => media);
   const add_review_mutation = useAddReviewMutation();
-  const review = order_item.product_review[0];
   const initial_values: IInitialValues = {
     rating: review?.rating ?? 0,
     title: review?.title ?? "",
@@ -85,19 +88,16 @@ const ReviewModal: FC<IProps> = ({
             <div className="flex items-start gap-4">
               <div className="relative size-14 shrink-0 overflow-hidden rounded-lg border border-gray-300 sm:size-16">
                 <Image
-                  src={
-                    variant_medias[0]?.url ??
-                    product.product_medias[0].media.url
-                  }
+                  src={product_media_url}
                   fill
-                  alt={title}
+                  alt={product_title}
                   className="object-contain"
                 />
               </div>
 
               <div className="flex flex-col gap-0.5 sm:gap-1">
                 <DialogTitle className="line-clamp-1 text-sm font-semibold text-gray-900 sm:line-clamp-2 sm:text-base">
-                  {title}
+                  {product_title}
                 </DialogTitle>
                 <p className="text-xs text-gray-600 sm:text-sm">
                   Share your experience with this product
@@ -119,9 +119,9 @@ const ReviewModal: FC<IProps> = ({
             onSubmit={({ medias, existing_medias, ...values }) => {
               const form_data = new FormData();
               const payload = {
-                product_id: product.id,
-                variant_id: variant.id,
-                order_item_id: order_item.item_id,
+                product_id: product_id,
+                variant_id: variant_id,
+                order_item_id: order_item_id,
                 ...values,
               };
               existing_medias.forEach((media) => {
@@ -161,8 +161,8 @@ const ReviewModal: FC<IProps> = ({
                               review_generator_mutation.mutate(
                                 {
                                   rating: val,
-                                  product_title: product.title,
-                                  product_description: product.description,
+                                  product_title: product_title,
+                                  product_description: product_description,
                                 },
                                 {
                                   onSuccess({

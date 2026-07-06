@@ -1,11 +1,13 @@
+import { useState } from "react";
 import Link from "next/link";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
-import type IReview from "@/types/review";
+import type { IProductReviewsPageType } from "@/hooks/axios/review/use-get-my-reviews.hook";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
+import ReviewModal from "@/components/common/review/review-modal.component";
 
 // components
 import UserReview from "@/components/review/user-review.component";
@@ -43,51 +45,74 @@ const EmptyReviews = () => {
 };
 
 const Reviews: NextPageWithLayout = () => {
+  const [review_modal_state, setReviewModalState] = useState<{
+    open: boolean;
+    review: IProductReviewsPageType["reviews"][0] | null;
+  }>({
+    open: false,
+    review: null,
+  });
   const { data } = useGetMyReviews({
     limit: 10,
   });
 
-  const user_reviews = data?.pages.reduce<IReview[]>((acc, { reviews }) => {
-    return [...acc, ...reviews];
-  }, []);
-  console.log("value of reviews", user_reviews);
+  const user_reviews = data?.pages.reduce<IProductReviewsPageType["reviews"]>(
+    (acc, { reviews }) => {
+      return [...acc, ...reviews];
+    },
+    [],
+  );
   return (
-    <section className="min-h-screen w-full py-4">
-      <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-gray-900 sm:text-2xl">
-            My Reviews
-          </h1>
+    <>
+      {review_modal_state.open && review_modal_state.review && (
+        <ReviewModal
+          order_id={review_modal_state.review.order_id}
+          product_id={review_modal_state.review.product_id}
+          variant_id={review_modal_state.review.variant_id}
+          order_item_id={review_modal_state.review.order_item_id}
+          product_title={review_modal_state.review.product_title}
+          product_description={review_modal_state.review.product_description}
+          product_media_url={review_modal_state.review.product_media_url}
+          review={review_modal_state.review}
+          is_open={review_modal_state.open}
+          onClose={() =>
+            setReviewModalState({
+              open: false,
+              review: null,
+            })
+          }
+        />
+      )}
+      <section className="min-h-screen w-full py-4">
+        <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
+          <div className="mb-6 flex items-center justify-between">
+            <h1 className="text-lg font-semibold text-gray-900 sm:text-2xl">
+              My Reviews
+            </h1>
+          </div>
+          <div className="space-y-4">
+            {user_reviews?.length ? (
+              user_reviews.map((review) => {
+                return (
+                  <UserReview
+                    key={review.id}
+                    {...review}
+                    onEditHandler={() => {
+                      setReviewModalState({
+                        open: true,
+                        review,
+                      });
+                    }}
+                  />
+                );
+              })
+            ) : (
+              <EmptyReviews />
+            )}
+          </div>
         </div>
-        <div className="space-y-4">
-          {user_reviews?.length ? (
-            user_reviews.map(
-              ({
-                id: review_id,
-                title,
-                comment,
-                rating,
-                created_at,
-                review_medias,
-                helpful_count,
-              }) => (
-                <UserReview
-                  key={review_id}
-                  title={title}
-                  comment={comment}
-                  rating={rating}
-                  created_at={created_at}
-                  medias={review_medias.map(({ media }) => media)}
-                  helpful_count={helpful_count}
-                />
-              ),
-            )
-          ) : (
-            <EmptyReviews />
-          )}
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

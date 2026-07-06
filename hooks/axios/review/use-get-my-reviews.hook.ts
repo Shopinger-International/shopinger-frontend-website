@@ -6,7 +6,14 @@ import type IReview from "@/types/review";
 import Axios from "@/lib/axios/private.lib";
 
 export type IProductReviewsPageType = {
-  reviews: IReview[];
+  reviews: Array<
+    IReview & {
+      product_title: string;
+      product_description: string;
+      product_media_url: string;
+      order_id: number;
+    }
+  >;
   pagination: {
     page: number;
     limit: number;

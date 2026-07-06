@@ -12,7 +12,7 @@ type IReview = {
   user: IUser;
   created_at: string;
   product_id: number;
-  variant_id: number | null;
+  variant_id: number;
   rating: number;
   title: string;
   comment: string;
@@ -24,7 +24,7 @@ type IReview = {
       [key: string]: any;
     };
   };
-  order_item_id: number | null;
+  order_item_id: number;
   review_medias: IReviewMedia[];
   user: IUser;
   is_reacted: boolean;
