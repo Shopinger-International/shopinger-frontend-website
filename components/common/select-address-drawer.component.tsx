@@ -30,7 +30,7 @@ const SelectAddressDrawer: FC = () => {
       handleClose={() => history.back()}
       title={"Change Address"}
     >
-      <div className="flex h-full min-h-0 flex-col">
+      <div className="flex h-full min-h-0 flex-col pt-4">
         <div className="flex-1 overflow-y-auto px-6">
           <div className="h-full space-y-2">
             {user_addresses.length === 0 ? (

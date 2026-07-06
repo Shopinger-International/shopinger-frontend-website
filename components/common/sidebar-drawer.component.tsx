@@ -1,12 +1,9 @@
 import { Fragment } from "react";
-
-// types
 import type { FC, ReactNode } from "react";
 
-// icons
+import clsx from "clsx";
 import { X } from "lucide-react";
 
-// external components
 import {
   Dialog,
   DialogPanel,
@@ -15,16 +12,13 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 
-// helpers
-import clsx from "clsx";
-
-type SidebarDrawerProps = {
+interface SidebarDrawerProps {
   children: ReactNode;
   is_open: boolean;
   handleClose: () => void;
   position?: "left" | "right";
   title: string;
-};
+}
 
 const SidebarDrawer: FC<SidebarDrawerProps> = ({
   children,
@@ -34,65 +28,67 @@ const SidebarDrawer: FC<SidebarDrawerProps> = ({
   position = "right",
 }) => {
   const is_left = position === "left";
+
   return (
-    <Transition show={is_open} as={Fragment}>
-      <Dialog onClose={handleClose} className="relative z-50">
+    <Transition appear show={is_open} as={Fragment}>
+      <Dialog as="div" className="relative z-50" onClose={handleClose}>
         {/* Backdrop */}
         <TransitionChild
           as={Fragment}
-          enter="ease-out duration-300"
+          enter="ease-out duration-500"
           enterFrom="opacity-0"
           enterTo="opacity-100"
           leave="ease-in duration-200"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/40" />
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px]" />
         </TransitionChild>
 
         <div
           className={clsx(
-            "fixed inset-0 flex items-end justify-center sm:items-stretch sm:justify-end",
-            is_left ? "sm:justify-start" : "sm:justify-end",
+            "fixed inset-0 flex",
+            is_left ? "justify-start" : "justify-end",
           )}
         >
           <TransitionChild
             as={Fragment}
-            enter="transform transition ease-in-out duration-300"
-            enterFrom={
-              is_left
-                ? "translate-y-full sm:translate-y-0 sm:-translate-x-full"
-                : "translate-y-full sm:translate-y-0 sm:translate-x-full"
-            }
-            enterTo="translate-y-0 sm:translate-x-0"
-            leave="transform transition ease-in-out duration-300"
-            leaveFrom="translate-y-0 sm:translate-x-0"
-            leaveTo={
-              is_left
-                ? "translate-y-full sm:translate-y-0 sm:-translate-x-full"
-                : "translate-y-full sm:translate-y-0 sm:translate-x-full"
-            }
+            enter="transform transition duration-300 ease-[cubic-bezier(.22,1,.36,1)]"
+            enterFrom={is_left ? "-translate-x-full" : "translate-x-full"}
+            enterTo="translate-x-0"
+            leave="transform transition duration-200 ease-in"
+            leaveFrom="translate-x-0"
+            leaveTo={is_left ? "-translate-x-full" : "translate-x-full"}
           >
             <DialogPanel
-              className={`relative flex h-full w-full flex-col bg-white pt-6 shadow-xl sm:max-w-sm ${
+              className={clsx(
+                "flex h-full w-full max-w-90 flex-col bg-white shadow-2xl",
+                "pb-[env(safe-area-inset-bottom)]",
                 is_left
-                  ? "border-r border-gray-300"
-                  : "border-l border-gray-300"
-              }`}
+                  ? "border-r border-gray-300 sm:rounded-r-2xl"
+                  : "border-l border-gray-300 sm:rounded-l-2xl",
+              )}
             >
-              <button
-                type="button"
-                onClick={handleClose}
-                className="absolute top-4 right-4 shrink-0 rounded-md p-2 transition hover:bg-gray-200"
-                aria-label="Close"
-              >
-                <X className="size-6 sm:size-5" />
-              </button>
+              {/* Header */}
+              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white px-6 py-4">
+                <DialogTitle className="pr-4 text-xl font-semibold tracking-tight text-orange-500">
+                  {title}
+                </DialogTitle>
 
-              <DialogTitle className="mb-4 px-6 text-lg font-bold">
-                {title}
-              </DialogTitle>
-              <div className="min-h-0 flex-1">{children}</div>
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                  aria-label="Close drawer"
+                >
+                  <X className="size-5" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                {children}
+              </div>
             </DialogPanel>
           </TransitionChild>
         </div>
