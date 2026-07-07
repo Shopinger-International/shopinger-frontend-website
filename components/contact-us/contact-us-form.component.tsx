@@ -1,7 +1,7 @@
 import type { FC } from "react";
 
 // external components
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, ErrorMessage } from "formik";
 
 // helpers
 import { z } from "zod";
@@ -135,15 +135,6 @@ const ContactUsForm: FC = () => {
               >
                 Message
               </label>
-
-              {/* <Field
-                as="textarea"
-                id="message"
-                name="message"
-                rows={6}
-                placeholder="Tell us how we can help..."
-                className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 transition outline-none focus:border-orange-500"
-              /> */}
 
               <textarea
                 id="message"
