@@ -54,7 +54,8 @@ const debouncedSearch = debouncePromise(async (query: string) => {
       {
         indexName: "products",
         params: {
-          hitsPerPage: 5,
+          // hitsPerPage: 5,
+          hitsPerPage: 20,
           query,
           clickAnalytics: true,
         },
@@ -153,7 +154,8 @@ const AutoComplete: FC<AutocompleteProps> = ({
           };
         },
       });
-    return [recent_searches, query_suggestions, algolia_insights_plugin];
+    // return [recent_searches, query_suggestions, algolia_insights_plugin];
+    return [algolia_insights_plugin];
   }, []);
 
   useEffect(() => {
