@@ -65,34 +65,6 @@ export const CONTACT_CARDS = [
     ),
   },
   {
-    icon: Instagram,
-    title: "Instagram",
-    content: (
-      <a
-        href="https://www.instagram.com/shopinger.in/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block font-medium text-gray-600 underline"
-      >
-        @shopinger.in
-      </a>
-    ),
-  },
-  {
-    icon: Facebook,
-    title: "Facebook",
-    content: (
-      <a
-        href="https://www.facebook.com/profile.php?id=61573405647086&sk=about_contact_and_basic_info"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block font-medium text-gray-600 underline"
-      >
-        @Shopinger
-      </a>
-    ),
-  },
-  {
     icon: Twitter,
     title: "Twitter",
     content: (
@@ -118,10 +90,10 @@ type IProps = {
 const ContactCard: FC<IProps> = ({ icon: Icon, title, children }) => {
   return (
     <div className="w-full rounded-xl border border-gray-300 p-4">
-      <div className="mb-3 inline-block size-fit rounded-lg border border-gray-100 bg-orange-50 p-2">
-        <Icon className="size-6 text-orange-500" />
+      <div className="mb-2 inline-block size-fit rounded-lg border border-gray-100 bg-orange-50 p-2">
+        <Icon className="size-5 text-orange-500" />
       </div>
-      <h2 className="mb-0.5 text-lg font-semibold text-gray-900">{title}</h2>
+      <h2 className="mb-0.5 font-semibold text-gray-900">{title}</h2>
       {children}
     </div>
   );
