@@ -16,7 +16,14 @@ import MainLayout from "@/components/layout/main-layout.component";
 import ContactUsForm from "@/components/contact-us/contact-us-form.component";
 
 // icons
-import { Mail, Phone, MessageCircle, Instagram } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MessageCircle,
+  Instagram,
+  Facebook,
+  Twitter,
+} from "lucide-react";
 
 export const CONTACT_CARDS = [
   {
@@ -24,10 +31,10 @@ export const CONTACT_CARDS = [
     title: "Our Email",
     content: (
       <a
-        href="mailto:support@shopinger.com"
+        href="mailto:support@shopinger.co.in"
         className="inline-block font-medium text-gray-600 underline"
       >
-        support@shopinger.com
+        support@shopinger.co.in
       </a>
     ),
   },
@@ -36,10 +43,10 @@ export const CONTACT_CARDS = [
     title: "Call Us",
     content: (
       <a
-        href="tel:+919876543210"
+        href={`tel:${process.env.NEXT_PUBLIC_ADMIN_PHONE}`}
         className="inline-block font-medium text-gray-600 underline"
       >
-        +91 98765 43210
+        {process.env.NEXT_PUBLIC_ADMIN_PHONE}
       </a>
     ),
   },
@@ -48,7 +55,7 @@ export const CONTACT_CARDS = [
     title: "WhatsApp",
     content: (
       <a
-        href="https://wa.me/919876543210"
+        href="https://wa.me/919415761434"
         target="_blank"
         rel="noopener noreferrer"
         className="inline-block font-medium text-gray-600 underline"
@@ -62,12 +69,40 @@ export const CONTACT_CARDS = [
     title: "Instagram",
     content: (
       <a
-        href="https://instagram.com/shopinger"
+        href="https://www.instagram.com/shopinger.in/"
         target="_blank"
         rel="noopener noreferrer"
         className="inline-block font-medium text-gray-600 underline"
       >
-        @shopinger
+        @shopinger.in
+      </a>
+    ),
+  },
+  {
+    icon: Facebook,
+    title: "Facebook",
+    content: (
+      <a
+        href="https://www.facebook.com/profile.php?id=61573405647086&sk=about_contact_and_basic_info"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-block font-medium text-gray-600 underline"
+      >
+        @Shopinger
+      </a>
+    ),
+  },
+  {
+    icon: Twitter,
+    title: "Twitter",
+    content: (
+      <a
+        href="https://x.com/Shopinger_India"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-block font-medium text-gray-600 underline"
+      >
+        @Shopinger_India
       </a>
     ),
   },
@@ -93,8 +128,8 @@ const ContactCard: FC<IProps> = ({ icon: Icon, title, children }) => {
 };
 const ContactUs: NextPageWithLayout = () => {
   return (
-    <div className="mx-auto mt-(--header-height) max-w-6xl px-4 py-8 sm:py-10 lg:py-12">
-      <div className="rounded-2xl border border-gray-300 p-5 shadow-sm sm:p-6 lg:p-10">
+    <div className="mx-auto mt-(--header-height) max-w-6xl px-4 py-8 sm:py-10">
+      <div className="rounded-xl border border-gray-300 p-5 shadow-sm sm:p-6 lg:p-10">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
           {/* Left Section */}
           <div className="space-y-6">
