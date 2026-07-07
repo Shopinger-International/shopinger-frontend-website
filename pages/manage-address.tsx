@@ -142,7 +142,7 @@ const ManageAddress: NextPageWithLayout = () => {
         <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
           <div className="mb-6 flex items-center justify-between">
             <h1 className="text-lg font-semibold text-gray-900 sm:text-2xl">
-              Your Addresses
+              My Addresses
             </h1>
           </div>
           <AddressDetail

@@ -102,23 +102,32 @@ const OrderDetailPage: NextPageWithLayout<{
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
-      {review_modal_state.variant && review_modal_state.product && (
-        <ReviewModal
-          order_id={+order_id}
-          product={review_modal_state.product}
-          variant={review_modal_state.variant}
-          order_item={review_modal_state.order_item as IOrderItem}
-          is_open={review_modal_state.open}
-          onClose={() =>
-            setReviewModalState({
-              open: false,
-              product: null,
-              variant: null,
-              order_item: null,
-            })
-          }
-        />
-      )}
+      {review_modal_state.variant &&
+        review_modal_state.product &&
+        review_modal_state.order_item?.item_id && (
+          <ReviewModal
+            order_id={+order_id}
+            product_id={review_modal_state.product.id}
+            variant_id={review_modal_state.variant.id}
+            order_item_id={review_modal_state.order_item?.item_id}
+            product_title={review_modal_state.product.title}
+            product_description={review_modal_state.product.description}
+            product_media_url={
+              review_modal_state.variant.variant_medias[0]?.media.url ??
+              review_modal_state.product.product_medias[0]?.media.url
+            }
+            review={review_modal_state.order_item.product_review[0]}
+            is_open={review_modal_state.open}
+            onClose={() =>
+              setReviewModalState({
+                open: false,
+                product: null,
+                variant: null,
+                order_item: null,
+              })
+            }
+          />
+        )}
       <CancelOrderModal
         is_open={cancel_order_modal_state.open}
         order={order}

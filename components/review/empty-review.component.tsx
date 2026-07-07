@@ -1,30 +1,27 @@
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+
+// icons
+import { MessageSquareText } from "lucide-react";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
-const EmptyCart = () => {
+const EmptyReviews = () => {
   const { data: user_detail } = useUserDetails();
   return (
     <div className="flex flex-col items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-16 text-center">
-      {/* Icon */}
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-        <ShoppingCart className="h-8 w-8 text-orange-500" />
+        <MessageSquareText className="h-8 w-8 text-orange-500" />
       </div>
 
-      {/* Title */}
       <h2 className="mt-6 text-xl font-semibold text-gray-900">
-        Your cart is empty
+        You haven't written any reviews yet
       </h2>
 
-      {/* Description */}
-      <p className="mt-2 max-w-md text-sm text-gray-600">
-        Looks like you haven’t added anything yet. Start exploring products or
-        sign in to access your saved items.
+      <p className="mt-2 max-w-md text-sm leading-6 text-gray-600">
+        Share your experience with the products you've purchased to help other
+        customers make informed decisions.
       </p>
-
-      {/* Actions */}
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         {/* Primary CTA */}
         <Link
@@ -47,5 +44,4 @@ const EmptyCart = () => {
     </div>
   );
 };
-
-export default EmptyCart;
+export default EmptyReviews;

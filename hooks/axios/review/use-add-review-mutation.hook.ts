@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 // types
 import type { AxiosError } from "axios";
 
@@ -15,6 +16,7 @@ type IResponse = {
 };
 
 const useAddReviewMutation = () => {
+  const query_client = useQueryClient();
   return useMutation<
     IResponse,
     AxiosError<{
@@ -31,6 +33,9 @@ const useAddReviewMutation = () => {
       return data;
     },
     onSuccess(response) {
+      query_client.invalidateQueries({
+        queryKey: ["user-reviews"],
+      });
       enqueueSnackbar(response.message, {
         key: "add-review-success",
         variant: "success",

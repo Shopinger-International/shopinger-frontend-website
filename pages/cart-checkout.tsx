@@ -94,7 +94,7 @@ const CartCheckoutPage: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Your Cart | Shopinger</title>
+        <title>My Cart | Shopinger</title>
         <meta
           name="description"
           content="Review the items in your cart, update quantities, and proceed to checkout securely on Shopinger."

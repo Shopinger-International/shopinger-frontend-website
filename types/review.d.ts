@@ -12,10 +12,10 @@ type IReview = {
   user: IUser;
   created_at: string;
   product_id: number;
-  variant_id: number | null;
+  variant_id: number;
   rating: number;
-  title: string | null;
-  comment: string | null;
+  title: string;
+  comment: string;
   helpful_count: number;
   is_verified_purchase: boolean;
   is_approved: boolean;
@@ -24,10 +24,10 @@ type IReview = {
       [key: string]: any;
     };
   };
-  order_item_id: number | null;
+  order_item_id: number;
   review_medias: IReviewMedia[];
   user: IUser;
-  is_reacted:boolean;
+  is_reacted: boolean;
 };
 
 export default IReview;
