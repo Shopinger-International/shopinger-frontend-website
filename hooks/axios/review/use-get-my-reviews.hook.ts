@@ -38,7 +38,7 @@ export const getMyReviews = async (params?: {
 
 const useGetMyReviews = ({ limit = 10 }: { limit?: number }) => {
   return useInfiniteQuery({
-    queryKey: ["product-reviews"],
+    queryKey: ["user-reviews"],
     queryFn: ({ pageParam = 1 }) =>
       getMyReviews({
         page: pageParam,

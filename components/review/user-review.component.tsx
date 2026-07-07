@@ -14,15 +14,18 @@ import Rating from "@/components/common/rating.component";
 import { format } from "date-fns";
 import { generateSlug } from "@/helpers/product.helper";
 
-type IProps = {};
+// hooks
+import useDeleteReviewMutation from "@/hooks/axios/review/use-delete-review.hook";
+
 const UserReview: FC<
   IProductReviewsPageType["reviews"][0] & {
     onEditHandler: () => void;
   }
 > = ({ onEditHandler, ...review }) => {
+  const delete_review_mutation = useDeleteReviewMutation();
   return (
     <div className="rounded-xl border border-gray-300 bg-white px-6 pt-6 pb-4">
-      <div className="mb-5 flex items-center gap-4 border-b border-gray-300 pb-4">
+      <div className="mb-4 flex items-center gap-4 border-b border-gray-300 pb-4">
         <Link
           href={`${generateSlug(review.title)}/p/${review.product_id}/${review.variant_id}`}
         >
@@ -93,7 +96,15 @@ const UserReview: FC<
             Edit
           </button>
 
-          <button className="inline-flex items-center gap-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50">
+          <button
+            disabled={delete_review_mutation.isPending}
+            onClick={() =>
+              delete_review_mutation.mutate({
+                review_id: review.id,
+              })
+            }
+            className="inline-flex items-center gap-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:text-red-300"
+          >
             <Trash2 size={16} />
             Delete
           </button>
