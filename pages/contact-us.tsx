@@ -93,32 +93,30 @@ const ContactCard: FC<IProps> = ({ icon: Icon, title, children }) => {
 };
 const ContactUs: NextPageWithLayout = () => {
   return (
-    <div className="mx-auto mt-(--header-height) max-w-6xl px-4 py-8 sm:py-10">
-      <div className="rounded-xl border border-gray-300 p-5 shadow-sm sm:p-6 lg:p-10">
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
-          {/* Left Section */}
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl font-semibold sm:text-3xl">Contact Us</h1>
+    <div className="mx-auto mt-(--header-height) max-w-6xl px-4 py-6">
+      <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
+        {/* Left Section */}
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-2xl font-semibold sm:text-3xl">Contact Us</h1>
 
-              <p className="mt-3 max-w-2xl text-sm font-medium text-gray-600 sm:text-base">
-                Need help with your order, delivery, or account? Reach out to us
-                and we'll get back to you as soon as possible.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {CONTACT_CARDS.map(({ icon, title, content }) => (
-                <ContactCard key={title} icon={icon} title={title}>
-                  {content}
-                </ContactCard>
-              ))}
-            </div>
+            <p className="mt-3 max-w-2xl text-sm font-medium text-gray-600 sm:text-base">
+              Need help with your order, delivery, or account? Reach out to us
+              and we'll get back to you as soon as possible.
+            </p>
           </div>
 
-          {/* Right Section */}
-          <ContactUsForm />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {CONTACT_CARDS.map(({ icon, title, content }) => (
+              <ContactCard key={title} icon={icon} title={title}>
+                {content}
+              </ContactCard>
+            ))}
+          </div>
         </div>
+
+        {/* Right Section */}
+        <ContactUsForm />
       </div>
     </div>
   );
