@@ -1,14 +1,17 @@
 import type { FC } from "react";
 
 // external components
-import { Formik, Form, ErrorMessage } from "formik";
+import { Formik, Form, ErrorMessage, Field } from "formik";
 
 // helpers
 import { z } from "zod";
 import { toFormikValidate } from "@/helpers/common.helper";
 
+// hooks
+import useContactSupportMutation from "@/hooks/axios/contact-us/use-contact-support-mutation.hook";
+
 export const contact_us_schema = z.object({
-  fullName: z
+  fullname: z
     .string()
     .trim()
     .min(1, "Full name is required")
@@ -19,7 +22,14 @@ export const contact_us_schema = z.object({
     .trim()
     .min(1, "Email is required")
     .email("Please enter a valid email address"),
-
+  phone: z
+    .string()
+    .trim()
+    .min(1, "Phone number is required")
+    .regex(
+      /^(?:\+91|0)?[6-9]\d{9}$/,
+      "Please enter a valid 10-digit Indian phone number",
+    ),
   subject: z
     .string()
     .trim()
@@ -33,27 +43,28 @@ export const contact_us_schema = z.object({
     .max(2000, "Message cannot exceed 2000 characters"),
 });
 
+export type IContactUsFormData = z.infer<typeof contact_us_schema>;
+
 const initialValues = {
-  fullName: "",
+  fullname: "",
   email: "",
+  phone: "",
   subject: "",
   message: "",
 };
 
 const ContactUsForm: FC = () => {
+  const contact_support_mutation = useContactSupportMutation();
   return (
-    <div className="rounded-xl border border-orange-100 bg-orange-50 p-6">
+    <div className="rounded-xl border border-orange-100 bg-orange-50 p-4 sm:p-6">
       <Formik
         initialValues={initialValues}
         validate={toFormikValidate(contact_us_schema)}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          console.log(values);
-
-          // TODO: Call your API here
-
-          setSubmitting(false);
-          resetForm();
-        }}
+        onSubmit={(values,{resetForm}) => contact_support_mutation.mutate(values,{
+          onSuccess(){
+            resetForm()
+          }
+        })}
       >
         {({ isSubmitting }) => (
           <Form className="space-y-5">
@@ -65,7 +76,7 @@ const ContactUsForm: FC = () => {
               >
                 Full Name
               </label>
-              <input
+              <Field
                 id="fullname"
                 name="fullname"
                 type="text"
@@ -73,12 +84,35 @@ const ContactUsForm: FC = () => {
                 className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
               />
               <ErrorMessage
-                name="fullName"
+                name="fullname"
                 component="p"
                 className="mt-1 text-sm text-red-500"
               />
             </div>
 
+            {/** Phone */}
+            <div>
+              <label
+                htmlFor="phone"
+                className="mb-2 block text-sm font-medium text-gray-700"
+              >
+                Phone
+              </label>
+
+              <Field
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="9310566574"
+                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
+              />
+
+              <ErrorMessage
+                name="phone"
+                component="p"
+                className="mt-1 text-sm text-red-500"
+              />
+            </div>
             {/* Email */}
             <div>
               <label
@@ -88,7 +122,7 @@ const ContactUsForm: FC = () => {
                 Email Address
               </label>
 
-              <input
+              <Field
                 id="email"
                 name="email"
                 type="email"
@@ -112,7 +146,7 @@ const ContactUsForm: FC = () => {
                 Subject
               </label>
 
-              <input
+              <Field
                 id="subject"
                 name="subject"
                 type="text"
@@ -136,7 +170,8 @@ const ContactUsForm: FC = () => {
                 Message
               </label>
 
-              <textarea
+              <Field
+                component="textarea"
                 id="message"
                 name="message"
                 rows={6}
@@ -153,10 +188,12 @@ const ContactUsForm: FC = () => {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={contact_support_mutation.isPending}
               className="w-full rounded-lg bg-orange-500 py-3 font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
             >
-              {isSubmitting ? "Sending..." : "Send Message"}
+              {contact_support_mutation.isPending
+                ? "Sending..."
+                : "Send Message"}
             </button>
           </Form>
         )}

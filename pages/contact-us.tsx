@@ -16,14 +16,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 import ContactUsForm from "@/components/contact-us/contact-us-form.component";
 
 // icons
-import {
-  Mail,
-  Phone,
-  MessageCircle,
-  Instagram,
-  Facebook,
-  Twitter,
-} from "lucide-react";
+import { Mail, Phone, MessageCircle, Twitter } from "lucide-react";
 
 export const CONTACT_CARDS = [
   {
@@ -106,7 +99,7 @@ const ContactUs: NextPageWithLayout = () => {
           {/* Left Section */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-semibold sm:text-4xl">Contact Us</h1>
+              <h1 className="text-2xl font-semibold sm:text-3xl">Contact Us</h1>
 
               <p className="mt-3 max-w-2xl text-sm font-medium text-gray-600 sm:text-base">
                 Need help with your order, delivery, or account? Reach out to us
