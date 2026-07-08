@@ -56,7 +56,7 @@ const initialValues = {
 const ContactUsForm: FC = () => {
   const contact_support_mutation = useContactSupportMutation();
   return (
-    <div className="rounded-xl border border-orange-100 bg-orange-50 p-4 sm:p-6">
+    <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 sm:p-6">
       <Formik
         initialValues={initialValues}
         validate={toFormikValidate(contact_us_schema)}
@@ -191,7 +191,7 @@ const ContactUsForm: FC = () => {
             <button
               type="submit"
               disabled={contact_support_mutation.isPending}
-              className="w-full rounded-lg bg-orange-500 py-3 font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
+              className="w-full rounded-md bg-orange-500 py-2 font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
             >
               {contact_support_mutation.isPending
                 ? "Sending..."
