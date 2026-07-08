@@ -30,7 +30,7 @@ export const CONTACT_CARDS = [
   {
     icon: BsWhatsapp,
     title: "WhatsApp",
-    href: "https://wa.me/919876543210",
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
   },
   {
     icon: BsTwitterX,
@@ -45,7 +45,11 @@ type IProps = {
 };
 const ContactCard: FC<IProps> = ({ icon: Icon, title, href }) => {
   return (
-    <Link target="_blank" href={href} className="w-full rounded-xl border border-gray-300 p-4">
+    <Link
+      target="_blank"
+      href={href}
+      className="w-full rounded-xl border border-gray-300 p-4"
+    >
       <div className="mb-2 inline-block size-fit rounded-lg border border-gray-100 bg-orange-50 p-2">
         <Icon className="size-5 text-orange-500" />
       </div>
