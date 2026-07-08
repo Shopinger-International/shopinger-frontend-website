@@ -1,3 +1,4 @@
+import Link from "next/link";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { IconType } from "react-icons/lib";
@@ -19,33 +20,37 @@ export const CONTACT_CARDS = [
   {
     icon: LuMail,
     title: "Email Us",
+    href: "mailto:support@shopinger.co.in",
   },
   {
     icon: FiPhone,
     title: "Call Us",
+    href: `tel:${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
   },
   {
     icon: BsWhatsapp,
     title: "WhatsApp",
+    href: "https://wa.me/919876543210",
   },
   {
     icon: BsTwitterX,
     title: "Follow Us",
+    href: "https://x.com/Shopinger_India",
   },
 ];
-
 type IProps = {
   icon: IconType;
   title: string;
+  href: string;
 };
-const ContactCard: FC<IProps> = ({ icon: Icon, title }) => {
+const ContactCard: FC<IProps> = ({ icon: Icon, title, href }) => {
   return (
-    <div className="w-full rounded-xl border border-gray-300 p-4">
+    <Link target="_blank" href={href} className="w-full rounded-xl border border-gray-300 p-4">
       <div className="mb-2 inline-block size-fit rounded-lg border border-gray-100 bg-orange-50 p-2">
         <Icon className="size-5 text-orange-500" />
       </div>
       <h2 className="mb-0.5 font-semibold text-gray-900">{title}</h2>
-    </div>
+    </Link>
   );
 };
 const ContactUs: NextPageWithLayout = () => {
@@ -64,8 +69,8 @@ const ContactUs: NextPageWithLayout = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {CONTACT_CARDS.map(({ icon, title }) => (
-              <ContactCard key={title} icon={icon} title={title} />
+            {CONTACT_CARDS.map((prop) => (
+              <ContactCard key={prop.title} {...prop} />
             ))}
           </div>
         </div>
