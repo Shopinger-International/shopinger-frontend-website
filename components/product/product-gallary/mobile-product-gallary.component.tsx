@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { FC, useCallback, useEffect, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
+import { useCallback, useEffect, useState } from "react";
+// types
+import type { FC } from "react";
 import type { EmblaCarouselType } from "embla-carousel";
 
 // types
@@ -8,6 +9,9 @@ import type { IVariantMediaWithTitle } from "@/hoc/product/with-product-gallery-
 
 // hoc
 import withProductGalleryFunctionality from "@/hoc/product/with-product-gallery-functionality.hoc";
+
+// hooks
+import useEmblaCarousel from "embla-carousel-react";
 
 type IProps = {
   variant_medias_with_title: IVariantMediaWithTitle[];

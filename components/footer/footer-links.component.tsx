@@ -8,8 +8,6 @@ const footer_sections = [
     list: [
       { label: "Contact Us", href: "/contact-us" },
       { label: "About Us", href: "/about-us" },
-      { label: "Shopinger Stories", href: "/shopinger-stories" },
-      { label: "Feedback", href: "/feedback" },
     ],
   },
   {
