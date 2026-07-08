@@ -60,13 +60,15 @@ const ContactUsForm: FC = () => {
       <Formik
         initialValues={initialValues}
         validate={toFormikValidate(contact_us_schema)}
-        onSubmit={(values,{resetForm}) => contact_support_mutation.mutate(values,{
-          onSuccess(){
-            resetForm()
-          }
-        })}
+        onSubmit={(values, { resetForm }) =>
+          contact_support_mutation.mutate(values, {
+            onSuccess() {
+              resetForm();
+            },
+          })
+        }
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form className="space-y-5">
             {/* Full Name */}
             <div>
@@ -80,7 +82,7 @@ const ContactUsForm: FC = () => {
                 id="fullname"
                 name="fullname"
                 type="text"
-                placeholder="Ashish Prajapati"
+                placeholder="e.g. Rishikesh Yadav"
                 className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
               />
               <ErrorMessage
@@ -103,7 +105,7 @@ const ContactUsForm: FC = () => {
                 id="phone"
                 name="phone"
                 type="tel"
-                placeholder="9310566574"
+                placeholder="e.g. +91 98765XXXXX"
                 className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
               />
 
@@ -126,7 +128,7 @@ const ContactUsForm: FC = () => {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="ashish.p@gmail.com"
+                placeholder="e.g. rishikesh@example.com"
                 className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
               />
 
@@ -150,7 +152,7 @@ const ContactUsForm: FC = () => {
                 id="subject"
                 name="subject"
                 type="text"
-                placeholder="Order Issue"
+                placeholder="e.g. Order inquiry"
                 className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
               />
 
