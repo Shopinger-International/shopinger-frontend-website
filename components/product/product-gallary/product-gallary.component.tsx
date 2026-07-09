@@ -11,20 +11,33 @@ import withProductGalleryFunctionality from "@/hoc/product/with-product-gallery-
 // local components
 import ProductGalleryDialog from "@/components/product/product-gallary/product-gallary-dialog.component";
 
+// icons
+import { Heart } from "lucide-react";
+
+// hooks
+import useIsWishlisted from "@/hooks/axios/wishlist/use-is-wishlisted";
+import useAddToWishlistMutation from "@/hooks/axios/wishlist/use-add-to-wishlist-mutation.hook";
+import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
+
 // helpers
 import clsx from "clsx";
 
 type IProps = {
   variant_medias_with_title: IVariantMediaWithTitle[];
+  variant_id: number;
   product_title: string;
 };
 
 const THUMBNAIL_LIMIT = 5;
 
 const ProductGallary: FC<IProps> = ({
+  variant_id,
   variant_medias_with_title,
   product_title,
 }) => {
+  const add_to_wishlist_mutation = useAddToWishlistMutation();
+  const remove_from_wishlist_mutation = useRemoveFromWishlistMutation();
+  const { data: wishlist_data } = useIsWishlisted({ variant_id });
   const [show_zoom, setShowZoom] = useState(false);
   const [zoom_position, setZoomPosition] = useState({ x: 0, y: 0 });
   const [show_full_gallary, setShowFullGallary] = useState(false);
@@ -115,6 +128,38 @@ const ProductGallary: FC<IProps> = ({
                   setZoomPosition({ x, y });
                 }}
               >
+                <button
+                  type="button"
+                  aria-label={
+                    wishlist_data?.is_wishlisted
+                      ? "Remove from wishlist"
+                      : "Add to wishlist"
+                  }
+                  title={
+                    wishlist_data?.is_wishlisted
+                      ? "Remove from wishlist"
+                      : "Add to wishlist"
+                  }
+                  className="absolute top-3 right-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white"
+                  disabled={
+                    add_to_wishlist_mutation.isPending ||
+                    remove_from_wishlist_mutation.isPending
+                  }
+                  onClick={() => {
+                    wishlist_data?.is_wishlisted
+                      ? remove_from_wishlist_mutation.mutate({ variant_id })
+                      : add_to_wishlist_mutation.mutate({ variant_id });
+                  }}
+                >
+                  <Heart
+                    aria-hidden={true}
+                    className={clsx(
+                      "size-6 text-orange-500",
+                      wishlist_data?.is_wishlisted && "fill-orange-500",
+                    )}
+                    strokeWidth={2}
+                  />
+                </button>
                 <Image
                   sizes="512px"
                   fill

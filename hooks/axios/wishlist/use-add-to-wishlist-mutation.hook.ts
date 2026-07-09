@@ -26,6 +26,9 @@ const useAddToWishlistMutation = () => {
       return data;
     },
     onSuccess(data, { variant_id }) {
+      query_client.invalidateQueries({
+        queryKey: ["is-wishlisted", variant_id],
+      });
       query_client.setQueriesData(
         {
           queryKey: ["products-by-category"],
