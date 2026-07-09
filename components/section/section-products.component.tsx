@@ -48,7 +48,6 @@ const SectionProducts: FC<IProps> = ({ section }) => {
         reviews_count,
         avg_rating,
         bought_last_month,
-        is_wishlisted,
         sub_sub_category_id,
       } = product;
       const updated_title =
@@ -89,7 +88,7 @@ const SectionProducts: FC<IProps> = ({ section }) => {
         product_reviews_link,
         avg_rating,
         bought_last_month,
-        is_wishlisted,
+        is_wishlisted: !!first_variant._count.wishlists,
         sub_sub_category_id,
       };
     })

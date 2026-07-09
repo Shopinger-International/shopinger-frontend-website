@@ -39,11 +39,16 @@ const useAddToWishlistMutation = () => {
               ...page,
               products: page.products.map((product) => ({
                 ...product,
-                ...(product.variants[0].id == variant_id
-                  ? {
-                      is_wishlisted: true,
-                    }
-                  : {}),
+                variants: product.variants.map((variant) =>
+                  variant.id == variant_id
+                    ? {
+                        ...variant,
+                        _count: {
+                          wishlists: 1,
+                        },
+                      }
+                    : variant,
+                ),
               })),
             })),
           };
@@ -63,11 +68,16 @@ const useAddToWishlistMutation = () => {
               ...page,
               products: page.products.map((product) => ({
                 ...product,
-                ...(product.variants[0].id == variant_id
-                  ? {
-                      is_wishlisted: true,
-                    }
-                  : {}),
+                variants: product.variants.map((variant) =>
+                  variant.id == variant_id
+                    ? {
+                        ...variant,
+                        _count: {
+                          wishlists: 1,
+                        },
+                      }
+                    : variant,
+                ),
               })),
             })),
           };
@@ -87,11 +97,16 @@ const useAddToWishlistMutation = () => {
               ...page,
               products: page.products.map((product) => ({
                 ...product,
-                ...(product.variants[0].id == variant_id
-                  ? {
-                      is_wishlisted: true,
-                    }
-                  : {}),
+                variants: product.variants.map((variant) =>
+                  variant.id == variant_id
+                    ? {
+                        ...variant,
+                        _count: {
+                          wishlists: 1,
+                        },
+                      }
+                    : variant,
+                ),
               })),
             })),
           };

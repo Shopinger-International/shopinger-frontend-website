@@ -3,6 +3,7 @@ import Axios from "@/lib/axios/private.lib";
 
 // types
 import type IProduct from "@/types/product";
+import type IVariant from "@/types/variant";
 
 type IGetProductsBySectionParams = {
   section: string;
@@ -18,10 +19,16 @@ export type IResponseType = {
     total_pages: number;
   };
   products: Array<
-    IProduct & {
+    Omit<IProduct, "variants"> & {
       avg_rating: number;
-      is_wishlisted:boolean;
       bought_last_month: number;
+      variants: Array<
+        IVariant & {
+          _count: {
+            wishlists: number;
+          };
+        }
+      >;
     }
   >;
 };
