@@ -142,6 +142,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         avg_rating,
         sub_sub_category_id,
         bought_last_month,
+        is_wishlisted,
       } = product;
       const updated_title =
         !brand ||
@@ -182,6 +183,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         product_reviews_link,
         avg_rating,
         bought_last_month,
+        is_wishlisted,
         sub_sub_category_id,
       };
     })

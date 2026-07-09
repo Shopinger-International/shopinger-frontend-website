@@ -20,6 +20,7 @@ export type IResponseType = {
   products: Array<
     IProduct & {
       avg_rating: number;
+      is_wishlisted:boolean;
       bought_last_month: number;
     }
   >;

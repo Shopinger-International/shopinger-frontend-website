@@ -32,6 +32,7 @@ export type IResponseType = {
     IProduct & {
       avg_rating: number;
       bought_last_month: number;
+      is_wishlisted:boolean;
     }
   >;
 };

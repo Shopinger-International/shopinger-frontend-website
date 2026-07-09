@@ -48,6 +48,7 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
         reviews_count,
         avg_rating,
         bought_last_month,
+        is_wishlisted,
         sub_sub_category_id,
       } = product;
       const updated_title =
@@ -88,6 +89,7 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
         product_reviews_link,
         avg_rating,
         bought_last_month,
+        is_wishlisted,
         sub_sub_category_id,
       };
     })
