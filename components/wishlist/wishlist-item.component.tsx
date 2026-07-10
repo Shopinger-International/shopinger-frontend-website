@@ -6,7 +6,7 @@ import type { FC } from "react";
 import type { IResponseType } from "@/hooks/axios/wishlist/use-get-wishlist.hook";
 
 // icons
-import { HeartOff, ShoppingCart } from "lucide-react";
+import { Trash2, ShoppingCart } from "lucide-react";
 
 // hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
@@ -124,7 +124,7 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
           }
           className="flex size-11 shrink-0 items-center justify-center rounded-md border border-gray-200 text-red-500 transition hover:bg-red-50 disabled:text-red-300"
         >
-          <HeartOff className="size-6 fill-current" />
+          <Trash2 className="size-6" />
         </button>
 
         <button
