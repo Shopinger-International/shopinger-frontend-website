@@ -12,12 +12,15 @@ import useGetWishlist from "@/hooks/axios/wishlist/use-get-wishlist.hook";
 
 // local components
 import WishlistItem from "@/components/wishlist/wishlist-item.component";
+import WishlistItemSkeleton from "@/components/wishlist/wishlist-item-skeleton.component";
 
 // context
 import { FooterStateContext } from "@/context";
 
 // provider
 import FooterStateProvider from "@/provider/footer-state-provider";
+
+const LIMIT = 10;
 
 const Wishlist: NextPageWithLayout = () => {
   const { updateShow: updateShowFooter } = useContext(FooterStateContext);
@@ -27,7 +30,7 @@ const Wishlist: NextPageWithLayout = () => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useGetWishlist({ limit: 10 });
+  } = useGetWishlist({ limit: LIMIT });
 
   const wishlist_data = data?.pages.reduce<IResponseType["data"]>(
     (acc, { data }) => {
@@ -76,9 +79,22 @@ const Wishlist: NextPageWithLayout = () => {
           </h1>
         </div>
         <div className="space-y-3">
-          {wishlist_data?.map((wishlist_item) => (
-            <WishlistItem {...wishlist_item} key={wishlist_item.variant_id} />
-          ))}
+          {isWishlistPending
+            ? Array.from({ length: LIMIT }).map((_, i) => (
+                <WishlistItemSkeleton key={`initial-skeleton-${i}`} />
+              ))
+            : wishlist_data?.map((wishlist_item) => (
+                <WishlistItem
+                  {...wishlist_item}
+                  key={wishlist_item.variant_id}
+                />
+              ))}
+
+          {!isWishlistPending &&
+            isFetchingNextPage &&
+            Array.from({ length: LIMIT }).map((_, i) => (
+              <WishlistItemSkeleton key={`next-page-skeleton-${i}`} />
+            ))}
         </div>
 
         {/* observer */}
