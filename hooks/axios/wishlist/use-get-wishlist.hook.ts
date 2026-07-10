@@ -11,6 +11,7 @@ type IWishlist = {
   mrp: number;
   selling_price: number;
   discount: number;
+  sub_sub_category_id: number;
 };
 
 export type IResponseType = {

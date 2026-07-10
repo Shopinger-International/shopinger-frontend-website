@@ -19,6 +19,12 @@ import addedToCartEvent from "@/analytics/events/added-to-cart.event";
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
 
+// const
+import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
+
+// analytics events
+import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
+
 const WishlistItem: FC<IResponseType["data"][number]> = ({
   product_id,
   variant_id,
@@ -27,6 +33,7 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
   discount,
   mrp,
   selling_price,
+  sub_sub_category_id,
 }) => {
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
@@ -37,7 +44,10 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
       {/* Top */}
       <div className="flex gap-3">
         {/* Image */}
-        <Link href={`/${generateSlug(title)}/p/${product_id}/${variant_id}`}>
+        <Link
+          aria-label={`View ${title}`}
+          href={`/${generateSlug(title)}/p/${product_id}/${variant_id}`}
+        >
           <div className="relative flex size-18 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gray-200 sm:size-28 sm:rounded-xl">
             <Image
               src={media_url}
@@ -50,9 +60,14 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
 
         {/* Details */}
         <div className="min-w-0 flex-1">
-          <h3 className="line-clamp-2 text-sm leading-5 font-medium text-gray-900 sm:text-base">
-            {title}
-          </h3>
+          <Link
+            aria-label={`View ${title}`}
+            href={`/${generateSlug(title)}/p/${product_id}/${variant_id}`}
+          >
+            <h3 className="line-clamp-2 text-sm leading-5 font-medium text-gray-900 sm:text-base">
+              {title}
+            </h3>
+          </Link>
 
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <span className="text-lg font-bold text-gray-900">
@@ -90,7 +105,23 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
           aria-label="Remove from wishlist"
           title="Remove from wishlist"
           disabled={remove_from_wishlist_mutation.isPending}
-          onClick={() => remove_from_wishlist_mutation.mutate({ variant_id })}
+          onClick={() =>
+            remove_from_wishlist_mutation.mutate(
+              { variant_id },
+              {
+                onSuccess() {
+                  removedFromWishlistEvent({
+                    user_id,
+                    product_id,
+                    variant_id,
+                    category_id: sub_sub_category_id,
+                    category_type: "SUB_SUB",
+                    source: ANALYTICS_SOURCE_TYPE.WISHLIST,
+                  });
+                },
+              },
+            )
+          }
           className="flex size-11 shrink-0 items-center justify-center rounded-md border border-gray-200 text-red-500 transition hover:bg-red-50 disabled:text-red-300"
         >
           <HeartOff className="size-6 fill-current" />
@@ -101,11 +132,25 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
           className="flex flex-1 items-center justify-center gap-2 rounded-md bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:bg-orange-300 sm:flex-none"
           disabled={add_to_cart_mutation.isPending}
           onClick={() => {
-            add_to_cart_mutation.mutate({
-              product_id,
-              variant_id,
-              quantity: 1,
-            });
+            add_to_cart_mutation.mutate(
+              {
+                product_id,
+                variant_id,
+                quantity: 1,
+              },
+              {
+                onSuccess() {
+                  addedToCartEvent({
+                    user_id,
+                    product_id,
+                    variant_id,
+                    category_id: sub_sub_category_id,
+                    category_type: "SUB_SUB",
+                    source: ANALYTICS_SOURCE_TYPE.WISHLIST,
+                  });
+                },
+              },
+            );
           }}
         >
           <ShoppingCart className="size-5" />

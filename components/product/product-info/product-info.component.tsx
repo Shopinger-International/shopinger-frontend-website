@@ -125,7 +125,6 @@ const ProductInfo: FC<IProps> = ({
       </h1>
 
       <MobileProductGallary
-        variant_id={variant.id}
         variant={variant}
         product={product}
         category_mappings={category_mappings}

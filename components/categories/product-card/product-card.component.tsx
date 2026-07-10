@@ -29,6 +29,8 @@ import insightsClient from "@/lib/algolia/algolia-insight.lib";
 
 // analytics events
 import addedToCartEvent from "@/analytics/events/added-to-cart.event";
+import addedToWishlistEvent from "@/analytics/events/added-to-wishlist.event";
+import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
 
 // helpers
 import clsx from "clsx";
@@ -102,8 +104,36 @@ const ProductCard: FC<IProps> = ({
           }
           onClick={() =>
             is_wishlisted
-              ? remove_from_wishlist_mutation.mutate({ variant_id })
-              : add_to_wishlist_mutation.mutate({ variant_id })
+              ? remove_from_wishlist_mutation.mutate(
+                  { variant_id },
+                  {
+                    onSuccess() {
+                      removedFromWishlistEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                      });
+                    },
+                  },
+                )
+              : add_to_wishlist_mutation.mutate(
+                  { variant_id },
+                  {
+                    onSuccess() {
+                      addedToWishlistEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                      });
+                    },
+                  },
+                )
           }
         >
           <Heart

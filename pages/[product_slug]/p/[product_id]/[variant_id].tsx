@@ -258,7 +258,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       </div>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pt-(--header-height) lg:mt-8 lg:flex-row lg:items-start lg:pt-0">
         <ProductGallary
-          variant_id={variant_id}
           variant={variant}
           product={product}
           category_mappings={category_mappings}

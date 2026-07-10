@@ -15,6 +15,7 @@ import ProductGalleryDialog from "@/components/product/product-gallary/product-g
 import { Heart } from "lucide-react";
 
 // hooks
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useIsWishlisted from "@/hooks/axios/wishlist/use-is-wishlisted";
 import useAddToWishlistMutation from "@/hooks/axios/wishlist/use-add-to-wishlist-mutation.hook";
 import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
@@ -22,19 +23,32 @@ import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-fro
 // helpers
 import clsx from "clsx";
 
+// events
+import addedToWishlistEvent from "@/analytics/events/added-to-wishlist.event";
+import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
+
+// const
+import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
+
 type IProps = {
-  variant_medias_with_title: IVariantMediaWithTitle[];
+  product_id: number;
   variant_id: number;
+  sub_sub_category_id: number;
+  variant_medias_with_title: IVariantMediaWithTitle[];
   product_title: string;
 };
 
 const THUMBNAIL_LIMIT = 5;
 
 const ProductGallary: FC<IProps> = ({
+  product_id,
   variant_id,
+  sub_sub_category_id,
   variant_medias_with_title,
   product_title,
 }) => {
+  const { data: user_details } = useUserDetails();
+  const user_id = user_details?.id;
   const add_to_wishlist_mutation = useAddToWishlistMutation();
   const remove_from_wishlist_mutation = useRemoveFromWishlistMutation();
   const { data: wishlist_data } = useIsWishlisted({ variant_id });
@@ -147,8 +161,36 @@ const ProductGallary: FC<IProps> = ({
                   }
                   onClick={() => {
                     wishlist_data?.is_wishlisted
-                      ? remove_from_wishlist_mutation.mutate({ variant_id })
-                      : add_to_wishlist_mutation.mutate({ variant_id });
+                      ? remove_from_wishlist_mutation.mutate(
+                          { variant_id },
+                          {
+                            onSuccess() {
+                              removedFromWishlistEvent({
+                                user_id,
+                                product_id,
+                                variant_id,
+                                category_id: sub_sub_category_id,
+                                category_type: "SUB_SUB",
+                                source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                              });
+                            },
+                          },
+                        )
+                      : add_to_wishlist_mutation.mutate(
+                          { variant_id },
+                          {
+                            onSuccess() {
+                              addedToWishlistEvent({
+                                user_id,
+                                product_id,
+                                variant_id,
+                                category_id: sub_sub_category_id,
+                                category_type: "SUB_SUB",
+                                source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                              });
+                            },
+                          },
+                        );
                   }}
                 >
                   <Heart
@@ -201,5 +243,11 @@ const ProductGallary: FC<IProps> = ({
 };
 
 export default withProductGalleryFunctionality<
-  Omit<IProps, "variant_medias_with_title">
+  Omit<
+    IProps,
+    | "variant_medias_with_title"
+    | "product_id"
+    | "variant_id"
+    | "sub_sub_category_id"
+  >
 >(ProductGallary);

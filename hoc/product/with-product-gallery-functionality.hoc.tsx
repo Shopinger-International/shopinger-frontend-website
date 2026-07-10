@@ -13,6 +13,9 @@ export type IVariantMediaWithTitle = {
 };
 
 interface IInjectedProps {
+  product_id: number;
+  variant_id: number;
+  sub_sub_category_id: number;
   variant_medias_with_title: IVariantMediaWithTitle[];
 }
 
@@ -62,6 +65,9 @@ const withProductGalleryFunctionality = <P extends object>(
     return (
       <BaseComponent
         {...(props as P)}
+        product_id={product.id}
+        variant_id={variant.id}
+        sub_sub_category_id={product.sub_sub_category_id}
         variant_medias_with_title={variant_medias_with_title}
       />
     );
