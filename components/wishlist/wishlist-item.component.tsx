@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import type { FC } from "react";
 
@@ -14,6 +15,9 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // analytics event
 import addedToCartEvent from "@/analytics/events/added-to-cart.event";
+
+// helpers
+import { generateSlug } from "@/helpers/product.helper";
 
 const WishlistItem: FC<IResponseType["data"][number]> = ({
   product_id,
@@ -33,14 +37,16 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
       {/* Top */}
       <div className="flex gap-3">
         {/* Image */}
-        <div className="relative flex size-18 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gray-200 sm:size-28 sm:rounded-xl">
-          <Image
-            src={media_url}
-            alt={title}
-            fill={true}
-            className="h-full w-full object-contain"
-          />
-        </div>
+        <Link href={`/${generateSlug(title)}/p/${product_id}/${variant_id}`}>
+          <div className="relative flex size-18 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gray-200 sm:size-28 sm:rounded-xl">
+            <Image
+              src={media_url}
+              alt={title}
+              fill={true}
+              className="h-full w-full object-contain"
+            />
+          </div>
+        </Link>
 
         {/* Details */}
         <div className="min-w-0 flex-1">
