@@ -13,6 +13,7 @@ import useGetWishlist from "@/hooks/axios/wishlist/use-get-wishlist.hook";
 // local components
 import WishlistItem from "@/components/wishlist/wishlist-item.component";
 import WishlistItemSkeleton from "@/components/wishlist/wishlist-item-skeleton.component";
+import EmtpyWishlist from "@/components/wishlist/empty-wishlist.component";
 
 // context
 import { FooterStateContext } from "@/context";
@@ -38,7 +39,8 @@ const Wishlist: NextPageWithLayout = () => {
     },
     [],
   );
-
+  const show_empty_wishlist =
+    !isWishlistPending && (wishlist_data?.length ?? 0) === 0;
   const load_more_ref = useRef<HTMLDivElement | null>(null);
   const observer_ref = useRef<IntersectionObserver | null>(null);
 
@@ -79,16 +81,17 @@ const Wishlist: NextPageWithLayout = () => {
           </h1>
         </div>
         <div className="space-y-3">
-          {isWishlistPending
-            ? Array.from({ length: LIMIT }).map((_, i) => (
-                <WishlistItemSkeleton key={`initial-skeleton-${i}`} />
-              ))
-            : wishlist_data?.map((wishlist_item) => (
-                <WishlistItem
-                  {...wishlist_item}
-                  key={wishlist_item.variant_id}
-                />
-              ))}
+          {isWishlistPending ? (
+            Array.from({ length: LIMIT }).map((_, i) => (
+              <WishlistItemSkeleton key={`initial-skeleton-${i}`} />
+            ))
+          ) : show_empty_wishlist ? (
+            <EmtpyWishlist />
+          ) : (
+            wishlist_data?.map((wishlist_item) => (
+              <WishlistItem {...wishlist_item} key={wishlist_item.variant_id} />
+            ))
+          )}
 
           {!isWishlistPending &&
             isFetchingNextPage &&
