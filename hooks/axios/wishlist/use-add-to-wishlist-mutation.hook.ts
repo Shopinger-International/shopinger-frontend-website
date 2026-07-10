@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -19,6 +20,7 @@ type IResponse = {
   message: string;
 };
 const useAddToWishlistMutation = () => {
+  const router = useRouter();
   const query_client = useQueryClient();
   return useMutation<IResponse, Error, IRequestPayload>({
     async mutationFn({ variant_id }) {
@@ -28,6 +30,9 @@ const useAddToWishlistMutation = () => {
     onSuccess(data, { variant_id }) {
       query_client.invalidateQueries({
         queryKey: ["is-wishlisted", variant_id],
+      });
+      query_client.invalidateQueries({
+        queryKey: ["wishlist"],
       });
       query_client.setQueriesData(
         {
@@ -118,6 +123,8 @@ const useAddToWishlistMutation = () => {
       enqueueSnackbar(data.message, {
         key: `add-to-wishlist-${Date.now()}`,
         variant: "success",
+        action_label: "View Wishlist",
+        onActionClick: () => router.push("/wishlist"),
       });
     },
     onError(error) {

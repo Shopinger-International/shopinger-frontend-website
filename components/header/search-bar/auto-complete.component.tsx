@@ -54,7 +54,7 @@ const debouncedSearch = debouncePromise(async (query: string) => {
       {
         indexName: "products",
         params: {
-          hitsPerPage: 5,
+          hitsPerPage: 10,
           query,
           clickAnalytics: true,
         },
@@ -113,7 +113,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
 
             getSearchParams() {
               return recent_searches.data!.getAlgoliaSearchParams({
-                hitsPerPage: 6,
+                hitsPerPage: 4,
               });
             },
             templates: {

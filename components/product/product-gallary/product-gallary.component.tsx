@@ -140,7 +140,7 @@ const ProductGallary: FC<IProps> = ({
                       ? "Remove from wishlist"
                       : "Add to wishlist"
                   }
-                  className="absolute top-3 right-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white"
+                  className="absolute top-0 right-0 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white"
                   disabled={
                     add_to_wishlist_mutation.isPending ||
                     remove_from_wishlist_mutation.isPending

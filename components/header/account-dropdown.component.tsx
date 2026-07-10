@@ -63,12 +63,12 @@ const AccountDropdown: FC = () => {
             <div className={"border-t border-gray-300"}>
               {[
                 {
-                  label: "Your Account",
+                  label: "Account",
                   href: "/account",
                   icon: User,
                 },
                 {
-                  label: "My Orders",
+                  label: "Orders",
                   href: "/order-history",
                   icon: Handbag,
                 },
