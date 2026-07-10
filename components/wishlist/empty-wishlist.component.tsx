@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { Heart } from "lucide-react";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
@@ -10,7 +10,7 @@ const EmtpyWishlist = () => {
     <div className="flex flex-col items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-16 text-center">
       {/* Icon */}
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-        <ShoppingCart className="h-8 w-8 text-orange-500" />
+        <Heart className="h-8 w-8 text-orange-500" />
       </div>
 
       {/* Title */}
