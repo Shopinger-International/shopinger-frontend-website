@@ -88,6 +88,7 @@ const CampaignProducts: FC<IProps> = ({ campaign_id }) => {
         product_reviews_link,
         avg_rating,
         bought_last_month,
+        is_wishlisted: !!first_variant._count.wishlists,
         sub_sub_category_id,
       };
     })

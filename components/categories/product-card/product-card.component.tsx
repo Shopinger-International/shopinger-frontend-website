@@ -21,12 +21,19 @@ import RatingSummaryPopover from "@/components/categories/rating-summary-popover
 // api hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
+import useAddToWishlistMutation from "@/hooks/axios/wishlist/use-add-to-wishlist-mutation.hook";
+import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
 
 // lib
 import insightsClient from "@/lib/algolia/algolia-insight.lib";
 
 // analytics events
 import addedToCartEvent from "@/analytics/events/added-to-cart.event";
+import addedToWishlistEvent from "@/analytics/events/added-to-wishlist.event";
+import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
+
+// helpers
+import clsx from "clsx";
 
 type IProps = {
   product_id: number;
@@ -42,6 +49,7 @@ type IProps = {
   product_reviews_link: string;
   avg_rating: number;
   bought_last_month: number;
+  is_wishlisted: boolean;
   sub_sub_category_id: number;
   index: number;
 };
@@ -59,12 +67,15 @@ const ProductCard: FC<IProps> = ({
   have_variants,
   product_reviews_link,
   avg_rating,
+  is_wishlisted,
   sub_sub_category_id,
   bought_last_month,
   index,
 }) => {
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
+  const add_to_wishlist_mutation = useAddToWishlistMutation();
+  const remove_from_wishlist_mutation = useRemoveFromWishlistMutation();
   const add_to_cart_mutation = useAddToCartMutation();
   const router = useRouter();
   const query = router.query;
@@ -86,11 +97,51 @@ const ProductCard: FC<IProps> = ({
         )}
         <button
           aria-label="Add to wishlist"
-          className="absolute right-2 shrink-0 rounded-full border border-gray-300 bg-white p-1 shadow-sm"
+          className="absolute right-2 shrink-0 cursor-pointer rounded-full border border-gray-300 bg-white p-1 shadow-sm disabled:bg-gray-100"
+          disabled={
+            add_to_wishlist_mutation.isPending ||
+            remove_from_wishlist_mutation.isPending
+          }
+          onClick={() =>
+            is_wishlisted
+              ? remove_from_wishlist_mutation.mutate(
+                  { variant_id },
+                  {
+                    onSuccess() {
+                      removedFromWishlistEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                      });
+                    },
+                  },
+                )
+              : add_to_wishlist_mutation.mutate(
+                  { variant_id },
+                  {
+                    onSuccess() {
+                      addedToWishlistEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                      });
+                    },
+                  },
+                )
+          }
         >
           <Heart
             aria-hidden={true}
-            className="size-6 text-orange-500"
+            className={clsx(
+              "size-6 text-orange-500",
+              is_wishlisted && "fill-orange-500",
+            )}
             strokeWidth={2}
           />
         </button>

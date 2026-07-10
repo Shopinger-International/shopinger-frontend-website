@@ -114,7 +114,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
 
             getSearchParams() {
               return recent_searches.data!.getAlgoliaSearchParams({
-                hitsPerPage: 6,
+                hitsPerPage: 4,
               });
             },
             templates: {

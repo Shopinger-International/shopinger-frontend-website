@@ -3,6 +3,7 @@ import Axios from "@/lib/axios/private.lib";
 
 // types
 import type IProduct from "@/types/product";
+import type IVariant from "@/types/variant";
 import type { ISort } from "@/components/categories/category-products.component";
 
 type CategoryType = "main" | "sub" | "sub_sub";
@@ -29,9 +30,16 @@ export type IResponseType = {
     total_pages: number;
   };
   products: Array<
-    IProduct & {
+    Omit<IProduct, "variants"> & {
       avg_rating: number;
       bought_last_month: number;
+      variants: Array<
+        IVariant & {
+          _count: {
+            wishlists: number;
+          };
+        }
+      >;
     }
   >;
 };

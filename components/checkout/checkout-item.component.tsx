@@ -21,7 +21,7 @@ import useUpdateIntentQuantityMutation from "@/hooks/axios/checkout/use-update-i
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // icons
-import { X } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
@@ -257,7 +257,7 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                     )
                   }
                 >
-                  <X size={18} />
+                  <Trash2 size={18} />
                 </button>
               )}
             </div>
@@ -356,7 +356,7 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
               )
             }
           >
-            <X size={18} />
+            <Trash2 size={18} />
           </button>
         )}
       </div>

@@ -11,13 +11,43 @@ import type { IVariantMediaWithTitle } from "@/hoc/product/with-product-gallery-
 import withProductGalleryFunctionality from "@/hoc/product/with-product-gallery-functionality.hoc";
 
 // hooks
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useEmblaCarousel from "embla-carousel-react";
+import useIsWishlisted from "@/hooks/axios/wishlist/use-is-wishlisted";
+import useAddToWishlistMutation from "@/hooks/axios/wishlist/use-add-to-wishlist-mutation.hook";
+import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
+
+// helpers
+import clsx from "clsx";
+
+// icons
+import { Heart } from "lucide-react";
+
+// events
+import addedToWishlistEvent from "@/analytics/events/added-to-wishlist.event";
+import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
+
+// const
+import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
 
 type IProps = {
+  product_id: number;
+  variant_id: number;
+  sub_sub_category_id: number;
   variant_medias_with_title: IVariantMediaWithTitle[];
 };
 
-const MobileProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
+const MobileProductGallary: FC<IProps> = ({
+  product_id,
+  sub_sub_category_id,
+  variant_medias_with_title,
+  variant_id,
+}) => {
+  const { data: user_details } = useUserDetails();
+  const user_id = user_details?.id;
+  const add_to_wishlist_mutation = useAddToWishlistMutation();
+  const remove_from_wishlist_mutation = useRemoveFromWishlistMutation();
+  const { data: wishlist_data } = useIsWishlisted({ variant_id });
   const [embla_ref, embla_api] = useEmblaCarousel({
     loop: false,
     align: "start",
@@ -56,6 +86,66 @@ const MobileProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
 
   return (
     <div className="relative order-2 lg:hidden">
+      <button
+        type="button"
+        aria-label={
+          wishlist_data?.is_wishlisted
+            ? "Remove from wishlist"
+            : "Add to wishlist"
+        }
+        title={
+          wishlist_data?.is_wishlisted
+            ? "Remove from wishlist"
+            : "Add to wishlist"
+        }
+        className="absolute top-3 left-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
+        disabled={
+          add_to_wishlist_mutation.isPending ||
+          remove_from_wishlist_mutation.isPending
+        }
+        onClick={() => {
+          wishlist_data?.is_wishlisted
+            ? remove_from_wishlist_mutation.mutate(
+                { variant_id },
+                {
+                  onSuccess() {
+                    removedFromWishlistEvent({
+                      user_id,
+                      product_id,
+                      variant_id,
+                      category_id: sub_sub_category_id,
+                      category_type: "SUB_SUB",
+                      source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                    });
+                  },
+                },
+              )
+            : add_to_wishlist_mutation.mutate(
+                { variant_id },
+                {
+                  onSuccess() {
+                    addedToWishlistEvent({
+                      user_id,
+                      product_id,
+                      variant_id,
+                      category_id: sub_sub_category_id,
+                      category_type: "SUB_SUB",
+                      source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                    });
+                  },
+                },
+              );
+        }}
+      >
+        <Heart
+          aria-hidden={true}
+          className={clsx(
+            "size-5 text-orange-500",
+            wishlist_data?.is_wishlisted && "fill-orange-500",
+          )}
+          strokeWidth={2}
+        />
+      </button>
       {/* viewport */}
       <div className="overflow-hidden" ref={embla_ref}>
         <div className="flex">
@@ -99,4 +189,12 @@ const MobileProductGallary: FC<IProps> = ({ variant_medias_with_title }) => {
   );
 };
 
-export default withProductGalleryFunctionality(MobileProductGallary);
+export default withProductGalleryFunctionality<
+  Omit<
+    IProps,
+    | "variant_medias_with_title"
+    | "product_id"
+    | "variant_id"
+    | "sub_sub_category_id"
+  >
+>(MobileProductGallary);

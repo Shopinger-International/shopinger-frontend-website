@@ -24,7 +24,7 @@ const AccountPage: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Your Account | Shopinger</title>
+        <title>My Account | Shopinger</title>
 
         <meta
           name="description"
@@ -42,8 +42,11 @@ const AccountPage: NextPageWithLayout = () => {
       </Head>
       <section className="min-h-screen w-full py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl space-y-4 px-4">
-          {/* <div className="mb-6 flex items-center justify-between"></div> */}
-          <h1 className="text-xl font-semibold sm:text-2xl">Your Account</h1>
+          <div className="mb-4 flex items-center justify-between sm:mb-6">
+            <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
+              My Account
+            </h1>
+          </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <NavigationCard
               title="My Orders"
@@ -83,6 +86,13 @@ const AccountPage: NextPageWithLayout = () => {
               href="/cart-checkout"
             >
               <span className="text-2xl">🛒</span>
+            </NavigationCard>
+            <NavigationCard
+              title="My Wishlist"
+              description="View and manage your saved products for future purchases"
+              href="/wishlist"
+            >
+              <span className="text-2xl">❤️</span>
             </NavigationCard>
           </div>
           <button

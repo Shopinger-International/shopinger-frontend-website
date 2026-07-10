@@ -20,7 +20,7 @@ const FooterBottom: FC = () => {
           <span className="font-medium">©2025–2026 Shopinger</span>
 
           <Link
-            href="/sell"
+            href="/contact-us"
             className="hidden items-center gap-2 font-medium hover:underline lg:flex"
           >
             <Image
