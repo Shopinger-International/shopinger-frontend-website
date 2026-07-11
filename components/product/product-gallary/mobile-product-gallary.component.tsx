@@ -98,7 +98,7 @@ const MobileProductGallary: FC<IProps> = ({
             ? "Remove from wishlist"
             : "Add to wishlist"
         }
-        className="absolute top-3 left-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
+        className="absolute top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
         disabled={
           add_to_wishlist_mutation.isPending ||
           remove_from_wishlist_mutation.isPending
