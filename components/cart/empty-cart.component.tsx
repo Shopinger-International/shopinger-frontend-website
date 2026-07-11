@@ -20,8 +20,8 @@ const EmptyCart = () => {
 
       {/* Description */}
       <p className="mt-2 max-w-md text-sm text-gray-600">
-        Looks like you haven’t added anything yet. Start exploring products or
-        sign in to access your saved items.
+        Looks like your cart is empty. Explore our products and add what you
+        need.
       </p>
 
       {/* Actions */}

@@ -20,8 +20,8 @@ const EmtpyWishlist = () => {
 
       {/* Description */}
       <p className="mt-2 max-w-md text-sm text-gray-600">
-        Looks like you haven’t added anything yet. Start exploring products or
-        sign in to access your wishlist items.
+        Found something you like? Save it to your wishlist so you can come back
+        to it anytime.
       </p>
 
       {/* Actions */}
