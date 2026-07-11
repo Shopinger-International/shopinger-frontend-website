@@ -1,15 +1,18 @@
+import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-import type { FC } from "react";
 
 // types
 import type { IResponseType } from "@/hooks/axios/wishlist/use-get-wishlist.hook";
+import type { FC } from "react";
+import type { ILoginModalState } from "@/pages/wishlist";
 
 // icons
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 // hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
+import useCreateBuyingIntentMutation from "@/hooks/axios/checkout/use-create-buying-intent-mutation.hook";
 import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
@@ -18,14 +21,21 @@ import addedToCartEvent from "@/analytics/events/added-to-cart.event";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
+import { getProductAvailability } from "@/hooks/axios/product/use-get-product-availbility.hook";
+import { enqueueSnackbar } from "notistack";
 
 // const
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
 
 // analytics events
 import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
+import buyNowClickedEvent from "@/analytics/events/buy-now-clicked.event";
 
-const WishlistItem: FC<IResponseType["data"][number]> = ({
+const WishlistItem: FC<
+  IResponseType["data"][number] & {
+    handleLoginModalState: ({ open, onSuccess }: ILoginModalState) => void;
+  }
+> = ({
   product_id,
   variant_id,
   title,
@@ -34,11 +44,16 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
   mrp,
   selling_price,
   sub_sub_category_id,
+  handleLoginModalState,
 }) => {
+  const router = useRouter();
   const { data: user_details } = useUserDetails();
+  const is_logged_in = !!user_details;
   const user_id = user_details?.id;
+  const create_buying_intent_mutation = useCreateBuyingIntentMutation();
   const add_to_cart_mutation = useAddToCartMutation();
   const remove_from_wishlist_mutation = useRemoveFromWishlistMutation();
+
   return (
     <article className="rounded-xl border border-gray-300 bg-white p-3 sm:flex sm:gap-4 sm:p-4">
       {/* Top */}
@@ -122,16 +137,27 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
               },
             )
           }
-          className="flex size-11 shrink-0 items-center justify-center rounded-md border border-gray-200 text-red-500 transition hover:bg-red-50 disabled:text-red-300"
+          className="flex size-11 shrink-0 items-center justify-center rounded-md border border-gray-300 text-gray-600 transition hover:bg-red-50 hover:text-red-600 disabled:text-red-300"
         >
           <Trash2 className="size-6" />
         </button>
 
         <button
           type="button"
-          className="flex flex-1 items-center justify-center gap-2 rounded-md bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:bg-orange-300 sm:flex-none"
+          className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 transition hover:bg-gray-50 disabled:bg-gray-300 sm:flex-none sm:px-6"
           disabled={add_to_cart_mutation.isPending}
-          onClick={() => {
+          onClick={async () => {
+            const product_availability = await getProductAvailability(
+              product_id,
+              variant_id,
+            );
+            if (!product_availability.available_stock) {
+              enqueueSnackbar("Product currently not available", {
+                key: `product-availability-success-${Date.now()}`,
+                variant: "error",
+              });
+              return;
+            }
             add_to_cart_mutation.mutate(
               {
                 product_id,
@@ -153,8 +179,71 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
             );
           }}
         >
-          <ShoppingCart className="size-5" />
           Add to Cart
+        </button>
+        <button
+          type="button"
+          className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:bg-orange-300 sm:flex-none sm:px-6"
+          disabled={create_buying_intent_mutation.isPending}
+          onClick={async () => {
+            user_id &&
+              buyNowClickedEvent({
+                user_id,
+                product_id,
+                variant_id,
+                category_id: sub_sub_category_id,
+                category_type: "SUB_SUB",
+                source: ANALYTICS_SOURCE_TYPE.WISHLIST,
+              });
+            const product_availability = await getProductAvailability(
+              product_id,
+              variant_id,
+            );
+            if (!product_availability.available_stock) {
+              enqueueSnackbar("Product currently not available", {
+                key: `product-availability-success-${Date.now()}`,
+                variant: "error",
+              });
+              return;
+            }
+            if (is_logged_in) {
+              create_buying_intent_mutation.mutate(
+                {
+                  product_id,
+                  variant_id,
+                  quantity: 1,
+                },
+                {
+                  onSuccess({ intent_id }) {
+                    router.push({
+                      pathname: `/checkout/${intent_id}`,
+                    });
+                  },
+                },
+              );
+            } else {
+              handleLoginModalState({
+                open: true,
+                onSuccess(user) {
+                  if (user) {
+                    create_buying_intent_mutation
+                      .mutateAsync({
+                        product_id,
+                        variant_id,
+                        quantity: 1,
+                      })
+                      .then((data) => {
+                        const { intent_id } = data;
+                        router.push(`/checkout/${intent_id}`);
+                      });
+                  }
+                },
+                onCancel() {},
+              });
+            }
+          }}
+        >
+          Buy Now
         </button>
       </div>
     </article>

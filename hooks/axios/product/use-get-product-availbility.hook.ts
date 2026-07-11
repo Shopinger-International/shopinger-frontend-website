@@ -16,7 +16,7 @@ export type ProductAvailabilityResponse = {
   };
 };
 
-const getProductAvailability = async (
+export const getProductAvailability = async (
   product_id: number,
   variant_id: number,
 ): Promise<ProductAvailabilityResponse["data"]> => {

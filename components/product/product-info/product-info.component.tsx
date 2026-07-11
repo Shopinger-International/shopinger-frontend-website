@@ -335,7 +335,6 @@ const ProductInfo: FC<IProps> = ({
                       },
                       {
                         onSuccess({ intent_id }) {
-                          router.push(`/checkout/${intent_id}`);
                           const query = router.query;
                           const query_id =
                             typeof query.query_id === "string"
