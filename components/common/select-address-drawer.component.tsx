@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 
@@ -13,18 +14,22 @@ import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import useDeleteAddressMutation from "@/hooks/axios/address/use-delete-address-mutation.hook";
 import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
+import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 const SelectAddressDrawer: FC = () => {
+  const router = useRouter();
+  const { close } = useUIHistory();
   const delete_address_mutation = useDeleteAddressMutation();
   const { data: user_addresses = [] } = useUserAddresses();
-  const { address_id, is_open, updateState } = useAddressDrawerContext();
+  const { address_id, updateState } = useAddressDrawerContext();
+  const is_open = router.query.drawer == "address";
   useSnackbarOffset({
     enabled: is_open,
   });
   return (
     <SidebarDrawer
       is_open={is_open}
-      handleClose={() => history.back()}
+      handleClose={close}
       title={"Change Address"}
       panelClassName="max-w-90"
     >
@@ -61,7 +66,7 @@ const SelectAddressDrawer: FC = () => {
                       updateState?.({
                         address_id: address.id,
                       });
-                      history.back();
+                      router.back();
                     }}
                     onDelete={(data) => {
                       delete_address_mutation.mutate({

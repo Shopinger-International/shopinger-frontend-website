@@ -18,7 +18,7 @@ import useCartCheckoutMutation from "@/hooks/axios/cart/use-cart-checkout-mutati
 import useBuyNowCheckoutMutation from "@/hooks/axios/checkout/use-buy-now-checkout.hook";
 import useCreateRazorpayOrderMutation from "@/hooks/axios/cart/create-razorpay-order-mutation.hook";
 import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation.hook";
-import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
+import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 // analytics event
 import orderCompletedEvent from "@/analytics/events/order-completed.event";
@@ -49,7 +49,7 @@ const CheckoutSummary: FC<IProps> = ({
   type,
   intent_id,
 }) => {
-  const { updateState } = useAddressDrawerContext();
+  const { open } = useUIHistory();
   const buy_now_checkout_mutation = useBuyNowCheckoutMutation();
   const cart_checkout_mutation = useCartCheckoutMutation();
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
@@ -126,9 +126,8 @@ const CheckoutSummary: FC<IProps> = ({
           onClick={() => {
             if (!user_detail) return handleShowLoginModal();
             if (!selected_address) {
-              window.history.pushState({ drawer: true }, "");
-              updateState?.({
-                is_open: true,
+              open({
+                drawer: "address",
               });
               return;
             }

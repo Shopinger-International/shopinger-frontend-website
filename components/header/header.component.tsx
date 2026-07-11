@@ -31,11 +31,13 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
+import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
-  const { address_id, updateState } = useAddressDrawerContext();
+  const { open } = useUIHistory();
+  const { address_id } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
   const user_address = user_details?.user_addresses?.find(
     (address) => address.id == address_id,
@@ -43,9 +45,8 @@ const LocationBlock: FC<{
   return (
     <button
       onClick={() => {
-        window.history.pushState({ drawer: true }, "");
-        updateState?.({
-          is_open: true,
+        open({
+          drawer: "address",
         });
       }}
       className={clsx("items-center gap-2 text-white", className)}
