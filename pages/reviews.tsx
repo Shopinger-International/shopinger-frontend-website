@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useState } from "react";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
@@ -35,6 +36,15 @@ const Reviews: NextPageWithLayout = () => {
   );
   return (
     <>
+      <Head>
+        <title>My Reviews | Shopinger</title>
+        <meta
+          name="description"
+          content="View and manage the reviews you've shared for products purchased on Shopinger."
+          key="desc"
+        />
+        <meta name="robots" content="noindex, nofollow" />
+      </Head>
       {review_modal_state.open && review_modal_state.review && (
         <ReviewModal
           order_id={review_modal_state.review.order_id}

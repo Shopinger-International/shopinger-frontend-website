@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useRef, useEffect, useContext, useState } from "react";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
@@ -99,6 +100,15 @@ const Wishlist: NextPageWithLayout = () => {
   };
   return (
     <>
+      <Head>
+        <title>My Wishlist | Shopinger</title>
+        <meta
+          name="description"
+          content="View and manage the products you've saved to your wishlist. Move your favorite items to the cart or continue shopping on Shopinger."
+          key="desc"
+        />
+        <meta name="robots" content="noindex, ngfollow" />
+      </Head>
       <LoginModal
         open={login_modal_state.open}
         handleClose={() => {
