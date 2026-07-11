@@ -1,10 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // helpers
 import Axios from "@/lib/axios/private.lib";
 import { enqueueSnackbar } from "notistack";
-
-// hooks
-import useLogoutMutation from "../login/use-logout-mutation.hook";
 
 type IResponse = {
   success: boolean;
@@ -18,11 +15,11 @@ export const softDeleteUser = async (): Promise<IResponse> => {
 };
 
 const useSoftDeleteUser = () => {
-  const logout_mutation = useLogoutMutation();
+  const query_client = useQueryClient();
   return useMutation({
     mutationFn: softDeleteUser,
     onSuccess: (response) => {
-      logout_mutation.mutate();
+      query_client.resetQueries();
       enqueueSnackbar(response.message, {
         key: "delete-profile-success",
         variant: "success",
