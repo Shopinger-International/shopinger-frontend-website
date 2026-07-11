@@ -34,6 +34,8 @@ import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.e
 
 // helpers
 import clsx from "clsx";
+import { getProductAvailability } from "@/hooks/axios/product/use-get-product-availbility.hook";
+import { enqueueSnackbar } from "notistack";
 
 type IProps = {
   product_id: number;
@@ -251,9 +253,21 @@ const ProductCard: FC<IProps> = ({
               className="w-full rounded-xl bg-orange-500 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:bg-orange-300"
               aria-label={"Add to cart"}
               disabled={add_to_cart_mutation.isPending}
-              onClick={(event) => {
+              onClick={async (event) => {
                 event.preventDefault();
                 event.stopPropagation();
+
+                const product_availability = await getProductAvailability(
+                  product_id,
+                  variant_id,
+                );
+                if (!product_availability.available_stock) {
+                  enqueueSnackbar("Product currently not available", {
+                    key: `product-availability-success-${Date.now()}`,
+                    variant: "error",
+                  });
+                  return;
+                }
                 add_to_cart_mutation.mutate(
                   {
                     product_id: product_id,
