@@ -64,7 +64,7 @@ const CategorySection: FC = () => {
 
   useEffect(() => {
     const selected_category = categories.find(
-      (category) => category.slug == params.main_category_slug,
+      (category) => category.slug == params?.main_category_slug,
     );
     selected_category && setSelectedCategory(selected_category);
   }, [params, categories]);

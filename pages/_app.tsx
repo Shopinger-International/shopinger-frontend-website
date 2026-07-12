@@ -12,6 +12,7 @@ import type { AppProps } from "next/app";
 // provider
 import { SnackbarProvider } from "notistack";
 import SelectedAddressProvider from "@/provider/selected-address-provider.component";
+import LoginModalProvider from "@/provider/login-modal-provider";
 import AlgoliaInsightsProvider from "@/provider/algolia-insights-provider";
 import AnalyticsProvider from "@/provider/analytics.provider";
 import MegaMenuProvider from "@/provider/mega-menu-provider";
@@ -83,7 +84,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
             >
               <MegaMenuProvider>
                 <SelectedAddressProvider>
-                  {getLayout(<Component {...pageProps} />)}
+                  <LoginModalProvider>
+                    {getLayout(<Component {...pageProps} />)}
+                  </LoginModalProvider>
                 </SelectedAddressProvider>
               </MegaMenuProvider>
             </SnackbarProvider>

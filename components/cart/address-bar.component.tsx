@@ -1,4 +1,3 @@
-import { useContext } from "react";
 // types
 import type { FC } from "react";
 import type { IAddress } from "@/types/address";
@@ -17,7 +16,7 @@ type AddressBarProps = {
 };
 
 const AddressBar: FC<AddressBarProps> = ({ address }) => {
-  const { updateState } = useAddressDrawerContext();
+  const { openDrawer } = useAddressDrawerContext();
   return (
     <div
       className={clsx(
@@ -43,12 +42,7 @@ const AddressBar: FC<AddressBarProps> = ({ address }) => {
 
       <button
         className="w-full cursor-pointer rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition active:scale-[0.98] sm:w-auto"
-        onClick={() => {
-          window.history.pushState({ drawer: true }, "");
-          updateState?.({
-            is_open: true,
-          });
-        }}
+        onClick={openDrawer}
       >
         Change
       </button>
