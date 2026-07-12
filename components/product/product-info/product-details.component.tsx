@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import type { FC, ReactNode } from "react";
 import type IAttributeType from "@/types/attribute";
 import type IProduct from "@/types/product";
-import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 import type IReview from "@/types/review";
 import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
@@ -87,18 +86,12 @@ export const DIMENSION_ATTR = {
 type IProps = {
   product: IProduct;
   category_mappings: Array<IFormattedCategoryMapping>;
-  handleLoginModalState: ({
-    open,
-    action_type,
-    onSuccess,
-  }: ILoginModalState) => void;
   handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
 const ProductDetails: FC<IProps> = ({
   product,
   category_mappings,
-  handleLoginModalState,
   handleReportModalState,
 }) => {
   const review_exist = !!product.reviews_count;
@@ -281,7 +274,6 @@ const ProductDetails: FC<IProps> = ({
                   {...review}
                   product_id={product.id}
                   key={`review-${review.id}`}
-                  handleLoginModalState={handleLoginModalState}
                   handleReportModalState={handleReportModalState}
                 />
               ))}

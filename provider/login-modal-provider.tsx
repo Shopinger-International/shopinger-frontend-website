@@ -4,12 +4,13 @@ import { createContext } from "react";
 
 // types
 import type { FC, ReactNode } from "react";
+import type IUser from "@/types/user";
 
 // hooks
 import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 type ILoginModalState = {
-  onSuccess?: (value: unknown) => void;
+  onSuccess?: (value: IUser) => void;
   onCancel?: () => void;
 };
 

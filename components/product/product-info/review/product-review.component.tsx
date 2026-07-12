@@ -1,7 +1,6 @@
 // types
 import type { FC } from "react";
 import type IReview from "@/types/review";
-import type { IActionType } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 
 // local components
@@ -18,21 +17,13 @@ import { ThumbsUp } from "lucide-react";
 // hooks
 import useReactToReviewMutation from "@/hooks/axios/review/use-react-to-review-mutation.hook";
 import useDeleteReviewReactionMutation from "@/hooks/axios/review/use-delete-review-reaction-mutation.hook";
+import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // api hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 type IProps = IReview & {
   product_id: number;
-  handleLoginModalState: ({
-    open,
-    action_type,
-    onSuccess,
-  }: {
-    open: boolean;
-    action_type?: IActionType;
-    onSuccess?: () => void;
-  }) => void;
   handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
@@ -46,7 +37,6 @@ const ProductReview: FC<IProps> = ({
   helpful_count,
   is_reacted,
   product_id,
-  handleLoginModalState,
   handleReportModalState,
 }) => {
   const { data: user_details } = useUserDetails();
@@ -59,13 +49,10 @@ const ProductReview: FC<IProps> = ({
     product_id,
     "helpful",
   );
+  const { openModal: openLoginModal } = useLoginModalContext();
   return (
     <div className="space-y-2 rounded-xl border border-gray-300 bg-gray-50 p-6">
-      <Rating
-        total_stars={5}
-        custom_rating={rating}
-        size={16}
-      />
+      <Rating total_stars={5} custom_rating={rating} size={16} />
       <h4 className="text-sm font-medium text-gray-900">{title}</h4>
       <p className="line-clamp-3 text-sm font-medium">{comment}</p>
       <div className="mt-3 flex items-center justify-between">
@@ -101,9 +88,7 @@ const ProductReview: FC<IProps> = ({
                 return;
               }
 
-              handleLoginModalState({
-                open: true,
-                action_type: "review_upvote",
+              openLoginModal({
                 onSuccess: () => {
                   react_to_review_mutation.mutate({
                     review_id: id,
@@ -122,7 +107,6 @@ const ProductReview: FC<IProps> = ({
           <button
             className="flex cursor-pointer items-center gap-1"
             onClick={() => {
-              console.log('value of id',id);
               handleReportModalState({
                 open: true,
                 review_id: id,

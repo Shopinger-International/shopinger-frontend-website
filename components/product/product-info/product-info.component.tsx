@@ -29,6 +29,9 @@ import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.ho
 import useCreateBuyingIntentMutation from "@/hooks/axios/checkout/use-create-buying-intent-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
+// hooks
+import { useLoginModalContext } from "@/provider/login-modal-provider";
+
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
 
@@ -45,11 +48,6 @@ type IProps = {
   selected_attributes: Record<string, any>;
   category_mappings: Array<IFormattedCategoryMapping>;
   is_product_available: boolean;
-  handleLoginModalState: ({
-    open,
-    action_type,
-    onSuccess,
-  }: ILoginModalState) => void;
   handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
@@ -59,9 +57,9 @@ const ProductInfo: FC<IProps> = ({
   selected_attributes,
   category_mappings,
   is_product_available,
-  handleLoginModalState,
   handleReportModalState,
 }) => {
+  const { openModal: openLoginModal } = useLoginModalContext();
   const router = useRouter();
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
@@ -202,7 +200,6 @@ const ProductInfo: FC<IProps> = ({
       <ProductDetails
         product={product}
         category_mappings={category_mappings}
-        handleLoginModalState={handleLoginModalState}
         handleReportModalState={handleReportModalState}
       />
       <div
@@ -322,9 +319,7 @@ const ProductInfo: FC<IProps> = ({
                 },
               );
             } else {
-              handleLoginModalState({
-                open: true,
-                action_type: "buy_intent",
+              openLoginModal({
                 onSuccess(user) {
                   if (user) {
                     create_buying_intent_mutation.mutate(

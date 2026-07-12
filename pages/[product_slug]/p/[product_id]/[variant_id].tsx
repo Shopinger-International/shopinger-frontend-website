@@ -17,7 +17,6 @@ import MainLayout from "@/components/layout/main-layout.component";
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
 import RelatedProducts from "@/components/product/related-products/related-products.component";
-import LoginModal from "@/components/login/login-modal.component";
 import ReportModal from "@/components/review/report-modal.component";
 import Seo from "@/components/common/seo";
 
@@ -36,6 +35,7 @@ import createProductJSONLD from "@/seo/product.jsonld";
 import { getMappings } from "@/hooks/axios/common/use-category-mappings.hook";
 import { useProductAvailability } from "@/hooks/axios/product/use-get-product-availbility.hook";
 import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
+import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // analytics
 import useProductViewed from "@/hooks/analytics/use-product-viewed.hook";
@@ -115,6 +115,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   product,
   category_mappings,
 }) => {
+  const { openModal: openLoginModal } = useLoginModalContext();
   useSnackbarOffset({});
   useProductViewed({
     product_id,
@@ -127,9 +128,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   const variant = product.variants?.find(
     (variant) => variant.id == variant_id,
   ) as IVariant;
-  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
-    open: false,
-  });
 
   const [report_modal_state, setReportModalState] = useState<IReportModalState>(
     {
@@ -190,14 +188,13 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     manufacture: product.manufacturer_name,
   });
 
-  const openLoginModal = () => {
+  const openLoginModalHandler = () => {
     return new Promise<IUser>((resolve, reject) => {
-      setLoginModalState({
-        open: true,
-        onSuccess: (user: IUser) => {
+      openLoginModal({
+        onSuccess(user) {
           resolve(user);
         },
-        onCancel: () => {
+        onCancel() {
           reject();
         },
       });
@@ -214,26 +211,11 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         json_ld={JSON.stringify(product_json_ld)}
       />
 
-      <LoginModal
-        open={login_modal_state.open}
-        handleClose={() => {
-          setLoginModalState({
-            open: false,
-          });
-          login_modal_state.onCancel?.();
-        }}
-        handleOnSuccess={(user) => {
-          setLoginModalState({
-            open: false,
-          });
-          login_modal_state.onSuccess?.(user);
-        }}
-      />
       <ReportModal
         review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
         onClose={() => setReportModalState({ open: false })}
-        handleLogin={openLoginModal}
+        handleLogin={openLoginModalHandler}
       />
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="mx-auto w-full px-4">
@@ -269,17 +251,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           category_mappings={category_mappings}
-          handleLoginModalState={({ open, action_type, onSuccess }) => {
-            setLoginModalState({
-              open,
-              ...(action_type
-                ? {
-                    action_type,
-                  }
-                : {}),
-              ...(onSuccess ? { onSuccess } : {}),
-            });
-          }}
           handleReportModalState={({ open, review_id }) =>
             setReportModalState({
               open,
