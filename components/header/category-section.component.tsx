@@ -20,7 +20,7 @@ import clsx from "clsx";
 
 const CategorySection: FC = () => {
   const params = useParams<{ main_category_slug: string }>();
-  const { updateState } = useMegaMenuContext();
+  const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: categories = [] } = useCategories(true);
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
   const [selected_sub_category, setSelectedSubCategory] =
@@ -78,7 +78,7 @@ const CategorySection: FC = () => {
             {/* Menu Button */}
             <button
               className="hidden shrink-0 cursor-pointer items-center gap-2.5 lg:flex"
-              onClick={() => updateState?.(true)}
+              onClick={openMegaMenuDrawer}
             >
               <Menu className="h-7 w-7" strokeWidth={2} aria-hidden={true} />
               <span className="hidden font-semibold sm:block">Menu</span>

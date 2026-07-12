@@ -94,7 +94,7 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
-  const { updateState: updateMegaMenuState } = useMegaMenuContext();
+  const {openDrawer:openMegaMenuDrawer} = useMegaMenuContext();
   const { data: cart_details } = useCart();
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
@@ -129,10 +129,7 @@ const Header: FC<{
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button
-            onClick={() => {
-              console.log("value of testing");
-              updateMegaMenuState?.(true);
-            }}
+            onClick={openMegaMenuDrawer}
           >
             <Menu className="inline h-6 w-6 text-white lg:hidden" />
           </button>

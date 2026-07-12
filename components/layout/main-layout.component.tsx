@@ -28,6 +28,9 @@ const MobileAddressModal = dynamic(
   },
 );
 
+// provider
+import MegaMenuProvider from "@/provider/mega-menu-provider";
+
 // hooks
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
@@ -57,6 +60,7 @@ const MainLayout: FC<{
   show_bottom_navigation = false,
 }) => {
   const {
+    is_drawer_open: is_adddress_drawer_open,
     is_modal_open: is_address_modal_open,
     closeModal: closeAddressModal,
     closeDrawer: closeAddressDrawer,
@@ -94,6 +98,7 @@ const MainLayout: FC<{
         is_bottom_navigation_showing={show_bottom_navigation}
       />
       <main>
+        <MegaMenuProvider />
         <LoginModal
           open={login_modal_state.is_modal_open}
           handleClose={() => {
@@ -116,7 +121,7 @@ const MainLayout: FC<{
                 address_id: address.id,
                 data: null,
               });
-              closeAddressDrawer();
+              is_adddress_drawer_open && closeAddressDrawer();
             }}
           />
         ) : (
@@ -130,7 +135,7 @@ const MainLayout: FC<{
                 address_id: address.id,
                 data: null,
               });
-              closeAddressDrawer();
+              is_adddress_drawer_open && closeAddressDrawer();
             }}
           />
         )}

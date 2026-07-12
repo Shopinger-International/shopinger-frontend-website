@@ -15,7 +15,6 @@ import SelectedAddressProvider from "@/provider/selected-address-provider.compon
 import LoginModalProvider from "@/provider/login-modal-provider";
 import AlgoliaInsightsProvider from "@/provider/algolia-insights-provider";
 import AnalyticsProvider from "@/provider/analytics.provider";
-import MegaMenuProvider from "@/provider/mega-menu-provider";
 
 // react query
 import {
@@ -82,13 +81,11 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                 error: ErrorSnackbar,
               }}
             >
-              <MegaMenuProvider>
-                <SelectedAddressProvider>
-                  <LoginModalProvider>
-                    {getLayout(<Component {...pageProps} />)}
-                  </LoginModalProvider>
-                </SelectedAddressProvider>
-              </MegaMenuProvider>
+              <SelectedAddressProvider>
+                <LoginModalProvider>
+                  {getLayout(<Component {...pageProps} />)}
+                </LoginModalProvider>
+              </SelectedAddressProvider>
             </SnackbarProvider>
           </AlgoliaInsightsProvider>
         </HydrationBoundary>
