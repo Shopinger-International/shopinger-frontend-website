@@ -104,7 +104,7 @@ interface IProps {
 
 interface IMenuGroupProps extends Omit<
   IProps,
-  "is_open" | "handleShowLoginModal"
+  "is_open" | "handleShowLoginModal" | "handleClose"
 > {
   title: string;
   list_items: Array<{
@@ -120,7 +120,6 @@ interface IMenuGroupProps extends Omit<
 
 const MenuGroup: FC<IMenuGroupProps> = ({
   title,
-  handleClose,
   list_items,
   default_open = false,
   children,
@@ -154,7 +153,6 @@ const MenuGroup: FC<IMenuGroupProps> = ({
                 <Link
                   key={label}
                   href={href}
-                  onClick={handleClose}
                   className="group flex items-center gap-4 px-6 py-3 transition-colors hover:bg-orange-50"
                 >
                   <Icon className="size-5 text-gray-500 transition-colors group-hover:text-orange-500" />
@@ -192,11 +190,7 @@ const MegaMenu: FC<IProps> = ({
       panelClassName="max-w-80"
     >
       <div className="flex h-full flex-col overflow-y-auto">
-        <MenuGroup
-          title={"Account"}
-          handleClose={handleClose}
-          list_items={account_section}
-        >
+        <MenuGroup title={"Account"} list_items={account_section}>
           {user ? (
             <button
               onClick={() => {
@@ -235,21 +229,18 @@ const MegaMenu: FC<IProps> = ({
 
         <MenuGroup
           title={"Online consultancy"}
-          handleClose={handleClose}
           default_open={true}
           list_items={consultancy_section}
         />
 
         <MenuGroup
           title={"Pharmacy"}
-          handleClose={handleClose}
           default_open={true}
           list_items={pharmacy_section}
         />
 
         <MenuGroup
           title={"Shop by Category"}
-          handleClose={handleClose}
           default_open={true}
           list_items={categories.map(({ name, slug }) => ({
             label: name,
