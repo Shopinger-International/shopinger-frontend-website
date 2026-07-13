@@ -89,11 +89,7 @@ type IProps = {
   onClose: () => void;
 };
 
-const ReportModal: FC<IProps> = ({
-  review_id,
-  is_open,
-  onClose,
-}) => {
+const ReportModal: FC<IProps> = ({ review_id, is_open, onClose }) => {
   const { openModal: openLoginModal } = useLoginModalContext();
   const report_review_mutation = useReportReviewMutation();
   const { data: user_details } = useUserDetails();
@@ -139,7 +135,7 @@ const ReportModal: FC<IProps> = ({
                       : {}),
                   },
                   {
-                    onSuccess() {
+                    onSettled() {
                       onClose();
                     },
                   },
@@ -147,15 +143,22 @@ const ReportModal: FC<IProps> = ({
               } else {
                 openLoginModal({
                   onSuccess() {
-                    report_review_mutation.mutate({
-                      review_id,
-                      reason: values.reason as IReason,
-                      ...(description
-                        ? {
-                            description,
-                          }
-                        : {}),
-                    });
+                    report_review_mutation.mutate(
+                      {
+                        review_id,
+                        reason: values.reason as IReason,
+                        ...(description
+                          ? {
+                              description,
+                            }
+                          : {}),
+                      },
+                      {
+                        onSettled() {
+                          onClose();
+                        },
+                      },
+                    );
                   },
                 });
               }
