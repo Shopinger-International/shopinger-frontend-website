@@ -14,15 +14,10 @@ import HelpSection from "@/components/common/help-section.component";
 
 type IProps = {
   selected_address: IAddress | null;
-  handleShowLoginModal: () => void;
   handleOrderSuccess: (order: IVerifyPaymentResponse["order"]) => void;
 };
 
-const CartDetails: FC<IProps> = ({
-  selected_address,
-  handleShowLoginModal,
-  handleOrderSuccess,
-}) => {
+const CartDetails: FC<IProps> = ({ selected_address, handleOrderSuccess }) => {
   const { data: cart } = useCart();
 
   return (
@@ -51,9 +46,6 @@ const CartDetails: FC<IProps> = ({
         {/* Summary */}
         <div className="flex flex-col gap-4 lg:sticky lg:top-(--header-height)">
           <CheckoutSummary
-            handleShowLoginModal={() => {
-              handleShowLoginModal();
-            }}
             sub_total={cart?.sub_total ?? 0}
             total_amount={cart?.total_amount ?? 0}
             total_discount={cart?.total_discount ?? 0}

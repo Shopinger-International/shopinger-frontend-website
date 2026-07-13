@@ -60,9 +60,6 @@ const CheckoutDetail: FC<IProps> = ({
       {/* Summary */}
       <div className="flex flex-col gap-4 lg:sticky lg:top-(--header-height)">
         <CheckoutSummary
-          handleShowLoginModal={() => {
-            // handleShowLoginModal("checkout");
-          }}
           sub_total={sub_total ?? 0}
           total_amount={total_amount ?? 0}
           total_discount={total_discount ?? 0}

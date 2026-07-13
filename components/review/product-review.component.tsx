@@ -4,7 +4,6 @@ import Image from "next/image";
 import type { FC } from "react";
 import type IReview from "@/types/review";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
-import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
 
 // local components
@@ -23,14 +22,12 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 // icons
 import { ThumbsUp } from "lucide-react";
 
+// hooks
+import { useLoginModalContext } from "@/provider/login-modal-provider";
+
 type IProps = IReview & {
   product_id: number;
   filter_state: IFilterType;
-  handleLoginModalState: ({
-    open,
-    action_type,
-    onSuccess,
-  }: ILoginModalState) => void;
   handleReportModalState: ({ open, review_id }: IReportModalState) => void;
 };
 
@@ -47,9 +44,9 @@ const ProductReview: FC<IProps> = ({
   created_at,
   product_id,
   filter_state,
-  handleLoginModalState,
   handleReportModalState,
 }) => {
+  const { openModal: openLoginModal } = useLoginModalContext();
   const react_to_review_mutation = useReactToReviewMutation(
     product_id,
     filter_state,
@@ -78,11 +75,7 @@ const ProductReview: FC<IProps> = ({
         </div>
       </div>
       <div className="space-y-2">
-        <Rating
-          total_stars={5}
-          custom_rating={rating}
-          size={16}
-        />
+        <Rating total_stars={5} custom_rating={rating} size={16} />
         <div className="space-y-0.5">
           <h4 className="text-sm font-semibold text-gray-900">{title}</h4>
           {!!Object.entries(attributes_snapshot).length && (
@@ -133,9 +126,7 @@ const ProductReview: FC<IProps> = ({
               return;
             }
 
-            handleLoginModalState({
-              open: true,
-              action_type: "review_upvote",
+            openLoginModal({
               onSuccess: () => {
                 react_to_review_mutation.mutate({
                   review_id: id,

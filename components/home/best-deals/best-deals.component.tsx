@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 
 // types
@@ -80,7 +79,7 @@ const BestDeals: FC<IProps> = ({ products }) => {
           <button
             onClick={scrollPrev}
             disabled={!cta_state.can_scroll_prev}
-            className="absolute top-1/2 -left-2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300 md:flex"
+            className="absolute top-1/2 -left-2 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
             aria-label="Previous"
           >
             <ChevronLeft className="h-6 w-6" />
@@ -102,7 +101,7 @@ const BestDeals: FC<IProps> = ({ products }) => {
           <button
             onClick={scrollNext}
             disabled={!cta_state.can_scroll_next}
-            className="absolute top-1/2 -right-2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300 md:flex"
+            className="absolute top-1/2 -right-2 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
             aria-label="Next"
           >
             <ChevronRight className="h-6 w-6" />

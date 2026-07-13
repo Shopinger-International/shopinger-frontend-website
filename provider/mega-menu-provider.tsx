@@ -1,88 +1,49 @@
-import { useState, useContext, useEffect } from "react";
-import { createContext } from "react";
+import { useRouter } from "next/router";
 
 // types
-import type { FC, ReactNode } from "react";
+import type { FC } from "react";
 
 // local components
 import MegaMenu from "@/components/common/mega-menu.component";
-import LoginModal from "@/components/login/login-modal.component";
 
-interface IMegaMenuState {
-  is_open: boolean;
-  updateState?: (val: boolean) => void;
-}
-
-const MegaMenuContext = createContext<IMegaMenuState>({
-  is_open: false,
-});
+// hooks
+import useIsMounted from "@/hooks/common/use-is-mounted.hook";
+import useUIHistory from "@/hooks/common/use-ui-history.hook";
+import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 export const useMegaMenuContext = () => {
-  const { is_open, updateState } = useContext(MegaMenuContext);
-  return { is_open, updateState };
+  const is_mounted = useIsMounted();
+  const router = useRouter();
+  const { open, close } = useUIHistory();
+  const is_drawer_open = is_mounted && router.query.mega_menu_drawer === "1";
+  return {
+    is_drawer_open,
+    openDrawer: () =>
+      open({
+        mega_menu_drawer: "1",
+      }),
+    closeDrawer: close,
+  };
 };
 
-interface IProps {
-  children: ReactNode;
-}
-const MegaMenuProvider: FC<IProps> = ({ children }) => {
-  const [login_modal_state, setLoginModalState] = useState<{
-    open: boolean;
-  }>({
-    open: false,
-  });
-  const [is_open, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    if (!login_modal_state.open) return;
-    const handlePopState = () => {
-      setLoginModalState({
-        open: false,
-      });
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [login_modal_state.open]);
+const MegaMenuProvider: FC = () => {
+  const { openModal: openLoginModal } = useLoginModalContext();
+  const {
+    is_drawer_open: is_mega_menu_drawer_open,
+    closeDrawer: closeMegaMenuDrawer,
+  } = useMegaMenuContext();
   return (
-    <MegaMenuContext.Provider
-      value={{
-        is_open,
-        updateState: (val) => {
-          setIsOpen(val);
-        },
-      }}
-    >
-      <MegaMenu
-        is_open={is_open}
-        handleClose={() => setIsOpen(false)}
-        handleShowLoginModal={() => {
-          history.pushState(
-            {
-              login_modal: true,
-            },
-            "",
-          );
-          setLoginModalState({
-            open: true,
-          });
-        }}
-      />
-      <LoginModal
-        open={login_modal_state.open}
-        handleClose={() => {
-          history.back();
-        }}
-        handleOnSuccess={(user) => {
-          history.back();
-          setIsOpen(false);
-        }}
-      />
-      {children}
-    </MegaMenuContext.Provider>
+    <MegaMenu
+      is_open={is_mega_menu_drawer_open}
+      handleClose={closeMegaMenuDrawer}
+      handleShowLoginModal={() =>
+        openLoginModal({
+          onSuccess() {
+            closeMegaMenuDrawer();
+          },
+        })
+      }
+    />
   );
 };
 export default MegaMenuProvider;

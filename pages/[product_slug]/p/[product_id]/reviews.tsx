@@ -8,8 +8,6 @@ import type { GetServerSideProps } from "next";
 import type IReview from "@/types/review";
 import type { DehydratedState } from "@tanstack/react-query";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
-import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
-import type IUser from "@/types/user";
 import type IProduct from "@/types/product";
 
 // layout
@@ -19,7 +17,6 @@ import MainLayout from "@/components/layout/main-layout.component";
 import RatingSummary from "@/components/review/rating-summary.component";
 import ProductReview from "@/components/review/product-review.component";
 import ReportModal from "@/components/review/report-modal.component";
-import LoginModal from "@/components/login/login-modal.component";
 
 // react query
 import { QueryClient, dehydrate } from "@tanstack/react-query";
@@ -53,9 +50,6 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
       open: false,
     },
   );
-  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
-    open: false,
-  });
   const [filter_state, setFilterState] = useState<IFilterType>("helpful");
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useProductReviews({ productId: product_id, sort: filter_state });
@@ -93,19 +87,6 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
     return () => observer_ref.current?.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const openLoginModal = () => {
-    return new Promise<IUser>((resolve, reject) => {
-      setLoginModalState({
-        open: true,
-        onSuccess: (user: IUser) => {
-          resolve(user);
-        },
-        onCancel: () => {
-          reject();
-        },
-      });
-    });
-  };
   return (
     <>
       <Head>
@@ -117,20 +98,6 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
         />
         <meta name="robots" content="index, follow" />
       </Head>
-      <LoginModal
-        open={login_modal_state.open}
-        handleClose={() =>
-          setLoginModalState({
-            open: false,
-          })
-        }
-        handleOnSuccess={(user) => {
-          setLoginModalState({
-            open: false,
-          });
-          login_modal_state.onSuccess?.(user);
-        }}
-      />
       <ReportModal
         review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
@@ -139,7 +106,6 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
             open: false,
           });
         }}
-        handleLogin={openLoginModal}
       />
       <section className="w-full bg-white py-4">
         <div className="mx-auto mt-(--header-height) max-w-6xl space-y-4 px-4">
@@ -198,17 +164,6 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
                 key={`product-review-${review.id}`}
                 product_id={product_id}
                 filter_state={filter_state}
-                handleLoginModalState={({ open, action_type, onSuccess }) => {
-                  setLoginModalState({
-                    open,
-                    ...(action_type
-                      ? {
-                          action_type,
-                        }
-                      : {}),
-                    ...(onSuccess ? { onSuccess } : {}),
-                  });
-                }}
                 handleReportModalState={({ open, review_id }) =>
                   setReportModalState({
                     open,

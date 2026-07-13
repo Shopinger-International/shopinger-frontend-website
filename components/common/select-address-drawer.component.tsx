@@ -17,14 +17,15 @@ import { useAddressDrawerContext } from "@/provider/selected-address-provider.co
 const SelectAddressDrawer: FC = () => {
   const delete_address_mutation = useDeleteAddressMutation();
   const { data: user_addresses = [] } = useUserAddresses();
-  const { address_id, is_open, updateState } = useAddressDrawerContext();
+  const { is_drawer_open, closeDrawer, openModal, address_id, updateState } =
+    useAddressDrawerContext();
   useSnackbarOffset({
-    enabled: is_open,
+    enabled: is_drawer_open,
   });
   return (
     <SidebarDrawer
-      is_open={is_open}
-      handleClose={() => history.back()}
+      is_open={is_drawer_open}
+      handleClose={closeDrawer}
       title={"Change Address"}
       panelClassName="max-w-90"
     >
@@ -61,7 +62,7 @@ const SelectAddressDrawer: FC = () => {
                       updateState?.({
                         address_id: address.id,
                       });
-                      history.back();
+                      closeDrawer();
                     }}
                     onDelete={(data) => {
                       delete_address_mutation.mutate({
@@ -69,11 +70,10 @@ const SelectAddressDrawer: FC = () => {
                       });
                     }}
                     onEdit={(data) => {
-                      window.history.pushState({ address_modal: true }, "");
                       updateState?.({
-                        is_modal_open: true,
                         data,
                       });
+                      openModal();
                     }}
                   />
                 ))}
@@ -84,12 +84,7 @@ const SelectAddressDrawer: FC = () => {
         <div className="mt-4 border-t border-gray-300 px-6 py-4 shadow-sm">
           <button
             className="w-full rounded-lg bg-orange-500 py-2 font-semibold text-white hover:bg-orange-600"
-            onClick={() => {
-              window.history.pushState({ address_modal: true }, "");
-              updateState?.({
-                is_modal_open: true,
-              });
-            }}
+            onClick={openModal}
           >
             Add New Address
           </button>

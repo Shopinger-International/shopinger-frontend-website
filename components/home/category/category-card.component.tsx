@@ -31,7 +31,7 @@ const CategoryCard: FC<ICategoryRecommendation> = ({
     <article className="relative w-60 overflow-hidden rounded-xl border-2 border-orange-200 bg-[url('/pattern/pattern-1.png')] p-4 lg:w-82">
       {/* Header */}
       <div className="relative mb-4 flex items-center justify-between">
-        <h3 className="text-md truncate font-semibold text-orange-500 md:text-xl">
+        <h3 className="text-md truncate font-semibold text-gray-900 md:text-xl">
           {category_name}
         </h3>
         <Link

@@ -15,7 +15,6 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import CartDetails from "@/components/cart/cart-details.component";
 import EmptyCart from "@/components/cart/empty-cart.component";
-import LoginModal from "@/components/login/login-modal.component";
 import OrderSuccessfulModal from "@/components/cart/order-successful-modal.component";
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
@@ -40,11 +39,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(
     null,
   );
-  const [login_modal_state, setLoginModalState] = useState<{
-    open: boolean;
-  }>({
-    open: false,
-  });
   const [order_success_modal_state, setOrderSuccessModalState] = useState<{
     open: boolean;
     order?: IVerifyPaymentResponse["order"];
@@ -73,24 +67,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
     }
   }, [user_addresses.length, address_id]);
 
-  useEffect(() => {
-    if (!login_modal_state.open) return;
-
-    const handlePopState = () => {
-      if (login_modal_state.open) {
-        setLoginModalState({
-          open: false,
-        });
-        return;
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [login_modal_state.open]);
   return (
     <>
       <Head>
@@ -102,12 +78,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
         />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
-
-      <LoginModal
-        open={login_modal_state.open}
-        handleClose={() => history.back()}
-        handleOnSuccess={() => history.back()}
-      />
 
       <OrderSuccessfulModal
         is_open={order_success_modal_state.open}
@@ -126,17 +96,6 @@ const CartCheckoutPage: NextPageWithLayout = () => {
             <>
               <CartDetails
                 selected_address={selected_address}
-                handleShowLoginModal={() => {
-                  history.pushState(
-                    {
-                      login_modal: true,
-                    },
-                    "",
-                  );
-                  setLoginModalState({
-                    open: true,
-                  });
-                }}
                 handleOrderSuccess={(order) => {
                   setOrderSuccessModalState({
                     open: true,

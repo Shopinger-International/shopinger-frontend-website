@@ -35,19 +35,14 @@ import { useAddressDrawerContext } from "@/provider/selected-address-provider.co
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
-  const { address_id, updateState } = useAddressDrawerContext();
+  const { address_id, openDrawer } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
   const user_address = user_details?.user_addresses?.find(
     (address) => address.id == address_id,
   );
   return (
     <button
-      onClick={() => {
-        window.history.pushState({ drawer: true }, "");
-        updateState?.({
-          is_open: true,
-        });
-      }}
+      onClick={openDrawer}
       className={clsx("items-center gap-2 text-white", className)}
       aria-label={
         user_address
@@ -99,7 +94,7 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
-  const { updateState: updateMegaMenuState } = useMegaMenuContext();
+  const {openDrawer:openMegaMenuDrawer} = useMegaMenuContext();
   const { data: cart_details } = useCart();
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
@@ -134,10 +129,7 @@ const Header: FC<{
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button
-            onClick={() => {
-              console.log("value of testing");
-              updateMegaMenuState?.(true);
-            }}
+            onClick={openMegaMenuDrawer}
           >
             <Menu className="inline h-6 w-6 text-white lg:hidden" />
           </button>

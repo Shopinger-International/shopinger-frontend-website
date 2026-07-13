@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 // types
 import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
@@ -28,12 +28,16 @@ const MobileAddressModal = dynamic(
   },
 );
 
+// provider
+import MegaMenuProvider from "@/provider/mega-menu-provider";
+
 // hooks
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
+import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // context
-import {  FooterStateContext } from "@/context";
+import { FooterStateContext } from "@/context";
 
 // helpers
 import clsx from "clsx";
@@ -56,77 +60,31 @@ const MainLayout: FC<{
   show_bottom_navigation = false,
 }) => {
   const {
-    is_open,
-    is_modal_open,
-    address_id,
+    is_drawer_open: is_adddress_drawer_open,
+    is_modal_open: is_address_modal_open,
+    closeModal: closeAddressModal,
+    closeDrawer: closeAddressDrawer,
     data: address_data,
     updateState,
   } = useAddressDrawerContext();
+  const login_modal_state = useLoginModalContext();
 
-  const [login_modal_state, setLoginModalState] = useState<{
-    open: boolean;
-    onSuccess?: (value: any) => void;
-    onCancel?: () => void;
-  }>({
-    open: false,
-  });
   const { show: show_footer } = useContext(FooterStateContext);
   const is_mobile = useIsMobile();
 
   const openLoginModal = () => {
-    history.pushState(
-      {
-        login_modal: true,
-      },
-      "",
-    );
     return new Promise<IUser>((resolve, reject) => {
-      setLoginModalState({
-        open: true,
-        onSuccess: (user: IUser) => {
-          resolve(user);
+      login_modal_state.openModal({
+        onSuccess(user) {
+          resolve(user as IUser);
         },
-        onCancel: () => {
+        onCancel() {
           reject();
         },
       });
     });
   };
 
-  useEffect(() => {
-    if (!is_open && !is_modal_open && !login_modal_state.open) return;
-
-    const handlePopState = () => {
-      if (login_modal_state.open) {
-        setLoginModalState({
-          open: false,
-        });
-        return;
-      }
-      if (is_modal_open) {
-        updateState?.({
-          is_open: true,
-          is_modal_open: false,
-          data: null,
-        });
-        return;
-      }
-
-      if (is_open) {
-        updateState?.({
-          is_open: false,
-          is_modal_open: false,
-          data: null,
-        });
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [is_open, is_modal_open, login_modal_state.open, address_id, updateState]);
   return (
     <div
       className={clsx(
@@ -140,21 +98,22 @@ const MainLayout: FC<{
         is_bottom_navigation_showing={show_bottom_navigation}
       />
       <main>
+        <MegaMenuProvider />
         <LoginModal
-          open={login_modal_state.open}
+          open={login_modal_state.is_modal_open}
           handleClose={() => {
             login_modal_state.onCancel?.();
-            history.back();
+            login_modal_state.closeModal();
           }}
           handleOnSuccess={(user) => {
             login_modal_state.onSuccess?.(user);
-            history.back();
+            login_modal_state.closeModal();
           }}
         />
         {is_mobile ? (
           <MobileAddressModal
-            open={is_modal_open}
-            onClose={() => history.back()}
+            open={is_address_modal_open}
+            onClose={closeAddressModal}
             initial_data={address_data ?? null}
             handleLogin={openLoginModal}
             handleOnSuccess={(address) => {
@@ -162,13 +121,13 @@ const MainLayout: FC<{
                 address_id: address.id,
                 data: null,
               });
-              history.back();
+              is_adddress_drawer_open && closeAddressDrawer();
             }}
           />
         ) : (
           <AddAddressModal
-            open={is_modal_open}
-            onClose={() => history.back()}
+            open={is_address_modal_open}
+            onClose={closeAddressModal}
             initial_data={address_data ?? null}
             handleLogin={openLoginModal}
             handleOnSuccess={(address) => {
@@ -176,7 +135,7 @@ const MainLayout: FC<{
                 address_id: address.id,
                 data: null,
               });
-              history.back();
+              is_adddress_drawer_open && closeAddressDrawer();
             }}
           />
         )}

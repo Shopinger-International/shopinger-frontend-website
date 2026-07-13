@@ -7,7 +7,6 @@ import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
-import type IUser from "@/types/user";
 import type { IDisplayAreaType } from "@/types/category-attribute-mapping";
 
 // layout
@@ -17,7 +16,6 @@ import MainLayout from "@/components/layout/main-layout.component";
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
 import RelatedProducts from "@/components/product/related-products/related-products.component";
-import LoginModal from "@/components/login/login-modal.component";
 import ReportModal from "@/components/review/report-modal.component";
 import Seo from "@/components/common/seo";
 
@@ -79,13 +77,6 @@ type IParams = {
 };
 export type IActionType = "review_upvote" | "buy_intent";
 
-export type ILoginModalState = {
-  open: boolean;
-  action_type?: IActionType;
-  onSuccess?: (user: IUser) => void;
-  onCancel?: () => void;
-};
-
 export type IFormattedCategoryMapping = {
   display_area: IDisplayAreaType[];
   display_group: string;
@@ -127,9 +118,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   const variant = product.variants?.find(
     (variant) => variant.id == variant_id,
   ) as IVariant;
-  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
-    open: false,
-  });
 
   const [report_modal_state, setReportModalState] = useState<IReportModalState>(
     {
@@ -190,19 +178,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     manufacture: product.manufacturer_name,
   });
 
-  const openLoginModal = () => {
-    return new Promise<IUser>((resolve, reject) => {
-      setLoginModalState({
-        open: true,
-        onSuccess: (user: IUser) => {
-          resolve(user);
-        },
-        onCancel: () => {
-          reject();
-        },
-      });
-    });
-  };
   return (
     <>
       <Seo
@@ -214,26 +189,10 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         json_ld={JSON.stringify(product_json_ld)}
       />
 
-      <LoginModal
-        open={login_modal_state.open}
-        handleClose={() => {
-          setLoginModalState({
-            open: false,
-          });
-          login_modal_state.onCancel?.();
-        }}
-        handleOnSuccess={(user) => {
-          setLoginModalState({
-            open: false,
-          });
-          login_modal_state.onSuccess?.(user);
-        }}
-      />
       <ReportModal
         review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
         onClose={() => setReportModalState({ open: false })}
-        handleLogin={openLoginModal}
       />
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="mx-auto w-full px-4">
@@ -243,13 +202,16 @@ const ProductPage: NextPageWithLayout<IProps> = ({
                 main_category.name,
                 sub_category.name,
                 sub_sub_category.name,
+                ...(!!brand ? [brand] : []),
               ].map((item, index) => (
                 <li
                   key={`${item}-${index}`}
                   className="flex items-center gap-2"
                 >
                   <span>{item}</span>
-                  {index < 2 && <ChevronRight className="size-4" />}
+                  {index < (!!brand ? 3 : 2) && (
+                    <ChevronRight className="size-4" />
+                  )}
                 </li>
               ))}
             </ol>
@@ -269,17 +231,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           category_mappings={category_mappings}
-          handleLoginModalState={({ open, action_type, onSuccess }) => {
-            setLoginModalState({
-              open,
-              ...(action_type
-                ? {
-                    action_type,
-                  }
-                : {}),
-              ...(onSuccess ? { onSuccess } : {}),
-            });
-          }}
           handleReportModalState={({ open, review_id }) =>
             setReportModalState({
               open,
