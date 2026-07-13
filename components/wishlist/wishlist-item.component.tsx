@@ -5,7 +5,6 @@ import Image from "next/image";
 // types
 import type { IResponseType } from "@/hooks/axios/wishlist/use-get-wishlist.hook";
 import type { FC } from "react";
-import type { ILoginModalState } from "@/pages/wishlist";
 
 // icons
 import { Trash2 } from "lucide-react";
@@ -15,6 +14,7 @@ import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.ho
 import useCreateBuyingIntentMutation from "@/hooks/axios/checkout/use-create-buying-intent-mutation.hook";
 import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // analytics event
 import addedToCartEvent from "@/analytics/events/added-to-cart.event";
@@ -31,11 +31,7 @@ import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
 import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
 import buyNowClickedEvent from "@/analytics/events/buy-now-clicked.event";
 
-const WishlistItem: FC<
-  IResponseType["data"][number] & {
-    handleLoginModalState: ({ open, onSuccess }: ILoginModalState) => void;
-  }
-> = ({
+const WishlistItem: FC<IResponseType["data"][number]> = ({
   product_id,
   variant_id,
   title,
@@ -44,7 +40,6 @@ const WishlistItem: FC<
   mrp,
   selling_price,
   sub_sub_category_id,
-  handleLoginModalState,
 }) => {
   const router = useRouter();
   const { data: user_details } = useUserDetails();
@@ -53,6 +48,7 @@ const WishlistItem: FC<
   const create_buying_intent_mutation = useCreateBuyingIntentMutation();
   const add_to_cart_mutation = useAddToCartMutation();
   const remove_from_wishlist_mutation = useRemoveFromWishlistMutation();
+  const { openModal: openLoginModal } = useLoginModalContext();
 
   return (
     <article className="rounded-xl border border-gray-300 bg-white p-3 sm:flex sm:gap-4 sm:p-4">
@@ -222,8 +218,7 @@ const WishlistItem: FC<
                 },
               );
             } else {
-              handleLoginModalState({
-                open: true,
+              openLoginModal({
                 onSuccess(user) {
                   if (user) {
                     create_buying_intent_mutation
@@ -238,7 +233,6 @@ const WishlistItem: FC<
                       });
                   }
                 },
-                onCancel() {},
               });
             }
           }}

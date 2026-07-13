@@ -16,7 +16,6 @@ import useGetWishlist from "@/hooks/axios/wishlist/use-get-wishlist.hook";
 import WishlistItem from "@/components/wishlist/wishlist-item.component";
 import WishlistItemSkeleton from "@/components/wishlist/wishlist-item-skeleton.component";
 import EmtpyWishlist from "@/components/wishlist/empty-wishlist.component";
-import LoginModal from "@/components/login/login-modal.component";
 
 // context
 import { FooterStateContext } from "@/context";
@@ -34,9 +33,6 @@ export type ILoginModalState = {
 
 const Wishlist: NextPageWithLayout = () => {
   const { updateShow: updateShowFooter } = useContext(FooterStateContext);
-  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
-    open: false,
-  });
   const {
     data,
     isPending: isWishlistPending,
@@ -85,19 +81,6 @@ const Wishlist: NextPageWithLayout = () => {
     updateShowFooter?.(!hasNextPage && !isWishlistPending);
   }, [hasNextPage, isWishlistPending]);
 
-  const openLoginModal = () => {
-    return new Promise<IUser>((resolve, reject) => {
-      setLoginModalState({
-        open: true,
-        onSuccess: (user: IUser) => {
-          resolve(user);
-        },
-        onCancel: () => {
-          reject();
-        },
-      });
-    });
-  };
   return (
     <>
       <Head>
@@ -109,21 +92,6 @@ const Wishlist: NextPageWithLayout = () => {
         />
         <meta name="robots" content="noindex, ngfollow" />
       </Head>
-      <LoginModal
-        open={login_modal_state.open}
-        handleClose={() => {
-          setLoginModalState({
-            open: false,
-          });
-          login_modal_state.onCancel?.();
-        }}
-        handleOnSuccess={(user) => {
-          setLoginModalState({
-            open: false,
-          });
-          login_modal_state.onSuccess?.(user);
-        }}
-      />
       <section className="w-full bg-gray-50 py-4">
         <div className="mx-auto mt-(--header-height) min-h-[calc(100vh-var(--header-height))] max-w-6xl px-4">
           <div className="mb-4 flex items-center justify-between sm:mb-6">
@@ -143,12 +111,6 @@ const Wishlist: NextPageWithLayout = () => {
                 <WishlistItem
                   {...wishlist_item}
                   key={wishlist_item.variant_id}
-                  handleLoginModalState={({ open, onSuccess }) => {
-                    setLoginModalState({
-                      open,
-                      ...(onSuccess ? { onSuccess } : {}),
-                    });
-                  }}
                 />
               ))
             )}
