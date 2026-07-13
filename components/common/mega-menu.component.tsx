@@ -190,7 +190,32 @@ const MegaMenu: FC<IProps> = ({
       panelClassName="max-w-80"
     >
       <div className="flex h-full flex-col overflow-y-auto">
-        <MenuGroup title={"Account"} list_items={account_section}>
+        <MenuGroup
+          title={"Online consultancy"}
+          default_open={true}
+          list_items={consultancy_section}
+        />
+
+        <MenuGroup
+          title={"Pharmacy"}
+          default_open={true}
+          list_items={pharmacy_section}
+        />
+
+        <MenuGroup
+          title={"Shop by Category"}
+          default_open={true}
+          list_items={categories.map(({ name, slug }) => ({
+            label: name,
+            href: `/categories/${slug}`,
+            icon: Grid2X2,
+          }))}
+        />
+        <MenuGroup
+          title={"Account"}
+          list_items={account_section}
+          default_open={true}
+        >
           {user ? (
             <button
               onClick={() => {
@@ -226,28 +251,6 @@ const MegaMenu: FC<IProps> = ({
             </button>
           )}
         </MenuGroup>
-
-        <MenuGroup
-          title={"Online consultancy"}
-          default_open={true}
-          list_items={consultancy_section}
-        />
-
-        <MenuGroup
-          title={"Pharmacy"}
-          default_open={true}
-          list_items={pharmacy_section}
-        />
-
-        <MenuGroup
-          title={"Shop by Category"}
-          default_open={true}
-          list_items={categories.map(({ name, slug }) => ({
-            label: name,
-            href: `/categories/${slug}`,
-            icon: Grid2X2,
-          }))}
-        />
       </div>
     </SidebarDrawer>
   );

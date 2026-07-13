@@ -91,13 +91,13 @@ const CategorySection: FC = () => {
                 }
                 aria-label="Scroll categories left"
                 className={clsx(
-                  "shrink-0 rounded-full bg-white/20 p-1.5 transition-opacity",
+                  "hidden shrink-0 rounded-full p-1 lg:inline-block",
                   can_scroll_left
                     ? "opacity-100"
                     : "pointer-events-none hidden",
                 )}
               >
-                <ChevronLeft aria-hidden={true} className="h-5 w-5" />
+                <ChevronLeft aria-hidden={true} className="size-6" />
               </button>
 
               {/* Navigation Items */}
@@ -106,89 +106,6 @@ const CategorySection: FC = () => {
                 aria-label="Main product categories"
                 className="no-scrollbar overflow-x-auto"
               >
-                {/* Grocery */}
-                {/* {[
-                  {
-                    href: "/grocery",
-                    label: "Grocery",
-                    icon: Upload,
-                  },
-                  {
-                    href: "/quick-order",
-                    label: "Quick Order",
-                    icon: Phone,
-                  },
-                  {
-                    href: "/medical",
-                    label: "Medical",
-                    icon: Stethoscope,
-                  },
-                ].map(({ href, label, icon: Icon }) => {
-                  if (label == "Quick Order") {
-                    return (
-                      <Tooltip
-                        placement="bottom"
-                        key={label}
-                        className="z-50 rounded-xl border border-gray-300 bg-white py-1 font-semibold shadow-lg"
-                        content={() => (
-                          <div className="space-y-1 px-3 py-1.5">
-                            <p className="tracking-wide text-orange-500">
-                              Call us now to order
-                            </p>
-                            <div className="flex items-center gap-2">
-                              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-lime-400">
-                                <Phone className="size-4 fill-gray-900" />
-                              </span>
-                              <span className="text-[15px]">
-                                +91 94157 61434
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      >
-                        {({ open }) => (
-                          <Link
-                            key={label}
-                            href={href}
-                            className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                          >
-                            {Icon && (
-                              <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
-                                <Icon
-                                  className="size-4 text-orange-500"
-                                  strokeWidth={2.5}
-                                />
-                              </div>
-                            )}
-                            <span className="text-sm font-medium text-white group-hover:underline">
-                              {label}
-                            </span>
-                          </Link>
-                        )}
-                      </Tooltip>
-                    );
-                  }
-
-                  return (
-                    <Link
-                      key={label}
-                      href={href}
-                      className="group flex items-center gap-2 rounded-md py-1.5 transition-colors"
-                    >
-                      {Icon && (
-                        <div className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white">
-                          <Icon
-                            className="size-4 text-orange-500"
-                            strokeWidth={2.5}
-                          />
-                        </div>
-                      )}
-                      <span className="text-sm font-medium text-white group-hover:underline">
-                        {label}
-                      </span>
-                    </Link>
-                  );
-                })} */}
                 <ul
                   className={
                     "flex min-w-0 items-center gap-6 whitespace-nowrap"
@@ -227,13 +144,13 @@ const CategorySection: FC = () => {
                 }
                 aria-label="Scroll categories right"
                 className={clsx(
-                  "shrink-0 rounded-full bg-white/20 p-1.5 transition-opacity",
+                  "hidden shrink-0 rounded-full p-1 lg:inline-block",
                   can_scroll_right
                     ? "opacity-100"
                     : "pointer-events-none opacity-0",
                 )}
               >
-                <ChevronRight aria-hidden={true} className="h-5 w-5" />
+                <ChevronRight aria-hidden={true} className="size-6" />
               </button>
             </div>
           </div>
