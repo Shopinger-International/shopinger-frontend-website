@@ -26,7 +26,7 @@ const ProductGrid: FC<IProps> = ({ title, products, view_all_href }) => {
   return (
     <section
       aria-labelledby={`product-grid-${title}`}
-      className="space-y-3 rounded-xl border border-gray-300 bg-gray-100 p-3"
+      className="space-y-3 rounded-xl border border-gray-300 p-3"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -52,7 +52,7 @@ const ProductGrid: FC<IProps> = ({ title, products, view_all_href }) => {
           .map(({ href, src, alt, title }, index) => (
             <li
               key={`product-image-${index}`}
-              className="aspect-square overflow-hidden rounded-xl border border-gray-300 hover:opacity-95"
+              className="aspect-square overflow-hidden hover:opacity-95"
             >
               <Link
                 title={`View ${title}`}

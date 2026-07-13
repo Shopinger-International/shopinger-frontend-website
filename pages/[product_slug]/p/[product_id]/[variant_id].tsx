@@ -202,13 +202,16 @@ const ProductPage: NextPageWithLayout<IProps> = ({
                 main_category.name,
                 sub_category.name,
                 sub_sub_category.name,
+                ...(!!brand ? [brand] : []),
               ].map((item, index) => (
                 <li
                   key={`${item}-${index}`}
                   className="flex items-center gap-2"
                 >
                   <span>{item}</span>
-                  {index < 2 && <ChevronRight className="size-4" />}
+                  {index < (!!brand ? 3 : 2) && (
+                    <ChevronRight className="size-4" />
+                  )}
                 </li>
               ))}
             </ol>

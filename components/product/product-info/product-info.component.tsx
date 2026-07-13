@@ -15,7 +15,6 @@ import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[produc
 import { Star, ChevronDown } from "lucide-react";
 
 // local components
-import Badge from "@/components/product/badge.component";
 import VariantSelection from "@/components/product/variant-selection.component";
 import CheckDeliveryAvailability from "@/components/product/product-info/check-delivery-availability.component";
 import ProductDetails from "@/components/product/product-info/product-details.component";
@@ -65,7 +64,7 @@ const ProductInfo: FC<IProps> = ({
   const is_logged_in = !!user_details;
   const create_buying_intent_mutation = useCreateBuyingIntentMutation();
   const add_to_cart_mutation = useAddToCartMutation();
-  const { title, brand, sub_sub_category } = product;
+  const { title, brand} = product;
   const updated_title =
     !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
       ? title
@@ -108,12 +107,6 @@ const ProductInfo: FC<IProps> = ({
 
   return (
     <section aria-labelledby="product-title" className="flex flex-col lg:block">
-      <div className="mb-4 hidden gap-2 lg:flex">
-        {brand && <Badge className="bg-[#FFE2D0]">{brand}</Badge>}
-        <Badge className="border border-neutral-300 bg-white">
-          {sub_sub_category.name}
-        </Badge>
-      </div>
       <h1
         id="product-title"
         className="order-1 mb-2 text-sm font-semibold lg:mb-3 lg:text-xl lg:font-medium"
