@@ -18,13 +18,13 @@ import useCartCheckoutMutation from "@/hooks/axios/cart/use-cart-checkout-mutati
 import useBuyNowCheckoutMutation from "@/hooks/axios/checkout/use-buy-now-checkout.hook";
 import useCreateRazorpayOrderMutation from "@/hooks/axios/cart/create-razorpay-order-mutation.hook";
 import useVerifyPaymentMutation from "@/hooks/axios/cart/verify-payment-mutation.hook";
-import useUIHistory from "@/hooks/common/use-ui-history.hook";
+import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
+import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // analytics event
 import orderCompletedEvent from "@/analytics/events/order-completed.event";
 
 type IProps = {
-  handleShowLoginModal: () => void;
   handleOrderSuccess: (order: IVerifyPaymentResponse["order"]) => void;
   selected_address: IAddress | null;
   sub_total: number;
@@ -38,7 +38,6 @@ type IProps = {
 };
 
 const CheckoutSummary: FC<IProps> = ({
-  handleShowLoginModal,
   handleOrderSuccess,
   selected_address,
   total_amount,
@@ -49,7 +48,8 @@ const CheckoutSummary: FC<IProps> = ({
   type,
   intent_id,
 }) => {
-  const { open } = useUIHistory();
+  const { openModal: openLoginModal } = useLoginModalContext();
+  const { openDrawer: openAddressDrawer } = useAddressDrawerContext();
   const buy_now_checkout_mutation = useBuyNowCheckoutMutation();
   const cart_checkout_mutation = useCartCheckoutMutation();
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
@@ -124,11 +124,9 @@ const CheckoutSummary: FC<IProps> = ({
           type="button"
           className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white"
           onClick={() => {
-            if (!user_detail) return handleShowLoginModal();
+            if (!user_detail) return openLoginModal({});
             if (!selected_address) {
-              open({
-                drawer: "address",
-              });
+              openAddressDrawer();
               return;
             }
             if (type == "cart-checkout") {

@@ -7,7 +7,6 @@ import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
-import type IUser from "@/types/user";
 import type { IDisplayAreaType } from "@/types/category-attribute-mapping";
 
 // layout
@@ -35,7 +34,6 @@ import createProductJSONLD from "@/seo/product.jsonld";
 import { getMappings } from "@/hooks/axios/common/use-category-mappings.hook";
 import { useProductAvailability } from "@/hooks/axios/product/use-get-product-availbility.hook";
 import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
-import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // analytics
 import useProductViewed from "@/hooks/analytics/use-product-viewed.hook";
@@ -79,13 +77,6 @@ type IParams = {
 };
 export type IActionType = "review_upvote" | "buy_intent";
 
-export type ILoginModalState = {
-  open: boolean;
-  action_type?: IActionType;
-  onSuccess?: (user: IUser) => void;
-  onCancel?: () => void;
-};
-
 export type IFormattedCategoryMapping = {
   display_area: IDisplayAreaType[];
   display_group: string;
@@ -115,7 +106,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   product,
   category_mappings,
 }) => {
-  const { openModal: openLoginModal } = useLoginModalContext();
   useSnackbarOffset({});
   useProductViewed({
     product_id,
@@ -188,18 +178,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     manufacture: product.manufacturer_name,
   });
 
-  const openLoginModalHandler = () => {
-    return new Promise<IUser>((resolve, reject) => {
-      openLoginModal({
-        onSuccess(user) {
-          resolve(user);
-        },
-        onCancel() {
-          reject();
-        },
-      });
-    });
-  };
   return (
     <>
       <Seo
@@ -215,7 +193,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
         onClose={() => setReportModalState({ open: false })}
-        handleLogin={openLoginModalHandler}
       />
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
         <div className="mx-auto w-full px-4">

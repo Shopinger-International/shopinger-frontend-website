@@ -9,7 +9,6 @@ import type { FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
-import type { ILoginModalState } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // icons

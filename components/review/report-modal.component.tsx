@@ -1,6 +1,5 @@
 // types
 import type { FC } from "react";
-import type IUser from "@/types/user";
 import type { FieldProps } from "formik";
 
 // external components
@@ -13,6 +12,9 @@ import { X } from "lucide-react";
 // api hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useReportReviewMutation from "@/hooks/axios/review/use-report-review-mutation.hook";
+
+// hooks
+import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // helpers
 import { z } from "zod";
@@ -85,15 +87,14 @@ type IProps = {
   review_id: number;
   is_open: boolean;
   onClose: () => void;
-  handleLogin: () => Promise<IUser>;
 };
 
 const ReportModal: FC<IProps> = ({
   review_id,
   is_open,
   onClose,
-  handleLogin,
 }) => {
+  const { openModal: openLoginModal } = useLoginModalContext();
   const report_review_mutation = useReportReviewMutation();
   const { data: user_details } = useUserDetails();
   const is_logged_in = !!user_details;
@@ -144,22 +145,19 @@ const ReportModal: FC<IProps> = ({
                   },
                 );
               } else {
-                handleLogin()
-                  .then((user) => {
-                    if (user) {
-                      report_review_mutation.mutate({
-                        review_id,
-                        reason: values.reason as IReason,
-                        ...(description
-                          ? {
-                              description,
-                            }
-                          : {}),
-                      });
-                    }
-                    onClose();
-                  })
-                  .catch((err) => {});
+                openLoginModal({
+                  onSuccess() {
+                    report_review_mutation.mutate({
+                      review_id,
+                      reason: values.reason as IReason,
+                      ...(description
+                        ? {
+                            description,
+                          }
+                        : {}),
+                    });
+                  },
+                });
               }
             }}
             validate={toFormikValidate(report_schema)}
