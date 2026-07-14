@@ -50,9 +50,9 @@ const Hero: FC = () => {
           </p>
 
           <div className="mt-6 space-y-6">
-            <div className="inline-flex rounded-lg border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-medium text-orange-600">
+            <p className="mt-2 text-sm text-gray-500">
               Last Updated: July 2026
-            </div>
+            </p>
 
             <p className="leading-8 text-gray-600">
               <span className="font-semibold text-gray-900">

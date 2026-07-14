@@ -23,7 +23,7 @@ const footer_sections = [
     title: "Consumer Policy",
     list: [
       { label: "Privacy Policy", href: "/privacy-policy" },
-      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Terms & Conditions", href: "/terms-and-conditions" },
       { label: "Payment Policy", href: "/payment-policy" },
       { label: "Shipping Policy", href: "/shipping-policy" },
       {
