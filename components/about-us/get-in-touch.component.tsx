@@ -23,45 +23,28 @@ const GetInTouch: FC = () => {
         </div>
 
         {/* Contact */}
-        <div className="mt-8 grid gap-5 md:grid-cols-2 lg:mt-10">
+        <div className="mt-6 grid gap-5 sm:mt-8 md:grid-cols-2 lg:mt-10">
           <a
             href={`tel:${process.env.NEXT_PUBLIC_ADMIN_PHONE}`}
-            className="rounded-xl border border-gray-300 bg-white p-4 hover:border-orange-300 sm:p-6"
+            className="rounded-lg border border-gray-300 bg-white p-3 hover:border-orange-300 sm:rounded-xl sm:p-6"
           >
             <p className="text-sm text-gray-600">Phone</p>
 
-            <p className="mt-2 text-lg font-semibold text-gray-900 sm:text-xl">
+            <p className="mt-1 text-base font-semibold text-gray-900 sm:mt-2 sm:text-xl">
               {process.env.NEXT_PUBLIC_ADMIN_PHONE}
             </p>
           </a>
 
           <a
             href={`mailto:${process.env.NEXT_PUBLIC_ADMIN_EMAIL}`}
-            className="rounded-xl border border-gray-300 bg-white p-4 hover:border-orange-300 sm:p-6"
+            className="rounded-lg border border-gray-300 bg-white p-3 hover:border-orange-300 sm:rounded-xl sm:p-6"
           >
             <p className="text-sm text-gray-600">Email</p>
 
-            <p className="mt-2 text-lg font-semibold text-gray-900 sm:text-xl">
+            <p className="mt-1 text-base font-semibold text-gray-900 sm:mt-2 sm:text-xl">
               {process.env.NEXT_PUBLIC_ADMIN_EMAIL}
             </p>
           </a>
-        </div>
-
-        {/* Trademark */}
-        <div className="mt-8 border-t border-gray-300 pt-6 sm:mt-10 sm:pt-8">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Trademark Information
-          </h3>
-
-          <p className="mt-2 leading-8 text-gray-600 sm:mt-4">
-            The <strong>SHOPINGER</strong> word mark and the
-            <strong> Shopinger logo</strong> are registered trademarks of
-            <strong> Shopinger International Private Limited</strong> and are
-            protected under the Trade Marks Act, 1999. Unauthorized use,
-            reproduction, imitation, or distribution of the Shopinger name,
-            logo, or other brand assets is prohibited without prior written
-            permission.
-          </p>
         </div>
       </div>
     </section>

@@ -34,16 +34,16 @@ const HIGHLIGHTS = [
 
 const Hero: FC = () => {
   return (
-    <section className="overflow-hidden rounded-2xl border border-gray-300 bg-white">
+    <section className="overflow-hidden rounded-xl border border-gray-300 bg-white sm:rounded-2xl">
       <div className="grid lg:grid-cols-[1.5fr_0.7fr]">
         {/* Left */}
-        <div className="p-6 sm:p-8 md:p-10 lg:p-12">
+        <div className="p-4 sm:p-8 md:p-10 lg:p-12">
           <Badge title="About Shopinger" />
-          <h1 className="mt-4 text-xl font-bold tracking-tight text-gray-900 lg:text-3xl">
+          <h1 className="mt-3 text-xl font-bold tracking-tight text-gray-900 sm:mt-4 lg:text-3xl">
             Everything Delivered in Minutes
           </h1>
 
-          <div className="mt-4 space-y-6 sm:mt-6 sm:space-y-8">
+          <div className="mt-3 space-y-4 sm:mt-4 sm:space-y-6 lg:mt-6 lg:space-y-8">
             <p className="text-gray-600">
               Shopinger is an Indian quick commerce platform committed to making
               everyday shopping faster, simpler, and more convenient.
@@ -65,7 +65,7 @@ const Hero: FC = () => {
               receive everyday essentials quickly and conveniently.
             </p>
 
-            <div className="rounded-xl border border-gray-300 bg-gray-50 p-4 sm:p-6">
+            <div className="rounded-xl border border-gray-300 bg-gray-50 p-3 sm:p-4 lg:p-6">
               <p className="leading-8 text-gray-600">
                 Built with a customer-first approach, Shopinger focuses on{" "}
                 <span className="font-semibold text-gray-900">
@@ -85,10 +85,10 @@ const Hero: FC = () => {
           <div className="grid h-full grid-cols-1 gap-px bg-gray-200 sm:grid-cols-2 lg:grid-cols-1">
             {HIGHLIGHTS.map(
               ({ icon: Icon, value, title, description, highlight }) => (
-                <div key={title} className="bg-white p-6 sm:p-8">
+                <div key={title} className="bg-white p-4 sm:p-6 lg:p-8">
                   {value ? (
                     <p
-                      className={`text-4xl font-bold ${
+                      className={`text-2xl font-bold sm:text-3xl lg:text-4xl ${
                         highlight ? "text-orange-500" : "text-gray-900"
                       }`}
                     >
@@ -96,14 +96,16 @@ const Hero: FC = () => {
                     </p>
                   ) : (
                     <Icon
-                      className="size-10 text-orange-500"
+                      className="size-8 text-orange-500 sm:size-10"
                       strokeWidth={1.8}
                     />
                   )}
 
-                  <h3 className="mt-3 font-semibold text-gray-900">{title}</h3>
+                  <h3 className="mt-2 font-semibold text-gray-900 sm:mt-3">
+                    {title}
+                  </h3>
 
-                  <p className="mt-1 text-sm leading-6 text-gray-600">
+                  <p className="text-sm leading-6 text-gray-600 sm:mt-1">
                     {description}
                   </p>
                 </div>

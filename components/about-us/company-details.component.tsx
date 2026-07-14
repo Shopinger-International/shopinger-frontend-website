@@ -74,12 +74,12 @@ const CompanyDetails: FC = () => {
         </div>
 
         {/* Details */}
-        <div className="mt-8 overflow-hidden rounded-2xl border border-gray-300 bg-white lg:mt-10">
+        <div className="mt-6 overflow-hidden rounded-xl border border-gray-300 bg-white sm:mt-8 sm:rounded-2xl lg:mt-10">
           <dl className="divide-y divide-gray-200">
             {COMPANY_INFORMATION.map(({ label, value }) => (
               <div
                 key={label}
-                className="grid gap-3 px-6 py-5 sm:grid-cols-[260px_1fr] sm:gap-8 sm:px-8"
+                className="grid gap-2 px-4 py-3 sm:grid-cols-[260px_1fr] sm:gap-8 sm:px-8 sm:py-5"
               >
                 <dt className="font-semibold text-gray-900">{label}</dt>
 
@@ -87,6 +87,23 @@ const CompanyDetails: FC = () => {
               </div>
             ))}
           </dl>
+        </div>
+
+        {/* Trademark */}
+        <div className="mt-6 border-t border-gray-300 pt-4 sm:mt-10 sm:pt-8">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Trademark Information
+          </h3>
+
+          <p className="mt-2 leading-7 text-gray-600 sm:mt-4 sm:leading-8">
+            The <strong>SHOPINGER</strong> word mark and the
+            <strong> Shopinger logo</strong> are registered trademarks of
+            <strong> Shopinger International Private Limited</strong> and are
+            protected under the Trade Marks Act, 1999. Unauthorized use,
+            reproduction, imitation, or distribution of the Shopinger name,
+            logo, or other brand assets is prohibited without prior written
+            permission.
+          </p>
         </div>
       </div>
     </section>
