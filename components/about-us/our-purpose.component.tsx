@@ -64,7 +64,7 @@ const OurPurpose: FC = () => {
                     {subtitle}
                   </p>
 
-                  <h3 className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
+                  <h3 className="mt-1 text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">
                     {title}
                   </h3>
                 </div>
