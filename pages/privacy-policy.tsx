@@ -308,19 +308,13 @@ const policies = [
       `Phone:${process.env.NEXT_PUBLIC_ADMIN_PHONE} `,
       `Website: ${process.env.NEXT_PUBLIC_BASE_URL}`,
     ],
-    note: "Last Updated: 14 July 2026",
+    note: "Last Updated: July 2026",
   },
 ];
 const PrivacyPolicyPage: NextPageWithLayout = () => {
   return (
     <div className="w-full bg-gray-50 py-2 sm:py-4">
       <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
-        <p className="mt-2 text-sm text-gray-600 -mb-3">
-          Last Updated:{" "}
-          <time dateTime="2026-07-14" className="font-medium text-gray-600">
-            July 2026
-          </time>
-        </p>
         <PolicySection policies={policies} />
       </div>
     </div>
