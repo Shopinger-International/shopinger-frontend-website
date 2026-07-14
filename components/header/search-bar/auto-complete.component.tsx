@@ -266,7 +266,7 @@ const AutoComplete: FC<AutocompleteProps> = ({
       window.removeEventListener("scroll", handleScroll, true);
       autocomplete_instance.destroy();
     };
-  }, [auto_complete_props, plugins]);
+  }, [plugins]);
 
   return <div className={clsx(className)} ref={autocomplete_container_ref} />;
 };
