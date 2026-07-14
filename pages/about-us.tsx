@@ -14,7 +14,7 @@ import CompanyDetails from "@/components/about-us/company-details.component";
 const AboutPage: NextPageWithLayout = () => {
   return (
     <div className="w-full bg-gray-50 py-2 sm:py-4">
-      <div className="mx-auto mt-(--header-height) max-w-7xl px-2 sm:px-4">
+      <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
         <Hero />
         <OurPurpose />
         <GetInTouch />
