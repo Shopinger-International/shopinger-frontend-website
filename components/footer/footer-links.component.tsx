@@ -35,8 +35,9 @@ const footer_sections = [
   {
     title: "Business",
     list: [
-      { label: "Become a seller", href: "/beocome-a-seller" },
-      { label: "Shopinger Partner", href: "/contact-us" },
+      { label: "Sell on Shopinger", href: "https://seller.shopinger.co.in" },
+      { label: "Warehouse franchise", href: "/contact-us" },
+      { label: "Delivery Partner", href: "/contact-us" },
     ],
   },
 ];
@@ -57,6 +58,7 @@ const FooterLinks: FC = () => {
               </a>
             ) : (
               <Link
+                target="_blank"
                 href={item.href}
                 className="font-medium text-white/80 hover:text-white"
               >

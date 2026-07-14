@@ -85,7 +85,10 @@ const Hero: FC = () => {
           <div className="grid h-full grid-cols-1 gap-px bg-gray-200 sm:grid-cols-2 lg:grid-cols-1">
             {HIGHLIGHTS.map(
               ({ icon: Icon, value, title, description, highlight }) => (
-                <div key={title} className="bg-white p-4 sm:p-6 lg:p-8">
+                <div
+                  key={title}
+                  className="bg-white p-4 text-center sm:p-6 sm:text-left lg:p-8"
+                >
                   {value ? (
                     <p
                       className={`text-2xl font-bold sm:text-3xl lg:text-4xl ${
@@ -96,7 +99,7 @@ const Hero: FC = () => {
                     </p>
                   ) : (
                     <Icon
-                      className="size-8 text-orange-500 sm:size-10"
+                      className="mx-auto size-8 text-orange-500 sm:size-10 sm:mx-0"
                       strokeWidth={1.8}
                     />
                   )}
