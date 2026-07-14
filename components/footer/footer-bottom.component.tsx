@@ -18,34 +18,6 @@ const FooterBottom: FC = () => {
         {/* Left section */}
         <div className="flex flex-wrap items-center gap-6">
           <span className="font-medium">©2025–2026 Shopinger</span>
-
-          <Link
-            href="/contact-us"
-            className="hidden items-center gap-2 font-medium hover:underline lg:flex"
-          >
-            <Image
-              className="size-4 lg:size-5"
-              src="/footer/rupee-circle.svg"
-              alt="seller"
-              width={16}
-              height={16}
-            />
-            Become a shopinger business partner
-          </Link>
-
-          <Link
-            href="/advertise"
-            className="hidden items-center gap-2 font-medium hover:underline lg:flex"
-          >
-            <Image
-              className="size-4 lg:size-5"
-              src="/footer/mike.svg"
-              alt="advertise"
-              width={16}
-              height={16}
-            />
-            Advertise with us
-          </Link>
         </div>
 
         {/* Right section */}

@@ -39,47 +39,17 @@ const Footer: FC = () => {
           <FooterLinks />
           <FooterAddress />
         </div>
-        <div className="mb-8 flex flex-col space-y-3 px-4 lg:hidden">
-          <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href="/advertise"
-              className="flex items-center gap-2 font-medium hover:underline"
-            >
-              <Image
-                className="size-4 lg:size-5"
-                src="/footer/mike.svg"
-                alt="advertise"
-                width={16}
-                height={16}
-              />
-              Advertise with us
-            </Link>
-            <Link
-              href="/sell"
-              className="flex items-center gap-2 font-medium hover:underline"
-            >
-              <Image
-                className="size-4 lg:size-5"
-                src="/footer/rupee-circle.svg"
-                alt="seller"
-                width={16}
-                height={16}
-              />
-              Become a shopinger business partner
-            </Link>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            {payment_methods.map((icon) => (
-              <Image
-                key={icon}
-                src={`/footer/payment-method/${icon}.png`}
-                alt={icon}
-                width={40}
-                height={24}
-                className="h-6 w-auto rounded bg-white p-1"
-              />
-            ))}
-          </div>
+        <div className="mb-8 flex flex-wrap items-center gap-3 px-4 lg:hidden">
+          {payment_methods.map((icon) => (
+            <Image
+              key={icon}
+              src={`/footer/payment-method/${icon}.png`}
+              alt={icon}
+              width={40}
+              height={24}
+              className="h-6 w-auto rounded bg-white p-1"
+            />
+          ))}
         </div>
         <FooterBottom />
       </footer>

@@ -35,9 +35,13 @@ const footer_sections = [
   {
     title: "Business",
     list: [
-      { label: "Sell on Shopinger", href: "https://seller.shopinger.co.in" },
+      {
+        label: "Sell on Shopinger",
+        href: process.env.NEXT_PUBLIC_SELLER_URL as string,
+      },
       { label: "Warehouse franchise", href: "/contact-us" },
       { label: "Delivery Partner", href: "/contact-us" },
+      { label: "Advertise with us", href: "/contact-us" },
     ],
   },
 ];

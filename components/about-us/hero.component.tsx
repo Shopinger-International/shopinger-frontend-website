@@ -1,8 +1,9 @@
+import Link from "next/link";
 // types
 import type { FC } from "react";
 
 // icons
-import { Package, Truck, Grid2x2, HeartHandshake } from "lucide-react";
+import { Package, Truck, Grid2x2, HeartHandshake, Info } from "lucide-react";
 
 // local components
 import Badge from "@/components/about-us/badge.component";
@@ -39,8 +40,17 @@ const Hero: FC = () => {
         {/* Left */}
         <div className="p-4 sm:p-8 md:p-10 lg:p-12">
           <Badge title="About Shopinger" />
-          <h1 className="mt-3 text-xl font-bold tracking-tight text-gray-900 sm:mt-4 lg:text-3xl">
-            Everything Delivered in Minutes
+          <h1 className="mt-3 text-xl font-bold tracking-tight text-gray-900 lg:text-3xl">
+            Everything Delivered in Minutes{" "}
+            <Link
+              href="/minute-delivery-terms-and-conditions"
+              target="_blank"
+              aria-label="Learn more about Minute Delivery Terms & Conditions"
+              title="Minute Delivery Terms & Conditions"
+              className="inline-flex -translate-y-0.5 align-middle text-gray-400 transition-colors"
+            >
+              <Info className="size-4 sm:size-5" strokeWidth={2} />
+            </Link>
           </h1>
 
           <div className="mt-3 space-y-4 sm:mt-4 sm:space-y-6 lg:mt-6 lg:space-y-8">
@@ -99,7 +109,7 @@ const Hero: FC = () => {
                     </p>
                   ) : (
                     <Icon
-                      className="mx-auto size-8 text-orange-500 sm:size-10 sm:mx-0"
+                      className="mx-auto size-8 text-orange-500 sm:mx-0 sm:size-10"
                       strokeWidth={1.8}
                     />
                   )}
