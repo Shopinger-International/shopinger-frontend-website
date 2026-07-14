@@ -5,18 +5,18 @@ import type { FC } from "react";
 const footer_sections = [
   {
     title: "About",
-    list: [
-      { label: "Contact Us", href: "/contact-us" },
-      { label: "About Us", href: "/about-us" },
-    ],
+    list: [{ label: "Shopinger", href: "/about-us" }],
   },
   {
     title: "Help",
     list: [
-      { label: "Support Center", href: "/support" },
-      { label: "Payment", href: "/payment" },
-      { label: "Shipping", href: "/shipping" },
-      { label: "FAQ’s", href: "/faqs" },
+      { label: "Contact Us", href: "/contact-us" },
+      { label: "FAQ's", href: "/faqs" },
+      { label: "+91 94157 61434", href: "tel:+919415761434" },
+      {
+        label: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+        href: `mailto:${process.env.NEXT_PUBLIC_ADMIN_EMAIL}`,
+      },
     ],
   },
   {
@@ -24,8 +24,19 @@ const footer_sections = [
     list: [
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms & Conditions", href: "/terms" },
-      { label: "Cancellation & Returns", href: "/returns" },
-      { label: "FSSAI Food Safety Connect", href: "/fssai" },
+      { label: "Payment Policy", href: "/payment-policy" },
+      { label: "Shipping Policy", href: "/shipping-policy" },
+      {
+        label: "Cancellation & Refund policy",
+        href: "/cancellation-refund-policy",
+      },
+    ],
+  },
+  {
+    title: "Business",
+    list: [
+      { label: "Become a seller", href: "/beocome-a-seller" },
+      { label: "Shopinger Partner", href: "/contact-us" },
     ],
   },
 ];
@@ -37,12 +48,21 @@ const FooterLinks: FC = () => {
       <ul className="space-y-2 text-sm">
         {list.map((item, index) => (
           <li key={`${title}-${index}`}>
-            <Link
-              href={item.href}
-              className="font-medium text-white/80 hover:text-white"
-            >
-              {item.label}
-            </Link>
+            {item.href.startsWith("tel:") || item.href.startsWith("mailto:") ? (
+              <a
+                href={item.href}
+                className="font-medium text-white/80 hover:text-white"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                href={item.href}
+                className="font-medium text-white/80 hover:text-white"
+              >
+                {item.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>
