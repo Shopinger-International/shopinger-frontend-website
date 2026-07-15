@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 // types
 import type { FC } from "react";
@@ -17,7 +16,9 @@ const FooterBottom: FC = () => {
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-4 px-4 py-3 lg:justify-between">
         {/* Left section */}
         <div className="flex flex-wrap items-center gap-6">
-          <span className="font-medium">©2025–2026 Shopinger</span>
+          <span className="font-medium">
+            ©2025–2026 Shopinger. All Rights Reserved.
+          </span>
         </div>
 
         {/* Right section */}

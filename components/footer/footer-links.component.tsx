@@ -27,7 +27,7 @@ const footer_sections = [
       { label: "Payment Policy", href: "/payment-policy" },
       { label: "Shipping Policy", href: "/shipping-policy" },
       {
-        label: "Cancellation & Refund policy",
+        label: "Cancellation & Refund Policy",
         href: "/cancellation-and-refund-policy",
       },
     ],
@@ -39,9 +39,9 @@ const footer_sections = [
         label: "Sell on Shopinger",
         href: process.env.NEXT_PUBLIC_SELLER_URL as string,
       },
-      { label: "Warehouse franchise", href: "/contact-us" },
+      { label: "Warehouse Franchise", href: "/contact-us" },
       { label: "Delivery Partner", href: "/contact-us" },
-      { label: "Advertise with us", href: "/contact-us" },
+      { label: "Advertise With Us", href: "/contact-us" },
     ],
   },
 ];
