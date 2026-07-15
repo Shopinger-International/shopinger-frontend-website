@@ -32,7 +32,6 @@ const PolicySection: FC<{ policies: IPolicySection[] }> = ({ policies }) => {
   return (
     <section className="mt-8 overflow-hidden rounded-xl border border-gray-300 bg-white sm:rounded-2xl">
       {policies.map((section, index) => {
-        console.log("value of section", section);
         return (
           <article
             key={section.id}
@@ -61,13 +60,13 @@ const PolicySection: FC<{ policies: IPolicySection[] }> = ({ policies }) => {
                     );
                   case "list":
                     return (
-                      <div>
+                      <div key={i}>
                         {item.title && (
                           <h3 className="mb-2 font-semibold text-gray-900">
                             {item.title}
                           </h3>
                         )}
-                        <ul key={i} className="space-y-3">
+                        <ul className="space-y-3">
                           {item.items.map((listItem) => (
                             <li
                               key={listItem}
