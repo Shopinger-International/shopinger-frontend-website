@@ -203,8 +203,13 @@ const policies = [
     title: "Contact Us",
     intro:
       "If you have any questions, concerns, feedback, suggestions, or require assistance regarding these Terms & Conditions or any of our services, you can contact us through:",
-    list: ["Phone: +91 94157 61434", "Email: info@shopinger.co.in"],
     note: "Our Customer Support Team will make reasonable efforts to respond to your queries during business hours.",
+    contact: {
+      company: process.env.NEXT_PUBLIC_COMPANY_NAME,
+      email: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+      phone: process.env.NEXT_PUBLIC_ADMIN_PHONE,
+      website: process.env.NEXT_PUBLIC_BASE_URL,
+    },
   },
 ];
 
@@ -213,7 +218,7 @@ const TermsAndConditionsPage: NextPageWithLayout = () => {
     <div className="w-full bg-gray-50 py-2 sm:py-4">
       <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
         <Hero />
-        <PolicySection policies={policies}/>
+        <PolicySection policies={policies} />
       </div>
     </div>
   );

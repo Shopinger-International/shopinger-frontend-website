@@ -231,12 +231,13 @@ const policies = [
       "If you have any questions, concerns, feedback, suggestions, or require assistance regarding payments or payment security, please contact our Customer Support Team.",
     ],
     intro: "Customer Support",
-    list: [
-      "Call Us: +91 94157 61434",
-      "Email Us: info@shopinger.co.in",
-      "Support Hours: Monday to Friday, 10:00 AM to 6:30 PM (IST)",
-    ],
     note: "Our Customer Support Team will make reasonable efforts to respond to your queries during the above business hours.",
+    contact: {
+      company: process.env.NEXT_PUBLIC_COMPANY_NAME,
+      email: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+      phone: process.env.NEXT_PUBLIC_ADMIN_PHONE,
+      website: process.env.NEXT_PUBLIC_BASE_URL,
+    },
   },
 ];
 
