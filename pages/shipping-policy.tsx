@@ -1,6 +1,7 @@
 // types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
+import type { IPolicySection } from "@/components/common/policy-section.component";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -8,162 +9,303 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local component
 import PolicySection from "@/components/common/policy-section.component";
 
-const policies = [
+export const policies: IPolicySection[] = [
   {
-    id: "shipping-overview",
+    id: "metadata",
+    title: "Document Metadata",
+    content: [
+      {
+        type: "highlight",
+        title: "Document Title",
+        text: "SHOPINGER SHIPPING & DELIVERY POLICY",
+      },
+      {
+        type: "text",
+        title: "Last Updated",
+        text: "July 2026",
+      },
+    ],
+  },
+  {
+    id: "welcome",
+    title: "Welcome Statement",
+    content: [
+      {
+        type: "text",
+        text: 'Welcome to Shopinger, operated by Shopinger International Private Limited ("Shopinger", "Company", "we", "our", or "us").',
+      },
+      {
+        type: "text",
+        text: "This Shipping & Delivery Policy explains how orders are processed, shipped, tracked, and delivered through the Shopinger Platform.",
+      },
+      {
+        type: "note",
+        text: "By placing an order on the Platform, you agree to this Shipping & Delivery Policy.",
+      },
+    ],
+  },
+  {
+    id: "1",
     title: "1. Shipping Overview",
-    paragraphs: [
-      'Welcome to Shopinger, operated by Shopinger International Private Limited ("Shopinger", "Company", "we", "our", or "us"). This Shipping & Delivery Policy explains how orders are processed, shipped, tracked, and delivered through the Shopinger Platform. By placing an order on the Platform, you agree to this Shipping & Delivery Policy.',
-      "Shopinger operates its own logistics network and authorized Shopinger Delivery Partners to provide fast, reliable, and secure delivery of orders.",
-      "Delivery services are available only in selected cities and serviceable locations where Shopinger operates.",
+    content: [
+      {
+        type: "text",
+        text: "Shopinger operates its own logistics network and authorized Shopinger Delivery Partners to provide fast, reliable, and secure delivery of orders.",
+      },
+      {
+        type: "text",
+        text: "Delivery services are available only in selected cities and serviceable locations where Shopinger operates.",
+      },
     ],
   },
-
   {
-    id: "order-processing",
+    id: "2",
     title: "2. Order Processing",
-    intro: "Orders are processed after:",
-    list: [
-      "Successful order placement.",
-      "Payment confirmation for prepaid orders.",
-      "Seller confirmation (where applicable).",
-      "Prescription verification for prescription medicines, wherever required under applicable law.",
+    content: [
+      {
+        type: "list",
+        title: "Orders are processed after:",
+        items: [
+          "Successful order placement.",
+          "Payment confirmation for prepaid orders.",
+          "Seller confirmation (where applicable).",
+          "Prescription verification for prescription medicines, wherever required under applicable law.",
+        ],
+      },
+      {
+        type: "note",
+        text: "Orders are generally processed as quickly as possible. Processing time may vary depending on product availability, seller confirmation, prescription verification, order volume, or operational requirements.",
+      },
     ],
-    note: "Orders are generally processed as quickly as possible. Processing time may vary depending on product availability, seller confirmation, prescription verification, order volume, or operational requirements.",
   },
-
   {
-    id: "address-accuracy",
+    id: "3",
     title: "3. Address Accuracy",
-    paragraphs: [
-      "Customers are responsible for providing a complete and accurate delivery address, including the correct PIN code, landmark (if applicable), and contact number.",
-      "Shopinger shall not be responsible for delivery delays or failed deliveries resulting from incorrect, incomplete, or inaccurate delivery information provided by the customer.",
+    content: [
+      {
+        type: "text",
+        text: "Customers are responsible for providing a complete and accurate delivery address, including the correct PIN code, landmark (if applicable), and contact number.",
+      },
+      {
+        type: "highlight",
+        text: "Shopinger shall not be responsible for delivery delays or failed deliveries resulting from incorrect, incomplete, or inaccurate delivery information provided by the customer.",
+      },
     ],
   },
-
   {
-    id: "delivery-timelines",
+    id: "4",
     title: "4. Delivery Timelines",
-    paragraphs: [
-      "Shopinger aims to deliver orders within the following estimated timelines:",
-      "• 0-1 KM: Within 9 Minutes\n• 1-3 KM: 10-30 Minutes\n• 3-10 KM: 30-99 Minutes\n• 10-20 KM: Same-Day Delivery\n• Outside Hyperlocal Delivery Zone: 1-3 Business Days",
-      "The above timelines are estimates only and should not be interpreted as guaranteed delivery times. Actual delivery may vary depending on operational, logistical, weather-related, regulatory, or other unforeseen circumstances.",
+    content: [
+      {
+        type: "list",
+        title:
+          "Shopinger aims to deliver orders within the following estimated timelines:",
+        items: [
+          "0–1 KM: Within 9 Minutes",
+          "1–3 KM: 10–30 Minutes",
+          "3–10 KM: 30–99 Minutes",
+          "10–20 KM: Same-Day Delivery",
+          "Outside Hyperlocal Delivery Zone: 1–3 Business Days",
+        ],
+      },
+      {
+        type: "note",
+        text: "The above timelines are estimates only and should not be interpreted as guaranteed delivery times. Actual delivery may vary depending on operational, logistical, weather-related, regulatory, or other unforeseen circumstances.",
+      },
     ],
   },
-
   {
-    id: "delivery-charges",
+    id: "5",
     title: "5. Delivery Charges",
-    intro:
-      "Delivery charges, if applicable, will be displayed during checkout before payment confirmation. Shopinger may offer:",
-    list: [
-      "Free Delivery",
-      "Discounted Delivery Charges",
-      "Promotional Delivery Offers",
+    content: [
+      {
+        type: "text",
+        text: "Delivery charges, if applicable, will be displayed during checkout before payment confirmation.",
+      },
+      {
+        type: "list",
+        title: "Shopinger may offer:",
+        items: [
+          "Free Delivery",
+          "Discounted Delivery Charges",
+          "Promotional Delivery Offers",
+        ],
+      },
+      {
+        type: "note",
+        text: "Such offers may be subject to minimum order value, product category, delivery location, or promotional terms.",
+      },
     ],
-    note: "Such offers may be subject to minimum order value, product category, delivery location, or promotional terms.",
   },
-
   {
-    id: "order-tracking",
+    id: "6",
     title: "6. Order Tracking",
-    paragraphs: [
-      "Customers can track their orders in real time through the Shopinger website or mobile application.",
-      "Order updates may also be shared through SMS, email, WhatsApp, or push notifications, wherever applicable.",
+    content: [
+      {
+        type: "text",
+        text: "Customers can track their orders in real time through the Shopinger website or mobile application.",
+      },
+      {
+        type: "text",
+        text: "Order updates may also be shared through SMS, email, WhatsApp, or push notifications, wherever applicable.",
+      },
     ],
   },
-
   {
-    id: "delivery-attempts",
+    id: "7",
     title: "7. Delivery Attempts",
-    intro:
-      "Our delivery partner may contact you before or during delivery to ensure successful delivery. If delivery cannot be completed because:",
-    list: [
-      "The customer is unavailable;",
-      "The delivery address is incorrect or incomplete;",
-      "The customer cannot be contacted; or",
-      "The order is refused without a valid reason,",
+    content: [
+      {
+        type: "text",
+        text: "Our delivery partner may contact you before or during delivery to ensure successful delivery.",
+      },
+      {
+        type: "list",
+        title: "If delivery cannot be completed because:",
+        items: [
+          "The customer is unavailable;",
+          "The delivery address is incorrect or incomplete;",
+          "The customer cannot be contacted; or",
+          "The order is refused without a valid reason,",
+        ],
+      },
+      {
+        type: "highlight",
+        text: "Shopinger may cancel the order or reschedule the delivery, depending on operational feasibility.",
+      },
     ],
-    note: "Shopinger may cancel the order or reschedule the delivery, depending on operational feasibility.",
   },
-
   {
-    id: "delivery-delays",
+    id: "8",
     title: "8. Delivery Delays",
-    intro:
-      "Although Shopinger strives to deliver every order within the estimated timeline, delays may occasionally occur due to circumstances beyond our reasonable control, including:",
-    list: [
-      "Heavy traffic",
-      "Adverse weather conditions",
-      "High order volume",
-      "Vehicle breakdown",
-      "Public holidays",
-      "Government restrictions",
-      "Product availability",
-      "Operational issues",
-      "Safety or security concerns",
+    content: [
+      {
+        type: "list",
+        title:
+          "Although Shopinger strives to deliver every order within the estimated timeline, delays may occasionally occur due to circumstances beyond our reasonable control, including:",
+        items: [
+          "Heavy traffic",
+          "Adverse weather conditions",
+          "High order volume",
+          "Vehicle breakdown",
+          "Public holidays",
+          "Government restrictions",
+          "Product availability",
+          "Operational issues",
+          "Safety or security concerns",
+        ],
+      },
+      {
+        type: "text",
+        text: "In such situations, orders may be delivered on the same day or within 1-3 business days, depending on the nature of the delay.",
+      },
     ],
-    note: "In such situations, orders may be delivered on the same day or within 1-3 business days, depending on the nature of the delay.",
   },
-
   {
-    id: "damaged-missing-incorrect-orders",
+    id: "9",
     title: "9. Damaged, Missing, or Incorrect Orders",
-    paragraphs: [
-      "If you receive a damaged, tampered, incorrect, or incomplete order, please report the issue to Shopinger Customer Support within 24 hours of delivery.",
-      "After verification, Shopinger will provide an appropriate resolution in accordance with the applicable Cancellation, Return & Refund Policy.",
+    content: [
+      {
+        type: "text",
+        text: "If you receive a damaged, tampered, incorrect, or incomplete order, please report the issue to Shopinger Customer Support within 24 hours of delivery.",
+      },
+      {
+        type: "text",
+        text: "After verification, Shopinger will provide an appropriate resolution in accordance with the applicable Cancellation, Return & Refund Policy.",
+      },
     ],
   },
-
   {
-    id: "inspection-at-delivery",
+    id: "10",
     title: "10. Inspection at Delivery",
-    paragraphs: [
-      "Customers are encouraged to inspect the package at the time of delivery.",
-      "If the package appears damaged, tampered with, or incomplete, please inform the delivery partner immediately and report the issue to Shopinger Customer Support.",
+    content: [
+      {
+        type: "text",
+        text: "Customers are encouraged to inspect the package at the time of delivery.",
+      },
+      {
+        type: "note",
+        text: "If the package appears damaged, tampered with, or incomplete, please inform the delivery partner immediately and report the issue to Shopinger Customer Support.",
+      },
     ],
   },
-
   {
-    id: "open-box-delivery",
+    id: "11",
     title: "11. Open Box Delivery",
-    paragraphs: [
-      "To enhance customer satisfaction and ensure product quality, Shopinger may provide Open Box Delivery for selected eligible products.",
+    content: [
+      {
+        type: "text",
+        text: "To enhance customer satisfaction and ensure product quality, Shopinger may provide Open Box Delivery for selected eligible products.",
+      },
+      {
+        type: "list",
+        title: "Open Box Delivery is generally available for:",
+        items: [
+          "Mobile Phones with an order value of ₹10,000 or above",
+          "Other eligible high-value products as determined by Shopinger from time to time",
+        ],
+      },
+      {
+        type: "list",
+        title:
+          "During Open Box Delivery, the Shopinger Delivery Partner will open the package in the customer's presence solely to verify:",
+        items: [
+          "The correct product has been delivered.",
+          "The product is free from visible physical damage.",
+          "The product matches the customer's order.",
+        ],
+      },
+      {
+        type: "note",
+        text: "Open Box Delivery does not include product installation, setup, demonstration, activation, or functional testing.",
+      },
+      {
+        type: "highlight",
+        text: "Once the customer accepts the product after Open Box Delivery, claims relating to visible physical damage, missing items, or incorrect product delivery may not be accepted, except where required under applicable law.",
+      },
     ],
-    intro: "Open Box Delivery is generally available for:",
-    list: [
-      "Mobile Phones with an order value of ₹10,000 or above",
-      "Other eligible high-value products as determined by Shopinger from time to time",
-    ],
-    highlight:
-      "During Open Box Delivery, the Shopinger Delivery Partner will open the package in the customer's presence solely to verify: The correct product has been delivered, the product is free from visible physical damage, and the product matches the customer's order.",
-    note: "Open Box Delivery does not include product installation, setup, demonstration, activation, or functional testing. Once the customer accepts the product after Open Box Delivery, claims relating to visible physical damage, missing items, or incorrect product delivery may not be accepted, except where required under applicable law. Open Box Delivery is available only for eligible products and selected serviceable locations. Shopinger reserves the right to introduce, modify, restrict, or discontinue Open Box Delivery at its sole discretion without prior notice.",
   },
-
   {
-    id: "delivery-area-service-availability",
+    id: "12",
     title: "12. Delivery Area & Service Availability",
-    paragraphs: [
-      "Delivery services are available only in locations where Shopinger currently operates.",
-      "Shopinger reserves the right to add, remove, expand, suspend, or modify its delivery service areas at any time without prior notice.",
-      "Certain products or services may not be available for delivery in all serviceable locations.",
+    content: [
+      {
+        type: "text",
+        text: "Delivery services are available only in locations where Shopinger currently operates.",
+      },
+      {
+        type: "text",
+        text: "Shopinger reserves the right to add, remove, expand, suspend, or modify its delivery service areas at any time without prior notice.",
+      },
+      {
+        type: "text",
+        text: "Certain products or services may not be available for delivery in all serviceable locations.",
+      },
     ],
   },
-
   {
-    id: "contact-us",
+    id: "13",
     title: "13. Contact Us",
-    paragraphs: [
-      "If you have any questions, concerns, feedback, suggestions, or require assistance regarding shipping or delivery, please contact our Customer Support Team.",
+    content: [
+      {
+        type: "text",
+        text: "If you have any questions, concerns, feedback, suggestions, or require assistance regarding shipping or delivery, please contact our Customer Support Team.",
+      },
+      {
+        type: "list",
+        title: "Customer Support Contact Details",
+        items: [
+          `Company: ${process.env.NEXT_PUBLIC_COMPANY_NAME}`,
+          `Email: ${process.env.NEXT_PUBLIC_ADMIN_EMAIL}`,
+          `Phone: ${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
+          `Website: ${process.env.NEXT_PUBLIC_BASE_URL}`,
+        ],
+      },
+      {
+        type: "text",
+        text: "Our Customer Support Team will make reasonable efforts to respond to your queries during the above business hours.",
+      },
     ],
-    intro: "Customer Support",
-    note: "Our Customer Support Team will make reasonable efforts to respond to your queries during the above business hours. Effective Date: July 2026",
-    contact: {
-      company: process.env.NEXT_PUBLIC_COMPANY_NAME,
-      email: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
-      phone: process.env.NEXT_PUBLIC_ADMIN_PHONE,
-      website: process.env.NEXT_PUBLIC_BASE_URL,
-    },
   },
 ];
 
