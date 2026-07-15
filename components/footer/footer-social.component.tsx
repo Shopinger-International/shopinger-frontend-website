@@ -4,17 +4,37 @@ import Image from "next/image";
 import type { FC } from "react";
 
 const social_links = [
-  { name: "facebook", href: "/", src: "/footer/facebook.svg" },
-  { name: "instagram", href: "/", src: "/footer/instagram.svg" },
-  { name: "twitter", href: "/", src: "/footer/twitter.svg" },
-  { name: "youtube", href: "/", src: "/footer/youtube.svg" },
-  { name: "whatsapp", href: "/", src: "/footer/whatsapp.svg" },
+  {
+    name: "facebook",
+    href: "https://www.facebook.com/people/Shopinger/61573405647086/?sk=about_contact_and_basic_info",
+    src: "/footer/facebook.svg",
+  },
+  {
+    name: "instagram",
+    href: "https://www.instagram.com/shopinger.in/",
+    src: "/footer/instagram.svg",
+  },
+  {
+    name: "twitter",
+    href: "https://x.com/Shopinger_India",
+    src: "/footer/twitter.svg",
+  },
+  {
+    name: "youtube",
+    href: "https://www.youtube.com/@shopinger",
+    src: "/footer/youtube.svg",
+  },
+  {
+    name: "whatsapp",
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
+    src: "/footer/whatsapp.svg",
+  },
 ];
 const FooterSocial: FC = () => {
   return (
     <div className="mt-2 flex items-center gap-3">
       {social_links.map(({ name, href, src }) => (
-        <Link key={name} href={href} aria-label={name}>
+        <Link key={name} href={href} aria-label={name} target="_blank">
           <Image
             src={src}
             alt={name}
