@@ -47,10 +47,10 @@ const footer_sections = [
 ];
 const FooterLinks: FC = () => {
   return footer_sections.map(({ title, list }) => (
-    <div key={title} className="space-y-3">
+    <div key={title} className="space-y-4">
       <h4 className="font-semibold text-white uppercase">{title}</h4>
 
-      <ul className="space-y-2 text-sm">
+      <ul className="space-y-2.5 text-sm">
         {list.map((item, index) => (
           <li key={`${title}-${index}`}>
             {item.href.startsWith("tel:") || item.href.startsWith("mailto:") ? (
