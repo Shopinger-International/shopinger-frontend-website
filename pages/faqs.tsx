@@ -9,6 +9,12 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import Badge from "@/components/about-us/badge.component";
 
+// seo
+import Seo from "@/components/common/seo";
+
+// helpers
+import createFAQJSONLD from "@/seo/faqs.jsonld";
+
 const faqs_data = [
   {
     category: "General",
@@ -178,96 +184,119 @@ const FAQSPage: NextPageWithLayout = () => {
   const toggleAccordion = (id: number) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
+  const title = "Frequently Asked Questions | Shopinger";
 
+  const description =
+    "Find answers to frequently asked questions about Shopinger, including orders, deliveries, payments, returns, refunds, accounts, and more.";
+
+  const page_url = `${process.env.NEXT_PUBLIC_BASE_URL}/faqs`;
+
+  const is_prod = process.env.NODE_ENV == "production";
+  const faq_json_ld = createFAQJSONLD({
+    title,
+    description,
+    url: page_url,
+    faqs: faqs_data,
+  });
   return (
-    <div className="w-full bg-gray-50 py-2 sm:py-4">
-      <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
-        {/* Hero */}
-        <div className="mb-4 text-center sm:mb-10">
-          <Badge title="Help center" />
+    <>
+      <Seo
+        title={title}
+        description={description}
+        is_prod={is_prod}
+        url={page_url}
+        image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
+        json_ld={JSON.stringify(faq_json_ld)}
+      />
+      <div className="w-full bg-gray-50 py-2 sm:py-4">
+        <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
+          {/* Hero */}
+          <div className="mb-4 text-center sm:mb-10">
+            <Badge title="Help center" />
 
-          <h1 className="mt-3 text-lg font-bold tracking-tight text-gray-900 sm:mt-4 sm:text-3xl">
-            Frequently Asked Questions
-          </h1>
+            <h1 className="mt-3 text-lg font-bold tracking-tight text-gray-900 sm:mt-4 sm:text-3xl">
+              Frequently Asked Questions
+            </h1>
 
-          <p className="mx-auto mt-1 max-w-2xl text-sm leading-6 text-gray-600 sm:mt-4 sm:text-lg sm:leading-8">
-            Find answers to common questions about orders, payments, deliveries,
-            returns, accounts, and using Shopinger.
-          </p>
-        </div>
+            <p className="mx-auto mt-1 max-w-2xl text-sm leading-6 text-gray-600 sm:mt-4 sm:text-lg sm:leading-8">
+              Find answers to common questions about orders, payments,
+              deliveries, returns, accounts, and using Shopinger.
+            </p>
+          </div>
 
-        <div className="space-y-10">
-          {faqs_data.map((section) => (
-            <section
-              key={section.category}
-              className="rounded-2xl border border-gray-200 bg-white shadow-xs"
-            >
-              {/* Category */}
-              <div className="border-b border-gray-200 px-6 py-5">
-                <h2 className="border-l-4 border-orange-500 pl-3 text-base font-semibold text-gray-900 sm:pl-4 sm:text-xl">
-                  {section.category}
-                </h2>
-              </div>
+          <div className="space-y-10">
+            {faqs_data.map((section) => (
+              <section
+                key={section.category}
+                className="rounded-xl border border-gray-300 bg-white sm:rounded-2xl"
+              >
+                {/* Category */}
+                <div className="border-b border-gray-200 px-4 py-4 sm:px-6 sm:py-5">
+                  <h2 className="border-l-4 border-orange-500 pl-3 text-base font-semibold text-gray-900 sm:pl-4 sm:text-xl">
+                    {section.category}
+                  </h2>
+                </div>
 
-              <div className="divide-y divide-gray-100">
-                {section.questions.map((item) => {
-                  const is_open = expanded_id === item.id;
+                <div className="divide-y divide-gray-100">
+                  {section.questions.map((item) => {
+                    const is_open = expanded_id === item.id;
 
-                  return (
-                    <div key={item.id}>
-                      <button
-                        onClick={() => toggleAccordion(item.id)}
-                        className={`flex w-full items-center justify-between px-6 py-5 text-left transition-colors duration-200 hover:bg-gray-50 ${
-                          is_open ? "bg-orange-50" : ""
-                        }`}
-                      >
-                        <span className="pr-6 text-base font-medium text-gray-900">
-                          {item.question}
-                        </span>
-
-                        <div
-                          className={`flex size-7 shrink-0 items-center justify-center rounded-full border transition-all duration-200 sm:size-8 ${
-                            is_open
-                              ? "rotate-180 border-orange-500 bg-orange-500 text-white"
-                              : "border-gray-300 text-gray-500"
+                    return (
+                      <div key={item.id}>
+                        <button
+                          onClick={() => toggleAccordion(item.id)}
+                          className={`flex w-full items-center justify-between px-4 py-4 text-left transition-colors duration-200 hover:bg-gray-50 sm:px-6 sm:py-5 ${
+                            is_open ? "bg-orange-50" : ""
                           }`}
                         >
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </div>
-                      </button>
+                          <span className="pr-6 text-base font-medium text-gray-900">
+                            {item.question}
+                          </span>
 
-                      <div
-                        className={`overflow-hidden transition-all duration-300 ${
-                          is_open ? "max-h-96" : "max-h-0"
-                        }`}
-                      >
-                        <div className="border-t border-orange-100 bg-orange-50/30 px-6 py-5">
-                          <p className="leading-8 whitespace-pre-line text-gray-600">
-                            {item.answer}
-                          </p>
+                          <div
+                            className={`flex size-7 shrink-0 items-center justify-center rounded-full border transition-all duration-200 sm:size-8 ${
+                              is_open
+                                ? "rotate-180 border-orange-500 bg-orange-500 text-white"
+                                : "border-gray-300 text-gray-500"
+                            }`}
+                          >
+                            <svg
+                              className="h-4 w-4"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
+                          </div>
+                        </button>
+
+                        <div
+                          className={`overflow-hidden transition-all duration-300 ${
+                            is_open ? "max-h-96" : "max-h-0"
+                          }`}
+                        >
+                          <div className="border-t border-orange-100 bg-orange-50/30 px-4 py-4 sm:px-6 sm:py-5">
+                            <p className="leading-8 whitespace-pre-line text-gray-600">
+                              {item.answer}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          ))}
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
