@@ -68,7 +68,7 @@ const CategoryCard: FC<ICategoryRecommendation> = ({
           className="inline-block font-semibold text-orange-500 transition-colors hover:text-orange-600 hover:underline hover:underline-offset-2"
           title={`Explore ${category_name}`}
         >
-          Explore All
+          View All
         </Link>
       </div>
     </article>

@@ -1,10 +1,8 @@
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 
 // types
 import type { FC } from "react";
-import type { EmblaCarouselType } from "embla-carousel";
 
 // hooks
 import useEmblaCarousel from "embla-carousel-react";
@@ -18,44 +16,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Campaign: FC = () => {
   const { data: campaigns = [] } = useAllCamapigns();
-  const [embla_ref, emabla_api] = useEmblaCarousel({ loop: true, align:"start" }, [
-    Autoplay({
-      delay: 3000,
-      stopOnInteraction: false,
-      stopOnMouseEnter: true,
-    }),
-  ]);
-
-  const [selected_index, setSelectedIndex] = useState(0);
-  const [scroll_snaps, setScrollSnaps] = useState<Array<number>>([]);
-
-  const scrollTo = useCallback(
-    (index: number) => {
-      if (emabla_api) emabla_api.scrollTo(index);
-    },
-    [emabla_api],
+  const [embla_ref, emabla_api] = useEmblaCarousel(
+    { loop: true, align: "start" },
+    [
+      Autoplay({
+        delay: 3000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+      }),
+    ],
   );
-  const onSelect = useCallback((api: EmblaCarouselType) => {
-    setSelectedIndex(api.selectedScrollSnap());
-  }, []);
-  useEffect(() => {
-    if (!emabla_api) return;
 
-    // Initialize snaps and listeners
-    setScrollSnaps(emabla_api.scrollSnapList());
-    emabla_api.on("select", onSelect);
-    emabla_api.on("reInit", () => {
-      setScrollSnaps(emabla_api.scrollSnapList());
-      onSelect(emabla_api);
-    });
-
-    emabla_api.reInit();
-    emabla_api.plugins().autoplay?.play();
-
-    return () => {
-      emabla_api.off("select", onSelect);
-    };
-  }, [emabla_api, campaigns.length, onSelect]);
   return (
     <section
       aria-labelledby="featured-campaigns"
@@ -109,28 +80,6 @@ const Campaign: FC = () => {
       >
         <ChevronRight className="size-4 text-white lg:size-6" />
       </button>
-      <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/10 px-3 py-1 backdrop-blur-md">
-        {scroll_snaps.map((_, index) => {
-          const active = index === selected_index;
-
-          return (
-            <button
-              key={index}
-              onClick={() => scrollTo(index)}
-              aria-label={`Go to slide ${index + 1}`}
-              className={`relative overflow-hidden rounded-full transition-all duration-300 ${active ? "h-2.5 w-8" : "h-2.5 w-2.5 opacity-60 hover:opacity-100"} `}
-            >
-              <span
-                className={`absolute inset-0 rounded-full transition-all duration-300 ${
-                  active
-                    ? "bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
-                    : "bg-white/60"
-                } `}
-              />
-            </button>
-          );
-        })}
-      </div>
     </section>
   );
 };
