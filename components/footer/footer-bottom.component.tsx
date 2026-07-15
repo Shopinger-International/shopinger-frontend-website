@@ -4,7 +4,6 @@ import type { FC } from "react";
 
 export const payment_methods = [
   "google-pay",
-  "paypal",
   "visa",
   "rupay",
   "cash-on-delivery",
