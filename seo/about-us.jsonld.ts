@@ -1,4 +1,4 @@
-import { AboutPage, WebSite, WithContext } from "schema-dts";
+import { AboutPage, WithContext } from "schema-dts";
 
 interface IAboutArgs {
   title: string;
@@ -10,35 +10,24 @@ const createAboutJSONLD = ({
   title,
   description,
   url,
-}: IAboutArgs): Array<WithContext<WebSite | AboutPage>> => {
-  return [
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "@id": `${url}#website`,
-      url,
-      name: `${process.env.NEXT_PUBLIC_COMPANY_NAME}`,
-      description,
-      inLanguage: "en-IN",
+}: IAboutArgs): WithContext<AboutPage> => {
+  const base_url = process.env.NEXT_PUBLIC_BASE_URL!;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "@id": `${url}#webpage`,
+    url,
+    name: title,
+    description,
+    inLanguage: "en-IN",
+    isPartOf: {
+      "@id": `${base_url}#website`,
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "AboutPage",
-      "@id": `${url}#webpage`,
-      url,
-      name: title,
-      description,
-      inLanguage: "en-IN",
-      isPartOf: {
-        "@id": `${url}#website`,
-      },
-      about: {
-        "@type": "Organization",
-        name: `${process.env.NEXT_PUBLIC_COMPANY_NAME}`,
-        url,
-      },
+    about: {
+      "@id": `${base_url}#organization`,
     },
-  ];
+  };
 };
 
 export default createAboutJSONLD;

@@ -253,7 +253,7 @@ const CancellationAndRefundPolicy: NextPageWithLayout = () => {
   const description =
     "Read Shopinger's Cancellation, Return & Refund Policy to understand order cancellations, return eligibility, refund processing, replacement requests, and applicable conditions.";
 
-  const page_url = `${process.env.NEXT_PUBLIC_WEBSITE_URL}/cancellation-return-refund-policy`;
+  const page_url = `${process.env.NEXT_PUBLIC_WEBSITE_URL}/cancellation-and-refund-policy`;
   return (
     <>
       <Seo
