@@ -173,7 +173,7 @@ const faqs_data = [
 ];
 
 const FAQSPage: NextPageWithLayout = () => {
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expanded_id, setExpandedId] = useState<number | null>(null);
 
   const toggleAccordion = (id: number) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -186,11 +186,11 @@ const FAQSPage: NextPageWithLayout = () => {
         <div className="mb-4 text-center sm:mb-10">
           <Badge title="Help center" />
 
-          <h1 className="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+          <h1 className="mt-3 text-lg font-bold tracking-tight text-gray-900 sm:mt-4 sm:text-3xl">
             Frequently Asked Questions
           </h1>
 
-          <p className="mx-auto mt-2 sm:mt-4 max-w-2xl text-lg leading-8 text-gray-600">
+          <p className="mx-auto mt-1 max-w-2xl text-sm leading-6 text-gray-600 sm:mt-4 sm:text-lg sm:leading-8">
             Find answers to common questions about orders, payments, deliveries,
             returns, accounts, and using Shopinger.
           </p>
@@ -204,21 +204,21 @@ const FAQSPage: NextPageWithLayout = () => {
             >
               {/* Category */}
               <div className="border-b border-gray-200 px-6 py-5">
-                <h2 className="border-l-4 border-orange-500 pl-4 text-xl font-semibold text-gray-900">
+                <h2 className="border-l-4 border-orange-500 pl-3 text-base font-semibold text-gray-900 sm:pl-4 sm:text-xl">
                   {section.category}
                 </h2>
               </div>
 
               <div className="divide-y divide-gray-100">
                 {section.questions.map((item) => {
-                  const isOpen = expandedId === item.id;
+                  const is_open = expanded_id === item.id;
 
                   return (
                     <div key={item.id}>
                       <button
                         onClick={() => toggleAccordion(item.id)}
                         className={`flex w-full items-center justify-between px-6 py-5 text-left transition-colors duration-200 hover:bg-gray-50 ${
-                          isOpen ? "bg-orange-50" : ""
+                          is_open ? "bg-orange-50" : ""
                         }`}
                       >
                         <span className="pr-6 text-base font-medium text-gray-900">
@@ -226,8 +226,8 @@ const FAQSPage: NextPageWithLayout = () => {
                         </span>
 
                         <div
-                          className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200 ${
-                            isOpen
+                          className={`flex size-7 shrink-0 items-center justify-center rounded-full border transition-all duration-200 sm:size-8 ${
+                            is_open
                               ? "rotate-180 border-orange-500 bg-orange-500 text-white"
                               : "border-gray-300 text-gray-500"
                           }`}
@@ -250,7 +250,7 @@ const FAQSPage: NextPageWithLayout = () => {
 
                       <div
                         className={`overflow-hidden transition-all duration-300 ${
-                          isOpen ? "max-h-96" : "max-h-0"
+                          is_open ? "max-h-96" : "max-h-0"
                         }`}
                       >
                         <div className="border-t border-orange-100 bg-orange-50/30 px-6 py-5">
