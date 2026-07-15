@@ -9,6 +9,9 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import PolicySection from "@/components/common/policy-section.component";
 
+// seo
+import Seo from "@/components/common/seo";
+
 export const policies: Array<IPolicySection> = [
   {
     id: "1",
@@ -748,30 +751,42 @@ export const policies: Array<IPolicySection> = [
 ];
 
 const PrivacyPolicyPage: NextPageWithLayout = () => {
+  const is_prod = process.env.NODE_ENV == "production";
   return (
-    <div className="w-full bg-gray-50 py-2 sm:py-4">
-      <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
-        <div className="border-b border-gray-200 pb-6">
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-            Privacy Policy
-          </h1>
-          <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
-            <span>
-              <span className="font-medium text-gray-700">Last Updated:</span>{" "}
-              July 2026
-            </span>
+    <>
+      <Seo
+        title="Privacy Policy | Shopinger"
+        description="Read Shopinger's Privacy Policy to understand how we collect, use, disclose, and protect your personal information."
+        is_prod={is_prod}
+        url={`${process.env.NEXT_PUBLIC_BASE_URL}/privacy-policy`}
+        image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
+      />
+      <div className="w-full bg-gray-50 py-2 sm:py-4">
+        <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
+          <div className="border-b border-gray-200 pb-6">
+            <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+              Privacy Policy
+            </h1>
+            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
+              <span>
+                <span className="font-medium text-gray-700">Last Updated:</span>{" "}
+                July 2026
+              </span>
 
-            <span className="hidden h-1 w-1 rounded-full bg-gray-300 sm:block" />
+              <span className="hidden h-1 w-1 rounded-full bg-gray-300 sm:block" />
 
-            <span>
-              <span className="font-medium text-gray-700">Effective Date:</span>{" "}
-              July 2026
-            </span>
+              <span>
+                <span className="font-medium text-gray-700">
+                  Effective Date:
+                </span>{" "}
+                July 2026
+              </span>
+            </div>
           </div>
+          <PolicySection policies={policies} />
         </div>
-        <PolicySection policies={policies} />
       </div>
-    </div>
+    </>
   );
 };
 

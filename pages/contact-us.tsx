@@ -16,6 +16,12 @@ import { BsWhatsapp } from "react-icons/bs";
 import { LuMail } from "react-icons/lu";
 import { FiPhone } from "react-icons/fi";
 
+// seo
+import Seo from "@/components/common/seo";
+
+// json ld
+import createContactUsJSONLD from "@/seo/contact-us.jsonld";
+
 export const CONTACT_CARDS = [
   {
     icon: LuMail,
@@ -58,31 +64,53 @@ const ContactCard: FC<IProps> = ({ icon: Icon, title, href }) => {
   );
 };
 const ContactUs: NextPageWithLayout = () => {
+  const is_prod = process.env.NODE_ENV == "production";
+  const title = "Contact Us | Shopinger";
+
+  const description =
+    "Get in touch with Shopinger for assistance with orders, deliveries, payments, returns, or general inquiries. Contact us via email, phone, WhatsApp, or our contact form.";
+
+  const page_url = `${process.env.NEXT_PUBLIC_WEBSITE_URL}/contact-us`;
+  const contact_us_json_ld = createContactUsJSONLD({
+    title,
+    description,
+    url: page_url,
+  });
   return (
-    <div className="mx-auto mt-(--header-height) max-w-6xl px-4 pt-2 pb-6 sm:py-6">
-      <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
-        {/* Left Section */}
-        <div className="space-y-4 sm:space-y-6">
-          <div className="space-y-1 sm:space-y-2">
-            <h1 className="text-2xl font-semibold sm:text-3xl">Contact Us</h1>
+    <>
+      <Seo
+        title={title}
+        description={description}
+        is_prod={is_prod}
+        url={page_url}
+        image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
+        json_ld={JSON.stringify(contact_us_json_ld)}
+      />
+      <div className="mx-auto mt-(--header-height) max-w-6xl px-4 pt-2 pb-6 sm:py-6">
+        <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
+          {/* Left Section */}
+          <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-1 sm:space-y-2">
+              <h1 className="text-2xl font-semibold sm:text-3xl">Contact Us</h1>
 
-            <p className="max-w-2xl text-sm font-medium text-gray-600 sm:text-base">
-              Need help with your order, delivery, or account? Reach out to us
-              and we'll get back to you as soon as possible.
-            </p>
+              <p className="max-w-2xl text-sm font-medium text-gray-600 sm:text-base">
+                Need help with your order, delivery, or account? Reach out to us
+                and we'll get back to you as soon as possible.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {CONTACT_CARDS.map((prop) => (
+                <ContactCard key={prop.title} {...prop} />
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {CONTACT_CARDS.map((prop) => (
-              <ContactCard key={prop.title} {...prop} />
-            ))}
-          </div>
+          {/* Right Section */}
+          <ContactUsForm />
         </div>
-
-        {/* Right Section */}
-        <ContactUsForm />
       </div>
-    </div>
+    </>
   );
 };
 

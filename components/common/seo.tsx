@@ -8,6 +8,7 @@ type IProps = {
   is_prod: boolean;
   url: string;
   image: string;
+  og_type?: string;
   json_ld?: string;
 };
 const Seo: FC<IProps> = ({
@@ -16,6 +17,7 @@ const Seo: FC<IProps> = ({
   is_prod,
   url,
   image,
+  og_type = "website",
   json_ld,
 }) => {
   return (
@@ -48,7 +50,7 @@ const Seo: FC<IProps> = ({
         content={description}
       />
 
-      <meta key="og:type" property="og:type" content="website" />
+      <meta key="og:type" property="og:type" content={og_type} />
 
       <meta key="og:url" property="og:url" content={url} />
 

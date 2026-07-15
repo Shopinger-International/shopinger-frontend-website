@@ -9,6 +9,9 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local component
 import PolicySection from "@/components/common/policy-section.component";
 
+// seo
+import Seo from "@/components/common/seo";
+
 export const policies: IPolicySection[] = [
   {
     id: "welcome",
@@ -244,30 +247,48 @@ export const policies: IPolicySection[] = [
 ];
 
 const CancellationAndRefundPolicy: NextPageWithLayout = () => {
+  const is_prod = process.env.NODE_ENV == "production";
+  const title = "Cancellation, Return & Refund Policy | Shopinger";
+
+  const description =
+    "Read Shopinger's Cancellation, Return & Refund Policy to understand order cancellations, return eligibility, refund processing, replacement requests, and applicable conditions.";
+
+  const page_url = `${process.env.NEXT_PUBLIC_WEBSITE_URL}/cancellation-return-refund-policy`;
   return (
-    <div className="w-full bg-gray-50 py-2 sm:py-4">
-      <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
-        <div className="border-b border-gray-200 pb-6">
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-            Shopinger – Cancellation, Return & Refund Policy
-          </h1>
-          <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
-            <span>
-              <span className="font-medium text-gray-700">Last Updated:</span>{" "}
-              July 2026
-            </span>
+    <>
+      <Seo
+        title={title}
+        description={description}
+        is_prod={is_prod}
+        url={page_url}
+        image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
+      />
+      <div className="w-full bg-gray-50 py-2 sm:py-4">
+        <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
+          <div className="border-b border-gray-200 pb-6">
+            <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+              Shopinger – Cancellation, Return & Refund Policy
+            </h1>
+            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
+              <span>
+                <span className="font-medium text-gray-700">Last Updated:</span>{" "}
+                July 2026
+              </span>
 
-            <span className="hidden h-1 w-1 rounded-full bg-gray-300 sm:block" />
+              <span className="hidden h-1 w-1 rounded-full bg-gray-300 sm:block" />
 
-            <span>
-              <span className="font-medium text-gray-700">Effective Date:</span>{" "}
-              July 2026
-            </span>
+              <span>
+                <span className="font-medium text-gray-700">
+                  Effective Date:
+                </span>{" "}
+                July 2026
+              </span>
+            </div>
           </div>
+          <PolicySection policies={policies} />
         </div>
-        <PolicySection policies={policies} />
       </div>
-    </div>
+    </>
   );
 };
 
