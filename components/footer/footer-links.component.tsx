@@ -28,7 +28,7 @@ const footer_sections = [
       { label: "Shipping Policy", href: "/shipping-policy" },
       {
         label: "Cancellation & Refund policy",
-        href: "/cancellation-refund-policy",
+        href: "/cancellation-and-refund-policy",
       },
     ],
   },
