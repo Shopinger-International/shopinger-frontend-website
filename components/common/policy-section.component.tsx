@@ -24,13 +24,13 @@ const PolicySection: FC<{ policies: Array<IPolicySection> }> = ({
         >
           {/* Heading */}
           <div className="flex items-center gap-2.5 sm:gap-4">
-            <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">
+            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
               {section.title}
             </h2>
           </div>
 
           {/* Content */}
-          <div className="mt-3 space-y-4 sm:mt-6 sm:space-y-5">
+          <div className="mt-3 space-y-5 sm:mt-4 sm:space-y-5">
             {section.paragraphs?.map((paragraph) => (
               <p key={paragraph} className="leading-8 text-gray-600">
                 {paragraph}
