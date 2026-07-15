@@ -5,6 +5,11 @@ import type { FC } from "react";
 
 const social_links = [
   {
+    name: "linkedin",
+    href: `https://www.linkedin.com/company/shopinger-international-private-limited/?viewAsMember=true`,
+    src: "/footer/linkedin.svg",
+  },
+  {
     name: "facebook",
     href: "https://www.facebook.com/people/Shopinger/61573405647086/?sk=about_contact_and_basic_info",
     src: "/footer/facebook.svg",
