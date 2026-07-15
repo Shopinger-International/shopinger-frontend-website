@@ -37,7 +37,7 @@ const footer_sections = [
     list: [
       {
         label: "Sell on Shopinger",
-        href: process.env.NEXT_PUBLIC_SELLER_URL as string,
+        href: process.env.NEXT_PUBLIC_SELLER_URL!,
       },
       { label: "Warehouse Franchise", href: "/contact-us" },
       { label: "Delivery Partner", href: "/contact-us" },
