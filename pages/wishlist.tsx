@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useRef, useEffect, useContext, useState } from "react";
+import { useRef, useEffect, useContext } from "react";
 // types
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { ReactElement } from "react";
@@ -40,6 +40,7 @@ const Wishlist: NextPageWithLayout = () => {
     fetchNextPage,
     isFetchingNextPage,
   } = useGetWishlist({ limit: LIMIT });
+  const total_wishlisted_product = data?.pages[0]?.pagination.total ?? 0;
 
   const wishlist_data = data?.pages.reduce<IResponseType["data"]>(
     (acc, { data }) => {
@@ -96,7 +97,8 @@ const Wishlist: NextPageWithLayout = () => {
         <div className="mx-auto mt-(--header-height) min-h-[calc(100vh-var(--header-height))] max-w-6xl px-4">
           <div className="mb-4 flex items-center justify-between sm:mb-6">
             <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
-              My Wishlist
+              My Wishlist{" "}
+              <span className="font-normal">({total_wishlisted_product})</span>
             </h1>
           </div>
           <div className="space-y-3">
