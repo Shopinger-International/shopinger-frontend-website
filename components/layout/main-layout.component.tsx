@@ -118,9 +118,6 @@ const MainLayout: FC<{
         <AlertPopup
           open={logout_modal_state.is_modal_open}
           title="Do you really want to logout?"
-          handleAlertPopupState={(val) =>
-            !val && logout_modal_state.closeModal()
-          }
           handleConfirmation={() => {
             logout_mutation.mutate(undefined, {
               onSuccess: logout_modal_state.onSuccess,

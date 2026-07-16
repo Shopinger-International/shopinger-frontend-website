@@ -61,11 +61,6 @@ const ProfilePage: NextPageWithLayout = () => {
       <AlertPopup
         title="Do you really want to delete this account?"
         open={alert_popup_state.open}
-        handleAlertPopupState={(open) => {
-          setAlertPopupState({
-            open,
-          });
-        }}
         handleConfirmation={() => {
           alert_popup_state.onSuccess?.();
           setAlertPopupState({

@@ -11,7 +11,6 @@ import { X } from "lucide-react";
 type IProps = {
   open: boolean;
   title: string;
-  handleAlertPopupState: (open: boolean) => void;
   handleConfirmation: () => void;
   handleCancellation: () => void;
 };
@@ -19,16 +18,11 @@ type IProps = {
 const AlertPopup: FC<IProps> = ({
   open,
   title,
-  handleAlertPopupState,
   handleConfirmation,
   handleCancellation,
 }) => {
   return (
-    <Dialog
-      open={open}
-      onClose={() => handleAlertPopupState(false)}
-      className="relative z-50"
-    >
+    <Dialog open={open} onClose={handleCancellation} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/30" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -38,7 +32,7 @@ const AlertPopup: FC<IProps> = ({
         >
           <button
             type="button"
-            onClick={() => handleAlertPopupState(false)}
+            onClick={handleCancellation}
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
           >
             <X className="h-6 w-6" />
@@ -59,10 +53,7 @@ const AlertPopup: FC<IProps> = ({
 
           <div className="mt-6 flex w-full justify-between space-x-4">
             <Button
-              onClick={() => {
-                handleCancellation();
-                handleAlertPopupState(false);
-              }}
+              onClick={handleCancellation}
               className="w-full rounded-lg bg-gray-200 px-4 py-2 font-medium text-gray-600 hover:bg-gray-300"
             >
               No
