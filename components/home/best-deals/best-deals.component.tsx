@@ -88,7 +88,7 @@ const BestDeals: FC<IProps> = ({ products }) => {
           {/* Embla Viewport */}
           <div className="overflow-hidden" ref={embla_ref}>
             {/* Embla Container */}
-            <ul className="flex gap-4">
+            <ul className="flex gap-2 sm:gap-4">
               {products.map((product, i) => (
                 <li key={i} className="w-auto shrink-0">
                   <BestDealsCard {...product} />
