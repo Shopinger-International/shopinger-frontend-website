@@ -15,12 +15,12 @@ import NavigationCard from "@/components/account/navigation-card.component";
 import { getUser } from "@/hooks/axios/common/use-user-details.hook";
 
 // hooks
-import useLogoutMutation from "@/hooks/axios/login/use-logout-mutation.hook";
+import { useLogoutModalContext } from "@/provider/logout-modal-provider";
 import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 
 const AccountPage: NextPageWithLayout = () => {
   useSnackbarOffset({});
-  const logout_mutation = useLogoutMutation();
+  const { openModal: openLogoutModal } = useLogoutModalContext();
   return (
     <>
       <Head>
@@ -96,8 +96,7 @@ const AccountPage: NextPageWithLayout = () => {
             </NavigationCard>
           </div>
           <button
-            onClick={() => logout_mutation.mutate()}
-            disabled={logout_mutation.isPending}
+            onClick={() => openLogoutModal({})}
             className="w-full rounded-md bg-red-500 py-2 font-semibold text-white disabled:bg-red-300 lg:hidden"
           >
             Logout
