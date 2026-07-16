@@ -21,7 +21,7 @@ import {
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
-import useLogoutMutation from "@/hooks/axios/login/use-logout-mutation.hook";
+import { useLogoutModalContext } from "@/provider/logout-modal-provider";
 
 // helpers
 import clsx from "clsx";
@@ -177,7 +177,7 @@ const MegaMenu: FC<IProps> = ({
   handleClose,
   handleShowLoginModal,
 }) => {
-  const logout_mutation = useLogoutMutation();
+  const { openModal: openLogoutModal } = useLogoutModalContext();
   const { data: user } = useUserDetails();
   const { data: categories = [] } = useCategories(true);
 
@@ -219,11 +219,13 @@ const MegaMenu: FC<IProps> = ({
           {user ? (
             <button
               onClick={() => {
-                logout_mutation.mutate();
-                handleClose();
+                openLogoutModal({
+                  onSuccess() {
+                    handleClose();
+                  },
+                });
               }}
               className="group flex w-full items-center gap-4 px-6 py-3 hover:bg-gray-50"
-              disabled={logout_mutation.isPending}
             >
               <LogOut className="size-5 text-gray-600" />
 
@@ -239,7 +241,6 @@ const MegaMenu: FC<IProps> = ({
                 handleShowLoginModal();
               }}
               className="group flex w-full items-center gap-4 px-6 py-3 hover:bg-gray-50"
-              disabled={logout_mutation.isPending}
             >
               <LogIn className="size-5 text-gray-600" />
 

@@ -35,7 +35,9 @@ const MegaMenuProvider: FC = () => {
   return (
     <MegaMenu
       is_open={is_mega_menu_drawer_open}
-      handleClose={closeMegaMenuDrawer}
+      handleClose={() => {
+        closeMegaMenuDrawer();
+      }}
       handleShowLoginModal={() =>
         openLoginModal({
           onSuccess() {

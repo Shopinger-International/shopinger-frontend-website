@@ -21,11 +21,11 @@ import { clsx } from "clsx";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
-import useLogoutMutation from "@/hooks/axios/login/use-logout-mutation.hook";
+import { useLogoutModalContext } from "@/provider/logout-modal-provider";
 
 const AccountDropdown: FC = () => {
   const { data: user_details } = useUserDetails();
-  const logout_mutation = useLogoutMutation();
+  const { openModal: openLogoutModal } = useLogoutModalContext();
   return (
     <div className="hidden lg:inline">
       <Tooltip
@@ -99,10 +99,7 @@ const AccountDropdown: FC = () => {
             {user_details && (
               <div className="border-t border-gray-300">
                 <button
-                  onClick={() => {
-                    logout_mutation.mutate();
-                    handleClose();
-                  }}
+                  onClick={() => openLogoutModal({})}
                   className={clsx(
                     "flex w-full items-center gap-3 px-4 py-3 text-sm",
                     "transition hover:bg-orange-500 hover:text-white",

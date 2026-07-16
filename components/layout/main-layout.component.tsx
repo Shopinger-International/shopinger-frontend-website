@@ -11,6 +11,7 @@ import BottomMobileNav from "@/components/common/bottom-mobile-nav.component";
 import Footer from "@/components/footer/footer.component";
 import LoginModal from "@/components/login/login-modal.component";
 import SelectAddressDrawer from "@/components/common/select-address-drawer.component";
+import AlertPopup from "@/components/common/alert-popup.component";
 
 const AddAddressModal = dynamic(
   () =>
@@ -35,6 +36,8 @@ import MegaMenuProvider from "@/provider/mega-menu-provider";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import { useLoginModalContext } from "@/provider/login-modal-provider";
+import { useLogoutModalContext } from "@/provider/logout-modal-provider";
+import useLogoutMutation from "@/hooks/axios/login/use-logout-mutation.hook";
 
 // context
 import { FooterStateContext } from "@/context";
@@ -59,6 +62,7 @@ const MainLayout: FC<{
   disable_side_filter = false,
   show_bottom_navigation = false,
 }) => {
+  const logout_mutation = useLogoutMutation();
   const {
     is_drawer_open: is_adddress_drawer_open,
     is_modal_open: is_address_modal_open,
@@ -68,6 +72,7 @@ const MainLayout: FC<{
     updateState,
   } = useAddressDrawerContext();
   const login_modal_state = useLoginModalContext();
+  const logout_modal_state = useLogoutModalContext();
 
   const { show: show_footer } = useContext(FooterStateContext);
   const is_mobile = useIsMobile();
@@ -109,6 +114,19 @@ const MainLayout: FC<{
             login_modal_state.onSuccess?.(user);
             login_modal_state.closeModal();
           }}
+        />
+        <AlertPopup
+          open={logout_modal_state.is_modal_open}
+          title="Do you really want to logout?"
+          handleAlertPopupState={(val) =>
+            !val && logout_modal_state.closeModal()
+          }
+          handleConfirmation={() => {
+            logout_mutation.mutate(undefined, {
+              onSuccess: logout_modal_state.onSuccess,
+            });
+          }}
+          handleCancellation={logout_modal_state.closeModal}
         />
         {is_mobile ? (
           <MobileAddressModal

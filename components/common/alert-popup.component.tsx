@@ -63,7 +63,7 @@ const AlertPopup: FC<IProps> = ({
                 handleCancellation();
                 handleAlertPopupState(false);
               }}
-              className="w-full rounded-lg px-4 py-2 font-medium text-gray-600 hover:bg-gray-300 bg-gray-200"
+              className="w-full rounded-lg bg-gray-200 px-4 py-2 font-medium text-gray-600 hover:bg-gray-300"
             >
               No
             </Button>

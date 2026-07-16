@@ -15,6 +15,7 @@ import SelectedAddressProvider from "@/provider/selected-address-provider.compon
 import LoginModalProvider from "@/provider/login-modal-provider";
 import AlgoliaInsightsProvider from "@/provider/algolia-insights-provider";
 import AnalyticsProvider from "@/provider/analytics.provider";
+import LogoutModalProvider from "@/provider/logout-modal-provider";
 
 // react query
 import {
@@ -83,7 +84,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
             >
               <SelectedAddressProvider>
                 <LoginModalProvider>
-                  {getLayout(<Component {...pageProps} />)}
+                  <LogoutModalProvider>
+                    {getLayout(<Component {...pageProps} />)}
+                  </LogoutModalProvider>
                 </LoginModalProvider>
               </SelectedAddressProvider>
             </SnackbarProvider>
