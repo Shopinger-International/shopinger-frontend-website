@@ -94,7 +94,7 @@ const CategorySection: FC = () => {
                   "hidden shrink-0 rounded-full p-1 lg:inline-block",
                   can_scroll_left
                     ? "opacity-100"
-                    : "pointer-events-none hidden",
+                    : "pointer-events-none opacity-0",
                 )}
               >
                 <ChevronLeft aria-hidden={true} className="size-6" />
