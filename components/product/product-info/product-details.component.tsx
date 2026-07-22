@@ -109,7 +109,7 @@ const ProductDetails: FC<IProps> = ({
 
   const top_medias = rating_summary?.top_media ?? [];
   const product_slug = generateSlug(product.title);
-  let updated_key_features = (JSON.parse(key_features) ?? []) as Array<string>;
+  let updated_key_features = key_features ?? [];
   const [show_all, setShowAll] = useState(false);
   const initial_visible = 4;
 

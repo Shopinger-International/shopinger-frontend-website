@@ -17,7 +17,7 @@ type IProduct = {
   importer_address: string;
   importer_name: string;
   importer_pincode: string;
-  key_features: string;
+  key_features: Array<string>;
   keywords: string;
   manufacturer_address: string;
   manufacturer_name: string;
