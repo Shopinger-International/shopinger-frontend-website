@@ -52,7 +52,7 @@ const debouncedSearch = debouncePromise(async (query: string) => {
     searchClient: search_client,
     queries: [
       {
-        indexName: "products",
+        indexName: ALGOLIA_INDEX.PRODUCTS,
         params: {
           // hitsPerPage: 5,
           hitsPerPage: 20,
