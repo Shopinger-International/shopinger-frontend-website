@@ -33,7 +33,7 @@ const NavItem: FC<NavItemProps> = ({
       <Link
         href={href}
         aria-label={`View ${title}`}
-        className="flex flex-1 flex-col items-center justify-center py-2 transition-transform active:scale-95"
+        className="flex flex-1 flex-col items-center justify-center py-1.5 transition-transform active:scale-95"
       >
         <span className="relative inline-block">
           <Cart width={32} height={24} fill="oklch(55.1% 0.027 264.364)" />
@@ -57,7 +57,7 @@ const NavItem: FC<NavItemProps> = ({
     <Link
       href={href}
       aria-label={`View ${title}`}
-      className="flex flex-1 flex-col items-center justify-center py-2 transition-transform active:scale-95"
+      className="flex flex-1 flex-col items-center justify-center py-1.5 transition-transform active:scale-95"
     >
       <div className="relative">
         <Icon
@@ -107,7 +107,7 @@ const BottomMobileNav: FC = () => {
 
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full border-t border-gray-300 bg-white lg:hidden">
-      <div className="flex h-15 w-full border border-gray-300">
+      <div className="flex w-full">
         {itemsList.map((item) => (
           <NavItem key={item.title} {...item} active={pathname === item.href} />
         ))}
