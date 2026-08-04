@@ -37,7 +37,7 @@ const AccountDropdown: FC = () => {
             {/* Auth section */}
             {user_details ? (
               <div className="flex flex-col gap-3 px-3 py-3">
-                <p className="text-sm font-semibold">My Account </p>
+                <p className="text-sm font-semibold">Account </p>
               </div>
             ) : (
               <div className="flex flex-col gap-3 px-3 py-3">
@@ -123,7 +123,7 @@ const AccountDropdown: FC = () => {
             >
               <CircleUserRound className="size-6" />
               <span className="max-w-28 truncate">
-                {user_details.name?.split(" ")[0] ?? "My Account"}
+                {user_details.name?.split(" ")[0] ?? "Account"}
               </span>
             </button>
           ) : (

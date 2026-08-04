@@ -8,20 +8,12 @@ import type { FC } from "react";
 import SearchBar from "@/components/header/search-bar/search-bar.component";
 import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
-import Tooltip from "@/components/common/tooltip.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 import CampaignTimer from "@/components/header/campaign-timer.component";
 
 // icons
-import {
-  EllipsisVertical,
-  Menu,
-  CircleQuestionMark,
-  Megaphone,
-  MapPin,
-  ChevronRight,
-} from "lucide-react";
+import { Menu, ChevronRight } from "lucide-react";
 
 // helpers
 import { clsx } from "clsx";
@@ -40,6 +32,7 @@ const LocationBlock: FC<{
   const user_address = user_details?.user_addresses?.find(
     (address) => address.id == address_id,
   );
+
   return (
     <button
       onClick={openDrawer}
@@ -50,16 +43,16 @@ const LocationBlock: FC<{
           : "Add delivery location"
       }
     >
-      <MapPin className="size-4 shrink-0 lg:mt-1 lg:size-6" aria-hidden />
-
       <div className="flex min-w-0 items-center gap-2 lg:flex-col lg:items-start lg:gap-0">
         {user_address ? (
           <>
-            <span className="w-fit truncate text-xs">
-              Delivering to {user_address.state} {user_address.pincode}
-            </span>
             <span className="hidden text-sm font-semibold lg:block">
-              Update Location
+              Delivery in minutes*
+            </span>
+            <span className="w-fit truncate text-xs lg:max-w-48">
+              {user_address.house_number ?? ""}, {user_address.area},{" "}
+              {user_address.city ?? ""}, {user_address.state},{" "}
+              {user_address.pincode}
             </span>
           </>
         ) : (
@@ -69,12 +62,10 @@ const LocationBlock: FC<{
 
             {/* Desktop */}
             <>
-              <span className="hidden text-xs lg:block">
-                No delivery address selected
-              </span>
               <span className="hidden text-sm font-semibold lg:block">
-                Add your location
+                Delivery in minutes*
               </span>
+              <span className="hidden text-xs lg:block">Add your location</span>
             </>
           </>
         )}
@@ -84,7 +75,6 @@ const LocationBlock: FC<{
     </button>
   );
 };
-
 const Header: FC<{
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
@@ -94,8 +84,9 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
-  const {openDrawer:openMegaMenuDrawer} = useMegaMenuContext();
+  const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
+
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
     if (!header) return;
@@ -114,6 +105,7 @@ const Header: FC<{
 
     return () => observer.disconnect();
   }, []);
+
   return (
     <header className="fixed top-0 z-30 w-full" id="app-header">
       <div
@@ -122,15 +114,13 @@ const Header: FC<{
           "grid-cols-[auto_1fr_auto]",
           "gap-2 px-4 py-1.5",
           // "lg:max-w-8xl",
-          "lg:grid-cols-[auto_minmax(0,1fr)_auto_auto]",
+          "lg:grid-cols-[auto_minmax(0,1fr)_auto]",
           "lg:gap-4",
         )}
       >
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
-          <button
-            onClick={openMegaMenuDrawer}
-          >
+          <button onClick={openMegaMenuDrawer}>
             <Menu className="inline h-6 w-6 text-white lg:hidden" />
           </button>
           {/** LOGO SECTION */}
@@ -150,10 +140,16 @@ const Header: FC<{
             />
           </Link>
         </div>
-        {/* CENTER: Searchbar */}
-        <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1">
+
+        {/* CENTER: Location + Searchbar */}
+        <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-4">
+          {/* Mobile view of LocationBlock */}
           <LocationBlock className="flex lg:hidden" />
-          <div className="flex items-center gap-3">
+
+          {/* Desktop view of LocationBlock placed to the left of SearchBar */}
+          <LocationBlock className="hidden shrink-0 lg:flex" />
+
+          <div className="flex w-full items-center gap-3">
             <SearchBar />
             {!is_bottom_navigation_showing && (
               <Link
@@ -172,9 +168,9 @@ const Header: FC<{
             )}
           </div>
         </div>
+
         {/* RIGHT: Actions */}
-        <div className="order-2 -mr-3 flex items-center justify-end gap-4 lg:order-3 lg:-mr-8">
-          <LocationBlock className="hidden lg:flex" />
+        <div className="order-2 flex items-center justify-end gap-4 lg:order-3">
           <div className="hidden lg:inline">
             <AccountDropdown />
           </div>
@@ -192,45 +188,6 @@ const Header: FC<{
             </span>
             <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
           </Link>
-
-          <Tooltip
-            placement="bottom"
-            className="z-100"
-            content={({ handleClose }) => (
-              <div className="z-50 w-max rounded-xl border border-neutral-300 bg-white py-2 shadow-sm">
-                {[
-                  {
-                    label: "Support",
-                    href: "/support",
-                    icon: CircleQuestionMark,
-                  },
-                  {
-                    label: "Advertise",
-                    href: "/advertise",
-                    icon: Megaphone,
-                  },
-                ].map(({ label, href, icon: Icon }) => (
-                  <Link
-                    key={label}
-                    href={href}
-                    className={clsx(
-                      "flex items-center gap-3 px-4 py-3 text-sm",
-                      "transition hover:font-semibold hover:text-orange-500",
-                    )}
-                  >
-                    <Icon className="size-5" strokeWidth={1.5} />
-                    <span>{label}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
-          >
-            {({ open }) => (
-              <button aria-label="More options">
-                <EllipsisVertical className="size-6 text-white" />
-              </button>
-            )}
-          </Tooltip>
         </div>
       </div>
       <CategorySection />

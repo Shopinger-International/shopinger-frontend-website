@@ -15,15 +15,17 @@ import { CheckCircle, CreditCard, Clock } from "lucide-react";
 type IProps = {
   is_open: boolean;
   order_id?: number;
+  order_name?: string;
   total_amount?: number;
   onClose: () => void;
 };
 
 const OrderSuccessfulModal: FC<IProps> = ({
   is_open,
-  onClose,
   order_id,
+  order_name,
   total_amount,
+  onClose,
 }) => {
   const [animate, setAnimate] = useState(false);
 
@@ -93,7 +95,7 @@ const OrderSuccessfulModal: FC<IProps> = ({
                     <div className="flex justify-between">
                       <span className="text-gray-500">Order ID</span>
                       <span className="font-medium text-gray-800">
-                        {order_id}
+                        {order_name}
                       </span>
                     </div>
 

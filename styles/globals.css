@@ -128,8 +128,9 @@
 }
 
 .aa-SubmitIcon {
-  color: #f97316 !important;
+  color: white !important;
 }
+
 @media (max-width: 1024px) {
   body.snackbar-offset .notistack-SnackbarContainer {
     bottom: 72px !important;
