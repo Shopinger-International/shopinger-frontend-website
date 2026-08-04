@@ -24,6 +24,7 @@ import insightsClient from "@/lib/algolia/algolia-insight.lib";
 // hooks
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import useCheckoutIntent from "@/hooks/axios/checkout/use-checkout-intent.hook";
+import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
 // helpers
 import { getCheckoutIntent } from "@/hooks/axios/checkout/use-checkout-intent.hook";
@@ -41,7 +42,8 @@ type IProps = {
 const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
   const router = useRouter();
   const { data: intent_details } = useCheckoutIntent(intent_id);
-  const { data: user_addresses = [], isPending } = useUserAddresses();
+  const { data: user_addresses = []} = useUserAddresses();
+  const { address_id } = useAddressDrawerContext();
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(
     null,
   );
@@ -58,13 +60,24 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
   });
 
   useEffect(() => {
-    if (!isPending && user_addresses.length) {
-      const default_address = user_addresses.find(
-        (address) => address.is_default,
-      );
-      default_address && setSelectedAddress(default_address);
+    const globally_selected_address = user_addresses.find(
+      (address) => address.id == address_id,
+    );
+    setSelectedAddress(globally_selected_address ?? null);
+  }, [address_id]);
+
+  useEffect(() => {
+    const default_address = user_addresses.find(
+      (address) => address.is_default,
+    );
+
+    const globally_selected_address = user_addresses.find(
+      (address) => address.id == address_id,
+    );
+    if (!selected_address) {
+      setSelectedAddress(globally_selected_address ?? default_address ?? null);
     }
-  }, [isPending, user_addresses]);
+  }, [user_addresses.length, address_id]);
 
   return (
     <>
@@ -80,6 +93,7 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
       <OrderSuccessfulModal
         is_open={order_success_modal_state.open}
         order_id={order_success_modal_state.order?.id}
+        order_name = {order_success_modal_state.order?.order_name}
         total_amount={order_success_modal_state.order?.total_amount}
         onClose={() =>
           setOrderSuccessModalState({
