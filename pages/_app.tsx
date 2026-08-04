@@ -1,4 +1,4 @@
-import Script from "next/script";
+import Script from "next/script"; 
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { SpeedInsights } from "@vercel/speed-insights/next";
