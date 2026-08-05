@@ -10,7 +10,6 @@ import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
-import CampaignTimer from "@/components/header/campaign-timer.component";
 
 // icons
 import { Menu, ChevronRight } from "lucide-react";
@@ -49,7 +48,7 @@ const LocationBlock: FC<{
             <span className="hidden text-sm font-semibold lg:block">
               Delivery in minutes*
             </span>
-            <div className="w-full max-w-xs text-xs text-left">
+            <div className="w-full max-w-xs text-left text-xs">
               <span className="block truncate lg:hidden">
                 {user_address.house_number
                   ? `${user_address.house_number}, `
@@ -204,7 +203,6 @@ const Header: FC<{
         </div>
       </div>
       <CategorySection />
-      <CampaignTimer />
       {show_filter_sort_bar && (
         <FilterSortBar disable_side_filter={disable_side_filter} />
       )}

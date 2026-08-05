@@ -5,16 +5,20 @@ import { useEffect, useMemo, useState } from "react";
 import type { FC } from "react";
 
 // helpers
-import { differenceInSeconds } from "date-fns";
+import { differenceInSeconds, format } from "date-fns";
 
 // hooks
 import useGetTimeWindowCampaign from "@/hooks/axios/campaign/use-get-time-window-campaign.hook";
+
+// icons
+import { FaArrowRightLong } from "react-icons/fa6";
 
 type TimeLeft = {
   days: number;
   hours: number;
   minutes: number;
   seconds: number;
+  total_seconds: number;
 };
 
 function getTimeLeft(target_date: Date): TimeLeft {
@@ -25,6 +29,7 @@ function getTimeLeft(target_date: Date): TimeLeft {
     hours: Math.floor((diff_in_sec / 3600) % 24),
     minutes: Math.floor((diff_in_sec / 60) % 60),
     seconds: diff_in_sec % 60,
+    total_seconds: diff_in_sec,
   };
 }
 
@@ -68,7 +73,7 @@ const CampaignTimer: FC = () => {
     }
 
     const updateTimer = () => {
-      setTimeLeft(getTimeLeft(campaign_state.target_date));
+      setTimeLeft(getTimeLeft(campaign_state.target_date!));
     };
 
     updateTimer();
@@ -82,70 +87,50 @@ const CampaignTimer: FC = () => {
     return null;
   }
 
-  const countdown = time_left && (
-    <span className="font-mono font-semibold tracking-tight">
-      {time_left.days > 0 && `${time_left.days}d `}
-      {String(time_left.hours).padStart(2, "0")}:
-      {String(time_left.minutes).padStart(2, "0")}:
-      {String(time_left.seconds).padStart(2, "0")}
-    </span>
-  );
+  // Check if less than 24 (86400 sec) hours remain
+  const is_within_24hours = time_left ? time_left.total_seconds < 86400 : false;
+
+  const timer_content =
+    time_left && is_within_24hours ? (
+      <span className="font-semibold tracking-wider text-orange-500">
+        {String(time_left.hours).padStart(2, "0")}:
+        {String(time_left.minutes).padStart(2, "0")}:
+        {String(time_left.seconds).padStart(2, "0")}
+      </span>
+    ) : (
+      <span className="font-semibold tracking-tight text-orange-500">
+        {campaign_state.target_date
+          ? format(campaign_state.target_date, "MMM d, yyyy h:mm a")
+          : ""}
+      </span>
+    );
 
   if (campaign_state.status === "UPCOMING") {
     return (
-      <div className="relative border-b border-gray-300 bg-black px-4 py-2 text-white">
-        <div className="flex flex-col items-center justify-center gap-1.5 text-xs md:flex-row md:gap-3 sm:text-sm">
-          <span className="text-center font-semibold text-orange-500">
-            👀 Dropping Soon: {campaign.title}
-          </span>
-
-          {/* Hidden on mobile, shows up on medium screens and up */}
-          <span className="hidden max-w-md truncate text-center text-gray-300 lg:inline">
-            {campaign.description}
-          </span>
-
-          {/* Squeezed padding slightly for mobile */}
-          <div className="flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-orange-500/10 px-2.5 py-0.5 md:px-3 md:py-1">
-            <span className="text-[10px] font-medium tracking-wider text-orange-500 uppercase md:text-xs">
-              Starts In
-            </span>
-            <span className="text-orange-200">{countdown}</span>
-          </div>
-        </div>
+      <div className="mx-auto flex w-fit items-center gap-1.5 rounded-full border border-orange-500 bg-orange-50 px-2.5 py-1 text-xs sm:text-sm md:px-3">
+        <span className="text-[10px] font-medium tracking-wider text-black uppercase md:text-xs">
+          {is_within_24hours ? "Sale starts In" : "Sale starts On"}
+        </span>
+        <span>{timer_content}</span>
       </div>
     );
   }
 
   return (
-    <div className="relative border-b border-red-500/20 bg-black px-4 py-2 text-white">
-      {/* Container wraps nicely on desktop, cleanly stacks/sizes on mobile */}
-      <div className="flex flex-col items-center justify-center gap-1.5 text-xs md:flex-row md:gap-3 sm:text-sm">
-        <span className="animate-pulse text-center font-semibold text-red-500">
-          🚨 {campaign.title} Live
+    <div className="mx-auto flex w-fit items-center gap-3 text-xs sm:text-sm">
+      <div className="flex items-center gap-1.5 rounded-full border border-orange-500 bg-orange-50 px-2.5 py-1 md:px-3">
+        <span className="text-[10px] font-medium tracking-wider text-black uppercase md:text-xs">
+          {is_within_24hours ? "Sale ends In" : "Sale ends On"}
         </span>
-
-        {/* Hidden on mobile to save vertical landscape */}
-        <span className="hidden max-w-md truncate text-center text-gray-300 lg:inline">
-          {campaign.description}
-        </span>
-
-        {/* Combined countdown layout and action item wrap logic */}
-        <div className="flex items-center gap-3 md:gap-3">
-          <div className="flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2.5 py-0.5 md:px-3 md:py-1">
-            <span className="text-[10px] font-medium tracking-wider text-red-400 uppercase md:text-xs">
-              Ends In
-            </span>
-            <span className="font-bold text-red-200">{countdown}</span>
-          </div>
-
-          <Link
-            href={`campaign/${campaign.id}/${campaign.slug}`}
-            className="font-medium text-orange-400 underline underline-offset-4 transition-colors hover:text-orange-300"
-          >
-            Shop Deals →
-          </Link>
-        </div>
+        <span className="font-bold text-black">{timer_content}</span>
       </div>
+
+      <Link
+        href={`campaign/${campaign.id}/${campaign.slug}`}
+        className="flex items-center rounded-full border border-orange-500 bg-orange-500 px-2.5 py-1 text-white md:px-3"
+      >
+        <FaArrowRightLong className="size-4 sm:size-5" />
+      </Link>
     </div>
   );
 };
