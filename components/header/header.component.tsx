@@ -115,7 +115,7 @@ const Header: FC<{
           "gap-2 px-4 py-1.5",
           // "lg:max-w-8xl",
           "lg:grid-cols-[auto_minmax(0,1fr)_auto]",
-          "lg:gap-4",
+          "lg:gap-8",
         )}
       >
         {/* LEFT: Menu + Logo */}
@@ -128,7 +128,7 @@ const Header: FC<{
             href="/"
             title="Shopinger Home"
             aria-label="Shopinger Home"
-            className="relative flex h-8 w-34 shrink-0 items-center justify-center lg:h-13 lg:w-57"
+            className="relative flex h-8 w-34 shrink-0 items-center justify-center lg:h-11 lg:w-48"
           >
             <Image
               src="/light-logo.png"
@@ -142,7 +142,7 @@ const Header: FC<{
         </div>
 
         {/* CENTER: Location + Searchbar */}
-        <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-4">
+        <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-8">
           {/* Mobile view of LocationBlock */}
           <LocationBlock className="flex lg:hidden" />
 
@@ -170,7 +170,7 @@ const Header: FC<{
         </div>
 
         {/* RIGHT: Actions */}
-        <div className="order-2 flex items-center justify-end gap-4 lg:order-3">
+        <div className="order-2 flex items-center justify-end gap-8 lg:order-3">
           <div className="hidden lg:inline">
             <AccountDropdown />
           </div>

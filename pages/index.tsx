@@ -1,4 +1,4 @@
-// types 
+// types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { GetServerSideProps } from "next";
@@ -14,6 +14,7 @@ import BestDeals from "@/components/home/best-deals/best-deals.component";
 import CategorySection from "@/components/home/category/category-section.component";
 import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
+import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -79,6 +80,7 @@ const HomePage: NextPageWithLayout = () => {
       <div className="space-y-4 pt-(--header-height)">
         <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
           <Campaign />
+          <HighlightsBar />
           {/* <ProductMarquee /> */}
           {continue_shopping_recommendations.length >= 6 && (
             <ProductRow
