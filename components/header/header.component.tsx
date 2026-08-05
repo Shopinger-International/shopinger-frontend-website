@@ -49,11 +49,24 @@ const LocationBlock: FC<{
             <span className="hidden text-sm font-semibold lg:block">
               Delivery in minutes*
             </span>
-            <span className="w-fit truncate text-xs lg:max-w-48">
-              {user_address.house_number ?? ""}, {user_address.area},{" "}
-              {user_address.city ?? ""}, {user_address.state},{" "}
-              {user_address.pincode}
-            </span>
+            <div className="w-full max-w-xs text-xs">
+              <span className="block truncate lg:hidden">
+                {user_address.house_number
+                  ? `${user_address.house_number}, `
+                  : ""}
+                {user_address.area}
+                {user_address.city ? `, ${user_address.city}` : ""}
+                {user_address.state ? `, ${user_address.state}` : ""}
+                {user_address.pincode ? `, ${user_address.pincode}` : ""}
+              </span>
+
+              <span className="hidden truncate lg:inline-block lg:max-w-44">
+                {user_address.house_number
+                  ? `${user_address.house_number}, `
+                  : ""}
+                {user_address.area}
+              </span>
+            </div>
           </>
         ) : (
           <>
