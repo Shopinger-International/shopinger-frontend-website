@@ -15,6 +15,7 @@ import CategorySection from "@/components/home/category/category-section.compone
 import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
 import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
+import CampaignTimer from "@/components/header/campaign-timer.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -80,6 +81,7 @@ const HomePage: NextPageWithLayout = () => {
       <div className="space-y-4 pt-(--header-height)">
         <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
           <Campaign />
+          <CampaignTimer />
           <HighlightsBar />
           {/* <ProductMarquee /> */}
           {continue_shopping_recommendations.length >= 6 && (
