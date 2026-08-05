@@ -93,9 +93,12 @@ const CampaignTimer: FC = () => {
   const timer_content =
     time_left && is_within_24hours ? (
       <span className="font-semibold tracking-wider text-orange-500">
-        {String(time_left.hours).padStart(2, "0")}:
-        {String(time_left.minutes).padStart(2, "0")}:
+        {String(time_left.hours).padStart(2, "0")}
+        <span className="text-xs">H</span>{" "}
+        {String(time_left.minutes).padStart(2, "0")}
+        <span className="text-xs">M</span>{" "}
         {String(time_left.seconds).padStart(2, "0")}
+        <span className="text-xs">S</span>
       </span>
     ) : (
       <span className="font-semibold tracking-tight text-orange-500">
