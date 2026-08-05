@@ -49,7 +49,7 @@ const LocationBlock: FC<{
             <span className="hidden text-sm font-semibold lg:block">
               Delivery in minutes*
             </span>
-            <div className="w-full max-w-xs text-xs">
+            <div className="w-full max-w-xs text-xs text-left">
               <span className="block truncate lg:hidden">
                 {user_address.house_number
                   ? `${user_address.house_number}, `
