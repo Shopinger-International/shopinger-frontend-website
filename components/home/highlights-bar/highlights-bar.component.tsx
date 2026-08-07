@@ -26,7 +26,7 @@ const highlights_data = [
   },
   {
     icon: RotateCcw,
-    title: "Easy Returns & Refund",
+    title: "Easy Return & Refund",
     para: "3 to 5 days*",
   },
   {
