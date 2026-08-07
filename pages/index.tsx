@@ -62,7 +62,7 @@ const HomePage: NextPageWithLayout = () => {
   const { data: user } = useUserDetails();
   const is_prod = process.env.NODE_ENV == "production";
   const description =
-    "Get groceries, fashion, electronics, beauty products, home essentials, and more delivered to your doorstep in minutes. Experience fast and reliable quick commerce with Shopinger.";
+    "Shopinger is India's Quick Commerce & Online Shopping platform. Shop groceries, mobiles, electronics, fashion, beauty, medicines, home essentials & more with Fast Delivery, No Cost EMI, Cash on Delivery, Easy Returns and Fast Refunds.";
   const page_url = `${process.env.NEXT_PUBLIC_BASE_URL}/`;
   const json_ld = createHomeJSONLD({
     title: "Shopinger",
