@@ -6,9 +6,14 @@ import type { FC } from "react";
 import Highlight from "@/components/home/highlights-bar/highlight.component";
 
 // icons
-import { HandCoins, Truck, RotateCcw, BadgeCheck, Phone } from "lucide-react";
+import { HandCoins, Truck, RotateCcw, Phone, CreditCard } from "lucide-react";
 
 const highlights_data = [
+  {
+    icon: CreditCard,
+    title: "Easy EMI",
+    para: "At your doorstep",
+  },
   {
     icon: HandCoins,
     title: "COD Available",
@@ -25,11 +30,6 @@ const highlights_data = [
     para: "7 days*",
   },
   {
-    icon: BadgeCheck,
-    title: "100% Original Products",
-    para: "Quality you can trust",
-  },
-  {
     icon: Phone,
     title: "Call to Order",
     para: `${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
@@ -38,7 +38,7 @@ const highlights_data = [
 
 const HighlightsBar: FC = () => {
   return (
-    <div className="mx-auto hidden w-fit items-center gap-4 rounded-xl px-4 py-0 lg:flex">
+    <div className="no-scrollbar mx-auto flex items-center gap-4 overflow-x-auto rounded-xl px-4 py-0 lg:w-fit">
       {highlights_data.map((data, index) => (
         <Fragment key={`highlight-${index}`}>
           {index > 0 && <div className="mx-4 h-6 w-0.5 bg-gray-300" />}

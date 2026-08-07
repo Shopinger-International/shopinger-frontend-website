@@ -9,7 +9,7 @@ import type { ISubCategory } from "@/types/categories";
 // icons
 
 // icons
-import { Menu, ChevronLeft, ChevronRight } from "lucide-react";
+import { Menu, ChevronLeft, ChevronRight, CreditCard } from "lucide-react";
 
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
@@ -154,6 +154,36 @@ const CategorySection: FC = () => {
               </button>
             </div>
           </div>
+          <div className="hidden h-10 w-0.5 bg-orange-800 lg:inline-block" />
+          <Link
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`}
+            target="_blank"
+            className="hidden shrink-0 flex-row items-center gap-3 lg:flex"
+            rel="noopener noreferrer nofollow"
+            aria-label="Contact us on WhatsApp for Easy EMI options"
+          >
+            <CreditCard
+              className="size-10 text-white"
+              strokeWidth={1.2}
+              aria-hidden="true"
+            />
+            <div>
+              <span className="block text-sm font-semibold uppercase">
+                <span className="text-yellow-300">Easy EMI</span> at your
+                Doorstep
+              </span>
+              <span className="block text-xs font-medium">
+                Get your favourite products on{" "}
+                <span className="font-semibold text-yellow-300 uppercase">
+                  No Cost EMI
+                </span>
+              </span>
+            </div>
+            <div className="h-6 w-px bg-white" />
+            <button className="rounded-full bg-white p-0.5">
+              <ChevronRight className="size-5 text-orange-500" />
+            </button>
+          </Link>
         </div>
       </div>
       {selected_category && (
