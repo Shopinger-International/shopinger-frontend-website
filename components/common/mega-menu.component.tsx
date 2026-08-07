@@ -43,6 +43,7 @@ import {
   ShieldPlus,
   Pill,
 } from "lucide-react";
+
 const account_section = [
   {
     label: "Home",
@@ -74,17 +75,17 @@ const account_section = [
 const consultancy_section = [
   {
     label: "Book Doctor Consultation",
-    href: "/",
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
     icon: Stethoscope,
   },
   {
     label: "Book Pathology Test",
-    href: "/",
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
     icon: TestTubeDiagonal,
   },
   {
     label: "Health Packages",
-    href: "/",
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
     icon: ShieldPlus,
   },
 ];
@@ -92,7 +93,7 @@ const consultancy_section = [
 const pharmacy_section = [
   {
     label: "Order Medicines (Prescription Required)",
-    href: "/",
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
     icon: Pill,
   },
 ];
@@ -186,7 +187,11 @@ const MegaMenu: FC<IProps> = ({
       is_open={is_open}
       handleClose={handleClose}
       position="left"
-      title={user ? `Hello, ${user.name}` : "Welcome to Shopinger!"}
+      title={
+        user
+          ? `Hello, ${user.name ?? user.phone ?? user.email}`
+          : "Welcome to Shopinger!"
+      }
       panelClassName="max-w-80"
     >
       <div className="flex h-full flex-col overflow-y-auto">

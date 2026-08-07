@@ -1,4 +1,4 @@
-// types 
+// types
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { GetServerSideProps } from "next";
@@ -14,6 +14,9 @@ import BestDeals from "@/components/home/best-deals/best-deals.component";
 import CategorySection from "@/components/home/category/category-section.component";
 import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
+import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
+import CampaignTimer from "@/components/header/campaign-timer.component";
+import EasyEMIFloatingCta from "@/components/common/easy-emi-floating-cta.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -59,7 +62,7 @@ const HomePage: NextPageWithLayout = () => {
   const { data: user } = useUserDetails();
   const is_prod = process.env.NODE_ENV == "production";
   const description =
-    "Get groceries, fashion, electronics, beauty products, home essentials, and more delivered to your doorstep in minutes. Experience fast and reliable quick commerce with Shopinger.";
+    "Shopinger is India's Quick Commerce & Online Shopping platform. Shop groceries, mobiles, electronics, fashion, beauty, medicines, home essentials & more with Fast Delivery, No Cost EMI, Cash on Delivery, Easy Returns and Fast Refunds.";
   const page_url = `${process.env.NEXT_PUBLIC_BASE_URL}/`;
   const json_ld = createHomeJSONLD({
     title: "Shopinger",
@@ -68,9 +71,10 @@ const HomePage: NextPageWithLayout = () => {
   });
   return (
     <>
+      <EasyEMIFloatingCta />
       <Seo
         is_prod={is_prod}
-        title={"Shopinger | Everything Delivered in Minutes"}
+        title={"Shopinger | Products You Love, Delivered in Minutes"}
         description={description}
         image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
         url={page_url}
@@ -79,6 +83,8 @@ const HomePage: NextPageWithLayout = () => {
       <div className="space-y-4 pt-(--header-height)">
         <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
           <Campaign />
+          <CampaignTimer />
+          <HighlightsBar />
           {/* <ProductMarquee /> */}
           {continue_shopping_recommendations.length >= 6 && (
             <ProductRow

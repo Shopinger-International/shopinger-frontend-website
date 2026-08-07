@@ -28,7 +28,7 @@ const SearchBar: FC = () => {
         insights={true}
       >
         <AutoComplete
-          placeholder="Search Products..."
+          placeholder="Search 30,000+ products"
           className="relative w-full rounded-lg bg-white"
         />
 

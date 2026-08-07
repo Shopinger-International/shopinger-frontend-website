@@ -33,7 +33,7 @@ const NavItem: FC<NavItemProps> = ({
       <Link
         href={href}
         aria-label={`View ${title}`}
-        className="flex flex-1 flex-col items-center justify-center py-2 transition-transform active:scale-95"
+        className="flex flex-1 flex-col items-center justify-center py-1.5 transition-transform active:scale-95"
       >
         <span className="relative inline-block">
           <Cart width={32} height={24} fill="oklch(55.1% 0.027 264.364)" />
@@ -44,14 +44,12 @@ const NavItem: FC<NavItemProps> = ({
         </span>
 
         <span
-          className={`mt-1 text-xs transition-colors ${
+          className={`mt-0.5 text-xs transition-colors ${
             active ? "font-medium text-orange-500" : "text-gray-500"
           }`}
         >
           {title}
         </span>
-
-        {active && <span className="mt-1 h-1 w-1 rounded-full bg-orange-500" />}
       </Link>
     );
   }
@@ -59,7 +57,7 @@ const NavItem: FC<NavItemProps> = ({
     <Link
       href={href}
       aria-label={`View ${title}`}
-      className="flex flex-1 flex-col items-center justify-center py-2 transition-transform active:scale-95"
+      className="flex flex-1 flex-col items-center justify-center py-1.5 transition-transform active:scale-95"
     >
       <div className="relative">
         <Icon
@@ -75,14 +73,12 @@ const NavItem: FC<NavItemProps> = ({
       </div>
 
       <span
-        className={`mt-1 text-xs transition-colors ${
+        className={`mt-0.5 text-xs transition-colors ${
           active ? "font-medium text-orange-500" : "text-gray-500"
         }`}
       >
         {title}
       </span>
-
-      {active && <span className="mt-1 h-1 w-1 rounded-full bg-orange-500" />}
     </Link>
   );
 };
@@ -110,8 +106,8 @@ const BottomMobileNav: FC = () => {
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 z-50 w-full border-t border-gray-300 bg-white shadow-xl lg:hidden">
-      <div className="flex h-16 w-full border border-gray-300">
+    <div className="fixed bottom-0 left-0 z-50 w-full border-t border-gray-300 bg-white lg:hidden">
+      <div className="flex w-full">
         {itemsList.map((item) => (
           <NavItem key={item.title} {...item} active={pathname === item.href} />
         ))}
