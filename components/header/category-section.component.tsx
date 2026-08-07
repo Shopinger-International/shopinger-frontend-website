@@ -180,7 +180,7 @@ const CategorySection: FC = () => {
               </span>
             </div>
             <div className="h-6 w-px bg-white" />
-            <button className="rounded-full bg-white p-0.5">
+            <button className="rounded-full bg-white p-0.5 cursor-pointer">
               <ChevronRight className="size-5 text-orange-500" />
             </button>
           </Link>
