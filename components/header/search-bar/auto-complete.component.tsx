@@ -180,9 +180,9 @@ const AutoComplete: FC<AutocompleteProps> = ({
         inputWrapper: "pl-2 sm:pl-3",
         submitButton: "md:!bg-orange-500",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
-        form: "sm:focus-within:!border-2 sm:focus-within:!border-orange-500 !rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse",
+        form: "!rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse !border-none",
         detachedSearchButton:
-          "!rounded-md !p-0 flex flex-row-reverse justify-between overflow-hidden !h-10",
+          "!rounded-md !p-0 flex flex-row-reverse justify-between overflow-hidden !h-10 !border-none",
         detachedSearchButtonPlaceholder: "flex-1 pl-3",
         detachedSearchButtonIcon: "!text-orange-500 bg-orange-500",
         detachedSearchButtonQuery: "pl-2 md:p-0",

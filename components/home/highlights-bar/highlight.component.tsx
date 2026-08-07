@@ -8,7 +8,7 @@ const Highlight: FC<{
   para: string;
 }> = ({ icon: Icon, title, para }) => {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 shrink-0">
       <Icon className="size-6 text-gray-900" strokeWidth={1.75} />
       <div>
         <span className="block text-[12px] font-semibold">{title}</span>
