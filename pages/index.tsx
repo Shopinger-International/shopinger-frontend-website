@@ -74,7 +74,7 @@ const HomePage: NextPageWithLayout = () => {
       <EasyEMIFloatingCta />
       <Seo
         is_prod={is_prod}
-        title={"Shopinger | Everything Delivered in Minutes"}
+        title={"Shopinger | Products You Love, Delivered in Minutes"}
         description={description}
         image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
         url={page_url}
