@@ -1,4 +1,3 @@
-
 const cleanTemplate = (text: string) => {
   return text
     .split("\n")
@@ -15,7 +14,9 @@ export const whatsapp_templates = {
     Product Name: 
     Approx. Budget: 
     Delivery Location:
-  `),
+
+    *Note: Please fill in the above details and send this message to us.*
+    `),
   doctor_consultation: cleanTemplate(`
     Hi Shopinger,
     I want to book an online doctor consultation.
@@ -24,6 +25,8 @@ export const whatsapp_templates = {
     Department:
     Health Problem:
     Preferred Date/Time:
+
+    *Note: Please fill in the above details and send this message to us.*
     `),
   pathology_test: cleanTemplate(`
     Hi Shopinger,
@@ -33,6 +36,8 @@ export const whatsapp_templates = {
     Test Name:
     Preferred Date/Time:
     Location:
+
+    *Note: Please fill in the above details and send this message to us.*
     `),
   health_insurance_package: cleanTemplate(`
     Hi Shopinger,
@@ -42,6 +47,8 @@ export const whatsapp_templates = {
     Age:
     Approx. Budget:
     Location:
+
+    *Note: Please fill in the above details and send this message to us.*
     `),
   order_medicines: cleanTemplate(`
     Hi Shopinger,
@@ -49,5 +56,7 @@ export const whatsapp_templates = {
 
     Prescription attached.
     Please proceed.
+
+    *Note: Please fill in the above details and send this message to us.*
     `),
 };

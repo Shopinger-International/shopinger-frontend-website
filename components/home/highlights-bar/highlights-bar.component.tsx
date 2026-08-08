@@ -38,10 +38,10 @@ const highlights_data = [
 
 const HighlightsBar: FC = () => {
   return (
-    <div className="no-scrollbar mx-auto flex items-center gap-4 overflow-x-auto rounded-xl px-4 py-0 lg:w-fit">
+    <div className="no-scrollbar mx-auto flex items-center gap-0 overflow-x-auto rounded-xl px-4 py-0 sm:gap-4 lg:w-fit">
       {highlights_data.map((data, index) => (
         <Fragment key={`highlight-${index}`}>
-          {index > 0 && <div className="mx-4 h-6 w-0.5 bg-gray-300" />}
+          {index > 0 && <div className="mx-4 h-6 w-0.5 shrink-0 bg-gray-300" />}
           <Highlight {...data} />
         </Fragment>
       ))}
