@@ -5,6 +5,7 @@ import type {
   ForwardRefExoticComponent,
   RefAttributes,
   ReactNode,
+  HTMLAttributeAnchorTarget,
 } from "react";
 import type { LucideProps } from "lucide-react";
 
@@ -44,57 +45,69 @@ import {
   Pill,
 } from "lucide-react";
 
+// data
+import { whatsapp_templates } from "@/data/whatsapp-templates.data";
+
 const account_section = [
   {
     label: "Home",
     href: "/",
     icon: Home,
+    target: "_self",
   },
   {
     label: "My Profile",
     href: "/profile",
     icon: CircleUser,
+    target: "_self",
   },
   {
     label: "My Orders",
     href: "/order-history",
     icon: ShoppingBag,
+    target: "_self",
   },
   {
     label: "My Addresses",
     href: "/manage-address",
     icon: MapPin,
+    target: "_self",
   },
   {
     label: "Wishlist",
     href: "/wishlist",
     icon: Heart,
+    target: "_self",
   },
 ];
 
 const consultancy_section = [
   {
     label: "Book Doctor Consultation",
-    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}?text=${encodeURIComponent(whatsapp_templates.doctor_consultation)}`,
     icon: Stethoscope,
+    target: "_blank",
   },
   {
     label: "Book Pathology Test",
-    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}?text=${encodeURIComponent(whatsapp_templates.pathology_test)}`,
     icon: TestTubeDiagonal,
+    target: "_blank",
   },
   {
     label: "Health Packages",
-    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}?text=${encodeURIComponent(whatsapp_templates.health_insurance_package)}`,
     icon: ShieldPlus,
+    target: "_blank",
   },
 ];
 
 const pharmacy_section = [
   {
     label: "Order Medicines (Prescription Required)",
-    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`,
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}?text=${encodeURIComponent(whatsapp_templates.order_medicines)}`,
     icon: Pill,
+    target: "_blank",
   },
 ];
 interface IProps {
@@ -114,6 +127,7 @@ interface IMenuGroupProps extends Omit<
     icon: ForwardRefExoticComponent<
       Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
     >;
+    target: HTMLAttributeAnchorTarget;
   }>;
   default_open?: boolean;
   children?: ReactNode;
@@ -150,11 +164,12 @@ const MenuGroup: FC<IMenuGroupProps> = ({
             className="origin-top overflow-hidden transition duration-200 ease-out data-closed:-translate-y-2 data-closed:opacity-0"
           >
             <div className="pb-2">
-              {list_items.map(({ icon: Icon, label, href }) => (
+              {list_items.map(({ icon: Icon, label, href, target }) => (
                 <Link
                   key={label}
                   href={href}
                   className="group flex items-center gap-4 px-6 py-3 transition-colors hover:bg-orange-50"
+                  target={target}
                 >
                   <Icon className="size-5 text-gray-500 transition-colors group-hover:text-orange-500" />
 
@@ -214,6 +229,7 @@ const MegaMenu: FC<IProps> = ({
             label: name,
             href: `/categories/${slug}`,
             icon: Grid2X2,
+            target: "_self",
           }))}
         />
         <MenuGroup
