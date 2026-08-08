@@ -9,6 +9,9 @@ import { CreditCard, ChevronRight } from "lucide-react";
 // helpers
 import clsx from "clsx";
 
+// data
+import { whatsapp_templates } from "@/data/whatsapp-templates.data";
+
 const EasyEMIFloatingCta: FC = () => {
   const container_ref = useRef<HTMLAnchorElement>(null);
   const [is_expanded, setIsExpanded] = useState(false);
@@ -41,7 +44,7 @@ const EasyEMIFloatingCta: FC = () => {
   return (
     <Link
       ref={container_ref}
-      href={`https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`}
+      href={`https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}?text=${encodeURIComponent(whatsapp_templates.emi)}`}
       target="_blank"
       rel="noopener noreferrer nofollow"
       onClick={(event) => {
