@@ -18,6 +18,9 @@ import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 // helpers
 import clsx from "clsx";
 
+// data
+import { whatsapp_templates } from "@/data/whatsapp-templates.data";
+
 const CategorySection: FC = () => {
   const params = useParams<{ main_category_slug: string }>();
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
@@ -156,7 +159,7 @@ const CategorySection: FC = () => {
           </div>
           <div className="hidden h-10 w-0.5 bg-orange-800 lg:inline-block" />
           <Link
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}`}
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}?text=${encodeURIComponent(whatsapp_templates.emi)}`}
             target="_blank"
             className="hidden shrink-0 flex-row items-center gap-3 lg:flex"
             rel="noopener noreferrer nofollow"
@@ -180,7 +183,7 @@ const CategorySection: FC = () => {
               </span>
             </div>
             <div className="h-6 w-px bg-white" />
-            <button className="rounded-full bg-white p-0.5 cursor-pointer">
+            <button className="cursor-pointer rounded-full bg-white p-0.5">
               <ChevronRight className="size-5 text-orange-500" />
             </button>
           </Link>
