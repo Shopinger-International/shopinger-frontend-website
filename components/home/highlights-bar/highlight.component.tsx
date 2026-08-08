@@ -11,8 +11,12 @@ const Highlight: FC<{
     <div className="flex shrink-0 items-center gap-3">
       <Icon className="size-6 text-gray-900" strokeWidth={1.75} />
       <div>
-        <span className="block text-[12px] font-semibold">{title}</span>
-        <p className="text-[11px] font-medium text-gray-600">{para}</p>
+        <span className="block text-[11px] font-semibold sm:text-[12px]">
+          {title}
+        </span>
+        <p className="text-[10px] font-medium text-gray-600 sm:text-[11px]">
+          {para}
+        </p>
       </div>
     </div>
   );
