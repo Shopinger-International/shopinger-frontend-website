@@ -2,6 +2,7 @@ import Link from "next/link";
 
 // const
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
+import { FREE_SHIPPING_THRESHOLD } from "@/constants/delivery-charge.const";
 
 // types
 import type { FC } from "react";
@@ -56,7 +57,10 @@ const CheckoutSummary: FC<IProps> = ({
   const verify_payment_mutation = useVerifyPaymentMutation();
   const { data: user_detail } = useUserDetails();
   const user_id = user_detail?.id;
-  const delivery_fee = selected_address?.delivery_fee ?? 0;
+  const delivery_fee =
+    total_amount <= FREE_SHIPPING_THRESHOLD
+      ? (selected_address?.delivery_fee ?? 0)
+      : 0;
   const grand_total = total_amount + delivery_fee + platform_fee;
   return (
     <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6">
