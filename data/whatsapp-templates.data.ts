@@ -1,3 +1,4 @@
+
 const cleanTemplate = (text: string) => {
   return text
     .split("\n")
