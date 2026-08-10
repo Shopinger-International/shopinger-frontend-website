@@ -16,7 +16,6 @@ import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
 import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
 import CampaignTimer from "@/components/header/campaign-timer.component";
-import EasyEMIFloatingCta from "@/components/common/easy-emi-floating-cta.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -71,7 +70,6 @@ const HomePage: NextPageWithLayout = () => {
   });
   return (
     <>
-      <EasyEMIFloatingCta />
       <Seo
         is_prod={is_prod}
         title={"Shopinger | Products You Love, Delivered in Minutes"}
