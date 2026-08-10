@@ -1,8 +1,6 @@
-import Link from "next/link";
-
 // const
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
-import { FREE_SHIPPING_THRESHOLD } from "@/constants/delivery-charge.const";
+import { FREE_SHIPPING_THRESHOLD } from "@/constants/charges.const";
 
 // types
 import type { FC } from "react";
@@ -41,6 +39,7 @@ type IProps = {
 const CheckoutSummary: FC<IProps> = ({
   handleOrderSuccess,
   selected_address,
+  sub_total,
   total_amount,
   total_discount,
   total_items,
@@ -62,14 +61,27 @@ const CheckoutSummary: FC<IProps> = ({
       ? (selected_address?.delivery_fee ?? 0)
       : 0;
   const grand_total = total_amount + delivery_fee + platform_fee;
+  const delivery_savings =
+    total_amount > FREE_SHIPPING_THRESHOLD
+      ? (selected_address?.delivery_fee ?? 0)
+      : 0;
+  const total_savings = total_discount + delivery_savings + 5; // platform value is hardcoded as 5 for showing savings
+  const away_from_free_threshold = FREE_SHIPPING_THRESHOLD - sub_total;
   return (
     <div className="h-max space-y-4 rounded-xl border border-gray-300 bg-white p-6">
+      {/* SAVINGS BADGE */}
+      {total_savings > 0 && (
+        <div className="rounded-lg bg-emerald-50 px-3 py-2 text-center text-xs font-semibold text-emerald-700">
+          🎉 You will save ₹{total_savings.toLocaleString("en-IN")} on this
+          order
+        </div>
+      )}
       <h3 className="font-bold text-gray-900">Order Summary</h3>
 
       <div className="space-y-4 text-sm">
         {[
           {
-            label: "MRP",
+            label: `MRP (${total_items} ${total_items === 1 ? "item" : "items"})`,
             value: `₹${total_mrp}`,
           },
           {
@@ -78,25 +90,46 @@ const CheckoutSummary: FC<IProps> = ({
           },
           {
             label: "Delivery Fee",
+            original_value: selected_address?.delivery_fee,
             value: !!delivery_fee ? `₹${delivery_fee}` : "FREE",
           },
           {
             label: "Platform Fee",
+            original_value: 5,
             value: !!platform_fee ? `₹${platform_fee}` : "FREE",
           },
-        ].map(({ label, value }) => (
-          <div className="flex items-center justify-between" key={label}>
-            <span className="font-medium text-gray-600">{label}</span>
-            <span
-              className={clsx(
-                "font-semibold text-gray-900",
-                label === "Discount" && "text-orange-500",
+        ].map(({ label, value, original_value }) => {
+          const is_free = value == "FREE";
+          return (
+            <div key={label}>
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-gray-600">{label}</span>
+                <div className="flex items-center gap-2">
+                  {/* Strikethrough original price if free */}
+                  {is_free && original_value && (
+                    <span className="font-medium text-gray-600 line-through">
+                      ₹{original_value}
+                    </span>
+                  )}
+                  <span
+                    className={clsx(
+                      "font-semibold text-gray-900",
+                      label === "Discount" && "text-orange-500",
+                    )}
+                  >
+                    {value}
+                  </span>
+                </div>
+              </div>
+              {label === "Delivery Fee" && away_from_free_threshold > 0 && (
+                <p className="text-xs font-medium text-orange-500">
+                  Add ₹{away_from_free_threshold.toLocaleString("en-IN")} more
+                  to unlock free delivery!
+                </p>
               )}
-            >
-              {value}
-            </span>
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
 
       {/* TOTAL SECTION */}
@@ -265,13 +298,6 @@ const CheckoutSummary: FC<IProps> = ({
         >
           <span className="relative z-10">Proceed to Pay</span>
         </button>
-
-        <Link
-          href="/"
-          className="flex w-full cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white py-2 font-medium text-gray-900"
-        >
-          Continue Shopping
-        </Link>
       </div>
     </div>
   );

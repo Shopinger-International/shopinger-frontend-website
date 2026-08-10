@@ -59,7 +59,7 @@ const SectionPage: NextPageWithLayout<IProps> = ({ section }) => {
         is_prod={is_prod}
         title={SECTION_CONFIG[section].title}
         description={SECTION_CONFIG[section].description}
-        image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
+        image={`${process.env.NEXT_PUBLIC_CDN_URL}/uploads/assets/dark-mobile-logo.png`}
         url="https://shopinger.com/"
       />
       <section className="min-h-screen w-full">

@@ -413,7 +413,7 @@ const PaymentPolicy: NextPageWithLayout = () => {
         description={description}
         is_prod={is_prod}
         url={page_url}
-        image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
+        image={`${process.env.NEXT_PUBLIC_CDN_URL}/uploads/assets/dark-mobile-logo.png`}
       />
       <div className="w-full bg-gray-50 py-2 sm:py-4">
         <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
