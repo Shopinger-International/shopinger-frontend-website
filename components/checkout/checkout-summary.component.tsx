@@ -9,7 +9,10 @@ import type { IResponse as IVerifyPaymentResponse } from "@/hooks/axios/cart/ver
 
 // helpers
 import clsx from "clsx";
-import { handlePayment } from "@/helpers/payment.helper";
+import {
+  handlePayment,
+  getDeliveryFeeAmountBasedOnTotalAmount,
+} from "@/helpers/payment.helper";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
@@ -56,13 +59,13 @@ const CheckoutSummary: FC<IProps> = ({
   const verify_payment_mutation = useVerifyPaymentMutation();
   const { data: user_detail } = useUserDetails();
   const user_id = user_detail?.id;
-  const delivery_fee =
-    total_amount <= FREE_SHIPPING_THRESHOLD
-      ? (selected_address?.delivery_fee ?? 0)
-      : 0;
+  const delivery_fee = getDeliveryFeeAmountBasedOnTotalAmount({
+    total_amount,
+    delivery_fee: selected_address?.delivery_fee ?? 0,
+  });
   const grand_total = total_amount + delivery_fee + platform_fee;
   const delivery_savings =
-    total_amount > FREE_SHIPPING_THRESHOLD
+    total_amount >= FREE_SHIPPING_THRESHOLD
       ? (selected_address?.delivery_fee ?? 0)
       : 0;
   const total_savings = total_discount + delivery_savings + 5; // platform value is hardcoded as 5 for showing savings

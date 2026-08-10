@@ -1,6 +1,9 @@
 // types
 import type { IAddress } from "@/types/address";
 
+// const
+import { FREE_SHIPPING_THRESHOLD } from "@/constants/charges.const";
+
 const loadRazorpay = () => {
   return new Promise((resolve) => {
     const script = document.createElement("script");
@@ -67,4 +70,14 @@ const handlePayment = async ({
   rzp.open();
 };
 
-export { handlePayment };
+const getDeliveryFeeAmountBasedOnTotalAmount = ({
+  delivery_fee,
+  total_amount, // total_amount = selling_price_with_commission of all items
+}: {
+  delivery_fee: number;
+  total_amount: number;
+}) => {
+  return total_amount < FREE_SHIPPING_THRESHOLD ? delivery_fee : 0;
+};
+
+export { handlePayment, getDeliveryFeeAmountBasedOnTotalAmount };
