@@ -16,7 +16,6 @@ import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
 import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
 import CampaignTimer from "@/components/header/campaign-timer.component";
-import EasyEMIFloatingCta from "@/components/common/easy-emi-floating-cta.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -71,12 +70,11 @@ const HomePage: NextPageWithLayout = () => {
   });
   return (
     <>
-      <EasyEMIFloatingCta />
       <Seo
         is_prod={is_prod}
         title={"Shopinger | Products You Love, Delivered in Minutes"}
         description={description}
-        image="https://shopinger-uploads.s3.ap-south-1.amazonaws.com/uploads/assets/dark-mobile-logo.png"
+        image={`${process.env.NEXT_PUBLIC_CDN_URL}/uploads/assets/dark-mobile-logo.png`}
         url={page_url}
         json_ld={JSON.stringify(json_ld)}
       />
