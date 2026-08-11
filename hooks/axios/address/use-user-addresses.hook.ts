@@ -31,7 +31,6 @@ const useUserAddresses = () => {
       const user_addresses = await getUserAddresses();
       return user_addresses;
     },
-    staleTime: 1000 * 60 * 5,
     select(data) {
       return data.map((item) => ({
         ...item,
