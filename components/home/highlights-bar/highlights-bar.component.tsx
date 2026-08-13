@@ -8,6 +8,9 @@ import Highlight from "@/components/home/highlights-bar/highlight.component";
 // icons
 import { HandCoins, Truck, RotateCcw, Phone, CreditCard } from "lucide-react";
 
+// const
+import { FREE_SHIPPING_THRESHOLD } from "@/constants/charges.const";
+
 const highlights_data = [
   {
     icon: CreditCard,
@@ -22,7 +25,7 @@ const highlights_data = [
   {
     icon: Truck,
     title: "Free Delivery",
-    para: "Above ₹199",
+    para: `Above ₹${FREE_SHIPPING_THRESHOLD - 1}`,
   },
   {
     icon: RotateCcw,
