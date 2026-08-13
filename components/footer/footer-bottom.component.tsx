@@ -12,7 +12,7 @@ export const payment_methods = [
 const FooterBottom: FC = () => {
   return (
     <div className="w-full bg-orange-500 text-white">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-4 px-4 py-3 lg:justify-between">
+      <div className="mx-auto flex max-w-8xl flex-wrap items-center justify-center gap-4 px-4 lg:px-12 py-3 lg:justify-between">
         {/* Left section */}
         <div className="flex flex-wrap items-center gap-6">
           <span className="font-medium">

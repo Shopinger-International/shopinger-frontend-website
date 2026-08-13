@@ -37,7 +37,7 @@ const social_links = [
 ];
 const FooterSocial: FC = () => {
   return (
-    <div className="mt-2 flex items-center gap-3">
+    <div className="mt-6 flex items-center gap-3">
       {social_links.map(({ name, href, src }) => (
         <Link key={name} href={href} aria-label={name} target="_blank">
           <Image
