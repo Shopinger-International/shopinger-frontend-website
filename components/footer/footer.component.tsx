@@ -6,6 +6,7 @@ import type { FC } from "react";
 import FooterLinks from "@/components/footer/footer-links.component";
 import FooterAddress from "@/components/footer/footer-address.component";
 import FooterBottom from "@/components/footer/footer-bottom.component";
+import CitiesWeServe from "@/components/footer/cities-we-serve.component";
 
 // icons
 import { ArrowUp } from "lucide-react";
@@ -34,7 +35,7 @@ const Footer: FC = () => {
         </button>
       </section>
       <footer className="mb-(--buy-cta-container-height) w-full bg-black text-sm text-white lg:mb-0">
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 gap-8 px-4 py-8 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr]">
+        <div className="max-w-8xl mx-auto grid w-full grid-cols-2 gap-8 px-4 py-8 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr] lg:px-12">
           <FooterLinks />
           <FooterAddress />
         </div>
@@ -50,6 +51,7 @@ const Footer: FC = () => {
             />
           ))}
         </div>
+        <CitiesWeServe />
         <FooterBottom />
       </footer>
     </>

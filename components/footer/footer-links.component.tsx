@@ -5,11 +5,8 @@ import type { FC } from "react";
 const footer_sections = [
   {
     title: "About",
-    list: [{ label: "Shopinger", href: "/about-us" }],
-  },
-  {
-    title: "Help",
     list: [
+      { label: "Shopinger", href: "/about-us" },
       { label: "Contact Us", href: "/contact-us" },
       { label: "FAQ's", href: "/faqs" },
       { label: "+91 94157 61434", href: "tel:+919415761434" },
