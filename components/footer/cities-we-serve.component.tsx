@@ -41,7 +41,7 @@ const CitiesWeServe: FC = () => {
       </p>
 
       {/* Cities */}
-      <div className="flex items-center justify-center gap-2 whitespace-nowrap sm:gap-5">
+      <div className="flex flex-wrap items-center justify-center gap-2 whitespace-nowrap sm:gap-5">
         {cities.map(({ name, icon: Icon }, index) => (
           <div key={name} className="flex items-center gap-2 sm:gap-5">
             <div className="flex items-center gap-1.5 sm:gap-3">
