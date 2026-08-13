@@ -22,8 +22,9 @@ const FooterAddress: FC = () => {
           <br />
           Uttar Pradesh – 273015, India
         </address>
-
-        <p className="text-sm text-white/80">CIN: U47912UP2025PTC219935</p>
+        <p className="text-sm font-medium text-white/80">
+          GSTIN: 09ABPCS7248K1CR
+        </p>
       </div>
       {/* Corporate Address */}
       <div className="col-span-2 space-y-3 lg:col-span-1">
@@ -40,6 +41,10 @@ const FooterAddress: FC = () => {
         <p className="text-sm font-medium text-white/80">
           CIN: U47912UP2025PTC219935
         </p>
+        <p className="text-sm font-medium text-white/80">
+          GSTIN: 07ABPCS7248K1ZK
+        </p>
+
         <FooterSocial />
       </div>
     </>
