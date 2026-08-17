@@ -81,7 +81,7 @@ const NProducts = () => {
     <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
         {isProductPending
-          ? Array.from({ length: 12 }).map((_, i) => (
+          ? Array.from({ length: 20 }).map((_, i) => (
               <ProductCardSkeleton key={`initial-skeleton-${i}`} />
             ))
           : formatted_products?.map((product, index) =>
@@ -98,7 +98,7 @@ const NProducts = () => {
         {/* infinite scroll loading */}
         {!isProductPending &&
           isFetchingNextPage &&
-          Array.from({ length: 12 }).map((_, i) => (
+          Array.from({ length: 20 }).map((_, i) => (
             <ProductCardSkeleton key={`next-page-skeleton-${i}`} />
           ))}
       </div>

@@ -34,6 +34,9 @@ import { getCampaigns } from "@/hooks/axios/campaign/use-campaigns.hook";
 import { getFeed } from "@/hooks/axios/home/use-feed.hook";
 import createHomeJSONLD from "@/seo/home.jsonld";
 
+// provider
+import FooterStateProvider from "@/provider/footer-state-provider";
+
 type IProps = {
   dehydratedState: DehydratedState;
 };
@@ -175,7 +178,11 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
 };
 
 HomePage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout show_bottom_navigation={true}>{page}</MainLayout>;
+  return (
+    <FooterStateProvider default_show={false}>
+      <MainLayout show_bottom_navigation={true}>{page}</MainLayout>
+    </FooterStateProvider>
+  );
 };
 
 export default HomePage;
