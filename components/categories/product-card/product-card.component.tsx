@@ -42,7 +42,7 @@ type IProps = {
   variant_id: number;
   title: string;
   src: string;
-  product_thumbnail: IMedia;
+  product_thumbnail: IMedia | string;
   selling_price: number;
   mrp: number;
   discount_percentage: number;
@@ -163,7 +163,7 @@ const ProductCard: FC<IProps> = ({
         <div className="relative aspect-3/2 overflow-hidden border-b border-gray-300 bg-gray-100">
           <Image
             priority={index <= 3}
-            src={product_thumbnail.url}
+            src={product_thumbnail.url ?? product_thumbnail}
             alt={`${title}`}
             fill
             className="object-contain object-top"

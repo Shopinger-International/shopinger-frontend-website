@@ -16,6 +16,7 @@ import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
 import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
 import CampaignTimer from "@/components/header/campaign-timer.component";
+import NProducts from "@/components/home/n-products/n-products.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -142,6 +143,7 @@ const HomePage: NextPageWithLayout = () => {
           />
         )}
         <BestDeals products={deals_of_the_day} />
+        <NProducts />
       </div>
     </>
   );
