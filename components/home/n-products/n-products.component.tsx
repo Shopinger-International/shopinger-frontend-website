@@ -79,6 +79,9 @@ const NProducts = () => {
   }, [hasNextPage, isProductPending]);
   return (
     <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
+      <h2 className="text-lg font-semibold text-gray-900 md:text-xl">
+        Personalized Product For you
+      </h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
         {isProductPending
           ? Array.from({ length: 20 }).map((_, i) => (
