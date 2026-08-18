@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // type
 import type { IResponseType } from "../categories/use-get-category-product.hook";
+import type { IResponseType as INProductResponseType } from "../home/use-n-products.hook";
 
 // lib
 import Axios from "@/lib/axios/private.lib";
@@ -122,6 +123,31 @@ const useRemoveFromWishlistMutation = () => {
           };
         },
       );
+
+      query_client.setQueriesData(
+        {
+          queryKey: ["n-products"],
+        },
+        (old_data: any) => {
+          if (!old_data) return old_data;
+
+          return {
+            ...old_data,
+            pages: old_data.pages.map((page: INProductResponseType) => ({
+              ...page,
+              products: page.products.map((product) =>
+                product.variant_id == variant_id
+                  ? {
+                      ...product,
+                      is_wishlisted: false,
+                    }
+                  : product,
+              ),
+            })),
+          };
+        },
+      );
+
       enqueueSnackbar(data.message, {
         key: `remove-from-wishlist-${Date.now()}`,
         variant: "success",
