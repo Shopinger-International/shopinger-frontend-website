@@ -23,6 +23,7 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
 import useAddToWishlistMutation from "@/hooks/axios/wishlist/use-add-to-wishlist-mutation.hook";
 import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
 // lib
 import insightsClient from "@/lib/algolia/algolia-insight.lib";
@@ -83,17 +84,16 @@ const ProductCard: FC<IProps> = ({
   const query = router.query;
   const query_id =
     typeof query.query_id === "string" ? query.query_id : undefined;
-
   const index_name =
     typeof query.index_name === "string" ? query.index_name : undefined;
-
   const object_id =
     typeof query.object_id === "string" ? query.object_id : undefined;
+  const is_mobile = useIsMobile();
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-300 bg-white">
+    <div className="group relative flex min-w-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white sm:rounded-xl sm:border-gray-300">
       <div className="absolute z-20 mt-2 w-full">
         {!!discount_percentage && (
-          <span className="absolute left-2 rounded-full border border-gray-300 bg-orange-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+          <span className="absolute left-2 rounded-full border border-gray-300 bg-orange-500 px-2 py-0.5 text-[11px] font-semibold text-white shadow-sm sm:px-3 sm:py-1 sm:text-xs">
             -{discount_percentage}%
           </span>
         )}
@@ -141,7 +141,7 @@ const ProductCard: FC<IProps> = ({
           <Heart
             aria-hidden={true}
             className={clsx(
-              "size-6 text-orange-500",
+              "size-4 text-orange-500 sm:size-6",
               is_wishlisted && "fill-orange-500",
             )}
             strokeWidth={2}
@@ -160,14 +160,18 @@ const ProductCard: FC<IProps> = ({
           },
         }}
       >
-        <div className="relative aspect-3/2 overflow-hidden border-b border-gray-300 bg-gray-100">
+        <div className="relative aspect-square overflow-hidden border-b border-gray-200 bg-gray-100 sm:aspect-3/2 sm:border-gray-300">
           <Image
             priority={index <= 3}
-            src={product_thumbnail.url ?? product_thumbnail}
+            src={
+              typeof product_thumbnail !== "string"
+                ? product_thumbnail.url
+                : product_thumbnail
+            }
             alt={`${title}`}
             fill
             className="object-contain object-top"
-            sizes="300px"
+            sizes="(max-width: 640px) 50vw, 300px"
           />
 
           {is_new && (
@@ -179,19 +183,21 @@ const ProductCard: FC<IProps> = ({
         </div>
 
         {/* content */}
-        <div className="flex flex-1 flex-col space-y-2 p-4">
-          <h3 className="line-clamp-2 font-medium text-gray-900">{title}</h3>
+        <div className="flex flex-1 flex-col space-y-1.5 p-2 sm:space-y-2 sm:p-4">
+          <h3 className="line-clamp-2 text-xs leading-4 font-medium text-gray-900 sm:text-base sm:leading-normal">
+            {title}
+          </h3>
 
           {/* rating */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <span className="text-base font-medium">
+              <span className="text-xs font-medium sm:text-base">
                 {avg_rating.toFixed(1)}
               </span>
               <Rating
                 total_stars={5}
                 custom_rating={avg_rating}
-                size={16}
+                size={is_mobile ? 14 : 16}
                 gap={0.5}
               />
               <RatingSummaryPopover
@@ -201,6 +207,10 @@ const ProductCard: FC<IProps> = ({
                 <button
                   aria-label="View rating details"
                   className="text-orange-500"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }}
                 >
                   <ChevronDown
                     aria-hidden={true}
@@ -212,25 +222,25 @@ const ProductCard: FC<IProps> = ({
             </div>
           </div>
           {!!bought_last_month && (
-            <p className="text-sm font-medium text-gray-700">
-              {bought_last_month} bought in the last month
+            <p className="text-[10px] font-medium text-gray-700 sm:text-sm">
+              {bought_last_month} bought recently
             </p>
           )}
 
           {/* price */}
           <div className="flex items-center gap-2">
             {!!discount_percentage && (
-              <span className="font-medium text-gray-600 line-through">
+              <span className="text-sm font-medium text-gray-600 line-through sm:text-base">
                 ₹{mrp?.toLocaleString()}
               </span>
             )}
-            <span className="font-semibold text-gray-900">
+            <span className="truncate text-sm font-semibold text-gray-900 sm:text-base">
               ₹{selling_price.toLocaleString()}
             </span>
           </div>
         </div>
       </Link>
-      <div className="px-4 pb-4">
+      <div className="px-2 pb-2 sm:px-4 sm:pb-4">
         <div className="mt-auto">
           {have_variants ? (
             <Link
@@ -243,14 +253,14 @@ const ProductCard: FC<IProps> = ({
                   ...(object_id && { object_id }),
                 },
               }}
-              className="flex w-full items-center justify-center gap-1 rounded-xl border border-gray-300 py-2.5 text-sm font-semibold text-gray-900 hover:bg-gray-100"
+              className="flex w-full items-center justify-center gap-0.5 rounded-md border border-gray-300 py-1.5 text-[11px] font-semibold text-gray-900 hover:bg-gray-100 sm:gap-1 sm:rounded-xl sm:py-2.5 sm:text-sm"
             >
               <span>See all options</span>
-              <ChevronRight aria-hidden={true} className="size-5" />
+              <ChevronRight aria-hidden={true} className="size-4 sm:size-5" />
             </Link>
           ) : (
             <button
-              className="w-full rounded-xl bg-orange-500 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:bg-orange-300"
+              className="w-full rounded-lg bg-orange-500 py-1.5 text-[11px] font-semibold text-white hover:bg-orange-600 disabled:bg-orange-300 sm:rounded-xl sm:py-2.5 sm:text-sm"
               aria-label={"Add to cart"}
               disabled={add_to_cart_mutation.isPending}
               onClick={async (event) => {

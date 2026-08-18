@@ -22,6 +22,7 @@ export type IResponseType = {
     stock: number;
     avg_rating: number;
     is_wishlisted: boolean;
+    have_variants:boolean;
     sub_sub_category_id: number;
     created_at: string;
     bought_last_month: number;
