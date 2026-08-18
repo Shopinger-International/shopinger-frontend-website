@@ -59,7 +59,7 @@ const CategorySection: FC<{
         {/* Header */}
         <h2
           id="recommended-categories"
-          className="text-xl font-semibold text-gray-900 md:text-3xl"
+          className="text-lg font-semibold text-gray-900 md:text-xl"
         >
           Categories you might like
         </h2>

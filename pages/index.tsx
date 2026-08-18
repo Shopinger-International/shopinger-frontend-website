@@ -16,6 +16,7 @@ import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
 import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
 import CampaignTimer from "@/components/header/campaign-timer.component";
+import NProducts from "@/components/home/n-products/n-products.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -32,6 +33,9 @@ import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 import { getCampaigns } from "@/hooks/axios/campaign/use-campaigns.hook";
 import { getFeed } from "@/hooks/axios/home/use-feed.hook";
 import createHomeJSONLD from "@/seo/home.jsonld";
+
+// provider
+import FooterStateProvider from "@/provider/footer-state-provider";
 
 type IProps = {
   dehydratedState: DehydratedState;
@@ -142,6 +146,7 @@ const HomePage: NextPageWithLayout = () => {
           />
         )}
         <BestDeals products={deals_of_the_day} />
+        <NProducts />
       </div>
     </>
   );
@@ -173,7 +178,11 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
 };
 
 HomePage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout show_bottom_navigation={true}>{page}</MainLayout>;
+  return (
+    <FooterStateProvider default_show={false}>
+      <MainLayout show_bottom_navigation={true}>{page}</MainLayout>
+    </FooterStateProvider>
+  );
 };
 
 export default HomePage;

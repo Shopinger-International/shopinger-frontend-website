@@ -296,7 +296,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
               )
             )}
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
             {isProductPending
               ? Array.from({ length: 12 }).map((_, i) => (
                   <ProductCardSkeleton key={`initial-skeleton-${i}`} />
