@@ -24,7 +24,7 @@ import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
 // icons
-import { CircleUserIcon } from "lucide-react";
+import { CircleUserIcon, MapPin } from "lucide-react";
 
 const LocationBlock: FC<{
   className: string;
@@ -51,7 +51,11 @@ const LocationBlock: FC<{
             <span className="hidden text-sm font-semibold lg:block">
               Delivery in minutes*
             </span>
-            <div className="w-full max-w-xs text-left text-xs">
+            <div className="flex w-full max-w-xs items-center gap-1 text-left text-xs">
+              <MapPin
+                aria-hidden={true}
+                className="size-3 shrink-0 text-white"
+              />
               <span className="block truncate lg:hidden">
                 {user_address.house_number
                   ? `${user_address.house_number}, `
