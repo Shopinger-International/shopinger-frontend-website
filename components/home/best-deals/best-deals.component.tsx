@@ -64,7 +64,7 @@ const BestDeals: FC<IProps> = ({ products }) => {
         <div className="mb-4 flex items-center justify-between">
           <h2
             id="deals-of-the-day"
-            className="text-xl font-semibold text-gray-900 md:text-3xl"
+            className="text-lg font-semibold text-gray-900 md:text-xl"
           >
             Deals of the day
           </h2>

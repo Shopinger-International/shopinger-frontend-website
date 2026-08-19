@@ -4,7 +4,7 @@ import type { FC, HTMLAttributeAnchorTarget } from "react";
 import type { LucideProps } from "lucide-react";
 
 // icons
-import { Home, CircleUserRound, ShoppingCart, CreditCard } from "lucide-react";
+import { Home, ShoppingCart, CreditCard } from "lucide-react";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
@@ -95,12 +95,6 @@ const items_list = [
     title: "Home",
     icon: Home,
     href: "/",
-    target: "_self",
-  },
-  {
-    title: "Account",
-    icon: CircleUserRound,
-    href: "/account",
     target: "_self",
   },
   {
