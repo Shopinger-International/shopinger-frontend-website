@@ -61,9 +61,6 @@ const LocationBlock: FC<{
                   ? `${user_address.house_number}, `
                   : ""}
                 {user_address.area}
-                {user_address.city ? `, ${user_address.city}` : ""}
-                {user_address.state ? `, ${user_address.state}` : ""}
-                {user_address.pincode ? `, ${user_address.pincode}` : ""}
               </span>
 
               <span className="hidden truncate lg:inline-block lg:max-w-44">
