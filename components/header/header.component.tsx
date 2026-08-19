@@ -23,6 +23,9 @@ import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
+// icons
+import { CircleUserIcon } from "lucide-react";
+
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
@@ -120,16 +123,7 @@ const Header: FC<{
 
   return (
     <header className="fixed top-0 z-30 w-full" id="app-header">
-      <div
-        className={clsx(
-          "mx-auto grid w-full items-center bg-black",
-          "grid-cols-[auto_1fr_auto]",
-          "gap-2 px-4 py-1.5",
-          // "lg:max-w-8xl",
-          "lg:grid-cols-[auto_minmax(0,1fr)_auto]",
-          "lg:gap-8",
-        )}
-      >
+      <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button onClick={openMegaMenuDrawer}>
@@ -150,6 +144,13 @@ const Header: FC<{
               sizes="(max-width: 640px) 112px, (max-width: 1024px) 160px, 216px"
               className="object-contain"
             />
+          </Link>
+          <Link
+            href="/account"
+            aria-label="Account"
+            className="ml-auto lg:hidden"
+          >
+            <CircleUserIcon aria-hidden={true} className="size-6 text-white" />
           </Link>
         </div>
 
