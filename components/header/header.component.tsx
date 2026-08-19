@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect } from "react"; 
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -22,6 +22,9 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
+
+// icons
+import { CircleUserIcon, MapPin } from "lucide-react";
 
 const LocationBlock: FC<{
   className: string;
@@ -48,15 +51,16 @@ const LocationBlock: FC<{
             <span className="hidden text-sm font-semibold lg:block">
               Delivery in minutes*
             </span>
-            <div className="w-full max-w-xs text-left text-xs">
+            <div className="flex w-full max-w-xs items-center gap-1 text-left text-xs">
+              <MapPin
+                aria-hidden={true}
+                className="size-3 shrink-0 text-white"
+              />
               <span className="block truncate lg:hidden">
                 {user_address.house_number
                   ? `${user_address.house_number}, `
                   : ""}
                 {user_address.area}
-                {user_address.city ? `, ${user_address.city}` : ""}
-                {user_address.state ? `, ${user_address.state}` : ""}
-                {user_address.pincode ? `, ${user_address.pincode}` : ""}
               </span>
 
               <span className="hidden truncate lg:inline-block lg:max-w-44">
@@ -120,16 +124,7 @@ const Header: FC<{
 
   return (
     <header className="fixed top-0 z-30 w-full" id="app-header">
-      <div
-        className={clsx(
-          "mx-auto grid w-full items-center bg-black",
-          "grid-cols-[auto_1fr_auto]",
-          "gap-2 px-4 py-1.5",
-          // "lg:max-w-8xl",
-          "lg:grid-cols-[auto_minmax(0,1fr)_auto]",
-          "lg:gap-8",
-        )}
-      >
+      <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button onClick={openMegaMenuDrawer}>
@@ -150,6 +145,13 @@ const Header: FC<{
               sizes="(max-width: 640px) 112px, (max-width: 1024px) 160px, 216px"
               className="object-contain"
             />
+          </Link>
+          <Link
+            href="/account"
+            aria-label="Account"
+            className="ml-auto lg:hidden"
+          >
+            <CircleUserIcon aria-hidden={true} className="size-6 text-white" />
           </Link>
         </div>
 
