@@ -1,4 +1,3 @@
-
 interface IBaseCategory {
   id: number;
   name: string;
@@ -19,10 +18,10 @@ interface IBaseCategory {
 
 interface ISubSubCategory extends IBaseCategory {}
 interface ISubCategory extends IBaseCategory {
-  subSubCategories: ISubSubCategory[];
+  sub_sub_categories: ISubSubCategory[];
 }
 interface ICategory extends IBaseCategory {
-  subCategories: ISubCategory[];
+  sub_categories: ISubCategory[];
 }
 
 export { ISubSubCategory, ISubCategory, ICategory };

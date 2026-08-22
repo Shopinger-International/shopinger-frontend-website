@@ -9,16 +9,15 @@ import Axios from "@/lib/axios/private.lib";
 
 export const getCategory = async (has_product: boolean) => {
   const { data } = await Axios.get<{
-    message: string;
-    categories: Array<ICategory>;
+    result: Array<ICategory>;
     success: boolean;
   }>(`/get-all-category?has_product=${has_product}`);
-  return data.categories;
+  return data.result;
 };
 
 const useCategories = (has_product: boolean = false) => {
   return useQuery<ICategory[], Error>({
-    queryKey: ["categories-list",has_product],
+    queryKey: ["categories-list", has_product],
     async queryFn() {
       const categories = await getCategory(has_product);
       return categories;

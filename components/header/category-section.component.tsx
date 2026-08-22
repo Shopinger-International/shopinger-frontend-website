@@ -201,7 +201,7 @@ const CategorySection: FC = () => {
             className="no-scrollbar min-w-0 flex-1 overflow-x-auto"
           >
             <ul className="flex items-center gap-6 whitespace-nowrap">
-              {selected_category.subCategories.map((sub_category) => {
+              {selected_category.sub_categories.map((sub_category) => {
                 const { id, name, slug: sub_slug } = sub_category;
                 return (
                   <li key={`sub-category-${id}`}>
