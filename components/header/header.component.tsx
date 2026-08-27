@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react"; 
+import { useLayoutEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types

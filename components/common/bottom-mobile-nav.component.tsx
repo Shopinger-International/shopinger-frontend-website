@@ -4,10 +4,11 @@ import type { FC, HTMLAttributeAnchorTarget } from "react";
 import type { LucideProps } from "lucide-react";
 
 // icons
-import { Home, ShoppingCart, CreditCard } from "lucide-react";
+import { Home, ShoppingCart, CreditCard, LayoutDashboard } from "lucide-react";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
+import { useCategoryDrawerContext } from "@/provider/category-drawer.provider";
 
 // local components
 import Cart from "@/components/common/icons/cart.icon";
@@ -32,7 +33,31 @@ const NavItem: FC<NavItemProps> = ({
   target,
   show_badge,
 }) => {
+  const { openDrawer } = useCategoryDrawerContext();
   const { data: cart_details } = useCart();
+  if (title == "Categories") {
+    return (
+      <button
+        onClick={openDrawer}
+        className="flex flex-1 flex-col items-center justify-center py-1.5 transition-transform active:scale-95"
+      >
+        <Icon
+          className={`size-6 transition-colors ${
+            active ? "text-orange-500" : "text-gray-500"
+          }`}
+          aria-hidden="true"
+        />
+
+        <span
+          className={`mt-0.5 text-xs transition-colors ${
+            active ? "font-medium text-orange-500" : "text-gray-500"
+          }`}
+        >
+          {title}
+        </span>
+      </button>
+    );
+  }
   if (title == "Cart") {
     return (
       <Link
@@ -95,6 +120,12 @@ const items_list = [
     title: "Home",
     icon: Home,
     href: "/",
+    target: "_self",
+  },
+  {
+    title: "Categories",
+    icon: LayoutDashboard,
+    href: "",
     target: "_self",
   },
   {
