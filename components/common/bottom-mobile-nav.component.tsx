@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
+// types
 import type { FC, HTMLAttributeAnchorTarget } from "react";
 import type { LucideProps } from "lucide-react";
 
@@ -144,10 +146,31 @@ const items_list = [
 ];
 
 const BottomMobileNav: FC = () => {
+  const bottom_ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
+  useEffect(() => {
+    let prev_scroll_pos = window.pageYOffset;
+    function handleScroll() {
+      const current_scroll_pos = window.pageYOffset;
+      if (bottom_ref.current) {
+        if (current_scroll_pos > prev_scroll_pos) {
+          bottom_ref.current.style.bottom = "-54px";
+        } else {
+          bottom_ref.current.style.bottom = "0";
+        }
+      }
+      prev_scroll_pos = current_scroll_pos;
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="fixed bottom-0 left-0 z-50 w-full border-t border-gray-300 bg-white lg:hidden">
+    <div
+      ref={bottom_ref}
+      className="fixed bottom-0 left-0 z-50 w-full border-t border-gray-300 bg-white transition-all duration-300 ease-in-out lg:hidden"
+    >
       <div className="flex w-full">
         {items_list.map((item) => (
           <NavItem

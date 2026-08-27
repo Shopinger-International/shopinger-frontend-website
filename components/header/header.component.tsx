@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -100,6 +100,7 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
+  const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
 
@@ -122,8 +123,29 @@ const Header: FC<{
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    let prev_scroll_pos = window.pageYOffset;
+    function handleScroll() {
+      const current_scroll_pos = window.pageYOffset;
+      if (header_ref.current) {
+        if (current_scroll_pos > prev_scroll_pos) {
+          header_ref.current.style.top = "-64px";
+        } else {
+          header_ref.current.style.top = "0";
+        }
+      }
+      prev_scroll_pos = current_scroll_pos;
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 z-30 w-full" id="app-header">
+    <header
+      ref={header_ref}
+      className="fixed top-0 z-30 w-full transition-all ease-in-out duration-300"
+      id="app-header"
+    >
       <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
