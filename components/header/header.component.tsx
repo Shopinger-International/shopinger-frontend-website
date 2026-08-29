@@ -143,7 +143,7 @@ const Header: FC<{
   return (
     <header
       ref={header_ref}
-      className="fixed top-0 z-30 w-full transition-all ease-in-out duration-300"
+      className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
       id="app-header"
     >
       <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">

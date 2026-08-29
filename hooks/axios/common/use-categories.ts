@@ -1,11 +1,19 @@
 // react query
 import { useQuery } from "@tanstack/react-query";
 
-// types
-import type { ICategory } from "@/types/categories";
-
 // lib
 import Axios from "@/lib/axios/private.lib";
+
+type IBaseCategory = {
+  id: number;
+  name: string;
+  slug: string;
+  media: string;
+};
+
+type ICategory = IBaseCategory & {
+  sub_categories: IBaseCategory[];
+};
 
 export const getCategory = async (has_product: boolean) => {
   const { data } = await Axios.get<{
