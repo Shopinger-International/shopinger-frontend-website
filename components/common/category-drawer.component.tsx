@@ -112,13 +112,13 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
           transition
           className={clsx(
             "flex h-full w-full flex-col bg-white",
-            "duration-300 ease-out",
+            "duration-100 ease-out",
             "data-closed:translate-y-full",
             "data-enter:translate-y-full",
-            "data-enter:duration-300",
+            "data-enter:duration-100",
             "data-enter:ease-out",
             "data-leave:translate-y-full",
-            "data-leave:duration-300",
+            "data-leave:duration-100",
             "data-leave:ease-in",
           )}
         >
@@ -175,7 +175,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                 </button>
               ))}
             </div>
-            <div className="flex h-full flex-1 flex-col overflow-y-auto px-4 py-2">
+            <div className="flex h-[calc(100%-var(--bottom-nav-height))] flex-1 flex-col overflow-y-auto px-4 py-2">
               {categories
                 ?.find((category) => category.id == selected_main_category_id)
                 ?.sub_categories.map(
