@@ -173,6 +173,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                     sub_sub_categories,
                   }) => (
                     <SubSubCategorySection
+                      key={`sub-category-section-${id}`}
                       name={name}
                       main_category_slug={
                         categories.find(
