@@ -108,7 +108,20 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
   return (
     <Dialog open={is_open} onClose={handleClose} className={"relative z-50"}>
       <div className="fixed inset-0 h-screen w-screen max-w-md shadow-md">
-        <DialogPanel className={"flex h-full w-full flex-col bg-white"}>
+        <DialogPanel
+          transition
+          className={clsx(
+            "flex h-full w-full flex-col bg-white",
+            "duration-300 ease-out",
+            "data-closed:translate-y-full",
+            "data-enter:translate-y-full",
+            "data-enter:duration-300",
+            "data-enter:ease-out",
+            "data-leave:translate-y-full",
+            "data-leave:duration-300",
+            "data-leave:ease-in",
+          )}
+        >
           <div className="flex items-center justify-between border-b border-gray-300 px-4 py-2">
             <div className="flex items-center gap-6">
               <button onClick={() => router.back()} aria-label="Go back">
