@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react"; 
+import { useLayoutEffect, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -22,6 +22,7 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
 // icons
 import { CircleUserIcon, MapPin } from "lucide-react";
@@ -100,6 +101,8 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
+  const is_mobile = useIsMobile();
+  const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
 
@@ -122,8 +125,31 @@ const Header: FC<{
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    let prev_scroll_pos = window.pageYOffset;
+    function handleScroll() {
+      const current_scroll_pos = window.pageYOffset;
+      if (header_ref.current) {
+        if (current_scroll_pos > prev_scroll_pos) {
+          header_ref.current.style.top = "-64px";
+        } else {
+          header_ref.current.style.top = "0";
+        }
+      }
+      prev_scroll_pos = current_scroll_pos;
+    }
+    if (is_mobile) {
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [is_mobile]);
+
   return (
-    <header className="fixed top-0 z-30 w-full" id="app-header">
+    <header
+      ref={header_ref}
+      className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
+      id="app-header"
+    >
       <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">

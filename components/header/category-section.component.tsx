@@ -3,8 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 // types
 import type { FC } from "react";
-import type { ICategory } from "@/types/categories";
-import type { ISubCategory } from "@/types/categories";
+import type { ICategory } from "@/hooks/axios/common/use-categories";
 
 // icons
 
@@ -26,8 +25,9 @@ const CategorySection: FC = () => {
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: categories = [] } = useCategories(true);
   const [selected_category, setSelectedCategory] = useState<ICategory | null>();
-  const [selected_sub_category, setSelectedSubCategory] =
-    useState<ISubCategory | null>();
+  const [selected_sub_category, setSelectedSubCategory] = useState<
+    ICategory["sub_categories"][number] | null
+  >();
   const [can_scroll_left, setCanScrollLeft] = useState(false);
   const [can_scroll_right, setCanScrollRight] = useState(false);
   const nav_ref = useRef<HTMLDivElement>(null);
@@ -201,7 +201,7 @@ const CategorySection: FC = () => {
             className="no-scrollbar min-w-0 flex-1 overflow-x-auto"
           >
             <ul className="flex items-center gap-6 whitespace-nowrap">
-              {selected_category.subCategories.map((sub_category) => {
+              {selected_category.sub_categories.map((sub_category) => {
                 const { id, name, slug: sub_slug } = sub_category;
                 return (
                   <li key={`sub-category-${id}`}>

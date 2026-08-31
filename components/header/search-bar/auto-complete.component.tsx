@@ -64,10 +64,11 @@ const debouncedSearch = debouncePromise(async (query: string) => {
   });
 }, 600);
 
-const AutoComplete: FC<AutocompleteProps> = ({
-  className,
-  ...auto_complete_props
-}) => {
+const AutoComplete: FC<
+  AutocompleteProps & {
+    show_search_icon_only?: boolean;
+  }
+> = ({ className, show_search_icon_only, ...auto_complete_props }) => {
   const router = useRouter();
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
@@ -166,7 +167,6 @@ const AutoComplete: FC<AutocompleteProps> = ({
       insights: true,
       openOnFocus: true,
       plugins,
-
       container: autocomplete_container_ref.current,
 
       initialState: {
@@ -181,11 +181,21 @@ const AutoComplete: FC<AutocompleteProps> = ({
         submitButton: "md:!bg-orange-500",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
         form: "!rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse !border-none",
-        detachedSearchButton:
-          "!rounded-md !p-0 flex flex-row-reverse justify-between overflow-hidden !h-10 !border-none",
-        detachedSearchButtonPlaceholder: "flex-1 pl-3",
-        detachedSearchButtonIcon: "!text-orange-500 bg-orange-500",
-        detachedSearchButtonQuery: "pl-2 md:p-0",
+        detachedSearchButton: clsx(
+          "!rounded-md !p-0 overflow-hidden !border-none flex !h-10",
+          show_search_icon_only
+            ? "!w-10 !min-w-10  items-center justify-center  [& > aa-DetachedSearchButtonPlaceholder]:hidden !bg-transparent"
+            : "flex-row-reverse justify-between",
+        ),
+        detachedSearchButtonPlaceholder: show_search_icon_only
+          ? "hidden"
+          : "flex-1 pl-3",
+        detachedSearchButtonIcon: show_search_icon_only
+          ? "[&_svg]:!text-gray-900"
+          : "!text-orange-500 bg-orange-500",
+        detachedSearchButtonQuery: show_search_icon_only
+          ? "hidden"
+          : "pl-2 md:p-0",
 
         loadingIndicator:
           "md:!bg-orange-500  flex items-center justify-center md:[&_svg]:!stroke-white md:[&_svg_path]:!stroke-white md:[&_svg_circle]:!stroke-white",
