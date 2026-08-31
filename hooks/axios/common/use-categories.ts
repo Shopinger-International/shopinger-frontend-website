@@ -11,7 +11,7 @@ export type IBaseCategory = {
   media: string;
 };
 
-type ICategory = IBaseCategory & {
+export type ICategory = IBaseCategory & {
   sub_categories: Array<
     IBaseCategory & {
       sub_sub_categories: IBaseCategory[];
