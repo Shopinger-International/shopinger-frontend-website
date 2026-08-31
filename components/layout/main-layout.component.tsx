@@ -31,6 +31,7 @@ const MobileAddressModal = dynamic(
 
 // provider
 import MegaMenuProvider from "@/provider/mega-menu-provider";
+import CategoryDrawerProvider from "@/provider/category-drawer.provider";
 
 // hooks
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
@@ -104,6 +105,7 @@ const MainLayout: FC<{
       />
       <main>
         <MegaMenuProvider />
+        <CategoryDrawerProvider />
         <LoginModal
           open={login_modal_state.is_modal_open}
           handleClose={() => {
