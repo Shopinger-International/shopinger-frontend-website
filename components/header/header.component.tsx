@@ -22,6 +22,7 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
 // icons
 import { CircleUserIcon, MapPin } from "lucide-react";
@@ -100,6 +101,7 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
+  const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
@@ -136,9 +138,11 @@ const Header: FC<{
       }
       prev_scroll_pos = current_scroll_pos;
     }
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (is_mobile) {
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [is_mobile]);
 
   return (
     <header
