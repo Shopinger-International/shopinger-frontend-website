@@ -126,7 +126,7 @@ useEffect(() => {
                   disabled={active_index <= 0}
                   className="absolute top-1/2 left-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
                 >
-                  <ChevronLeft className="size-8" />
+                  <ChevronLeft className="size-5" />
                 </button>
                 <div
     ref={embla_ref}
@@ -156,7 +156,7 @@ useEffect(() => {
                   }
                   className="absolute top-1/2 right-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
                 >
-                  <ChevronRight className="size-8" />
+                  <ChevronRight className="size-5" />
                 </button>
               </div>
             </div>
