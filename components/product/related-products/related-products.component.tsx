@@ -1,22 +1,11 @@
 import Link from "next/link";
-import { useRef } from "react";
+import { useCallback } from "react";
 // types
 import type { FC } from "react";
 import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import ProductCard from "@/components/product/related-products/product-card.component";
-
-// external components
-import { Swiper, SwiperSlide } from "swiper/react";
-
-// hooks
-import useIsMobile from "@/hooks/common/use-is-mobile.hook";
-
-// swiper modules
-import { Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
 
 // icons
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -26,6 +15,7 @@ import { generateSlug } from "@/helpers/product.helper";
 
 // api hooks
 import useRelatedProducts from "@/hooks/axios/product/use-related-products.hook";
+import useEmblaCarousel from "embla-carousel-react";
 
 type IProps = {
   product_id: number;
@@ -33,8 +23,14 @@ type IProps = {
 };
 const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
   const { data: related_products = [] } = useRelatedProducts(product_id);
-  const is_mobile = useIsMobile();
-  const swiper_ref = useRef<any>(null);
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start" })
+const goToPrev = useCallback(() => {
+  emblaApi?.scrollPrev();
+}, [emblaApi]);
+
+const goToNext = useCallback(() => {
+  emblaApi?.scrollNext();
+}, [emblaApi]);
   const formatted_related_products = related_products.flatMap((product) => {
     const { variants, title, brand, product_medias } = product;
     return variants.map((variant) => {
@@ -85,7 +81,7 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
   });
   return (
     <section className="mb-8" aria-labelledby="similar-products">
-      <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
+      <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6" >
         <h2 className="font-semibold lg:text-xl" id="similar-products">
           Similar Products
         </h2>
@@ -98,32 +94,24 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
           {/* Left arrow */}
           <button
             aria-label="Show previous products"
-            onClick={() => swiper_ref.current?.slidePrev()}
+            onClick={goToPrev}
             className="absolute top-1/2 -left-2 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
           >
             <ChevronLeft aria-hidden={true} />
           </button>
 
-          <Swiper
-            role="list"
-            modules={[Navigation]}
-            spaceBetween={is_mobile ? 16 : 20}
-            slidesPerView={"auto"}
-            slidesPerGroup={is_mobile ? 1 : 4}
-            grabCursor
-            onSwiper={(swiper) => (swiper_ref.current = swiper)}
+          <div
+          className="embla__viewport overflow-hidden"
+          ref={emblaRef}
           >
+            <div className="embla__container flex gap-6">
             {formatted_related_products.map(
               (
                 { title, src, variant_medias_with_title, selling_price, mrp },
                 index,
               ) => (
-                <SwiperSlide
-                  role="listitem"
-                  key={`related-product-${index}`}
-                  className="w-auto!"
-                >
-                  <Link href={src}>
+
+                  <Link href={src} className="embla__slide">
                     <ProductCard
                       title={title}
                       thumbnail={variant_medias_with_title[0].media}
@@ -132,16 +120,17 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
                       mrp={mrp}
                     />
                   </Link>
-                </SwiperSlide>
+
               ),
             )}
-          </Swiper>
+            </div>
+          </div>
 
           {/* Right arrow */}
           <button
             aria-label="Show more products"
-            onClick={() => swiper_ref.current?.slideNext()}
-            className="absolute top-1/2 -right-2 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
+            onClick={goToNext}
+            className="embla__next absolute top-1/2 -right-2 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
           >
             <ChevronRight aria-hidden={true} />
           </button>
