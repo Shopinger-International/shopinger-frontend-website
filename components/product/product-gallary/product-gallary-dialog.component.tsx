@@ -124,7 +124,7 @@ useEffect(() => {
                 <button
                   onClick={goToPrev}
                   disabled={active_index <= 0}
-                  className="absolute top-1/2 left-6 z-10 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white shadow-sm transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300"
+                  className="absolute top-1/2 left-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
                 >
                   <ChevronLeft className="size-8" />
                 </button>
@@ -154,7 +154,7 @@ useEffect(() => {
                   disabled={
                     active_index >= variant_medias_with_title.length - 1
                   }
-                  className="absolute top-1/2 right-6 z-10 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white shadow-sm transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300"
+                  className="absolute top-1/2 right-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
                 >
                   <ChevronRight className="size-8" />
                 </button>

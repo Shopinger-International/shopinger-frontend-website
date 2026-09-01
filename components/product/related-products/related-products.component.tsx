@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 // types
 import type { FC } from "react";
 import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
@@ -24,6 +24,8 @@ type IProps = {
 const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
   const { data: related_products = [] } = useRelatedProducts(product_id);
     const [embla_ref, embla_api] = useEmblaCarousel({ loop: false, align: "start" })
+    const [can_scroll_prev, setCanScrollPrev] = useState(false);
+   const [can_scroll_next, setCanScrollNext] = useState(false);
 const goToPrev = useCallback(() => {
   embla_api?.scrollPrev();
 }, [embla_api]);
@@ -79,6 +81,26 @@ const goToNext = useCallback(() => {
       };
     });
   });
+
+  useEffect(() => {
+  if (!embla_api) return;
+
+  const updateScrollButtons = () => {
+    setCanScrollPrev(embla_api.canScrollPrev());
+    setCanScrollNext(embla_api.canScrollNext());
+  };
+
+  updateScrollButtons();
+
+  embla_api.on("select", updateScrollButtons);
+  embla_api.on("reInit", updateScrollButtons);
+
+  return () => {
+    embla_api.off("select", updateScrollButtons);
+    embla_api.off("reInit", updateScrollButtons);
+  };
+}, [embla_api]);
+if(related_products.length === 0) return null;
   return (
     <section className="mb-8" aria-labelledby="similar-products">
       <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6" >
@@ -90,12 +112,15 @@ const goToNext = useCallback(() => {
           className="relative mx-auto"
           role="region"
           aria-label="Related Products Region"
+          
         >
+
           {/* Left arrow */}
           <button
+          disabled={!can_scroll_prev}
             aria-label="Show previous products"
             onClick={goToPrev}
-            className="absolute top-1/2 -left-2 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
+            className="absolute top-1/2 -left-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
           >
             <ChevronLeft aria-hidden={true} />
           </button>
@@ -128,9 +153,10 @@ const goToNext = useCallback(() => {
 
           {/* Right arrow */}
           <button
+          disabled={!can_scroll_next}
             aria-label="Show more products"
             onClick={goToNext}
-            className="embla__next absolute top-1/2 -right-2 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
+            className="absolute top-1/2 -right-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
           >
             <ChevronRight aria-hidden={true} />
           </button>
