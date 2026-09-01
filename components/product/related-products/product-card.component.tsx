@@ -2,6 +2,7 @@ import Image from "next/image";
 // types
 import type { FC } from "react";
 import type IMedia from "@/types/media";
+import { cn } from "@/lib/utils";
 
 type IProps = {
   title: string;
@@ -9,12 +10,13 @@ type IProps = {
   thumbnail_title: string;
   selling_price: number;
   mrp: number;
+  className?: string;
 };
 
-const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp }) => {
+const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp, className }) => {
   const discount_percentage = Math.round(((mrp - selling_price) / mrp) * 100);
   return (
-    <article className="min-h-84 w-60 shrink-0 rounded-lg border border-gray-300 p-4">
+    <article className={cn("min-h-84 w-60 shrink-0 rounded-lg border border-gray-300 p-4", className)}>
       <div className="relative flex h-38 w-auto justify-center">
         <Image
           src={thumbnail.url}

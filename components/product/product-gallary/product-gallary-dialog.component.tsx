@@ -1,10 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 
 // types
 import type { FC } from "react";
 import type { IVariantMediaWithTitle } from "@/hoc/product/with-product-gallery-functionality.hoc";
-import type Swiper from "swiper";
 
 // external components
 import {
@@ -13,7 +12,6 @@ import {
   DialogBackdrop,
   DialogTitle,
 } from "@headlessui/react";
-import { Swiper as SwiperComponent, SwiperSlide } from "swiper/react";
 
 // helpers
 import clsx from "clsx";
@@ -21,12 +19,8 @@ import clsx from "clsx";
 // icons
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
-// modules
-import { Zoom } from "swiper/modules";
+import useEmblaCarousel from "embla-carousel-react";
 
-// css
-import "swiper/css";
-import "swiper/css/zoom";
 
 type IProps = {
   product_title: string;
@@ -44,7 +38,42 @@ const ProductGalleryDialog: FC<IProps> = ({
   selected_index,
 }) => {
   const [active_index, setActiveIndex] = useState(selected_index);
-  const swiper_ref = useRef<Swiper>(null);
+ const [embla_ref, embla_api] = useEmblaCarousel({
+  loop: false,
+  align: "start",
+  startIndex: selected_index,
+});
+
+const goToPrev = useCallback(() => {
+  embla_api?.scrollPrev();
+}, [embla_api]);
+
+const goToNext = useCallback(() => {
+  embla_api?.scrollNext();
+}, [embla_api]);
+
+const goToSlide = useCallback(
+  (index: number) => {
+    embla_api?.scrollTo(index);
+  },
+  [embla_api],
+);
+
+useEffect(() => {
+  if (!embla_api) return;
+
+  const onSelect = () => {
+    setActiveIndex(embla_api.selectedScrollSnap());
+  };
+
+  onSelect();
+
+  embla_api.on("select", onSelect);
+
+  return () => {
+    embla_api.off("select", onSelect);
+  };
+}, [embla_api]);
 
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-50">
@@ -70,10 +99,7 @@ const ProductGalleryDialog: FC<IProps> = ({
                 return (
                   <button
                     key={index}
-                    onClick={() => {
-                      swiper_ref.current?.slideTo(index);
-                      swiper_ref.current?.zoom.out();
-                    }}
+                    onClick={() => goToSlide(index)}
                     className={clsx(
                       "relative h-20 w-20 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-300",
                       is_active
@@ -96,41 +122,35 @@ const ProductGalleryDialog: FC<IProps> = ({
             <div className="order-1 flex min-w-0 flex-1 items-center justify-center md:order-2">
               <div className="relative h-full w-full overflow-hidden rounded-2xl border border-gray-300">
                 <button
-                  onClick={() => swiper_ref.current?.slidePrev()}
+                  onClick={goToPrev}
                   disabled={active_index <= 0}
                   className="absolute top-1/2 left-6 z-10 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white shadow-sm transition-all hover:scale-110 hover:bg-orange-600 disabled:bg-orange-300"
                 >
                   <ChevronLeft className="size-8" />
                 </button>
-                <SwiperComponent
-                  modules={[Zoom]}
-                  zoom={{ maxRatio: 3, toggle: true }}
-                  spaceBetween={10}
-                  slidesPerView={1}
-                  onSwiper={(swiper) => {
-                    swiper_ref.current = swiper;
-                  }}
-                  onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
-                  initialSlide={selected_index}
-                  className="h-full w-full"
-                >
-                  {variant_medias_with_title.map((item, index) => (
-                    <SwiperSlide key={index}>
-                      <div className="swiper-zoom-container h-full w-full">
-                        <Image
-                          src={item.media.url}
-                          alt={item.image_title}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </SwiperComponent>
-
+                <div
+    ref={embla_ref}
+  className="h-full w-full overflow-hidden"
+>
+  <div className="flex h-full">
+    {variant_medias_with_title.map((item, index) => (
+      <div
+        key={index}
+        className="relative h-full min-w-0 flex-[0_0_100%]"
+      >
+        <Image
+          src={item.media.url}
+          alt={item.image_title}
+          fill
+          className="object-contain"
+        />
+      </div>
+    ))}
+  </div>
+</div>
                 {/* Right arrow */}
                 <button
-                  onClick={() => swiper_ref.current?.slideNext()}
+                  onClick={goToNext}
                   disabled={
                     active_index >= variant_medias_with_title.length - 1
                   }
