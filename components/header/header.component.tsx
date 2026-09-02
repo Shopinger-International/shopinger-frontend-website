@@ -190,7 +190,7 @@ const Header: FC<{
           <LocationBlock className="hidden shrink-0 lg:flex" />
 
           <div className="flex w-full items-center gap-3">
-            <SearchBar />
+           {/* <SearchBar /> */}
             {!is_bottom_navigation_showing && (
               <Link
                 href="/cart-checkout"

@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useRouter } from "next/router";
 // types
 import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
@@ -73,6 +74,18 @@ const MainLayout: FC<{
     updateState,
   } = useAddressDrawerContext();
   const login_modal_state = useLoginModalContext();
+  const router = useRouter();
+ useEffect(() => {
+  if (!router.isReady) return;
+
+  if (router.pathname === "/") return;
+
+  const loginPopupShown = sessionStorage.getItem("login_popup_shown");
+
+  if (!loginPopupShown) {
+    login_modal_state.openModal({});
+  }
+}, [router.isReady, router.pathname]);
   const logout_modal_state = useLogoutModalContext();
 
   const { show: show_footer } = useContext(FooterStateContext);
@@ -106,17 +119,19 @@ const MainLayout: FC<{
       <main>
         <MegaMenuProvider />
         <CategoryDrawerProvider />
-        <LoginModal
-          open={login_modal_state.is_modal_open}
-          handleClose={() => {
-            login_modal_state.onCancel?.();
-            login_modal_state.closeModal();
-          }}
-          handleOnSuccess={(user) => {
-            login_modal_state.onSuccess?.(user);
-            login_modal_state.closeModal();
-          }}
-        />
+       <LoginModal
+  open={login_modal_state.is_modal_open}
+  handleClose={() => {
+    sessionStorage.setItem("login_popup_shown", "true");
+    login_modal_state.onCancel?.();
+    login_modal_state.closeModal();
+  }}
+  handleOnSuccess={(user) => {
+    sessionStorage.setItem("login_popup_shown", "true");
+    login_modal_state.onSuccess?.(user);
+    login_modal_state.closeModal();
+  }}
+/>
         <AlertPopup
           open={logout_modal_state.is_modal_open}
           title="Do you really want to logout?"

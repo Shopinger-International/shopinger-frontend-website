@@ -1,7 +1,6 @@
 // types
 import type { FC } from "react";
 import type IUser from "@/types/user";
-
 // icons
 import { X } from "lucide-react";
 
