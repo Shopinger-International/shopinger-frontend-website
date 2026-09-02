@@ -9,7 +9,6 @@ interface OTPInputProps {
   container_class_name?: string;
 }
 
-const EMPTY = " ";
 
 const OTPInput: FC<OTPInputProps> = ({
   value,
@@ -41,7 +40,7 @@ const OTPInput: FC<OTPInputProps> = ({
 
     setDigits(new_digits);
 
-    onChange(new_digits.join(EMPTY));
+    onChange(new_digits.join(""));
 
     input_refs.current[Math.min(pasted_value.length, max_length) - 1]?.focus();
   };
@@ -55,7 +54,7 @@ const OTPInput: FC<OTPInputProps> = ({
 
     setDigits(new_digits);
 
-    onChange(new_digits.join(EMPTY));
+    onChange(new_digits.join(""));
 
     if (digit && index < max_length - 1) {
       input_refs.current[index + 1]?.focus();
@@ -74,14 +73,14 @@ const OTPInput: FC<OTPInputProps> = ({
       if (digits[index]) {
         new_digits[index] = "";
         setDigits(new_digits);
-        onChange(new_digits.join(EMPTY));
+        onChange(new_digits.join(""));
         return;
       }
 
       if (index > 0) {
         new_digits[index - 1] = "";
         setDigits(new_digits);
-        onChange(new_digits.join(EMPTY));
+        onChange(new_digits.join(""));
 
         input_refs.current[index - 1]?.focus();
       }
@@ -97,7 +96,7 @@ const OTPInput: FC<OTPInputProps> = ({
       new_digits[index] = "";
 
       setDigits(new_digits);
-      onChange(new_digits.join(EMPTY));
+      onChange(new_digits.join(""));
 
       return;
     }
@@ -117,7 +116,7 @@ const OTPInput: FC<OTPInputProps> = ({
   return (
     <div
       className={clsx(
-        "mx-auto mt-2 flex w-full justify-center gap-2",
+        "mt-2 flex w-full justify-between gap-2",
         container_class_name,
       )}
     >
