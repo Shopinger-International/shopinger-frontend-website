@@ -26,8 +26,8 @@ import { X } from "lucide-react";
 const otp_verification_validation_schema = z.object({
   otp: z
     .string()
-    .min(6, "OTP should be six digit")
-    .max(6, "OTP should be six digit"),
+    .length(6, "OTP should be six digit")
+    .regex(/^\d{6}$/, "OTP should be six digit"),
 });
 
 interface OTPModalProps {
@@ -89,19 +89,14 @@ const OTPModal: FC<OTPModalProps> = ({
           >
             {({ values, setFieldValue, handleSubmit }) => (
               <form onSubmit={handleSubmit}>
-                <Field>
-                  <OTPInput
-                    value={values.otp}
-                    onChange={(val) => {
-                      console.log("value of otp", val);
-                      if (/^\d*$/.test(val)) {
-                        setFieldValue("otp", val);
-                      }
-                    }}
-                    maxLength={6}
-                    containerClassName="flex gap-2"
-                  />
-                </Field>
+                <OTPInput
+                  value={values.otp}
+                  onChange={(val) => {
+                    setFieldValue("otp", val, false);
+                  }}
+                  max_length={6}
+                  container_class_name="flex gap-2"
+                />
 
                 {/* Timer + Resend */}
                 <div className="my-4 flex items-center justify-between">
