@@ -116,7 +116,7 @@ const OTPInput: FC<OTPInputProps> = ({
   return (
     <div
       className={clsx(
-        "mx-auto mt-2 flex w-full justify-center gap-2",
+        "mt-2 flex w-full justify-between gap-2",
         container_class_name,
       )}
     >
