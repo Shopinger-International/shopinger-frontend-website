@@ -48,6 +48,7 @@ const OTPModal: FC<OTPModalProps> = ({
   children,
 }) => {
   const [timer, setTimer] = useState(60);
+  const [otp_reset_key, setOtpResetKey] = useState(0);
 
   // countdown
   useEffect(() => {
@@ -90,6 +91,7 @@ const OTPModal: FC<OTPModalProps> = ({
             {({ values, setFieldValue, handleSubmit }) => (
               <form onSubmit={handleSubmit}>
                 <OTPInput
+                key={otp_reset_key}
                   value={values.otp}
                   onChange={(val) => {
                     setFieldValue("otp", val, false);
@@ -129,7 +131,7 @@ const OTPModal: FC<OTPModalProps> = ({
                     "hover:bg-orange-600 hover:shadow-md",
                     "disabled:bg-orange-300",
                   )}
-                  disabled={is_pending || values["otp"].length < 6}
+                  disabled={is_pending || !/^\d{6}$/.test(values["otp"])}
                 >
                   {is_pending ? "Verifying..." : "Verify"}
                 </button>
