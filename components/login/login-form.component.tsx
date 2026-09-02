@@ -337,7 +337,7 @@ const LoginForm: FC<IProps> = ({
                             setFieldValue(field.name, val);
                           }
                         }}
-                        max_length={6}
+                          max_length={6}
                         container_class_name="flex gap-2"
                       />
                       {meta.touched && meta.error && (
@@ -374,7 +374,6 @@ const LoginForm: FC<IProps> = ({
                           onSuccess() {
                             setTimer(60);
                             resetForm();
-                            setOtpResetKey((prev) => prev + 1);
                           },
                         },
                       );
