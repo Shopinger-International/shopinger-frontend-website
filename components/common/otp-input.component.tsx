@@ -1,63 +1,143 @@
-// types
-import type { FC } from "react";
-import type { SlotProps } from "input-otp";
-
-// external component
-import { OTPInput as ExternalOTPInput } from "input-otp";
-
-// helpers
+import type { FC, KeyboardEvent } from "react";
+import { useRef, useState } from "react";
 import clsx from "clsx";
 
-function Slot(props: SlotProps) {
+interface OTPInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  max_length: number;
+  container_class_name?: string;
+}
+
+const EMPTY = " ";
+
+const OTPInput: FC<OTPInputProps> = ({
+  value,
+  onChange,
+  max_length,
+  container_class_name,
+}) => {
+  const input_refs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const [digits, setDigits] = useState<string[]>(() =>
+    Array.from({ length: max_length }, (_, index) => value[index] ?? ""),
+  );
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    event.preventDefault();
+
+    const pasted_value = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, max_length);
+
+    if (!pasted_value) return;
+
+    const new_digits = Array(max_length).fill("");
+
+    pasted_value.split("").forEach((digit, index) => {
+      new_digits[index] = digit;
+    });
+
+    setDigits(new_digits);
+
+    onChange(new_digits.join(EMPTY));
+
+    input_refs.current[Math.min(pasted_value.length, max_length) - 1]?.focus();
+  };
+
+  const handleChange = (index: number, inputValue: string) => {
+    const digit = inputValue.replace(/\D/g, "").slice(-1);
+
+    const new_digits = [...digits];
+
+    new_digits[index] = digit;
+
+    setDigits(new_digits);
+
+    onChange(new_digits.join(EMPTY));
+
+    if (digit && index < max_length - 1) {
+      input_refs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    event: KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === "Backspace") {
+      event.preventDefault();
+
+      const new_digits = [...digits];
+
+      if (digits[index]) {
+        new_digits[index] = "";
+        setDigits(new_digits);
+        onChange(new_digits.join(EMPTY));
+        return;
+      }
+
+      if (index > 0) {
+        new_digits[index - 1] = "";
+        setDigits(new_digits);
+        onChange(new_digits.join(EMPTY));
+
+        input_refs.current[index - 1]?.focus();
+      }
+
+      return;
+    }
+
+    if (event.key === "Delete") {
+      event.preventDefault();
+
+      const new_digits = [...digits];
+
+      new_digits[index] = "";
+
+      setDigits(new_digits);
+      onChange(new_digits.join(EMPTY));
+
+      return;
+    }
+
+    if (event.key === "ArrowLeft" && index > 0) {
+      event.preventDefault();
+      input_refs.current[index - 1]?.focus();
+      return;
+    }
+
+    if (event.key === "ArrowRight" && index < max_length - 1) {
+      event.preventDefault();
+      input_refs.current[index + 1]?.focus();
+    }
+  };
+
   return (
     <div
       className={clsx(
-        "relative h-12 w-full text-lg font-semibold sm:w-full",
-        "flex items-center justify-center",
-        "rounded-md border border-gray-300",
-        "transition-all duration-300",
-        props.isActive && "border-orange-500",
+        "mx-auto mt-2 flex w-full justify-center gap-2",
+        container_class_name,
       )}
     >
-      <div>{props.char ?? props.placeholderChar}</div>
-      {props.hasFakeCaret && <FakeCaret />}
-    </div>
-  );
-}
-
-function FakeCaret() {
-  return (
-    <div className="animate-caret-blink absolute inset-0 flex items-center justify-center">
-      <div className="h-8 w-px bg-black" />
-    </div>
-  );
-}
-
-const OTPInput: FC<{
-  value: string;
-  onChange: (val: string) => void;
-  maxLength: number;
-  containerClassName: string;
-}> = ({ value, onChange, maxLength, containerClassName }) => {
-  return (
-    <ExternalOTPInput
-      value={value}
-      onChange={onChange}
-      maxLength={maxLength}
-      containerClassName={containerClassName}
-      render={({ slots }) => (
-        <div
-          className="mx-auto mt-2 grid w-full gap-3"
-          style={{
-            gridTemplateColumns: `repeat(${maxLength}, minmax(0, 1fr))`,
+      {digits.map((digit, index) => (
+        <input
+          key={index}
+          onPaste={handlePaste}
+          ref={(element) => {
+            input_refs.current[index] = element;
           }}
-        >
-          {slots.map((slot, idx) => (
-            <Slot key={idx} {...slot} />
-          ))}
-        </div>
-      )}
-    />
+          value={digit}
+          maxLength={1}
+          inputMode="numeric"
+          pattern="[0-9]*"
+          onChange={(event) => handleChange(index, event.target.value)}
+          onKeyDown={(event) => handleKeyDown(index, event)}
+          className="h-12 min-w-0 flex-1 rounded-md border border-gray-300 text-center text-lg font-semibold transition-all outline-none focus:border-orange-500 sm:flex-1 md:flex-1 lg:h-12 lg:w-12 lg:flex-none"
+        />
+      ))}
+    </div>
   );
 };
 
