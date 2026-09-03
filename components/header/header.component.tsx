@@ -124,26 +124,43 @@ const Header: FC<{
 
     return () => observer.disconnect();
   }, []);
-
   useEffect(() => {
-    let prev_scroll_pos = window.pageYOffset;
-    function handleScroll() {
-      const current_scroll_pos = window.pageYOffset;
-      if (header_ref.current) {
-        if (current_scroll_pos > prev_scroll_pos) {
-          header_ref.current.style.top = "-64px";
-        } else {
-          header_ref.current.style.top = "0";
-        }
-      }
-      prev_scroll_pos = current_scroll_pos;
-    }
-    if (is_mobile) {
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }
-  }, [is_mobile]);
+    if (!is_mobile) return;
 
+    let prev_scroll_pos = window.scrollY;
+
+    const handleScroll = () => {
+      const current_scroll_pos = window.scrollY;
+
+      if (!header_ref.current) return;
+
+      // iOS rubber-band / pull-to-refresh
+      // Always keep the header visible at the top.
+      if (current_scroll_pos <= 0) {
+        header_ref.current.style.top = "0";
+        prev_scroll_pos = 0;
+        return;
+      }
+
+      if (current_scroll_pos > prev_scroll_pos) {
+        // Scrolling down
+        header_ref.current.style.top = "-64px";
+      } else if (current_scroll_pos < prev_scroll_pos) {
+        // Scrolling up
+        header_ref.current.style.top = "0";
+      }
+
+      prev_scroll_pos = current_scroll_pos;
+    };
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [is_mobile]);
   return (
     <header
       ref={header_ref}
