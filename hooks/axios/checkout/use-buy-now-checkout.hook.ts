@@ -13,6 +13,7 @@ import { enqueueSnackbar } from "notistack";
 type IRequest = {
   intent_id: string;
   address_id: number;
+  payment_mode?: "COD" | "ONLINE";
   gst?: number;
   delivery_fee?: number;
 };

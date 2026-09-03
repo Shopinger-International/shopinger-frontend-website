@@ -12,6 +12,7 @@ import { enqueueSnackbar } from "notistack";
 
 type IRequest = {
   address_id: number;
+  payment_mode: "COD" | "ONLINE";
 };
 
 type IResponse = {
