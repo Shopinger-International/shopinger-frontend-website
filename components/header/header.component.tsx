@@ -49,7 +49,7 @@ const LocationBlock: FC<{
       <div className="flex min-w-0 items-center gap-2 lg:flex-col lg:items-start lg:gap-0">
         {user_address ? (
           <>
-            <span className="hidden text-sm font-semibold lg:block">
+            <span className="hidden text-base font-semibold lg:block">
               Delivery in minutes*
             </span>
             <div className="flex w-full max-w-xs items-center gap-1 text-left text-xs">
@@ -79,7 +79,7 @@ const LocationBlock: FC<{
 
             {/* Desktop */}
             <>
-              <span className="hidden text-sm font-semibold lg:block">
+              <span className="hidden text-base font-semibold lg:block">
                 Delivery in minutes*
               </span>
               <span className="hidden text-xs lg:block">Add your location</span>
