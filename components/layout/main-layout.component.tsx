@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 // types
 import type { FC, ReactNode } from "react";
@@ -46,6 +46,7 @@ import { FooterStateContext } from "@/context";
 
 // helpers
 import clsx from "clsx";
+import { FaClosedCaptioning } from "react-icons/fa6";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800"],
@@ -64,121 +65,144 @@ const MainLayout: FC<{
   disable_side_filter = false,
   show_bottom_navigation = false,
 }) => {
-  const logout_mutation = useLogoutMutation();
-  const {
-    is_drawer_open: is_adddress_drawer_open,
-    is_modal_open: is_address_modal_open,
-    closeModal: closeAddressModal,
-    closeDrawer: closeAddressDrawer,
-    data: address_data,
-    updateState,
-  } = useAddressDrawerContext();
-  const login_modal_state = useLoginModalContext();
-  const router = useRouter();
- useEffect(() => {
+    const logout_mutation = useLogoutMutation();
+    const {
+      is_drawer_open: is_adddress_drawer_open,
+      is_modal_open: is_address_modal_open,
+      closeModal: closeAddressModal,
+      closeDrawer: closeAddressDrawer,
+      data: address_data,
+      updateState,
+    } = useAddressDrawerContext();
+    const login_modal_state = useLoginModalContext();
+    const router = useRouter();
+    const [login_popup_closed, setLoginPopupClosed] = useState(false);
+useEffect(() => {
   if (!router.isReady) return;
-
-  const isHomePage = router.pathname === "/";
-
-  if (isHomePage) return;
 
   const loginPopupShown = sessionStorage.getItem("login_popup_shown");
 
-  if (!loginPopupShown) {
-    login_modal_state.openModal({});
+  if (loginPopupShown) return;
+
+  if (router.pathname === "/") {
+    const timer = setTimeout(() => {
+      login_modal_state.openModal({});
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }
-}, [router.isReady, router.asPath]);
-  const logout_modal_state = useLogoutModalContext();
+}, [router.isReady, router.pathname]);
 
-  const { show: show_footer } = useContext(FooterStateContext);
-  const is_mobile = useIsMobile();
+useEffect(() => {
+  if (!router.isReady) return;
 
-  const openLoginModal = () => {
-    return new Promise<IUser>((resolve, reject) => {
-      login_modal_state.openModal({
-        onSuccess(user) {
-          resolve(user as IUser);
-        },
-        onCancel() {
-          reject();
-        },
+  const loginPopupShown = sessionStorage.getItem("login_popup_shown");
+  const loginPopupClosed = sessionStorage.getItem("login_popup_closed");
+
+  if (loginPopupShown) {
+    setLoginPopupClosed(false);
+    return;
+  }
+
+  if (router.pathname !== "/" && loginPopupClosed) {
+    setLoginPopupClosed(true);
+  }
+}, [router.isReady, router.pathname]);
+    const logout_modal_state = useLogoutModalContext();
+
+    const { show: show_footer } = useContext(FooterStateContext);
+    const is_mobile = useIsMobile();
+
+    const openLoginModal = () => {
+      return new Promise<IUser>((resolve, reject) => {
+        login_modal_state.openModal({
+          onSuccess(user) {
+            resolve(user as IUser);
+          },
+          onCancel() {
+            reject();
+          },
+        });
       });
-    });
-  };
+    };
 
-  return (
-    <div
-      className={clsx(
-        `${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900 lg:mb-0`,
-        show_bottom_navigation && "mb-16.5",
-      )}
-    >
+    return (
+      <div
+        className={clsx(
+          `${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900 lg:mb-0`,
+          show_bottom_navigation && "mb-16.5",
+        )}
+      >
       <Header
-        show_filter_sort_bar={show_filter_sort_bar}
-        disable_side_filter={disable_side_filter}
-        is_bottom_navigation_showing={show_bottom_navigation}
-      />
-      <main>
-        <MegaMenuProvider />
-        <CategoryDrawerProvider />
-       <LoginModal
-  open={login_modal_state.is_modal_open}
- handleClose={() => {
+  show_filter_sort_bar={show_filter_sort_bar}
+  disable_side_filter={disable_side_filter}
+  is_bottom_navigation_showing={show_bottom_navigation}
+  show_login_tooltip={login_popup_closed && router.pathname !== "/"}
+  on_login_click={() => login_modal_state.openModal({})}
+/>
+        <main>
+          <MegaMenuProvider />
+          <CategoryDrawerProvider />
+          <LoginModal
+            open={login_modal_state.is_modal_open}
+   handleClose={() => {
+  sessionStorage.setItem("login_popup_closed", "true");
+  setLoginPopupClosed(true);
   login_modal_state.onCancel?.();
   login_modal_state.closeModal();
 }}
-  handleOnSuccess={(user) => {
-    sessionStorage.setItem("login_popup_shown", "true");
-    login_modal_state.onSuccess?.(user);
-    login_modal_state.closeModal();
-  }}
-/>
-        <AlertPopup
-          open={logout_modal_state.is_modal_open}
-          title="Do you really want to logout?"
-          handleConfirmation={() => {
-            logout_mutation.mutate(undefined, {
-              onSuccess: logout_modal_state.onSuccess,
-            });
-          }}
-          handleCancellation={logout_modal_state.closeModal}
-        />
-        {is_mobile ? (
-          <MobileAddressModal
-            open={is_address_modal_open}
-            onClose={closeAddressModal}
-            initial_data={address_data ?? null}
-            handleLogin={openLoginModal}
-            handleOnSuccess={(address) => {
-              updateState?.({
-                address_id: address.id,
-                data: null,
-              });
-              is_adddress_drawer_open && closeAddressDrawer();
+            handleOnSuccess={(user) => {
+              sessionStorage.setItem("login_popup_shown", "true");
+              login_modal_state.onSuccess?.(user);
+              login_modal_state.closeModal();
             }}
           />
-        ) : (
-          <AddAddressModal
-            open={is_address_modal_open}
-            onClose={closeAddressModal}
-            initial_data={address_data ?? null}
-            handleLogin={openLoginModal}
-            handleOnSuccess={(address) => {
-              updateState?.({
-                address_id: address.id,
-                data: null,
+          <AlertPopup
+            open={logout_modal_state.is_modal_open}
+            title="Do you really want to logout?"
+            handleConfirmation={() => {
+              logout_mutation.mutate(undefined, {
+                onSuccess: logout_modal_state.onSuccess,
               });
-              is_adddress_drawer_open && closeAddressDrawer();
             }}
+            handleCancellation={logout_modal_state.closeModal}
           />
-        )}
-        <SelectAddressDrawer />
-        {children}
-      </main>
-      {show_bottom_navigation && <BottomMobileNav />}
-      {show_footer && <Footer />}
-    </div>
-  );
-};
+          {is_mobile ? (
+            <MobileAddressModal
+              open={is_address_modal_open}
+              onClose={closeAddressModal}
+              initial_data={address_data ?? null}
+              handleLogin={openLoginModal}
+              handleOnSuccess={(address) => {
+                updateState?.({
+                  address_id: address.id,
+                  data: null,
+                });
+                is_adddress_drawer_open && closeAddressDrawer();
+              }}
+            />
+          ) : (
+            <AddAddressModal
+              open={is_address_modal_open}
+              onClose={closeAddressModal}
+              initial_data={address_data ?? null}
+              handleLogin={openLoginModal}
+              handleOnSuccess={(address) => {
+                updateState?.({
+                  address_id: address.id,
+                  data: null,
+                });
+                is_adddress_drawer_open && closeAddressDrawer();
+              }}
+            />
+          )}
+          <SelectAddressDrawer />
+          {children}
+        </main>
+        {show_bottom_navigation && <BottomMobileNav />}
+        {show_footer && <Footer />}
+      </div>
+    );
+  };
 
 export default MainLayout;

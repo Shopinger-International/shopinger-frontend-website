@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useRef } from "react";
+import { useLayoutEffect, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -96,10 +96,14 @@ const Header: FC<{
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
   is_bottom_navigation_showing: boolean;
+  show_login_tooltip?: boolean;
+  on_login_click?: () => void;
 }> = ({
   show_filter_sort_bar,
   disable_side_filter = false,
   is_bottom_navigation_showing,
+  show_login_tooltip = false,
+  on_login_click,
 }) => {
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
@@ -146,10 +150,22 @@ const Header: FC<{
 
   return (
     <header
-      ref={header_ref}
-      className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
-      id="app-header"
-    >
+  ref={header_ref}
+  className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
+  id="app-header"
+>
+ {show_login_tooltip && (
+  <div className="absolute top-14 right-4 z-50 w-80 rounded-2xl bg-white p-5 shadow-xl">
+  <button
+  onClick={on_login_click}
+  className="w-full rounded-xl bg-orange-500 py-3 text-lg font-semibold text-white"
+>
+  Login
+</button>
+
+    
+  </div>
+)} 
       <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
