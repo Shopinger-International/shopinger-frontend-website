@@ -9,7 +9,6 @@ interface OTPInputProps {
   container_class_name?: string;
 }
 
-
 const OTPInput: FC<OTPInputProps> = ({
   value,
   onChange,
@@ -42,7 +41,7 @@ const OTPInput: FC<OTPInputProps> = ({
 
     onChange(new_digits.join(""));
 
-    input_refs.current[Math.min(pasted_value.length, max_length) - 1]?.focus();
+    focusInput(Math.min(pasted_value.length, max_length) - 1);
   };
 
   const handleChange = (index: number, inputValue: string) => {
@@ -57,7 +56,7 @@ const OTPInput: FC<OTPInputProps> = ({
     onChange(new_digits.join(""));
 
     if (digit && index < max_length - 1) {
-      input_refs.current[index + 1]?.focus();
+      focusInput(index + 1);
     }
   };
 
@@ -65,28 +64,32 @@ const OTPInput: FC<OTPInputProps> = ({
     index: number,
     event: KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (event.key === "Backspace") {
-      event.preventDefault();
+   if (event.key === "Backspace") {
+  event.preventDefault();
 
-      const new_digits = [...digits];
+  const new_digits = [...digits];
 
-      if (digits[index]) {
-        new_digits[index] = "";
-        setDigits(new_digits);
-        onChange(new_digits.join(""));
-        return;
-      }
+  if (digits[index]) {
+    // Clear current digit and stay here
+    new_digits[index] = "";
+    setDigits(new_digits);
+    onChange(new_digits.join(""));
+    return;
+  }
 
-      if (index > 0) {
-        new_digits[index - 1] = "";
-        setDigits(new_digits);
-        onChange(new_digits.join(""));
+  // Current input is already empty → move backward
+  if (index > 0) {
+    new_digits[index - 1] = "";
+    setDigits(new_digits);
+    onChange(new_digits.join(""));
 
-        input_refs.current[index - 1]?.focus();
-      }
+    input_refs.current[index - 1]?.focus({
+      preventScroll: true,
+    });
+  }
 
-      return;
-    }
+  return;
+}  
 
     if (event.key === "Delete") {
       event.preventDefault();
@@ -103,14 +106,18 @@ const OTPInput: FC<OTPInputProps> = ({
 
     if (event.key === "ArrowLeft" && index > 0) {
       event.preventDefault();
-      input_refs.current[index - 1]?.focus();
+      focusInput(index + 1);
       return;
     }
 
     if (event.key === "ArrowRight" && index < max_length - 1) {
       event.preventDefault();
-      input_refs.current[index + 1]?.focus();
+      focusInput(index + 1);
     }
+  };
+
+  const focusInput = (index: number) => {
+    input_refs.current[index]?.focus({ preventScroll: true });
   };
 
   return (
