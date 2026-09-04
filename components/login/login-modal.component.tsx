@@ -15,7 +15,7 @@ type IProps = {
 const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-50">
-    <DialogBackdrop className="fixed inset-0 bg-black/20 backdrop-blur-xs lg:bg-[#FFE2D0]" />
+   <DialogBackdrop className="fixed inset-0 bg-transparent" />
 
       <div className="fixed inset-0 flex items-end justify-center lg:items-center">
         <DialogPanel className="relative max-h-[95vh] w-full overflow-hidden rounded-none bg-white shadow-xl lg:w-max">
