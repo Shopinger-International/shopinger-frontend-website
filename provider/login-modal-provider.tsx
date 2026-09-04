@@ -1,13 +1,10 @@
-import { useRouter } from "next/router";
-import { useState, useContext } from "react";
-import { createContext } from "react";
+import { useState, useContext, createContext } from "react";
 
 // types
 import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
 
 // hooks
-import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 type ILoginModalState = {
   onSuccess?: (value: IUser) => void;
@@ -15,42 +12,48 @@ type ILoginModalState = {
 };
 
 type ILoginModalContext = ILoginModalState & {
+  is_modal_open: boolean;
+  setIsModalOpen: (value: boolean) => void;
   updateState?: (payload: Partial<ILoginModalState>) => void;
 };
 
-const LoginModalContext = createContext<ILoginModalContext>({});
+const LoginModalContext = createContext<ILoginModalContext>({
+  is_modal_open: false,
+  setIsModalOpen: () => {},
+});
 
 export const useLoginModalContext = () => {
-  const router = useRouter();
   const data = useContext(LoginModalContext);
-  const is_modal_open = router.query.login_modal === "1";
-  const { open, close } = useUIHistory();
-  return {
-    is_modal_open,
-    openModal: (payload: Partial<ILoginModalState>) => {
-      open({
-        login_modal: "1",
-      });
-      data.updateState?.(payload);
-    },
-    closeModal: () => {
-      close();
-      data.updateState?.({});
-    },
-    ...data,
-  };
+
+return {
+  ...data,
+
+  openModal: (payload: Partial<ILoginModalState>) => {
+    data.setIsModalOpen(true);
+    data.updateState?.(payload);
+  },
+
+  closeModal: () => {
+    data.setIsModalOpen(false);
+    data.updateState?.({});
+  },
+};
 };
 
 const LoginModalProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>(
-    {},
-  );
+  const [login_modal_state, setLoginModalState] =
+    useState<ILoginModalState>({});
+
+  const [is_modal_open, setIsModalOpen] = useState(false);
+
   return (
     <LoginModalContext.Provider
       value={{
         ...login_modal_state,
+        is_modal_open,
+        setIsModalOpen,
         updateState: (payload) =>
           setLoginModalState((prev) => ({
             ...prev,
@@ -62,4 +65,5 @@ const LoginModalProvider: FC<{
     </LoginModalContext.Provider>
   );
 };
+
 export default LoginModalProvider;
