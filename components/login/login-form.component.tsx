@@ -41,7 +41,7 @@ import useVerifyLoginOtp from "@/hooks/axios/login/verify-login-otp-mutation";
 
 export type IInitialValues = {
   identifier: string;
-  country: ICountry | undefined;
+  country: ICountry | undefined; 
 };
 
 const initial_values = {
@@ -134,9 +134,9 @@ const LoginForm: FC<IProps> = ({
   return (
     <div
       className={clsx(
-        "relative flex w-full flex-col items-center space-y-3 bg-white",
+"relative flex w-full flex-col items-center space-y-3 bg-white",
         is_modal
-          ? "px-6 py-6"
+         ? "px-6 py-6"  
           : "min-h-136 px-6 lg:w-max lg:min-w-108 lg:px-12",
       )}
     >

@@ -17,8 +17,8 @@ const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
     <Dialog open={open} onClose={handleClose} className="relative z-50">
    <DialogBackdrop className="fixed inset-0 bg-transparent" />
 
-      <div className="fixed inset-0 flex items-end justify-center lg:items-center">
-        <DialogPanel className="relative max-h-[95vh] w-full overflow-hidden rounded-none bg-white shadow-xl lg:w-max">
+  <div className="fixed inset-0 flex items-center justify-center pt-10">
+     <DialogPanel className="relative mx-auto max-h-[95vh] w-full overflow-hidden rounded-none bg-white shadow-xl lg:w-max">
           {/* Close Button */}
           <button
             className="absolute top-3 right-3 z-50 flex size-8 items-center justify-center text-gray-600 hover:text-gray-900"
