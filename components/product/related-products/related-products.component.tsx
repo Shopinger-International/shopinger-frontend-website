@@ -1,22 +1,11 @@
 import Link from "next/link";
-import { useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 // types
 import type { FC } from "react";
 import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // local components
 import ProductCard from "@/components/product/related-products/product-card.component";
-
-// external components
-import { Swiper, SwiperSlide } from "swiper/react";
-
-// hooks
-import useIsMobile from "@/hooks/common/use-is-mobile.hook";
-
-// swiper modules
-import { Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
 
 // icons
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -26,6 +15,7 @@ import { generateSlug } from "@/helpers/product.helper";
 
 // api hooks
 import useRelatedProducts from "@/hooks/axios/product/use-related-products.hook";
+import useEmblaCarousel from "embla-carousel-react";
 
 type IProps = {
   product_id: number;
@@ -33,8 +23,16 @@ type IProps = {
 };
 const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
   const { data: related_products = [] } = useRelatedProducts(product_id);
-  const is_mobile = useIsMobile();
-  const swiper_ref = useRef<any>(null);
+    const [embla_ref, embla_api] = useEmblaCarousel({ loop: false, align: "start" })
+    const [can_scroll_prev, setCanScrollPrev] = useState(false);
+   const [can_scroll_next, setCanScrollNext] = useState(false);
+const goToPrev = useCallback(() => {
+  embla_api?.scrollPrev();
+}, [embla_api]);
+
+const goToNext = useCallback(() => {
+  embla_api?.scrollNext();
+}, [embla_api]);
   const formatted_related_products = related_products.flatMap((product) => {
     const { variants, title, brand, product_medias } = product;
     return variants.map((variant) => {
@@ -83,9 +81,29 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
       };
     });
   });
+
+  useEffect(() => {
+  if (!embla_api) return;
+
+  const updateScrollButtons = () => {
+    setCanScrollPrev(embla_api.canScrollPrev());
+    setCanScrollNext(embla_api.canScrollNext());
+  };
+
+  updateScrollButtons();
+
+  embla_api.on("select", updateScrollButtons);
+  embla_api.on("reInit", updateScrollButtons);
+
+  return () => {
+    embla_api.off("select", updateScrollButtons);
+    embla_api.off("reInit", updateScrollButtons);
+  };
+}, [embla_api]);
+if(related_products.length === 0) return null;
   return (
     <section className="mb-8" aria-labelledby="similar-products">
-      <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
+      <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6" >
         <h2 className="font-semibold lg:text-xl" id="similar-products">
           Similar Products
         </h2>
@@ -94,36 +112,31 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
           className="relative mx-auto"
           role="region"
           aria-label="Related Products Region"
+          
         >
+
           {/* Left arrow */}
           <button
+          disabled={!can_scroll_prev}
             aria-label="Show previous products"
-            onClick={() => swiper_ref.current?.slidePrev()}
-            className="absolute top-1/2 -left-2 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
+            onClick={goToPrev}
+            className="absolute top-1/2 -left-5 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-2 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
           >
             <ChevronLeft aria-hidden={true} />
           </button>
 
-          <Swiper
-            role="list"
-            modules={[Navigation]}
-            spaceBetween={is_mobile ? 16 : 20}
-            slidesPerView={"auto"}
-            slidesPerGroup={is_mobile ? 1 : 4}
-            grabCursor
-            onSwiper={(swiper) => (swiper_ref.current = swiper)}
+          <div
+          className="embla__viewport overflow-hidden"
+          ref={embla_ref}
           >
+            <div className="embla__container flex gap-6">
             {formatted_related_products.map(
               (
                 { title, src, variant_medias_with_title, selling_price, mrp },
                 index,
               ) => (
-                <SwiperSlide
-                  role="listitem"
-                  key={`related-product-${index}`}
-                  className="w-auto!"
-                >
-                  <Link href={src}>
+
+                  <Link href={src} className="embla__slide">
                     <ProductCard
                       title={title}
                       thumbnail={variant_medias_with_title[0].media}
@@ -132,16 +145,18 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
                       mrp={mrp}
                     />
                   </Link>
-                </SwiperSlide>
+
               ),
             )}
-          </Swiper>
+            </div>
+          </div>
 
           {/* Right arrow */}
           <button
+          disabled={!can_scroll_next}
             aria-label="Show more products"
-            onClick={() => swiper_ref.current?.slideNext()}
-            className="absolute top-1/2 -right-2 z-10 hidden -translate-y-10 items-center justify-center rounded-full bg-orange-500 p-3 text-white shadow-lg transition-all hover:scale-110 hover:bg-orange-600 md:flex"
+            onClick={goToNext}
+            className="absolute top-1/2 -right-5 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-2 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
           >
             <ChevronRight aria-hidden={true} />
           </button>
