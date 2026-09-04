@@ -79,10 +79,10 @@ const MainLayout: FC<{
     const [login_popup_closed, setLoginPopupClosed] = useState(false);
 useEffect(() => {
   if (!router.isReady) return;
+const loginPopupShown = sessionStorage.getItem("login_popup_shown");
+const loginPopupClosed = sessionStorage.getItem("login_popup_closed");
 
-  const loginPopupShown = sessionStorage.getItem("login_popup_shown");
-
-  if (loginPopupShown) return;
+if (loginPopupShown || loginPopupClosed) return;
 
   if (router.pathname === "/") {
     const timer = setTimeout(() => {
