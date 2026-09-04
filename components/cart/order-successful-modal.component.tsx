@@ -1,5 +1,6 @@
 
 import { useEffect, useState, Fragment } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import type { FC } from "react";
 import {
@@ -27,15 +28,27 @@ const OrderSuccessfulModal: FC<IProps> = ({
   onClose,
 }) => {
   const [animate, setAnimate] = useState(false);
+  const router = useRouter();
 
-  useEffect(() => {
-    if (is_open) {
-      const timer = setTimeout(() => setAnimate(true), 100);
-      return () => clearTimeout(timer);
-    }
 
+useEffect(() => {
+  if (is_open && order_id) {
+    const animationTimer = setTimeout(() => {
+      setAnimate(true);
+    }, 500);
+
+    const redirectTimer = setTimeout(() => {
+      router.push(`/order-detail/${order_id}`);
+    }, 5000);
+
+    return () => {
+      clearTimeout(animationTimer);
+      clearTimeout(redirectTimer);
+    };
+  } else {
     setAnimate(false);
-  }, [is_open]);
+  }
+}, [is_open, order_id, router]);
 
   return (
     <Transition show={is_open} as={Fragment}>
@@ -176,12 +189,12 @@ const OrderSuccessfulModal: FC<IProps> = ({
                       : "translate-y-3 opacity-0"
                   }`}
                 >
-                  <button
-                    onClick={onClose}
+                  <Link
+                    href={`/order-detail/${order_id}`}
                     className="flex-1 rounded-lg border border-gray-300 py-2.5 text-sm font-medium text-gray-600 transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-100 active:translate-y-0"
                   >
                     Close
-                  </button>
+                  </Link>
 
                   <Link
                     href={`/order-detail/${order_id}`}

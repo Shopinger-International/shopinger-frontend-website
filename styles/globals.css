@@ -98,6 +98,15 @@
   }
 }
 
+@keyframes wipe {
+  0% {
+    left: -40%;
+  }
+  60%,
+  100% {
+    left: 120%;
+  }
+}
 .animate-marquee {
   animation: marquee 25s linear infinite;
 }

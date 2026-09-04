@@ -19,6 +19,7 @@ type IResponse = {
   order_id: number;
   reservation_id: string;
   reused: boolean;
+  order: any;
 };
 
 const useCartCheckoutMutation = () => {

@@ -1,9 +1,11 @@
+import { useState } from "react";
+
 // const
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
 import { FREE_SHIPPING_THRESHOLD } from "@/constants/charges.const";
 
 // types
-import { useState, type FC } from "react";
+import { type FC } from "react";
 import type { IAddress } from "@/types/address";
 import type { IResponse as IVerifyPaymentResponse } from "@/hooks/axios/cart/verify-payment-mutation.hook";
 
@@ -58,7 +60,7 @@ const CheckoutSummary: FC<IProps> = ({
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
   const verify_payment_mutation = useVerifyPaymentMutation();
   const { data: user_detail } = useUserDetails();
-  const [paymentMethod, setPaymentMethod] = useState<"ONLINE" | "COD">(
+  const [payment_method, setPaymentMethod] = useState<"ONLINE" | "COD">(
     "ONLINE",
   );
   const user_id = user_detail?.id;
@@ -168,16 +170,16 @@ const CheckoutSummary: FC<IProps> = ({
         <div className="space-y-3">
           <label
             className={`flex cursor-pointer items-center rounded-md border p-4 ${
-              paymentMethod === "ONLINE"
+              payment_method === "ONLINE"
                 ? "border-orange-500 bg-orange-50"
                 : "border-gray-200"
             }`}
           >
             <input
               type="radio"
-              name="paymentMethod"
+              name="payment_method"
               value="ONLINE"
-              checked={paymentMethod === "ONLINE"}
+              checked={payment_method === "ONLINE"}
               onChange={() => setPaymentMethod("ONLINE")}
               className="h-4 w-4 accent-orange-500"
             />
@@ -192,16 +194,16 @@ const CheckoutSummary: FC<IProps> = ({
 
           <label
             className={`flex cursor-pointer items-center rounded-md border p-4 ${
-              paymentMethod === "COD"
+              payment_method === "COD"
                 ? "border-orange-500 bg-orange-50"
                 : "border-gray-200"
             }`}
           >
             <input
               type="radio"
-              name="paymentMethod"
+              name="payment_method"
               value="COD"
-              checked={paymentMethod === "COD"}
+              checked={payment_method === "COD"}
               onChange={() => setPaymentMethod("COD")}
               className="h-4 w-4 accent-orange-500"
             />
@@ -222,7 +224,7 @@ const CheckoutSummary: FC<IProps> = ({
       <div className="mt-6 space-y-4">
         <button
           type="button"
-          className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white"
+          className="relative w-full cursor-pointer overflow-hidden rounded-md bg-orange-500 py-2 font-semibold text-white before:absolute before:inset-y-0 before:-left-full before:w-1/3 before:skew-x-[-20deg] before:animate-[wipe_1.5s_ease-in-out_infinite] before:bg-white/50 before:blur-sm"
           onClick={() => {
             if (!user_detail) return openLoginModal({});
             if (!selected_address) {
@@ -233,12 +235,12 @@ const CheckoutSummary: FC<IProps> = ({
               cart_checkout_mutation.mutate(
                 {
                   address_id: selected_address.id,
-                  payment_mode: paymentMethod,
+                  payment_mode: payment_method,
                 },
                 {
                   onSuccess(data) {
                     const order_id = data.order_id;
-                    if (paymentMethod === "COD") {
+                    if (payment_method === "COD") {
                       if (user_id) {
                         data.order.order_items.forEach(
                           ({ product_id, variant_id, quantity, ...item }) => {
@@ -319,12 +321,12 @@ const CheckoutSummary: FC<IProps> = ({
                 {
                   address_id: selected_address.id,
                   intent_id: intent_id as string,
-                  payment_mode: paymentMethod,
+                  payment_mode: payment_method,
                 },
                 {
                   onSuccess(data) {
                     const order_id = data.order_id;
-                    if (paymentMethod === "COD") {
+                    if (payment_method === "COD") {
                       if (user_id) {
                         data.order.order_items.forEach(
                           ({ product_id, variant_id, quantity, ...item }) => {
@@ -403,7 +405,7 @@ const CheckoutSummary: FC<IProps> = ({
           }}
         >
           <span className="relative z-10">
-            {paymentMethod === "COD" ? "Place Order" : "Proceed to Pay"}
+            {payment_method === "COD" ? "Place Order" : "Proceed to Pay"}
           </span>
         </button>
       </div>
