@@ -1,6 +1,5 @@
 import { useLayoutEffect, useEffect, useRef } from "react";
 import Link from "next/link";
-import  { ZapIcon } from "lucide-react";
 import Image from "next/image";
 // types
 import type { FC } from "react";
@@ -13,7 +12,7 @@ import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 
 // icons
-import { Menu, ChevronRight } from "lucide-react";
+import { Menu, ChevronRight, CircleUserIcon, MapPin, ZapIcon } from "lucide-react";
 
 // helpers
 import { clsx } from "clsx";
@@ -25,8 +24,7 @@ import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
-// icons
-import { CircleUserIcon, MapPin } from "lucide-react";
+import {  } from "lucide-react";
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
