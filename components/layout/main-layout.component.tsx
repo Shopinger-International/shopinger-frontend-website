@@ -78,9 +78,9 @@ const MainLayout: FC<{
   const [login_popup_closed, setLoginPopupClosed] = useState(false);
   useEffect(() => {
     if (!router.isReady) return;
-    const loginPopupShown = sessionStorage.getItem("login_popup_shown");
-    const loginPopupClosed = sessionStorage.getItem("login_popup_closed");
-    if (loginPopupShown || loginPopupClosed) return;
+    const login_popup_shown = sessionStorage.getItem("login_popup_shown");
+    const login_popup_closed = sessionStorage.getItem("login_popup_closed");
+    if (login_popup_shown || login_popup_closed) return;
     if (router.pathname === "/") {
       const timer = window.setTimeout(() => {
         login_modal_state.openModal({});

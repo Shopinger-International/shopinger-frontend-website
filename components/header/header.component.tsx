@@ -109,7 +109,7 @@ const Header: FC<{
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
-  const [is_login_tooltip_dismissed, set_is_login_tooltip_dismissed] =
+  const [is_login_tooltip_dismissed, setIsLoginTooltipDismissed] =
     useState(false);
 
   useEffect(() => {
@@ -118,7 +118,7 @@ const Header: FC<{
     }
 
     const timeout_id = window.setTimeout(() => {
-      set_is_login_tooltip_dismissed(true);
+      setIsLoginTooltipDismissed(true);
     }, 11000);
 
     return () => window.clearTimeout(timeout_id);

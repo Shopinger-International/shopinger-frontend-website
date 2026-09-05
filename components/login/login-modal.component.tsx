@@ -1,8 +1,15 @@
-import type { FC } from "react";
+//types
 import type IUser from "@/types/user";
+import type { FC } from "react";
+
+//icons
 import { X } from "lucide-react";
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+
+//hooks
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+
+//external components
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import LoginForm from "@/components/login/login-form.component";
 
 
