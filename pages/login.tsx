@@ -4,7 +4,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import type { GetServerSideProps } from "next";
 
 // local components
-import LoginInfoSection from "@/components/login/login-info-section.component";
+
 import LoginForm from "@/components/login/login-form.component";
 import Tooltip from "@/components/common/tooltip.component";
 
@@ -56,7 +56,6 @@ const Login: NextPageWithLayout = () => {
           </Tooltip>
         </div>
         <div className="flex h-full w-full max-w-5xl overflow-hidden border border-gray-300 shadow-lg lg:h-max lg:w-max lg:rounded-3xl">
-          <LoginInfoSection />
           <LoginForm />
         </div>
       </div>

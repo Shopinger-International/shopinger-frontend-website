@@ -143,7 +143,7 @@ const LoginForm: FC<IProps> = ({
       {!is_modal && (
         <button
           onClick={() => router.push("/")}
-          className="text-md absolute top-6 right-6 inline-block font-semibold text-orange-500 lg:hidden"
+          className="text-md absolute top-6 right-6 inline-block font-semibold text-orange-500"
         >
           SKIP
         </button>

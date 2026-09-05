@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 // types
 import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
@@ -73,6 +74,20 @@ const MainLayout: FC<{
     updateState,
   } = useAddressDrawerContext();
   const login_modal_state = useLoginModalContext();
+  const router = useRouter();
+  const [login_popup_closed, setLoginPopupClosed] = useState(false);
+  useEffect(() => {
+    if (!router.isReady) return;
+    const loginPopupShown = sessionStorage.getItem("login_popup_shown");
+    const loginPopupClosed = sessionStorage.getItem("login_popup_closed");
+    if (loginPopupShown || loginPopupClosed) return;
+    if (router.pathname === "/") {
+      const timer = window.setTimeout(() => {
+        login_modal_state.openModal({});
+      }, 2000);
+      return () => window.clearTimeout(timer);
+    }
+  }, [router.isReady, router.pathname, login_modal_state]);
   const logout_modal_state = useLogoutModalContext();
 
   const { show: show_footer } = useContext(FooterStateContext);
@@ -102,6 +117,8 @@ const MainLayout: FC<{
         show_filter_sort_bar={show_filter_sort_bar}
         disable_side_filter={disable_side_filter}
         is_bottom_navigation_showing={show_bottom_navigation}
+        show_login_tooltip={login_popup_closed && router.pathname !== "/"}
+        onLoginClick={() => login_modal_state.openModal({})}
       />
       <main>
         <MegaMenuProvider />
@@ -109,10 +126,13 @@ const MainLayout: FC<{
         <LoginModal
           open={login_modal_state.is_modal_open}
           handleClose={() => {
+            sessionStorage.setItem("login_popup_closed", "true");
+            setLoginPopupClosed(true);
             login_modal_state.onCancel?.();
             login_modal_state.closeModal();
           }}
           handleOnSuccess={(user) => {
+            sessionStorage.setItem("login_popup_shown", "true");
             login_modal_state.onSuccess?.(user);
             login_modal_state.closeModal();
           }}
@@ -138,7 +158,9 @@ const MainLayout: FC<{
                 address_id: address.id,
                 data: null,
               });
-              is_adddress_drawer_open && closeAddressDrawer();
+              if (is_adddress_drawer_open) {
+                closeAddressDrawer();
+              }
             }}
           />
         ) : (
@@ -152,7 +174,9 @@ const MainLayout: FC<{
                 address_id: address.id,
                 data: null,
               });
-              is_adddress_drawer_open && closeAddressDrawer();
+              if (is_adddress_drawer_open) {
+                closeAddressDrawer();
+              }
             }}
           />
         )}
