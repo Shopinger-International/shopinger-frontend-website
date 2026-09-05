@@ -97,13 +97,13 @@ const Header: FC<{
   disable_side_filter?: boolean;
   is_bottom_navigation_showing: boolean;
   show_login_tooltip?: boolean;
-  on_login_click?: () => void;
+  onLoginClick?: () => void;
 }> = ({
   show_filter_sort_bar,
   disable_side_filter = false,
   is_bottom_navigation_showing,
   show_login_tooltip = false,
-  on_login_click,
+  onLoginClick,
 }) => {
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
@@ -174,7 +174,7 @@ const Header: FC<{
       {!is_mobile && is_login_tooltip_visible && (
         <div className="login-tooltip-jerk absolute top-14 right-27 z-50 w-24 rounded-lg bg-white p-2 shadow-lg">
           <button
-            onClick={on_login_click}
+            onClick={onLoginClick}
             className="h-10 w-full rounded-lg bg-orange-500 text-sm font-semibold text-white"
           >
             Login

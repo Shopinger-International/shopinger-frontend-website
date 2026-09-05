@@ -46,7 +46,6 @@ import { FooterStateContext } from "@/context";
 
 // helpers
 import clsx from "clsx";
-import { FaClosedCaptioning } from "react-icons/fa6";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800"],
@@ -81,33 +80,14 @@ const MainLayout: FC<{
     if (!router.isReady) return;
     const loginPopupShown = sessionStorage.getItem("login_popup_shown");
     const loginPopupClosed = sessionStorage.getItem("login_popup_closed");
-
     if (loginPopupShown || loginPopupClosed) return;
-
     if (router.pathname === "/") {
-      const timer = setTimeout(() => {
+      const timer = window.setTimeout(() => {
         login_modal_state.openModal({});
       }, 2000);
-
-      return () => clearTimeout(timer);
+      return () => window.clearTimeout(timer);
     }
-  }, [router.isReady, router.pathname]);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-
-    const loginPopupShown = sessionStorage.getItem("login_popup_shown");
-    const loginPopupClosed = sessionStorage.getItem("login_popup_closed");
-
-    if (loginPopupShown) {
-      setLoginPopupClosed(false);
-      return;
-    }
-
-    if (router.pathname !== "/" && loginPopupClosed) {
-      setLoginPopupClosed(true);
-    }
-  }, [router.isReady, router.pathname]);
+  }, [router.isReady, router.pathname, login_modal_state]);
   const logout_modal_state = useLogoutModalContext();
 
   const { show: show_footer } = useContext(FooterStateContext);
@@ -138,7 +118,7 @@ const MainLayout: FC<{
         disable_side_filter={disable_side_filter}
         is_bottom_navigation_showing={show_bottom_navigation}
         show_login_tooltip={login_popup_closed && router.pathname !== "/"}
-        on_login_click={() => login_modal_state.openModal({})}
+        onLoginClick={() => login_modal_state.openModal({})}
       />
       <main>
         <MegaMenuProvider />
@@ -178,7 +158,9 @@ const MainLayout: FC<{
                 address_id: address.id,
                 data: null,
               });
-              is_adddress_drawer_open && closeAddressDrawer();
+              if (is_adddress_drawer_open) {
+                closeAddressDrawer();
+              }
             }}
           />
         ) : (
@@ -192,7 +174,9 @@ const MainLayout: FC<{
                 address_id: address.id,
                 data: null,
               });
-              is_adddress_drawer_open && closeAddressDrawer();
+              if (is_adddress_drawer_open) {
+                closeAddressDrawer();
+              }
             }}
           />
         )}
