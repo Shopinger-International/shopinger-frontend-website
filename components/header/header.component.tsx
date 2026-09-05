@@ -1,5 +1,6 @@
-import { useLayoutEffect, useEffect, useRef } from "react";
+import { useLayoutEffect, useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import Zap, { ZapIcon } from "lucide-react";
 import Image from "next/image";
 // types
 import type { FC } from "react";
@@ -26,69 +27,94 @@ import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
 // icons
 import { CircleUserIcon, MapPin } from "lucide-react";
-
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
   const { address_id, openDrawer } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
+
   const user_address = user_details?.user_addresses?.find(
     (address) => address.id == address_id,
   );
 
+  const delivery_time = user_address ? "45" : user_details ? "30" : "10";
+
   return (
     <button
       onClick={openDrawer}
-      className={clsx("items-center gap-2 text-white", className)}
+      className={clsx("min-w-0 items-center text-white", className)}
       aria-label={
         user_address
           ? `Update delivery location. Current location: ${user_address.state} ${user_address.pincode}`
           : "Add delivery location"
       }
     >
-      <div className="flex min-w-0 items-center gap-2 lg:flex-col lg:items-start lg:gap-0">
-        {user_address ? (
-          <>
-            <span className="hidden text-sm font-semibold lg:block">
-              Delivery in minutes*
-            </span>
-            <div className="flex w-full max-w-xs items-center gap-1 text-left text-xs">
-              <MapPin
-                aria-hidden={true}
-                className="size-3 shrink-0 text-white"
-              />
-              <span className="block truncate lg:hidden">
-                {user_address.house_number
-                  ? `${user_address.house_number}, `
-                  : ""}
-                {user_address.area}
-              </span>
+      {/* ================= MOBILE ================= */}
+      <div className="flex w-full min-w-0 items-center gap-2 lg:hidden">
+        {/* Location */}
+        <div className="flex min-w-0 flex-1 items-center gap-1">
+          <MapPin aria-hidden={true} className="size-3 shrink-0 text-white" />
 
-              <span className="hidden truncate lg:inline-block lg:max-w-44">
-                {user_address.house_number
-                  ? `${user_address.house_number}, `
-                  : ""}
-                {user_address.area}
+          <span className="min-w-0 truncate text-xs">
+            {user_address
+              ? user_address.house_number
+                ? `${user_address.house_number}, ${user_address.area}`
+                : user_address.area
+              : "Choose delivery location"}
+          </span>
+          {/* Arrow */}
+          <ChevronRight className="size-4 shrink-0" aria-hidden={true} />
+        </div>
+
+        {/* Delivery */}
+        <div className="flex shrink-0 items-center gap-1">
+          <div>
+            <span className="text-[11px] font-semibold whitespace-nowrap">
+              Delivery in
+            </span>
+            <div className="flex flex-row items-center gap-1">
+              <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
+                <ZapIcon className="size-3" /> {delivery_time} MIN
               </span>
             </div>
-          </>
-        ) : (
-          <>
-            {/* Mobile */}
-            <span className="text-sm lg:hidden">Choose delivery location</span>
-
-            {/* Desktop */}
-            <>
-              <span className="hidden text-sm font-semibold lg:block">
-                Delivery in minutes*
-              </span>
-              <span className="hidden text-xs lg:block">Add your location</span>
-            </>
-          </>
-        )}
+          </div>
+        </div>
       </div>
 
-      <ChevronRight className="size-4 shrink-0 lg:hidden" aria-hidden />
+      {/* ================= DESKTOP ================= */}
+      <div className="hidden lg:flex lg:flex-col lg:items-start">
+        {/* Delivery time */}
+        <div className="flex items-center gap-1">
+          <span className="text-sm font-semibold">Delivery in</span>
+
+          <span
+            className={clsx(
+              "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
+            )}
+          >
+            <span className="flex items-center gap-1">
+              <ZapIcon size={14} />
+              {delivery_time} MIN
+            </span>
+          </span>
+        </div>
+
+        {/* Location */}
+        {user_address ? (
+          <div className="mt-0.5 flex w-full max-w-xs items-center gap-1 text-left text-xs">
+            <MapPin aria-hidden={true} className="size-3 shrink-0 text-white" />
+
+            <span className="max-w-44 truncate">
+              {user_address.house_number
+                ? `${user_address.house_number}, `
+                : ""}
+              {user_address.area}
+            </span>
+          </div>
+        ) : (
+          <span className="mt-0.5 text-xs">Add your location</span>
+        )}
+      </div>
     </button>
   );
 };
@@ -144,7 +170,7 @@ const Header: FC<{
 
       if (current_scroll_pos > prev_scroll_pos) {
         // Scrolling down
-        header_ref.current.style.top = "-64px";
+        header_ref.current.style.top = "-96px";
       } else if (current_scroll_pos < prev_scroll_pos) {
         // Scrolling up
         header_ref.current.style.top = "0";
