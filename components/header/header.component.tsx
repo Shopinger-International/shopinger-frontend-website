@@ -24,7 +24,7 @@ import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
-import {  } from "lucide-react";
+
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
