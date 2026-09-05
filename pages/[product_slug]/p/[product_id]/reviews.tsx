@@ -9,6 +9,7 @@ import type IReview from "@/types/review";
 import type { DehydratedState } from "@tanstack/react-query";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
 import type IProduct from "@/types/product";
+import type { ISource } from "@/types/review";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -31,6 +32,7 @@ import { getProduct } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 export type IReportModalState = {
   open: boolean;
   review_id?: number;
+  source?: ISource;
 };
 
 type IProps = {
@@ -101,6 +103,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
       <ReportModal
         review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
+        source={report_modal_state.source}
         onClose={() => {
           setReportModalState({
             open: false,
@@ -164,12 +167,13 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
                 key={`product-review-${review.id}`}
                 product_id={product_id}
                 filter_state={filter_state}
-                handleReportModalState={({ open, review_id }) =>
+                handleReportModalState={({ open, review_id, source }) =>
                   setReportModalState({
                     open,
                     ...(review_id
                       ? {
                           review_id,
+                          source,
                         }
                       : {}),
                   })

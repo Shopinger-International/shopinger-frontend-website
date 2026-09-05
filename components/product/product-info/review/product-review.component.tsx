@@ -32,6 +32,7 @@ const ProductReview: FC<IProps> = ({
   user,
   rating,
   title,
+  source,
   comment,
   created_at,
   helpful_count,
@@ -78,12 +79,14 @@ const ProductReview: FC<IProps> = ({
               if (is_reacted) {
                 delete_review_reaction_mutation.mutate({
                   review_id: id,
+                  source
                 });
                 return;
               }
               if (is_logged_in) {
                 react_to_review_mutation.mutate({
                   review_id: id,
+                  source,
                 });
                 return;
               }
@@ -92,6 +95,7 @@ const ProductReview: FC<IProps> = ({
                 onSuccess: () => {
                   react_to_review_mutation.mutate({
                     review_id: id,
+                    source,
                   });
                 },
               });

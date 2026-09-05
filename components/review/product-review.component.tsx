@@ -5,6 +5,7 @@ import type { FC } from "react";
 import type IReview from "@/types/review";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
+import type { ISource } from "@/types/review";
 
 // local components
 import Rating from "@/components/common/rating.component";
@@ -28,7 +29,11 @@ import { useLoginModalContext } from "@/provider/login-modal-provider";
 type IProps = IReview & {
   product_id: number;
   filter_state: IFilterType;
-  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
+  handleReportModalState: ({
+    open,
+    review_id,
+    source,
+  }: IReportModalState) => void;
 };
 
 const ProductReview: FC<IProps> = ({
@@ -36,6 +41,7 @@ const ProductReview: FC<IProps> = ({
   title,
   comment,
   rating,
+  source,
   user,
   review_medias,
   variant_snapshot,
@@ -46,6 +52,7 @@ const ProductReview: FC<IProps> = ({
   filter_state,
   handleReportModalState,
 }) => {
+  console.log("value of source", source);
   const { openModal: openLoginModal } = useLoginModalContext();
   const react_to_review_mutation = useReactToReviewMutation(
     product_id,
@@ -116,12 +123,14 @@ const ProductReview: FC<IProps> = ({
             if (is_reacted) {
               delete_review_reaction_mutation.mutate({
                 review_id: id,
+                source,
               });
               return;
             }
             if (is_logged_in) {
               react_to_review_mutation.mutate({
                 review_id: id,
+                source,
               });
               return;
             }
@@ -130,6 +139,7 @@ const ProductReview: FC<IProps> = ({
               onSuccess: () => {
                 react_to_review_mutation.mutate({
                   review_id: id,
+                  source,
                 });
               },
             });
@@ -148,6 +158,7 @@ const ProductReview: FC<IProps> = ({
             handleReportModalState({
               open: true,
               review_id: id,
+              source,
             })
           }
         >

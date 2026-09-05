@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
 import type { IProductReviewsPageType } from "@/hooks/axios/review/use-product-reviews.hook";
+import type { ISource } from "@/types/review";
 
 // helpers
 import Axios from "@/lib/axios/private.lib";
@@ -15,6 +16,7 @@ type IResponse = {
 };
 type IRequestPayload = {
   review_id: number;
+  source: ISource;
 };
 
 const useReactToReviewMutation = (
@@ -23,11 +25,15 @@ const useReactToReviewMutation = (
 ) => {
   const query_client = useQueryClient();
   return useMutation<IResponse, AxiosError<IResponse>, IRequestPayload>({
-    async mutationFn({ review_id }) {
+    async mutationFn({ review_id, source }) {
       const response = await Axios.post<IResponse>(
         `/react-to-review/${review_id}`,
+        null,
         {
-          is_helpful: true,
+          params: {
+            is_helpful: true,
+            source,
+          },
         },
       );
       return response.data;
