@@ -109,6 +109,21 @@ const Header: FC<{
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
+  const [is_login_tooltip_visible, set_is_login_tooltip_visible] =
+    useState(false);
+  useEffect(() => {
+    set_is_login_tooltip_visible(false);
+
+    if (!show_login_tooltip || is_mobile) return;
+
+    set_is_login_tooltip_visible(true);
+
+    const timeout_id = window.setTimeout(() => {
+      set_is_login_tooltip_visible(false);
+    }, 11000);
+
+    return () => window.clearTimeout(timeout_id);
+  }, [show_login_tooltip, is_mobile]);
 
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
@@ -150,20 +165,58 @@ const Header: FC<{
 
   return (
     <header
-  ref={header_ref}
-  className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
-  id="app-header"
->
-  {show_login_tooltip && (
-<div className="absolute top-14 right-[108px] z-50 w-24 rounded-lg bg-white p-2 shadow-lg">
-    <button
-      onClick={on_login_click}
-      className="h-10 w-full rounded-lg bg-orange-500 text-sm font-semibold text-white"
+      ref={header_ref}
+      className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
+      id="app-header"
     >
-      Login
-    </button>
-  </div>
-)}
+      {!is_mobile && is_login_tooltip_visible && (
+        <div className="login-tooltip-jerk absolute top-14 right-[108px] z-50 w-24 rounded-lg bg-white p-2 shadow-lg">
+          <button
+            onClick={on_login_click}
+            className="h-10 w-full rounded-lg bg-orange-500 text-sm font-semibold text-white"
+          >
+            Login
+          </button>
+        </div>
+      )}
+      <style jsx>{`
+        .login-tooltip-jerk {
+          position: absolute;
+        }
+
+        .login-tooltip-jerk::before {
+          content: "";
+          position: absolute;
+          top: -8px;
+          right: 24px;
+          border-right: 8px solid transparent;
+          border-bottom: 8px solid white;
+          border-left: 8px solid transparent;
+        }
+
+        @keyframes login-tooltip-jerk {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+
+          25% {
+            transform: translateY(-4px);
+          }
+
+          50% {
+            transform: translateY(3px);
+          }
+
+          75% {
+            transform: translateY(-2px);
+          }
+        }
+
+        .login-tooltip-jerk {
+          animation: login-tooltip-jerk 1.2s ease-in-out infinite;
+        }
+      `}</style>
       <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
@@ -195,6 +248,7 @@ const Header: FC<{
           </Link>
         </div>
 
+        
         {/* CENTER: Location + Searchbar */}
         <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-8">
           {/* Mobile view of LocationBlock */}
@@ -204,7 +258,7 @@ const Header: FC<{
           <LocationBlock className="hidden shrink-0 lg:flex" />
 
           <div className="flex w-full items-center gap-3">
-           {/* <SearchBar /> */}
+            <SearchBar />
             {!is_bottom_navigation_showing && (
               <Link
                 href="/cart-checkout"

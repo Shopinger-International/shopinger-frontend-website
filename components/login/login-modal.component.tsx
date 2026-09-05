@@ -3,7 +3,6 @@ import type IUser from "@/types/user";
 import { X } from "lucide-react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
-import LoginInfoSection from "@/components/login/login-info-section.component";
 import LoginForm from "@/components/login/login-form.component";
 
 type IProps = {
@@ -15,10 +14,10 @@ type IProps = {
 const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-50">
-<DialogBackdrop className="fixed inset-0 bg-black/50" />
+      <DialogBackdrop className="fixed inset-0 bg-black/50" />
 
- <div className="fixed inset-0 flex items-end justify-center lg:items-center lg:pt-10">
-     <DialogPanel className="relative mx-auto max-h-[95vh] w-full overflow-hidden rounded-none bg-white shadow-xl lg:w-max">
+      <div className="fixed inset-0 flex items-end justify-center lg:items-center lg:pt-10">
+        <DialogPanel className="relative mx-auto max-h-[95vh] w-full overflow-hidden rounded-none bg-white shadow-xl lg:w-max">
           {/* Close Button */}
           <button
             className="absolute top-3 right-3 z-50 flex size-8 items-center justify-center text-gray-600 hover:text-gray-900"
@@ -30,7 +29,6 @@ const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
 
           {/* Desktop Login */}
           <div className="hidden lg:flex">
-            <LoginInfoSection />
 
             <LoginForm handleOnSuccess={handleOnSuccess} />
           </div>
