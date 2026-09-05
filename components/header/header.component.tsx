@@ -150,7 +150,6 @@ const Header: FC<{
 
     return () => observer.disconnect();
   }, []);
-
   useEffect(() => {
     if (!is_mobile) return;
 
