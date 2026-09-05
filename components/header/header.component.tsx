@@ -1,5 +1,6 @@
-import { useLayoutEffect, useEffect, useRef } from "react";
+import { useLayoutEffect, useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import Zap, { ZapIcon } from "lucide-react";
 import Image from "next/image";
 // types
 import type { FC } from "react";
@@ -36,7 +37,7 @@ const LocationBlock: FC<{
     (address) => address.id == address_id,
   );
 
-  const delivery_time = user_address ? "30" : user_details ? "30" : "10";
+  const delivery_time = user_address ? "45" : user_details ? "30" : "10";
 
   return (
     <button
@@ -67,13 +68,18 @@ const LocationBlock: FC<{
 
         {/* Delivery */}
         <div className="flex shrink-0 items-center gap-1">
-          <span className="text-[11px] font-semibold whitespace-nowrap">
+          <div>
+<span className="text-[11px] font-semibold whitespace-nowrap">
             Delivery in
           </span>
-
-          <span className="rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
-            {delivery_time} MIN
+              <div className="flex flex-row items-center gap-1">
+ <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
+          <ZapIcon className = "size-3" /> {delivery_time} MIN
           </span>
+              </div>
+          </div>
+          
+         
         </div>
       </div>
 
@@ -83,8 +89,15 @@ const LocationBlock: FC<{
         <div className="flex items-center gap-1">
           <span className="text-sm font-semibold">Delivery in</span>
 
-          <span className="rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white">
-            {delivery_time} minutes
+          <span
+            className={clsx(
+              "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
+            )}
+          >
+            <span className="flex gap-1 items-center">
+            <ZapIcon size={14} />{delivery_time} MIN
+            </span>
+          
           </span>
         </div>
 
@@ -140,7 +153,7 @@ const Header: FC<{
     return () => observer.disconnect();
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     if (!is_mobile) return;
 
     let prev_scroll_pos = window.scrollY;
@@ -160,7 +173,7 @@ const Header: FC<{
 
       if (current_scroll_pos > prev_scroll_pos) {
         // Scrolling down
-        header_ref.current.style.top = "-70px";
+        header_ref.current.style.top = "-96px";
       } else if (current_scroll_pos < prev_scroll_pos) {
         // Scrolling up
         header_ref.current.style.top = "0";
