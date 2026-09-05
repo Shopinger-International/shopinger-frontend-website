@@ -69,17 +69,15 @@ const LocationBlock: FC<{
         {/* Delivery */}
         <div className="flex shrink-0 items-center gap-1">
           <div>
-<span className="text-[11px] font-semibold whitespace-nowrap">
-            Delivery in
-          </span>
-              <div className="flex flex-row items-center gap-1">
- <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
-          <ZapIcon className = "size-3" /> {delivery_time} MIN
-          </span>
-              </div>
+            <span className="text-[11px] font-semibold whitespace-nowrap">
+              Delivery in
+            </span>
+            <div className="flex flex-row items-center gap-1">
+              <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
+                <ZapIcon className="size-3" /> {delivery_time} MIN
+              </span>
+            </div>
           </div>
-          
-         
         </div>
       </div>
 
@@ -94,10 +92,10 @@ const LocationBlock: FC<{
               "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
             )}
           >
-            <span className="flex gap-1 items-center">
-            <ZapIcon size={14} />{delivery_time} MIN
+            <span className="flex items-center gap-1">
+              <ZapIcon size={14} />
+              {delivery_time} MIN
             </span>
-          
           </span>
         </div>
 
