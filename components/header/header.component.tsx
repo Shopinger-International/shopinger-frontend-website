@@ -109,21 +109,23 @@ const Header: FC<{
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
-  const [is_login_tooltip_visible, set_is_login_tooltip_visible] =
+  const [is_login_tooltip_dismissed, set_is_login_tooltip_dismissed] =
     useState(false);
+
   useEffect(() => {
-    set_is_login_tooltip_visible(false);
-
-    if (!show_login_tooltip || is_mobile) return;
-
-    set_is_login_tooltip_visible(true);
+    if (!show_login_tooltip || is_mobile) {
+      return;
+    }
 
     const timeout_id = window.setTimeout(() => {
-      set_is_login_tooltip_visible(false);
+      set_is_login_tooltip_dismissed(true);
     }, 11000);
 
     return () => window.clearTimeout(timeout_id);
   }, [show_login_tooltip, is_mobile]);
+
+  const is_login_tooltip_visible =
+    show_login_tooltip && !is_mobile && !is_login_tooltip_dismissed;
 
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
@@ -170,7 +172,7 @@ const Header: FC<{
       id="app-header"
     >
       {!is_mobile && is_login_tooltip_visible && (
-        <div className="login-tooltip-jerk absolute top-14 right-[108px] z-50 w-24 rounded-lg bg-white p-2 shadow-lg">
+        <div className="login-tooltip-jerk absolute top-14 right-27 z-50 w-24 rounded-lg bg-white p-2 shadow-lg">
           <button
             onClick={on_login_click}
             className="h-10 w-full rounded-lg bg-orange-500 text-sm font-semibold text-white"
@@ -248,7 +250,6 @@ const Header: FC<{
           </Link>
         </div>
 
-        
         {/* CENTER: Location + Searchbar */}
         <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-8">
           {/* Mobile view of LocationBlock */}
