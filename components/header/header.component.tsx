@@ -1,6 +1,6 @@
-import { useLayoutEffect, useEffect, useState, useRef } from "react";
+import { useLayoutEffect, useEffect, useRef } from "react";
 import Link from "next/link";
-import Zap, { ZapIcon } from "lucide-react";
+import  { ZapIcon } from "lucide-react";
 import Image from "next/image";
 // types
 import type { FC } from "react";
