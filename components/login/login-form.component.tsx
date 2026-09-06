@@ -104,13 +104,17 @@ const otp_schema = z.object({
 type IProps = {
   is_modal?: boolean;
   heading_text?: string;
+  show_login_popup: boolean;
   handleOnSuccess?: (user: IUser) => void;
+  handleOnCancel?: () => void;
 };
 
 const LoginForm: FC<IProps> = ({
   is_modal = false,
   heading_text,
+  show_login_popup,
   handleOnSuccess,
+  handleOnCancel,
 }) => {
   const query_client = useQueryClient();
   const send_otp_mutation = useSendOTPMutation();
@@ -140,10 +144,14 @@ const LoginForm: FC<IProps> = ({
           : "min-h-136 px-6 lg:w-max lg:min-w-108 lg:px-12",
       )}
     >
-      {!is_modal && (
+      {!is_modal && !show_login_popup && (
         <button
-          onClick={() => router.push("/")}
-          className="text-md absolute top-6 right-6 inline-block font-semibold text-orange-500 lg:hidden"
+          type="button"
+          onClick={() => {
+            router.push("/");
+            handleOnCancel?.();
+          }}
+          className="text-md absolute top-6 right-6 inline-block cursor-pointer font-semibold text-orange-500"
         >
           SKIP
         </button>

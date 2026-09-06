@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 // types
 import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
@@ -45,6 +45,8 @@ import { FooterStateContext } from "@/context";
 
 // helpers
 import clsx from "clsx";
+import LoginForm from "../login/login-form.component";
+import { useRouter } from "next/router";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800"],
@@ -77,7 +79,8 @@ const MainLayout: FC<{
 
   const { show: show_footer } = useContext(FooterStateContext);
   const is_mobile = useIsMobile();
-
+  const router = useRouter();
+  const [show_login_popup, setShowLoginPopup] = useState(true);
   const openLoginModal = () => {
     return new Promise<IUser>((resolve, reject) => {
       login_modal_state.openModal({
@@ -90,7 +93,30 @@ const MainLayout: FC<{
       });
     });
   };
+  useEffect(() => {
+    if (!router.isReady) return;
 
+    const is_home = router.pathname === "/";
+    const login_popup_closed = sessionStorage.getItem("login_popup_closed");
+
+    setShowLoginPopup(!login_popup_closed);
+
+    if (is_home && !login_popup_closed) {
+      openLoginModal();
+    }
+  }, [router.isReady, router.pathname]);
+
+  useEffect(() => {
+    if (login_modal_state.is_modal_open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [login_modal_state.is_modal_open]);
   return (
     <div
       className={clsx(
@@ -108,11 +134,17 @@ const MainLayout: FC<{
         <CategoryDrawerProvider />
         <LoginModal
           open={login_modal_state.is_modal_open}
+          show_login_popup={show_login_popup}
+          is_modal={is_mobile}
           handleClose={() => {
+            sessionStorage.setItem("login_popup_closed", "true");
+
             login_modal_state.onCancel?.();
             login_modal_state.closeModal();
           }}
           handleOnSuccess={(user) => {
+            sessionStorage.setItem("login_popup_closed", "true");
+
             login_modal_state.onSuccess?.(user);
             login_modal_state.closeModal();
           }}
