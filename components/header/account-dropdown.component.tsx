@@ -23,7 +23,11 @@ import { clsx } from "clsx";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import { useLogoutModalContext } from "@/provider/logout-modal-provider";
 
-const AccountDropdown: FC = () => {
+type IProps = {
+  show_login_tooltip: boolean;
+};
+
+const AccountDropdown: FC<IProps> = ({ show_login_tooltip }) => {
   const { data: user_details } = useUserDetails();
   const { openModal: openLogoutModal } = useLogoutModalContext();
   return (
@@ -122,26 +126,42 @@ const AccountDropdown: FC = () => {
               )}
             >
               <CircleUserRound className="size-6" />
+
               <span className="max-w-28 truncate">
                 {user_details.name?.split(" ")[0] ?? "Account"}
               </span>
             </button>
           ) : (
-            <button
-              className={clsx(
-                "flex items-center gap-2 rounded-full px-3 py-2 text-white",
-                "transition hover:bg-white/10 focus:outline-none",
-              )}
-            >
-              <CircleUserRound className="size-6" strokeWidth={1.5} />
-              <span className="font-semibold">Login</span>
-              <Triangle
+            <div className="relative">
+              <button
                 className={clsx(
-                  "size-2.5 fill-white transition-transform",
-                  open ? "rotate-0" : "rotate-180",
+                  "flex items-center gap-2 rounded-full px-3 py-2 text-white",
+                  "transition hover:bg-white/10 focus:outline-none",
                 )}
-              />
-            </button>
+              >
+                <CircleUserRound className="size-6" strokeWidth={1.5} />
+
+                <span className="font-semibold">Login</span>
+
+                <Triangle
+                  className={clsx(
+                    "size-2.5 fill-white transition-transform",
+                    open ? "rotate-0" : "rotate-180",
+                  )}
+                />
+              </button>
+
+              {show_login_tooltip && (
+                <div className="pointer-events-none absolute top-full right-1 z-[100] mt-2 -ml-[50%] w-max">
+                  <div className="login-tooltip">
+                    <div className="relative rounded-md border-8 border-white bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-lg">
+                      Login
+                      <span className="absolute -top-2 left-1/2 h-0 w-0 -translate-x-1/2 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent" />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           )
         }
       </Tooltip>

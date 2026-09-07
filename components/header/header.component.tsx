@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useRef } from "react";
+import { useLayoutEffect, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -24,7 +24,6 @@ import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
-
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
@@ -35,7 +34,7 @@ const LocationBlock: FC<{
     (address) => address.id == address_id,
   );
 
-  const delivery_time = user_address ? "45" : user_details ? "30" : "10";
+  const delivery_time = user_details ? "45" : "10";
 
   return (
     <button
@@ -72,7 +71,7 @@ const LocationBlock: FC<{
             </span>
             <div className="flex flex-row items-center gap-1">
               <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
-               {delivery_time} MIN 
+                {delivery_time} MIN
               </span>
             </div>
           </div>
@@ -90,9 +89,7 @@ const LocationBlock: FC<{
               "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
             )}
           >
-            <span className="flex items-center gap-1">
-              {delivery_time} MIN
-            </span>
+            <span className="flex items-center gap-1">{delivery_time} MIN</span>
           </span>
         </div>
 
@@ -125,6 +122,7 @@ const Header: FC<{
   is_bottom_navigation_showing,
 }) => {
   const is_mobile = useIsMobile();
+  const [show_login_tooltip, setShowLoginTooltip] = useState(true);
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
@@ -147,6 +145,7 @@ const Header: FC<{
 
     return () => observer.disconnect();
   }, []);
+
   useEffect(() => {
     if (!is_mobile) return;
 
@@ -184,6 +183,23 @@ const Header: FC<{
       window.removeEventListener("scroll", handleScroll);
     };
   }, [is_mobile]);
+
+  useEffect(() => {
+    if (is_mobile) return;
+    const session_tooltip = sessionStorage.getItem("show_login_tooltip");
+    if (session_tooltip === "false") {
+      setShowLoginTooltip(false);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setShowLoginTooltip(false);
+      sessionStorage.setItem("show_login_toolip", "false");
+    }, 20000);
+
+    return () => clearTimeout(timeout);
+  }, [is_mobile]);
+
   return (
     <header
       ref={header_ref}
@@ -252,7 +268,7 @@ const Header: FC<{
         {/* RIGHT: Actions */}
         <div className="order-2 flex items-center justify-end gap-8 lg:order-3">
           <div className="hidden lg:inline">
-            <AccountDropdown />
+            <AccountDropdown show_login_tooltip={show_login_tooltip} />
           </div>
           <Link
             href="/cart-checkout"
