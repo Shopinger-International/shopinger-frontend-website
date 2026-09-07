@@ -31,12 +31,6 @@ const useUserAddresses = () => {
       const user_addresses = await getUserAddresses();
       return user_addresses;
     },
-    select(data) {
-      return data.map((item) => ({
-        ...item,
-        delivery_instructions: item.delivery_instructions ?? "",
-      }));
-    },
   });
 };
 export default useUserAddresses;
