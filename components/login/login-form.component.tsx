@@ -145,7 +145,7 @@ const LoginForm: FC<IProps> = ({
         <button
           onClick={() => router.push("/")}
           className={clsx(
-            "text-md absolute top-6 right-6 inline-block font-semibold text-orange-500",
+            "text-md absolute top-6 right-6 inline-block font-semibold text-orange-500 cursor-pointer",
             !is_login_page && "lg:hidden",
           )}
         >
