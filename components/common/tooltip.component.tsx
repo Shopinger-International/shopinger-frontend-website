@@ -118,7 +118,9 @@ const Tooltip: FC<TooltipProps> = ({
                 filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
               }}
             />
-            {content({ handleClose: () => setOpen(false) })}
+            <div className="overflow-hidden rounded-lg">
+              {content({ handleClose: () => setOpen(false) })}
+            </div>
           </div>
         </FloatingPortal>
       )}
