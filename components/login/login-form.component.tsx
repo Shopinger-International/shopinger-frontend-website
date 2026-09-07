@@ -116,6 +116,7 @@ const LoginForm: FC<IProps> = ({
   const send_otp_mutation = useSendOTPMutation();
   const verify_otp_mutation = useVerifyLoginOtp();
   const router = useRouter();
+  const is_login_page = router.isReady && router.pathname == "/login";
   const [show_otp, setShowOtp] = useState<boolean>(false);
   const [user_details, setUserDetails] =
     useState<IInitialValues>(initial_values);
@@ -140,10 +141,13 @@ const LoginForm: FC<IProps> = ({
           : "min-h-136 px-6 lg:w-max lg:min-w-108 lg:px-12",
       )}
     >
-      {!is_modal && (
+      {(!is_modal || is_login_page) && (
         <button
           onClick={() => router.push("/")}
-          className="text-md absolute top-6 right-6 inline-block font-semibold text-orange-500"
+          className={clsx(
+            "text-md absolute top-6 right-6 inline-block font-semibold text-orange-500 cursor-pointer",
+            !is_login_page && "lg:hidden",
+          )}
         >
           SKIP
         </button>

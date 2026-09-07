@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+// types
 import type { FC } from "react";
 import type IUser from "@/types/user";
 import { X } from "lucide-react";
@@ -5,6 +7,8 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import LoginForm from "@/components/login/login-form.component";
 
+// hooks
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
 type IProps = {
   open: boolean;
@@ -13,7 +17,9 @@ type IProps = {
 };
 
 const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
+  const router = useRouter();
   const is_mobile = useIsMobile();
+  const is_home = router.isReady && router.pathname == "/";
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/50" />
@@ -26,23 +32,16 @@ const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
             onClick={handleClose}
             aria-label="Close login"
           >
-            <X className="size-6" />
-          </button>}
+            <X />
+          </button>
 
-          {/* Desktop Login */}
-          <div className="hidden lg:flex">
-
-            <LoginForm handleOnSuccess={handleOnSuccess} />
-          </div>
-
-          {/* Mobile Login */}
-          <div className="lg:hidden">
-            <LoginForm
-              is_modal={true}
-              heading_text="Login to complete your order"
-              handleOnSuccess={handleOnSuccess}
-            />
-          </div>
+          <LoginForm
+            is_modal={!is_home || is_mobile}
+            heading_text="Login to complete your order"
+            handleOnSuccess={(user) => {
+              handleOnSuccess(user);
+            }}
+          />
         </DialogPanel>
       </div>
     </Dialog>

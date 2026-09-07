@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 // types
 import type { FC, ReactElement } from "react";
 import type { Placement } from "@floating-ui/react";
@@ -32,6 +32,7 @@ type TooltipProps = {
   offset_distance?: number;
   placement: Placement;
   show_tooltip?: boolean;
+  default_open?: boolean;
 };
 
 const Tooltip: FC<TooltipProps> = ({
@@ -41,6 +42,7 @@ const Tooltip: FC<TooltipProps> = ({
   offset_distance = 20,
   placement,
   show_tooltip = true,
+  default_open = false,
 }) => {
   const [open, setOpen] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
@@ -81,6 +83,10 @@ const Tooltip: FC<TooltipProps> = ({
     role,
   ]);
 
+  useEffect(() => {
+    setOpen(default_open);
+  }, [default_open]);
+
   return (
     <>
       <span
@@ -112,7 +118,9 @@ const Tooltip: FC<TooltipProps> = ({
                 filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
               }}
             />
-            {content({ handleClose: () => setOpen(false) })}
+            <div className="overflow-hidden rounded-lg">
+              {content({ handleClose: () => setOpen(false) })}
+            </div>
           </div>
         </FloatingPortal>
       )}

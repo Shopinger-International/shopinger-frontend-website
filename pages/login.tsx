@@ -4,7 +4,6 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import type { GetServerSideProps } from "next";
 
 // local components
-
 import LoginForm from "@/components/login/login-form.component";
 import Tooltip from "@/components/common/tooltip.component";
 

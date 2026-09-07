@@ -131,6 +131,57 @@
   color: white !important;
 }
 
+@keyframes login-tooltip-jiggle {
+  0%,
+  80% {
+    translate: 0 0;
+    opacity: 1;
+  }
+
+  2% {
+    translate: -3px 0;
+  }
+
+  4% {
+    translate: 3px 0;
+  }
+
+  6% {
+    translate: -3px 0;
+  }
+
+  8% {
+    translate: 3px 0;
+  }
+
+  10% {
+    translate: -2px 0;
+  }
+
+  12% {
+    translate: 2px 0;
+  }
+
+  14%,
+  80% {
+    translate: 0 0;
+  }
+
+  80.1% {
+    opacity: 1;
+  }
+
+  82%,
+  100% {
+    opacity: 0;
+    translate: 0 0;
+  }
+}
+
+.tooltip-jiggle {
+  animation: login-tooltip-jiggle 4s linear infinite;
+}
+
 @media (max-width: 1024px) {
   body.snackbar-offset .notistack-SnackbarContainer {
     bottom: 72px !important;

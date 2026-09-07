@@ -133,7 +133,11 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
                   { title, src, variant_medias_with_title, selling_price, mrp },
                   index,
                 ) => (
-                  <Link href={src} className="embla__slide" key={index}>
+                  <Link
+                    href={src}
+                    className="embla__slide"
+                    key={`related-product-${index}`}
+                  >
                     <ProductCard
                       title={title}
                       thumbnail={variant_medias_with_title[0].media}

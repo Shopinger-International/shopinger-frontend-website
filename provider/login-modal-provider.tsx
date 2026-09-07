@@ -5,6 +5,8 @@ import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
 
 // hooks
+import useIsMounted from "@/hooks/common/use-is-mounted.hook";
+import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 type ILoginModalState = {
   onSuccess?: (value: IUser) => void;
@@ -24,20 +26,23 @@ const LoginModalContext = createContext<ILoginModalContext>({
 
 export const useLoginModalContext = () => {
   const data = useContext(LoginModalContext);
-
-return {
-  ...data,
-
-  openModal: (payload: Partial<ILoginModalState>) => {
-    data.setIsModalOpen(true);
-    data.updateState?.(payload);
-  },
-
-  closeModal: () => {
-    data.setIsModalOpen(false);
-    data.updateState?.({});
-  },
-};
+  const is_mounted = useIsMounted();
+  const is_modal_open = is_mounted && router.query.login_modal === "1";
+  const { open, close } = useUIHistory();
+  return {
+    is_modal_open,
+    openModal: (payload: Partial<ILoginModalState>) => {
+      open({
+        login_modal: "1",
+      });
+      data.updateState?.(payload);
+    },
+    closeModal: () => {
+      close();
+      data.updateState?.({});
+    },
+    ...data,
+  };
 };
 
 const LoginModalProvider: FC<{
