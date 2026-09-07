@@ -53,7 +53,7 @@ const LocationBlock: FC<{
         <div className="flex min-w-0 flex-1 items-center gap-1">
           <MapPin aria-hidden={true} className="size-3 shrink-0 text-white" />
 
-          <span className="min-w-0 truncate text-xs">
+          <span className="min-w-0 truncate text-sm">
             {user_address
               ? user_address.house_number
                 ? `${user_address.house_number}, ${user_address.area}`
