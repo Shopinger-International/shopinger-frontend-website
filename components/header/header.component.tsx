@@ -12,7 +12,7 @@ import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 
 // icons
-import { Menu, ChevronRight, CircleUserIcon, MapPin, ZapIcon } from "lucide-react";
+import { Menu, ChevronRight, CircleUserIcon, MapPin } from "lucide-react";
 
 // helpers
 import { clsx } from "clsx";
@@ -52,7 +52,7 @@ const LocationBlock: FC<{
         <div className="flex min-w-0 flex-1 items-center gap-1">
           <MapPin aria-hidden={true} className="size-3 shrink-0 text-white" />
 
-          <span className="min-w-0 truncate text-xs">
+          <span className="min-w-0 truncate text-sm">
             {user_address
               ? user_address.house_number
                 ? `${user_address.house_number}, ${user_address.area}`
@@ -71,7 +71,7 @@ const LocationBlock: FC<{
             </span>
             <div className="flex flex-row items-center gap-1">
               <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
-                <ZapIcon className="size-3" /> {delivery_time} MIN
+               {delivery_time} MIN 
               </span>
             </div>
           </div>
@@ -90,7 +90,6 @@ const LocationBlock: FC<{
             )}
           >
             <span className="flex items-center gap-1">
-              <ZapIcon size={14} />
               {delivery_time} MIN
             </span>
           </span>
