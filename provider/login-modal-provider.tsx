@@ -1,4 +1,6 @@
-import { useState, useContext, createContext } from "react";
+import { useRouter } from "next/router";
+import { useState, useContext } from "react";
+import { createContext } from "react";
 
 // types
 import type { FC, ReactNode } from "react";
@@ -14,17 +16,13 @@ type ILoginModalState = {
 };
 
 type ILoginModalContext = ILoginModalState & {
-  is_modal_open: boolean;
-  setIsModalOpen: (value: boolean) => void;
   updateState?: (payload: Partial<ILoginModalState>) => void;
 };
 
-const LoginModalContext = createContext<ILoginModalContext>({
-  is_modal_open: false,
-  setIsModalOpen: () => {},
-});
+const LoginModalContext = createContext<ILoginModalContext>({});
 
 export const useLoginModalContext = () => {
+  const router = useRouter();
   const data = useContext(LoginModalContext);
   const is_mounted = useIsMounted();
   const is_modal_open = is_mounted && router.query.login_modal === "1";
@@ -48,17 +46,13 @@ export const useLoginModalContext = () => {
 const LoginModalProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [login_modal_state, setLoginModalState] =
-    useState<ILoginModalState>({});
-
-  const [is_modal_open, setIsModalOpen] = useState(false);
-
+  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>(
+    {},
+  );
   return (
     <LoginModalContext.Provider
       value={{
         ...login_modal_state,
-        is_modal_open,
-        setIsModalOpen,
         updateState: (payload) =>
           setLoginModalState((prev) => ({
             ...prev,
@@ -70,5 +64,4 @@ const LoginModalProvider: FC<{
     </LoginModalContext.Provider>
   );
 };
-
 export default LoginModalProvider;
