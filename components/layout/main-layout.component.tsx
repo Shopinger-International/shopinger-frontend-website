@@ -91,6 +91,7 @@ const MainLayout: FC<{
   const openLoginModal = () => {
     return new Promise<IUser>((resolve, reject) => {
       login_modal_state.openModal({
+        title: "Login to Add Address",
         onSuccess(user) {
           resolve(user as IUser);
         },
@@ -124,6 +125,9 @@ const MainLayout: FC<{
         <MegaMenuProvider />
         <CategoryDrawerProvider />
         <LoginModal
+          heading_text={
+            login_modal_state.title ?? "Login for better experience"
+          }
           open={login_modal_state.is_modal_open}
           handleClose={() => {
             login_modal_state.onCancel?.();

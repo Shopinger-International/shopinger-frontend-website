@@ -11,6 +11,7 @@ import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 type ILoginModalState = {
+  title?: string;
   onSuccess?: (value: IUser) => void;
   onCancel?: () => void;
 };

@@ -17,11 +17,17 @@ import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
 type IProps = {
   open: boolean;
+  heading_text: string;
   handleClose: () => void;
   handleOnSuccess: (user: IUser) => void;
 };
 
-const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
+const LoginModal: FC<IProps> = ({
+  open,
+  handleClose,
+  handleOnSuccess,
+  heading_text,
+}) => {
   const router = useRouter();
   const is_mobile = useIsMobile();
   const is_home = router.isReady && router.pathname == "/";
@@ -41,7 +47,7 @@ const LoginModal: FC<IProps> = ({ open, handleClose, handleOnSuccess }) => {
 
           <LoginForm
             is_modal={!is_home || is_mobile}
-            heading_text="Login to complete your order"
+            heading_text={heading_text}
             handleOnSuccess={(user) => {
               handleOnSuccess(user);
             }}

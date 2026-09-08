@@ -219,6 +219,7 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
               );
             } else {
               openLoginModal({
+                title: "Login to complete your purchase",
                 onSuccess(user) {
                   if (user) {
                     create_buying_intent_mutation
@@ -233,6 +234,7 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
                       });
                   }
                 },
+                onCancel() {},
               });
             }
           }}

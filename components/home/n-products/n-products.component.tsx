@@ -1,9 +1,11 @@
-import { useRef, useEffect, useContext } from "react";
+import { useRef, useEffect, useContext, useState } from "react";
 // types
 import type { IResponseType } from "@/hooks/axios/home/use-n-products.hook";
 
 // hooks
 import useNProducts from "@/hooks/axios/home/use-n-products.hook";
+import { useLoginModalContext } from "@/provider/login-modal-provider";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // local components
 import ProductCard from "@/components/categories/product-card/product-card.component";
@@ -16,8 +18,14 @@ import { isNewProduct } from "@/helpers/product.helper";
 // context
 import { FooterStateContext } from "@/context";
 
+// icons
+import { ArrowRight } from "lucide-react";
+
 const NProducts = () => {
+  const { data: user_details } = useUserDetails();
+  const is_logged_in = !!user_details;
   const { updateShow: updateShowFooter } = useContext(FooterStateContext);
+  const { openModal: openLoginModal } = useLoginModalContext();
   const {
     data,
     isPending: isProductPending,
@@ -27,6 +35,8 @@ const NProducts = () => {
   } = useNProducts({
     limit: 20,
   });
+  const [has_started_loading_more, setHasStartedLoadingMore] = useState(false);
+  const show_view_more = !has_started_loading_more && hasNextPage;
 
   const load_more_ref = useRef<HTMLDivElement | null>(null);
   const observer_ref = useRef<IntersectionObserver | null>(null);
@@ -50,20 +60,17 @@ const NProducts = () => {
   });
 
   useEffect(() => {
-    if (!load_more_ref.current) return;
+    if (!has_started_loading_more || !load_more_ref.current) return;
 
-    if (observer_ref.current) observer_ref.current.disconnect();
+    observer_ref.current?.disconnect();
 
     observer_ref.current = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-
-        if (target.isIntersecting && hasNextPage && !isFetchingNextPage) {
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
         }
       },
       {
-        root: null,
         rootMargin: "400px",
         threshold: 0,
       },
@@ -72,11 +79,18 @@ const NProducts = () => {
     observer_ref.current.observe(load_more_ref.current);
 
     return () => observer_ref.current?.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [
+    has_started_loading_more,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  ]);
 
   useEffect(() => {
-    updateShowFooter?.(!hasNextPage && !isProductPending);
-  }, [hasNextPage, isProductPending]);
+    updateShowFooter?.(
+      !has_started_loading_more || (!hasNextPage && !isProductPending),
+    );
+  }, [has_started_loading_more, hasNextPage, isProductPending]);
   return (
     <div className="max-w-8xl mx-auto w-full space-y-4 px-4 pb-4">
       <h2 className="text-lg font-semibold text-orange-500 md:text-xl">
@@ -106,7 +120,46 @@ const NProducts = () => {
       </div>
 
       {/* observer */}
-      {hasNextPage && <div ref={load_more_ref} className="h-1" />}
+      {show_view_more ? (
+        <div className="relative mx-auto my-4 max-w-xl overflow-hidden rounded-xl border border-orange-200 bg-linear-to-br from-orange-50 via-white to-amber-50 px-4 py-4 sm:my-8 sm:px-6 sm:py-5">
+          <div className="relative flex flex-col gap-4 sm:items-center sm:justify-between sm:gap-6">
+            <h3 className="w-full text-center text-sm leading-5 font-semibold text-gray-900 sm:text-xl">
+              {user_details
+                ? "Explore more products based on your interests"
+                : "Login to see personalized products"}
+            </h3>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (user_details) {
+                  setHasStartedLoadingMore(true);
+                  fetchNextPage();
+                } else {
+                  openLoginModal({
+                    title: "Login for better experience",
+                    onSuccess() {},
+                    onCancel() {},
+                  });
+                }
+              }}
+              disabled={is_logged_in && isFetchingNextPage}
+              className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-orange-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:text-sm"
+            >
+              <span>
+                {user_details
+                  ? isFetchingNextPage
+                    ? "Loading..."
+                    : "View more"
+                  : "Login"}
+              </span>
+              <ArrowRight className="size-4 text-white" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        hasNextPage && <div ref={load_more_ref} className="h-1" />
+      )}
     </div>
   );
 };

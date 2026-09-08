@@ -139,7 +139,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                   className={clsx(
                     "flex w-full flex-col items-center gap-1 px-1 pt-2 pb-1",
                     selected_main_category_id == id &&
-                      "bg-orange-100 text-gray-900 border-r-3 border-orange-500",
+                      "border-r-3 border-orange-500 bg-orange-100 text-gray-900",
                   )}
                   onClick={() => setSelectedMainCatgoryId(id)}
                 >
@@ -175,7 +175,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                 </button>
               ))}
             </div>
-            <div className="flex h-[calc(100%-var(--bottom-nav-height))] flex-1 flex-col overflow-y-auto px-4 py-2">
+            <div className="flex h-[calc(100%-var(--bottom-nav-height))] flex-1 flex-col overflow-y-auto px-4 pt-2 pb-4">
               {categories
                 ?.find((category) => category.id == selected_main_category_id)
                 ?.sub_categories.map(
