@@ -176,7 +176,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     in_stock: variant.variant_inventory.stock > 0,
     manufacture: product.manufacturer_name,
   });
-  console.log(product);
   return (
     <>
       <Seo
