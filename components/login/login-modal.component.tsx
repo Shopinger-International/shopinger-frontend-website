@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 import type IUser from "@/types/user";
@@ -10,6 +11,9 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
 // local components
 import LoginForm from "@/components/login/login-form.component";
+
+// hooks
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
 type IProps = {
   open: boolean;
@@ -24,6 +28,9 @@ const LoginModal: FC<IProps> = ({
   handleOnSuccess,
   heading_text,
 }) => {
+  const router = useRouter();
+  const is_mobile = useIsMobile();
+  const is_home = router.isReady && router.pathname == "/";
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40 backdrop-blur-xs" />
@@ -39,7 +46,7 @@ const LoginModal: FC<IProps> = ({
           </button>
 
           <LoginForm
-            is_modal={true}
+            is_modal={!is_home || is_mobile}
             heading_text={heading_text}
             handleOnSuccess={(user) => {
               handleOnSuccess(user);

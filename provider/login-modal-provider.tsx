@@ -7,6 +7,7 @@ import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
 
 // hooks
+import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 type ILoginModalState = {
@@ -24,7 +25,8 @@ const LoginModalContext = createContext<ILoginModalContext>({});
 export const useLoginModalContext = () => {
   const router = useRouter();
   const data = useContext(LoginModalContext);
-  const is_modal_open = router.query.login_modal === "1";
+  const is_mounted = useIsMounted();
+  const is_modal_open = is_mounted && router.query.login_modal === "1";
   const { open, close } = useUIHistory();
   return {
     is_modal_open,
