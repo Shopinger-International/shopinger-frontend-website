@@ -175,7 +175,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                 </button>
               ))}
             </div>
-            <div className="flex h-[calc(100%-var(--bottom-nav-height))] flex-1 flex-col overflow-y-auto px-4 pt-2 pb-4">
+            <div className="flex h-[calc(100%-var(--bottom-nav-height))] flex-1 flex-col overflow-y-auto px-4 pt-2 pb-16">
               {categories
                 ?.find((category) => category.id == selected_main_category_id)
                 ?.sub_categories.map(
