@@ -88,10 +88,10 @@ const MainLayout: FC<{
   const { show: show_footer } = useContext(FooterStateContext);
   const is_mobile = useIsMobile();
 
-  const openLoginModal = (is_modal?: boolean) => {
+  const openLoginModal = () => {
     return new Promise<IUser>((resolve, reject) => {
       login_modal_state.openModal({
-        is_modal,
+        is_modal: true,
         title: "Login to Add Address",
         onSuccess(user) {
           resolve(user as IUser);
@@ -107,7 +107,12 @@ const MainLayout: FC<{
     const has_login_shown = sessionStorage.getItem(HAS_LOGIN_SHOWN);
     if (has_login_shown || is_pending || user_details || !is_home) return;
     const timeout = setTimeout(() => {
-      openLoginModal(false);
+      login_modal_state.openModal({
+        is_modal: false,
+        title: "Login for better experience",
+        onSuccess(user) {},
+        onCancel() {},
+      });
       sessionStorage.setItem(HAS_LOGIN_SHOWN, "true");
     }, 2000);
     return () => clearTimeout(timeout);
