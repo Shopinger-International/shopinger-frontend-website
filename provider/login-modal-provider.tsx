@@ -12,6 +12,7 @@ import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 type ILoginModalState = {
   title?: string;
+  is_modal?: boolean;
   onSuccess?: (value: IUser) => void;
   onCancel?: () => void;
 };
@@ -47,9 +48,9 @@ export const useLoginModalContext = () => {
 const LoginModalProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>(
-    {},
-  );
+  const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
+    is_modal: true,
+  });
   return (
     <LoginModalContext.Provider
       value={{
