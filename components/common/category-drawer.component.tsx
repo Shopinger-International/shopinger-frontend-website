@@ -132,7 +132,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
             <SearchBar show_search_icon_only={true} />
           </div>
           <div className="flex min-h-0 flex-1">
-            <div className="no-scrollbar flex h-[calc(100%-var(--bottom-nav-height))] w-22 flex-col items-center overflow-y-auto border-e border-gray-300 bg-gray-50 pb-24">
+            <div className="no-scrollbar flex h-[calc(100%-var(--bottom-nav-height))] w-22 flex-col items-center overflow-y-auto border-e border-gray-300 bg-gray-50 pb-30">
               {categories?.map(({ id, name, media }) => (
                 <button
                   key={`category-${id}`}
@@ -175,7 +175,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                 </button>
               ))}
             </div>
-            <div className="flex h-[calc(100%-var(--bottom-nav-height))] flex-1 flex-col overflow-y-auto px-4 pt-2 pb-24">
+            <div className="flex h-[calc(100%-var(--bottom-nav-height))] flex-1 flex-col overflow-y-auto px-4 pt-2 pb-30">
               {categories
                 ?.find((category) => category.id == selected_main_category_id)
                 ?.sub_categories.map(
