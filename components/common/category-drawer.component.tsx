@@ -132,7 +132,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
             <SearchBar show_search_icon_only={true} />
           </div>
           <div className="flex min-h-0 flex-1">
-            <div className="no-scrollbar flex h-[calc(100%-var(--bottom-nav-height))] w-22 flex-col items-center overflow-y-auto border-e border-gray-300 bg-gray-50">
+            <div className="no-scrollbar flex h-[calc(100%-var(--bottom-nav-height))] w-22 flex-col items-center overflow-y-auto border-e border-gray-300 bg-gray-50 pb-16">
               {categories?.map(({ id, name, media }) => (
                 <button
                   key={`category-${id}`}
