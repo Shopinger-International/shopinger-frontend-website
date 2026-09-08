@@ -64,7 +64,7 @@ const ProductInfo: FC<IProps> = ({
   const is_logged_in = !!user_details;
   const create_buying_intent_mutation = useCreateBuyingIntentMutation();
   const add_to_cart_mutation = useAddToCartMutation();
-  const { title, brand} = product;
+  const { title, brand } = product;
   const updated_title =
     !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
       ? title

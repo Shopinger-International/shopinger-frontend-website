@@ -21,7 +21,7 @@ import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-fro
 import clsx from "clsx";
 
 // icons
-import { Heart } from "lucide-react";
+import { Heart, Share } from "lucide-react";
 
 // events
 import addedToWishlistEvent from "@/analytics/events/added-to-wishlist.event";
@@ -86,66 +86,101 @@ const MobileProductGallary: FC<IProps> = ({
 
   return (
     <div className="relative order-2 lg:hidden">
-      <button
-        type="button"
-        aria-label={
-          wishlist_data?.is_wishlisted
-            ? "Remove from wishlist"
-            : "Add to wishlist"
-        }
-        title={
-          wishlist_data?.is_wishlisted
-            ? "Remove from wishlist"
-            : "Add to wishlist"
-        }
-        className="absolute top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
-        disabled={
-          add_to_wishlist_mutation.isPending ||
-          remove_from_wishlist_mutation.isPending
-        }
-        onClick={() => {
-          wishlist_data?.is_wishlisted
-            ? remove_from_wishlist_mutation.mutate(
-                { variant_id },
-                {
-                  onSuccess() {
-                    removedFromWishlistEvent({
-                      user_id,
-                      product_id,
-                      variant_id,
-                      category_id: sub_sub_category_id,
-                      category_type: "SUB_SUB",
-                      source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                    });
+      <div className="absolute right-0 flex items-center justify-center gap-2">
+        <button
+          type="button"
+          aria-label={
+            wishlist_data?.is_wishlisted
+              ? "Remove from wishlist"
+              : "Add to wishlist"
+          }
+          title={
+            wishlist_data?.is_wishlisted
+              ? "Remove from wishlist"
+              : "Add to wishlist"
+          }
+          className="top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
+          disabled={
+            add_to_wishlist_mutation.isPending ||
+            remove_from_wishlist_mutation.isPending
+          }
+          onClick={() => {
+            wishlist_data?.is_wishlisted
+              ? remove_from_wishlist_mutation.mutate(
+                  { variant_id },
+                  {
+                    onSuccess() {
+                      removedFromWishlistEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                      });
+                    },
                   },
-                },
-              )
-            : add_to_wishlist_mutation.mutate(
-                { variant_id },
-                {
-                  onSuccess() {
-                    addedToWishlistEvent({
-                      user_id,
-                      product_id,
-                      variant_id,
-                      category_id: sub_sub_category_id,
-                      category_type: "SUB_SUB",
-                      source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                    });
+                )
+              : add_to_wishlist_mutation.mutate(
+                  { variant_id },
+                  {
+                    onSuccess() {
+                      addedToWishlistEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                      });
+                    },
                   },
-                },
-              );
-        }}
-      >
-        <Heart
-          aria-hidden={true}
-          className={clsx(
-            "size-5 text-orange-500",
-            wishlist_data?.is_wishlisted && "fill-orange-500",
-          )}
-          strokeWidth={2}
-        />
-      </button>
+                );
+          }}
+        >
+          <Heart
+            aria-hidden={true}
+            className={clsx(
+              "size-5 text-orange-500",
+              wishlist_data?.is_wishlisted && "fill-orange-500",
+            )}
+            strokeWidth={2}
+          />
+        </button>
+        <button
+          type="button"
+          onClick={async () => {
+            if (!navigator.share) {
+              return;
+            }
+            const url = window.location.href;
+            try {
+              await navigator.share({
+                text: `Check out this on Shopinger`,
+                url,
+              });
+            } catch (error) {
+              // User closed the native share sheet
+              if (
+                error instanceof DOMException &&
+                error.name === "AbortError"
+              ) {
+                return;
+              }
+            }
+          }}
+          aria-label={"Share Product"}
+          title={"Share Product"}
+          className="top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
+        >
+          <Share
+            aria-hidden={true}
+            className={clsx("size-5 text-orange-500")}
+            strokeWidth={2}
+          />
+        </button>
+      </div>
+
       {/* viewport */}
       <div className="overflow-hidden" ref={embla_ref}>
         <div className="flex">
@@ -165,7 +200,6 @@ const MobileProductGallary: FC<IProps> = ({
           ))}
         </div>
       </div>
-
       {/* DOTS (same pattern as your Campaign) */}
       <div className="mt-2 flex items-center justify-center gap-2">
         {scroll_snaps.map((_, index) => {

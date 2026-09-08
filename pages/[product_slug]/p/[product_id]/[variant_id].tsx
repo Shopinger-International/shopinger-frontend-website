@@ -113,7 +113,6 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     category_id: product.sub_sub_category_id,
     category_type: "SUB_SUB",
   });
-
   const is_prod = process.env.NODE_ENV == "production";
   const variant = product.variants?.find(
     (variant) => variant.id == variant_id,
@@ -177,7 +176,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     in_stock: variant.variant_inventory.stock > 0,
     manufacture: product.manufacturer_name,
   });
-
+  console.log(product);
   return (
     <>
       <Seo
@@ -283,8 +282,8 @@ export const getStaticProps = (async ({ params }) => {
     return { notFound: true };
   }
 
-  let { product } = await getProduct(product_id);
-  let category_mappings = await getMappings(product.sub_sub_category.id);
+  const { product } = await getProduct(product_id);
+  const category_mappings = await getMappings(product.sub_sub_category.id);
   const formatted_mappings = category_mappings
     .filter(
       ({ attribute, is_hidden }) =>
