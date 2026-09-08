@@ -134,7 +134,7 @@ const MainLayout: FC<{
         <MegaMenuProvider />
         <CategoryDrawerProvider />
         <LoginModal
-          is_modal={!!login_modal_state.is_modal}
+          is_modal={is_mobile || !!login_modal_state.is_modal}
           heading_text={
             login_modal_state.title ?? "Login for better experience"
           }
