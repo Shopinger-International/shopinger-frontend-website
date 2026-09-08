@@ -178,11 +178,7 @@ const MobileAddressModal: FC<IProps> = ({
             innerRef={formik_ref}
             initialValues={
               initial_data
-                ? ({
-                    ...initial_values,
-                    delivery_instructions:
-                      initial_data.delivery_instructions ?? "",
-                  } as Omit<IAddress, "id">)
+                ? (initial_values as Omit<IAddress, "id">)
                 : {
                     full_name: "",
                     phone: "",
@@ -197,7 +193,6 @@ const MobileAddressModal: FC<IProps> = ({
                     latitude: null,
                     longitude: null,
                     address_type: ADDRESS_TYPE.HOME,
-                    delivery_instructions: "",
                     is_default: user_addresses.length == 0 ? true : false,
                   }
             }
@@ -450,16 +445,6 @@ const MobileAddressModal: FC<IProps> = ({
                             />
                           </Fieldset>
                           <Fieldset className="space-y-2">
-                            <Legend className="text-sm font-medium">
-                              Delivery Instructions
-                            </Legend>
-
-                            <AddAddressInput
-                              name="delivery_instructions"
-                              type="textarea"
-                              placeholder="Eg. Call before delivery (Optional)"
-                            />
-
                             <Switch
                               label="Set as default address"
                               description="This will be used for all future orders by default"

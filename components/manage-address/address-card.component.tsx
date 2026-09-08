@@ -68,13 +68,6 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
         )}
       </div>
 
-      {/* DELIVERY NOTE */}
-      {data.delivery_instructions && (
-        <p className="mt-2 text-xs text-gray-600 italic">
-          “{data.delivery_instructions}”
-        </p>
-      )}
-
       {/* PHONE */}
       <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
         <Phone className="h-4 w-4" />

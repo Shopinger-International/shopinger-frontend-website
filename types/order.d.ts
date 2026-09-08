@@ -54,7 +54,6 @@ type IAddressSnapshot = {
   longitude: number;
 
   address_type: "HOME" | "WORK" | "OTHER";
-  delivery_instructions: "Leave at door";
 };
 type IOrderStatus =
   | "PENDING"

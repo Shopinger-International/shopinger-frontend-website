@@ -24,7 +24,6 @@ import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 
-
 const LocationBlock: FC<{
   className: string;
 }> = ({ className }) => {
@@ -35,7 +34,7 @@ const LocationBlock: FC<{
     (address) => address.id == address_id,
   );
 
-  const delivery_time = user_address ? "45" : user_details ? "30" : "10";
+  const delivery_time = user_details ? "45" : "10";
 
   return (
     <button
@@ -53,7 +52,7 @@ const LocationBlock: FC<{
         <div className="flex min-w-0 flex-1 items-center gap-1">
           <MapPin aria-hidden={true} className="size-3 shrink-0 text-white" />
 
-          <span className="min-w-0 truncate text-xs">
+          <span className="min-w-0 truncate text-sm">
             {user_address
               ? user_address.house_number
                 ? `${user_address.house_number}, ${user_address.area}`
@@ -72,7 +71,7 @@ const LocationBlock: FC<{
             </span>
             <div className="flex flex-row items-center gap-1">
               <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
-               {delivery_time} MIN 
+                {delivery_time} MIN
               </span>
             </div>
           </div>
@@ -90,9 +89,7 @@ const LocationBlock: FC<{
               "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
             )}
           >
-            <span className="flex items-center gap-1">
-              {delivery_time} MIN
-            </span>
+            <span className="flex items-center gap-1">{delivery_time} MIN</span>
           </span>
         </div>
 
