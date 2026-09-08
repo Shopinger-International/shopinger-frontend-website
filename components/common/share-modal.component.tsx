@@ -1,11 +1,15 @@
+import Image from "next/image";
+import { FC, useState } from "react";
+
+//local components
 import {
   Description,
   Dialog,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import Image from "next/image";
-import { FC, useState } from "react";
+
+//icons
 import { FaCheck, FaInstagram, FaRegCopy, FaWhatsapp } from "react-icons/fa6";
 import { BiLogoGmail } from "react-icons/bi";
 import { X } from "lucide-react";
@@ -172,7 +176,7 @@ const ShareLinkModal: FC<IProps> = ({
             {has_copied && (
               <div className="mt-3 flex items-center justify-center gap-2 rounded-lg bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white">
-                  <FaCheck color="green" />
+                  <FaCheck />
                 </span>
                 Link copied to clipboard!
               </div>
@@ -186,21 +190,21 @@ const ShareLinkModal: FC<IProps> = ({
           <div className="px-7 py-2 pb-4">
             <div className="flex items-center justify-between px-3">
               <ShareButton label="Copy Link" onClick={copyLink}>
-                <FaRegCopy size={20} />
+                <FaRegCopy className="size-5" />
               </ShareButton>
               {/* WhatsApp */}
               <ShareButton label="WhatsApp" onClick={shareOnWhatsApp}>
-                <FaWhatsapp color="green" size={20} />
+                <FaWhatsapp className="size-12 text-green-800" />
               </ShareButton>
 
               {/* Gmail */}
               <ShareButton label="Gmail" onClick={shareOnGmail}>
-                <BiLogoGmail color="red" size={20} />
+                <BiLogoGmail className="size-12 text-red-700" />
               </ShareButton>
 
               {/* Instagram */}
               <ShareButton label="Instagram" onClick={shareOnInstagram}>
-                <FaInstagram color="F33358" size={20} />
+                <FaInstagram className="size-6 text-[#F33358]" />
               </ShareButton>
               {/* More / Native share */}
               <ShareButton label="More" onClick={shareNative} outlined>
