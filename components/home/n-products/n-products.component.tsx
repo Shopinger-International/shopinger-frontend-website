@@ -5,6 +5,7 @@ import type { IResponseType } from "@/hooks/axios/home/use-n-products.hook";
 // hooks
 import useNProducts from "@/hooks/axios/home/use-n-products.hook";
 import { useLoginModalContext } from "@/provider/login-modal-provider";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // local components
 import ProductCard from "@/components/categories/product-card/product-card.component";
@@ -17,7 +18,12 @@ import { isNewProduct } from "@/helpers/product.helper";
 // context
 import { FooterStateContext } from "@/context";
 
+// icons
+import { ShoppingBag, ArrowRight } from "lucide-react";
+
 const NProducts = () => {
+  const { data: user_details } = useUserDetails();
+  const is_logged_in = !!user_details;
   const { updateShow: updateShowFooter } = useContext(FooterStateContext);
   const { openModal: openLoginModal } = useLoginModalContext();
   const {
@@ -115,32 +121,51 @@ const NProducts = () => {
 
       {/* observer */}
       {show_view_more ? (
-        <div className="flex items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => {
-              setHasStartedLoadingMore(true);
-              fetchNextPage();
-            }}
-            disabled={isFetchingNextPage}
-            className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 transition-colors hover:border-gray-400 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isFetchingNextPage ? "Loading..." : "View More"}
-          </button>
+        <div className="relative mx-auto my-4 max-w-2xl overflow-hidden rounded-xl border border-orange-200 bg-linear-to-br from-orange-50 via-white to-amber-50 px-4 py-4 sm:my-8 sm:px-6 sm:py-5">
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+            {/* Content */}
+            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-500 sm:h-11 sm:w-11">
+                <ShoppingBag className="size-5 text-white sm:size-6" />
+              </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              openLoginModal({
-                title: "Sign in to see tailored suggestions",
-                onSuccess() {},
-                onCancel() {},
-              });
-            }}
-            className="rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
-          >
-            Login
-          </button>
+              <div className="min-w-0">
+                <h3 className="text-sm leading-5 font-semibold text-gray-900 sm:text-base">
+                  {user_details ? "Keep discovering" : "Welcome to Shopinger"}
+                </h3>
+
+                <p className="mt-0.5 text-xs leading-4 font-medium text-gray-600 sm:text-sm sm:leading-5">
+                  {user_details
+                    ? "More products are waiting for you."
+                    : "Login in for the best shopping experience."}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (user_details) {
+                  setHasStartedLoadingMore(true);
+                  fetchNextPage();
+                } else {
+                  openLoginModal({});
+                }
+              }}
+              disabled={is_logged_in && isFetchingNextPage}
+              className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-orange-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:text-sm"
+            >
+              <span>
+                {user_details
+                  ? isFetchingNextPage
+                    ? "Loading..."
+                    : "View more"
+                  : "Sign in"}
+              </span>
+              <ArrowRight className=" text-white size-4" />
+
+            </button>
+          </div>
         </div>
       ) : (
         hasNextPage && <div ref={load_more_ref} className="h-1" />
