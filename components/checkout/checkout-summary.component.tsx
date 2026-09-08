@@ -164,7 +164,10 @@ const CheckoutSummary: FC<IProps> = ({
           type="button"
           className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white"
           onClick={() => {
-            if (!user_detail) return openLoginModal({});
+            if (!user_detail)
+              return openLoginModal({
+                title: "Sign in to proceed to checkout",
+              });
             if (!selected_address) {
               openAddressDrawer();
               return;

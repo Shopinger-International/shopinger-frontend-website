@@ -10,6 +10,7 @@ import type IUser from "@/types/user";
 import useUIHistory from "@/hooks/common/use-ui-history.hook";
 
 type ILoginModalState = {
+  title?: string;
   onSuccess?: (value: IUser) => void;
   onCancel?: () => void;
 };

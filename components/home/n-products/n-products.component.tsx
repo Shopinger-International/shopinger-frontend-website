@@ -130,7 +130,13 @@ const NProducts = () => {
 
           <button
             type="button"
-            onClick={() => openLoginModal({})}
+            onClick={() => {
+              openLoginModal({
+                title: "Sign in to see tailored suggestions",
+                onSuccess() {},
+                onCancel() {},
+              });
+            }}
             className="rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
           >
             Login
