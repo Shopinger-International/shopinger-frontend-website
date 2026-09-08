@@ -81,7 +81,7 @@ const MainLayout: FC<{
   const openLoginModal = () => {
     return new Promise<IUser>((resolve, reject) => {
       login_modal_state.openModal({
-        title: "Sign In to Add Address",
+        title: "Login to Add Address",
         onSuccess(user) {
           resolve(user as IUser);
         },

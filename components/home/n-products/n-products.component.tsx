@@ -19,7 +19,7 @@ import { isNewProduct } from "@/helpers/product.helper";
 import { FooterStateContext } from "@/context";
 
 // icons
-import { ShoppingBag, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const NProducts = () => {
   const { data: user_details } = useUserDetails();
@@ -121,26 +121,13 @@ const NProducts = () => {
 
       {/* observer */}
       {show_view_more ? (
-        <div className="relative mx-auto my-4 max-w-2xl overflow-hidden rounded-xl border border-orange-200 bg-linear-to-br from-orange-50 via-white to-amber-50 px-4 py-4 sm:my-8 sm:px-6 sm:py-5">
-          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-            {/* Content */}
-            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-500 sm:h-11 sm:w-11">
-                <ShoppingBag className="size-5 text-white sm:size-6" />
-              </div>
-
-              <div className="min-w-0">
-                <h3 className="text-sm leading-5 font-semibold text-gray-900 sm:text-base">
-                  {user_details ? "Keep discovering" : "Welcome to Shopinger"}
-                </h3>
-
-                <p className="mt-0.5 text-xs leading-4 font-medium text-gray-600 sm:text-sm sm:leading-5">
-                  {user_details
-                    ? "More products are waiting for you."
-                    : "Login in for the best shopping experience."}
-                </p>
-              </div>
-            </div>
+        <div className="relative mx-auto my-4 max-w-xl overflow-hidden rounded-xl border border-orange-200 bg-linear-to-br from-orange-50 via-white to-amber-50 px-4 py-4 sm:my-8 sm:px-6 sm:py-5">
+          <div className="relative flex flex-col gap-4 sm:items-center sm:justify-between sm:gap-6">
+            <h3 className="w-full text-center text-sm leading-5 font-semibold text-gray-900 sm:text-xl">
+              {user_details
+                ? "Explore more products based on your interests"
+                : "Login to see personalized products"}
+            </h3>
 
             <button
               type="button"
@@ -149,7 +136,9 @@ const NProducts = () => {
                   setHasStartedLoadingMore(true);
                   fetchNextPage();
                 } else {
-                  openLoginModal({});
+                  openLoginModal({
+                    title: "Login for better experience",
+                  });
                 }
               }}
               disabled={is_logged_in && isFetchingNextPage}
@@ -160,10 +149,9 @@ const NProducts = () => {
                   ? isFetchingNextPage
                     ? "Loading..."
                     : "View more"
-                  : "Sign in"}
+                  : "Login"}
               </span>
-              <ArrowRight className=" text-white size-4" />
-
+              <ArrowRight className="size-4 text-white" />
             </button>
           </div>
         </div>

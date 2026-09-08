@@ -219,7 +219,7 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
               );
             } else {
               openLoginModal({
-                title: "Sign in to complete your purchase",
+                title: "Login to complete your purchase",
                 onSuccess(user) {
                   if (user) {
                     create_buying_intent_mutation
