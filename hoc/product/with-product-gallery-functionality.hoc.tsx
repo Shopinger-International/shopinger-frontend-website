@@ -17,6 +17,9 @@ interface IInjectedProps {
   variant_id: number;
   sub_sub_category_id: number;
   variant_medias_with_title: IVariantMediaWithTitle[];
+  product_image: string;
+  product_mrp: number;
+  product_selling_price: number;
 }
 
 interface IWithGalleryControlProps {
@@ -47,7 +50,7 @@ const withProductGalleryFunctionality = <P extends object>(
       )
       .map(({ value }) => value);
 
-    let variant_medias_with_title = (
+    const variant_medias_with_title = (
       variant_medias.length
         ? variant_medias.map(({ media }) => media)
         : product_medias.map(({ media }) => media)
@@ -61,10 +64,17 @@ const withProductGalleryFunctionality = <P extends object>(
         image_title,
       };
     });
-
     return (
       <BaseComponent
         {...(props as P)}
+        product_image={
+          variant.variant_medias[0]?.media.url ??
+          product.product_medias[0].media.url
+        }
+        product_mrp={variant.variant_pricing.mrp}
+        product_selling_price={
+          variant.variant_pricing.selling_price_with_commission
+        }
         product_id={product.id}
         variant_id={variant.id}
         sub_sub_category_id={product.sub_sub_category_id}
