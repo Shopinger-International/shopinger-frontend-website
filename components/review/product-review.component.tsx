@@ -127,6 +127,7 @@ const ProductReview: FC<IProps> = ({
             }
 
             openLoginModal({
+              is_modal:true,
               title: "Login to React",
               onSuccess: () => {
                 react_to_review_mutation.mutate({

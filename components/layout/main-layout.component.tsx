@@ -88,9 +88,10 @@ const MainLayout: FC<{
   const { show: show_footer } = useContext(FooterStateContext);
   const is_mobile = useIsMobile();
 
-  const openLoginModal = () => {
+  const openLoginModal = (is_modal?: boolean) => {
     return new Promise<IUser>((resolve, reject) => {
       login_modal_state.openModal({
+        is_modal,
         title: "Login to Add Address",
         onSuccess(user) {
           resolve(user as IUser);
@@ -105,8 +106,11 @@ const MainLayout: FC<{
   useEffect(() => {
     const has_login_shown = sessionStorage.getItem(HAS_LOGIN_SHOWN);
     if (has_login_shown || is_pending || user_details || !is_home) return;
-    openLoginModal();
-    sessionStorage.setItem(HAS_LOGIN_SHOWN, "true");
+    const timeout = setTimeout(() => {
+      openLoginModal(false);
+      sessionStorage.setItem(HAS_LOGIN_SHOWN, "true");
+    }, 2000);
+    return () => clearTimeout(timeout);
   }, [user_details, is_pending, is_home]);
 
   return (
@@ -125,6 +129,7 @@ const MainLayout: FC<{
         <MegaMenuProvider />
         <CategoryDrawerProvider />
         <LoginModal
+          is_modal={!!login_modal_state.is_modal}
           heading_text={
             login_modal_state.title ?? "Login for better experience"
           }

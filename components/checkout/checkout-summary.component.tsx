@@ -166,6 +166,7 @@ const CheckoutSummary: FC<IProps> = ({
           onClick={() => {
             if (!user_detail)
               return openLoginModal({
+                is_modal: true,
                 title: "Login to proceed to checkout",
                 onSuccess() {},
                 onCancel() {},
