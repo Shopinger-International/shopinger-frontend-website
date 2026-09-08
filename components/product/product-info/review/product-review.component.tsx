@@ -95,6 +95,7 @@ const ProductReview: FC<IProps> = ({
                     review_id: id,
                   });
                 },
+                onCancel() {},
               });
             }}
           >

@@ -167,6 +167,8 @@ const CheckoutSummary: FC<IProps> = ({
             if (!user_detail)
               return openLoginModal({
                 title: "Login to proceed to checkout",
+                onSuccess() {},
+                onCancel() {},
               });
             if (!selected_address) {
               openAddressDrawer();

@@ -138,6 +138,8 @@ const NProducts = () => {
                 } else {
                   openLoginModal({
                     title: "Login for better experience",
+                    onSuccess() {},
+                    onCancel() {},
                   });
                 }
               }}

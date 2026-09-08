@@ -44,6 +44,7 @@ const MegaMenuProvider: FC = () => {
           onSuccess() {
             closeMegaMenuDrawer();
           },
+          onCancel() {},
         })
       }
     />

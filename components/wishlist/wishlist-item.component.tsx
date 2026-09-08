@@ -234,6 +234,7 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
                       });
                   }
                 },
+                onCancel() {},
               });
             }
           }}

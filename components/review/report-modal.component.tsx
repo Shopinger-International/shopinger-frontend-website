@@ -161,6 +161,7 @@ const ReportModal: FC<IProps> = ({ review_id, is_open, onClose }) => {
                       },
                     );
                   },
+                  onCancel() {},
                 });
               }
             }}
