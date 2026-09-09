@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
+
 // types
 import type { FC, ReactNode } from "react";
-import { useEffect, useState } from "react";
 
 // external components
 import {
@@ -8,7 +9,6 @@ import {
   DialogPanel,
   DialogTitle,
   DialogBackdrop,
-  Field,
 } from "@headlessui/react";
 import { Formik } from "formik";
 
@@ -48,7 +48,6 @@ const OTPModal: FC<OTPModalProps> = ({
   children,
 }) => {
   const [timer, setTimer] = useState(60);
-  const [otp_reset_key, setOtpResetKey] = useState(0);
 
   // countdown
   useEffect(() => {
@@ -91,7 +90,6 @@ const OTPModal: FC<OTPModalProps> = ({
             {({ values, setFieldValue, handleSubmit }) => (
               <form onSubmit={handleSubmit}>
                 <OTPInput
-                key={otp_reset_key}
                   value={values.otp}
                   onChange={(val) => {
                     setFieldValue("otp", val, false);

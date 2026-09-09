@@ -1,5 +1,9 @@
-import type { FC, KeyboardEvent } from "react";
 import { useRef, useState } from "react";
+
+//types
+import type { FC, KeyboardEvent } from "react";
+
+//helpers
 import clsx from "clsx";
 
 interface OTPInputProps {
@@ -64,32 +68,32 @@ const OTPInput: FC<OTPInputProps> = ({
     index: number,
     event: KeyboardEvent<HTMLInputElement>,
   ) => {
-   if (event.key === "Backspace") {
-  event.preventDefault();
+    if (event.key === "Backspace") {
+      event.preventDefault();
 
-  const new_digits = [...digits];
+      const new_digits = [...digits];
 
-  if (digits[index]) {
-    // Clear current digit and stay here
-    new_digits[index] = "";
-    setDigits(new_digits);
-    onChange(new_digits.join(""));
-    return;
-  }
+      if (digits[index]) {
+        // Clear current digit and stay here
+        new_digits[index] = "";
+        setDigits(new_digits);
+        onChange(new_digits.join(""));
+        return;
+      }
 
-  // Current input is already empty → move backward
-  if (index > 0) {
-    new_digits[index - 1] = "";
-    setDigits(new_digits);
-    onChange(new_digits.join(""));
+      // Current input is already empty → move backward
+      if (index > 0) {
+        new_digits[index - 1] = "";
+        setDigits(new_digits);
+        onChange(new_digits.join(""));
 
-    input_refs.current[index - 1]?.focus({
-      preventScroll: true,
-    });
-  }
+        input_refs.current[index - 1]?.focus({
+          preventScroll: true,
+        });
+      }
 
-  return;
-}  
+      return;
+    }
 
     if (event.key === "Delete") {
       event.preventDefault();
@@ -127,7 +131,7 @@ const OTPInput: FC<OTPInputProps> = ({
         container_class_name,
       )}
     >
-      {digits.map((digit, index) => (
+      {digits?.map((digit, index) => (
         <input
           key={index}
           onPaste={handlePaste}
