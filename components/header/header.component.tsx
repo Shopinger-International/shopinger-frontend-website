@@ -187,7 +187,7 @@ const Header: FC<{
       className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
       id="app-header"
     >
-      <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
+      <div className="flex flex-col gap-1 bg-white px-4 py-1.5 text-orange-500 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button onClick={openMegaMenuDrawer}>
