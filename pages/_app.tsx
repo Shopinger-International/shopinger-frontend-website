@@ -16,6 +16,8 @@ import LoginModalProvider from "@/provider/login-modal-provider";
 import AlgoliaInsightsProvider from "@/provider/algolia-insights-provider";
 import AnalyticsProvider from "@/provider/analytics.provider";
 import LogoutModalProvider from "@/provider/logout-modal-provider";
+import CategoryDrawerProvider from "@/provider/category-drawer.provider";
+import MegaMenuProvider from "@/provider/mega-menu-provider";
 
 // react query
 import {
@@ -82,13 +84,17 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                 error: ErrorSnackbar,
               }}
             >
-              <SelectedAddressProvider>
-                <LoginModalProvider>
-                  <LogoutModalProvider>
-                    {getLayout(<Component {...pageProps} />)}
-                  </LogoutModalProvider>
-                </LoginModalProvider>
-              </SelectedAddressProvider>
+              <LoginModalProvider>
+                <MegaMenuProvider>
+                  <CategoryDrawerProvider>
+                    <SelectedAddressProvider>
+                      <LogoutModalProvider>
+                        {getLayout(<Component {...pageProps} />)}
+                      </LogoutModalProvider>
+                    </SelectedAddressProvider>
+                  </CategoryDrawerProvider>
+                </MegaMenuProvider>
+              </LoginModalProvider>
             </SnackbarProvider>
           </AlgoliaInsightsProvider>
         </HydrationBoundary>

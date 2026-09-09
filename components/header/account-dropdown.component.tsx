@@ -74,16 +74,6 @@ const AccountDropdown: FC = () => {
                 >
                   Login
                 </Link>
-
-                <p className="text-sm">
-                  New User?{" "}
-                  <Link
-                    href="/login"
-                    className="font-semibold text-orange-500 hover:underline"
-                  >
-                    Sign Up
-                  </Link>
-                </p>
               </div>
             )}
             {/* Menu section */}

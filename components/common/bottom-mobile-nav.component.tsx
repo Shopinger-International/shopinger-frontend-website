@@ -35,7 +35,11 @@ const NavItem: FC<NavItemProps> = ({
   target,
   show_badge,
 }) => {
-  const { openDrawer } = useCategoryDrawerContext();
+  const {
+    is_drawer_open: is_category_drawer_open,
+    openDrawer,
+    closeDrawer: closeCategoryDrawer,
+  } = useCategoryDrawerContext();
   const { data: cart_details } = useCart();
   if (title == "Categories") {
     return (
@@ -45,14 +49,16 @@ const NavItem: FC<NavItemProps> = ({
       >
         <Icon
           className={`size-6 transition-colors ${
-            active ? "text-orange-500" : "text-gray-500"
+            is_category_drawer_open ? "text-orange-500" : "text-gray-500"
           }`}
           aria-hidden="true"
         />
 
         <span
           className={`mt-0.5 text-xs transition-colors ${
-            active ? "font-medium text-orange-500" : "text-gray-500"
+            is_category_drawer_open
+              ? "font-medium text-orange-500"
+              : "text-gray-500"
           }`}
         >
           {title}
@@ -63,6 +69,7 @@ const NavItem: FC<NavItemProps> = ({
   if (title == "Cart") {
     return (
       <Link
+        onClick={closeCategoryDrawer}
         href={href}
         aria-label={`View ${title}`}
         className="flex flex-1 flex-col items-center justify-center py-1.5 transition-transform active:scale-95"
@@ -78,7 +85,9 @@ const NavItem: FC<NavItemProps> = ({
 
         <span
           className={`mt-0.5 text-xs transition-colors ${
-            active ? "font-medium text-orange-500" : "text-gray-500"
+            active && !is_category_drawer_open
+              ? "font-medium text-orange-500"
+              : "text-gray-500"
           }`}
         >
           {title}
@@ -89,6 +98,7 @@ const NavItem: FC<NavItemProps> = ({
   return (
     <Link
       href={href}
+      onClick={closeCategoryDrawer}
       aria-label={`View ${title}`}
       className="flex flex-1 flex-col items-center justify-center py-1.5 transition-transform active:scale-95"
       target={target}
@@ -96,7 +106,9 @@ const NavItem: FC<NavItemProps> = ({
       <div className="relative">
         <Icon
           className={`size-6 transition-colors ${
-            active ? "text-orange-500" : "text-gray-500"
+            active && !is_category_drawer_open
+              ? "text-orange-500"
+              : "text-gray-500"
           }`}
           aria-hidden="true"
         />
@@ -108,7 +120,9 @@ const NavItem: FC<NavItemProps> = ({
 
       <span
         className={`mt-0.5 text-xs transition-colors ${
-          active ? "font-medium text-orange-500" : "text-gray-500"
+          active && !is_category_drawer_open
+            ? "font-medium text-orange-500"
+            : "text-gray-500"
         }`}
       >
         {title}
