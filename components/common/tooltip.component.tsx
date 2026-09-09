@@ -33,6 +33,7 @@ type TooltipProps = {
   placement: Placement;
   show_tooltip?: boolean;
   default_open?: boolean;
+  strategy?: "absolute" | "fixed";
 };
 
 const Tooltip: FC<TooltipProps> = ({
@@ -43,6 +44,7 @@ const Tooltip: FC<TooltipProps> = ({
   placement,
   show_tooltip = true,
   default_open = false,
+  strategy = "absolute",
 }) => {
   const [open, setOpen] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
@@ -51,7 +53,13 @@ const Tooltip: FC<TooltipProps> = ({
     placement: placement,
     open,
     onOpenChange: setOpen,
-    whileElementsMounted: autoUpdate,
+    ...(strategy == "absolute"
+      ? {
+          whileElementsMounted: autoUpdate,
+        }
+      : {
+          strategy: "fixed",
+        }),
     middleware: [
       offset(offset_distance),
       flip(),
@@ -72,6 +80,7 @@ const Tooltip: FC<TooltipProps> = ({
   });
   const dismiss = useDismiss(context, {
     enabled: show_tooltip,
+    outsidePress: !default_open,
   });
   const role = useRole(context, { role: "tooltip" });
 
