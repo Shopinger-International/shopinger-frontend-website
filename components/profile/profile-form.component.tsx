@@ -111,6 +111,7 @@ const ProfileForm: FC = () => {
   const [otp_modal_state, setOtpModalState] = useState<IOTPModalState>({
     open: false,
   });
+  const [details, setDetails] = useState<IInitialValues>({});
   const [verification_flag, setVerificationFlag] = useState({
     is_email_verified: true,
     is_phone_verified: true,
@@ -159,6 +160,9 @@ const ProfileForm: FC = () => {
         onResend={() => {
           send_otp_mutation.mutate({
             new_identifier: otp_modal_state.identifier as string,
+            country_code: +getCallingCode(
+              (details["country"]?.code ?? "IN") as CountryCode,
+            ),
           });
         }}
         handleSubmit={(otp) =>
@@ -290,27 +294,29 @@ const ProfileForm: FC = () => {
                       type="button"
                       className="h-11 shrink-0 rounded-lg bg-orange-500 px-4 font-medium text-white"
                       onClick={() => {
-                        send_otp_mutation.mutate(
-                          {
-                            new_identifier: values["phone"] as string,
-                            country_code: +getCallingCode(
-                              (values["country"]?.code ?? "IN") as CountryCode,
-                            ),
-                          },
-                          {
-                            onSuccess() {
-                              setOtpModalState({
-                                open: true,
-                                identifier: values["phone"],
-                                country_code: +getCallingCode(
-                                  (values["country"]?.code ??
-                                    "IN") as CountryCode,
-                                ),
-                                type: "phone-otp",
-                              });
+                        (setDetails(values),
+                          send_otp_mutation.mutate(
+                            {
+                              new_identifier: values["phone"] as string,
+                              country_code: +getCallingCode(
+                                (values["country"]?.code ??
+                                  "IN") as CountryCode,
+                              ),
                             },
-                          },
-                        );
+                            {
+                              onSuccess() {
+                                setOtpModalState({
+                                  open: true,
+                                  identifier: values["phone"],
+                                  country_code: +getCallingCode(
+                                    (values["country"]?.code ??
+                                      "IN") as CountryCode,
+                                  ),
+                                  type: "phone-otp",
+                                });
+                              },
+                            },
+                          ));
                       }}
                     >
                       Send OTP
