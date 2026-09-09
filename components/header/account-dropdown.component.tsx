@@ -1,6 +1,4 @@
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 // types
 import type { FC } from "react";
 
@@ -24,30 +22,12 @@ import { clsx } from "clsx";
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import { useLogoutModalContext } from "@/provider/logout-modal-provider";
-import useIsMobile from "@/hooks/common/use-is-mobile.hook";
-
-// const
-import { HAS_LOGIN_SHOWN } from "@/constants/common.constant";
+import { useLoginTooltipContext } from "@/provider/login-tooltip.provider";
 
 const AccountDropdown: FC = () => {
-  const [show_tooltip_default, setShowTooltipDefault] = useState(false);
-  const router = useRouter();
-  const is_home = router.isReady && router.pathname == "/";
-  const is_mobile = useIsMobile();
-  const { data: user_details, isPending: is_pending } = useUserDetails();
+  const { data: user_details } = useUserDetails();
   const { openModal: openLogoutModal } = useLogoutModalContext();
-
-  useEffect(() => {
-    const has_login_shown = sessionStorage.getItem(HAS_LOGIN_SHOWN);
-    if (has_login_shown || is_pending || user_details || is_home || is_mobile)
-      return;
-    setShowTooltipDefault(true);
-    sessionStorage.setItem(HAS_LOGIN_SHOWN, "true");
-    const timeout = setTimeout(() => {
-      setShowTooltipDefault(false);
-    }, 20000);
-    return () => clearInterval(timeout);
-  }, [user_details, is_pending, is_home, is_mobile]);
+  const { show_tooltip } = useLoginTooltipContext();
 
   return (
     <div className="hidden lg:inline">
@@ -56,12 +36,13 @@ const AccountDropdown: FC = () => {
         offset_distance={6}
         className={clsx(
           "z-50 w-52 rounded-xl border border-neutral-300 bg-white shadow-lg",
-          show_tooltip_default && "tooltip-jiggle",
+          show_tooltip && "tooltip-jiggle",
         )}
-        default_open={show_tooltip_default}
+        default_open={show_tooltip}
+        strategy="fixed"
         content={({ handleClose }) => (
           <div>
-            {/* Auth section */}
+            {/* Auth ww. tion */}
             {user_details ? (
               <div className="flex flex-col gap-3 px-3 py-3">
                 <p className="text-sm font-semibold">Account </p>
@@ -77,7 +58,7 @@ const AccountDropdown: FC = () => {
               </div>
             )}
             {/* Menu section */}
-            {!show_tooltip_default && (
+            {!show_tooltip && (
               <div className={"border-t border-gray-300"}>
                 {[
                   {

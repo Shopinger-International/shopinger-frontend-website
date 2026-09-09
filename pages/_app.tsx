@@ -18,6 +18,7 @@ import AnalyticsProvider from "@/provider/analytics.provider";
 import LogoutModalProvider from "@/provider/logout-modal-provider";
 import CategoryDrawerProvider from "@/provider/category-drawer.provider";
 import MegaMenuProvider from "@/provider/mega-menu-provider";
+import LoginTooltipProvider from "@/provider/login-tooltip.provider";
 
 // react query
 import {
@@ -85,15 +86,17 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
               }}
             >
               <LoginModalProvider>
-                <MegaMenuProvider>
-                  <CategoryDrawerProvider>
-                    <SelectedAddressProvider>
-                      <LogoutModalProvider>
-                        {getLayout(<Component {...pageProps} />)}
-                      </LogoutModalProvider>
-                    </SelectedAddressProvider>
-                  </CategoryDrawerProvider>
-                </MegaMenuProvider>
+                <LoginTooltipProvider>
+                  <LogoutModalProvider>
+                    <MegaMenuProvider>
+                      <CategoryDrawerProvider>
+                        <SelectedAddressProvider>
+                          {getLayout(<Component {...pageProps} />)}
+                        </SelectedAddressProvider>
+                      </CategoryDrawerProvider>
+                    </MegaMenuProvider>
+                  </LogoutModalProvider>
+                </LoginTooltipProvider>
               </LoginModalProvider>
             </SnackbarProvider>
           </AlgoliaInsightsProvider>
