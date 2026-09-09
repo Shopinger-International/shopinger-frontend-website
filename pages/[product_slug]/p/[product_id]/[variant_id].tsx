@@ -310,7 +310,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       <ProductGridSection
         heading="Top 20 Products in this Category"
         aria_label="Top Products"
-        data={formatted_top_products}
+        product_id={product_id}
       />
     </>
   );

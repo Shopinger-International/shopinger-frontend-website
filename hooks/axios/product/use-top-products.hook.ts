@@ -5,18 +5,43 @@ import type IProduct from "@/types/product";
 
 // helpers
 import webAxios from "@/lib/axios/web.lib";
+import IVariant from "@/types/variant";
 
-const getRelatedProducts = async (
+const getTopProducts = async (
   product_id: number,
 ): Promise<{
-  top_products: IProduct[];
+  top_products: Array<
+    Omit<IProduct, "variants"> & {
+      avg_rating: number;
+      bought_last_month: number;
+      variants: Array<
+        IVariant & {
+          _count: {
+            wishlists: number;
+          };
+        }
+      >;
+    }
+  >;
 }> => {
   try {
     const {
       data: { top_products },
     } = await webAxios.get<{
       success: boolean;
-      top_products: IProduct[];
+      top_products: Array<
+        Omit<IProduct, "variants"> & {
+          avg_rating: number;
+          bought_last_month: number;
+          variants: Array<
+            IVariant & {
+              _count: {
+                wishlists: number;
+              };
+            }
+          >;
+        }
+      >;
     }>(`/get-top-products/${product_id}`);
     return {
       top_products,
@@ -30,10 +55,24 @@ const getRelatedProducts = async (
 };
 
 const useTopProducts = (product_id: number) => {
-  return useQuery<IProduct[]>({
+  return useQuery<
+    Array<
+      Omit<IProduct, "variants"> & {
+        avg_rating: number;
+        bought_last_month: number;
+        variants: Array<
+          IVariant & {
+            _count: {
+              wishlists: number;
+            };
+          }
+        >;
+      }
+    >
+  >({
     queryKey: ["top-products", product_id],
     async queryFn() {
-      const response = await getRelatedProducts(product_id);
+      const response = await getTopProducts(product_id);
       return response.top_products;
     },
   });

@@ -62,6 +62,7 @@ const ProductSection: FC<IProps> = ({ heading, data, aria_label }) => {
                       thumbnail_title={variant_medias_with_title[0].image_title}
                       selling_price={selling_price}
                       mrp={mrp}
+                      className="w-64"
                     />
                   </Link>
                 ),

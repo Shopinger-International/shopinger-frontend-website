@@ -13,11 +13,22 @@ type IProps = {
   className?: string;
 };
 
-const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp, className }) => {
+const ProductCard: FC<IProps> = ({
+  title,
+  thumbnail,
+  selling_price,
+  mrp,
+  className,
+}) => {
   const discount_percentage = Math.round(((mrp - selling_price) / mrp) * 100);
   return (
-    <article className={cn("min-h-84 w-60 shrink-0 rounded-lg border border-gray-300 p-4", className)}>
-      <div className="relative flex h-38 w-auto justify-center">
+    <article
+      className={cn(
+        "min-h-84 rounded-lg border border-gray-300 p-4",
+        className,
+      )}
+    >
+      <div className="relative flex h-38 justify-center">
         <Image
           src={thumbnail.url}
           alt=""
