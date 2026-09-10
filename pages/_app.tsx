@@ -19,6 +19,7 @@ import LogoutModalProvider from "@/provider/logout-modal-provider";
 import CategoryDrawerProvider from "@/provider/category-drawer.provider";
 import MegaMenuProvider from "@/provider/mega-menu-provider";
 import LoginTooltipProvider from "@/provider/login-tooltip.provider";
+import LocationTooltipStateProvider from "@/provider/location-tooltip.provider";
 
 // react query
 import {
@@ -90,9 +91,11 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                   <LogoutModalProvider>
                     <MegaMenuProvider>
                       <CategoryDrawerProvider>
-                        <SelectedAddressProvider>
-                          {getLayout(<Component {...pageProps} />)}
-                        </SelectedAddressProvider>
+                        <LocationTooltipStateProvider>
+                          <SelectedAddressProvider>
+                            {getLayout(<Component {...pageProps} />)}
+                          </SelectedAddressProvider>
+                        </LocationTooltipStateProvider>
                       </CategoryDrawerProvider>
                     </MegaMenuProvider>
                   </LogoutModalProvider>

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // types
 import type { FC } from "react";
 
 // hooks
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 // helpers
 import clsx from "clsx";
@@ -19,7 +20,8 @@ import LocationTooltipContent from "@/components/header/location-tooltip/locatio
 const LocationTooltip: FC<{
   className: string;
 }> = ({ className }) => {
-  const [default_open, setIsDefaultOpen] = useState(true);
+  const { selected_address } = useLocationTooltipStateContext();
+  const [default_open, setIsDefaultOpen] = useState(false);
   const { address_id } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
 
@@ -27,8 +29,26 @@ const LocationTooltip: FC<{
     (address) => address.id == address_id,
   );
 
+  const default_address = user_details?.user_addresses.find(
+    (address) => address.is_default,
+  );
+
   const delivery_time = user_details ? "45" : "10";
 
+  const user_selected_address = (function () {
+    if (selected_address) return selected_address;
+    if (user_address) {
+      return user_address.house_number
+        ? `${user_address.house_number}, ${user_address.area}`
+        : user_address.area;
+    }
+    return;
+  })();
+
+  useEffect(() => {
+    if (default_address) return;
+    setIsDefaultOpen(true);
+  }, [selected_address]);
   return (
     <Tooltip
       placement="bottom-start"
@@ -61,11 +81,7 @@ const LocationTooltip: FC<{
               />
 
               <span className="min-w-0 truncate text-sm">
-                {user_address
-                  ? user_address.house_number
-                    ? `${user_address.house_number}, ${user_address.area}`
-                    : user_address.area
-                  : "Choose delivery location"}
+                {user_selected_address ?? "Choose delivery location"}
               </span>
               {/* Arrow */}
               <ChevronRight className="size-4 shrink-0" aria-hidden={true} />
@@ -104,7 +120,7 @@ const LocationTooltip: FC<{
             </div>
 
             {/* Location */}
-            {user_address ? (
+            {user_selected_address ? (
               <div className="mt-0.5 flex w-full max-w-xs items-center gap-1 text-left text-xs">
                 <MapPin
                   aria-hidden={true}
@@ -112,10 +128,7 @@ const LocationTooltip: FC<{
                 />
 
                 <span className="max-w-44 truncate">
-                  {user_address.house_number
-                    ? `${user_address.house_number}, `
-                    : ""}
-                  {user_address.area}
+                  {user_selected_address}
                 </span>
               </div>
             ) : (

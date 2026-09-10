@@ -17,6 +17,7 @@ import {
 
 // hooks
 import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pincode-serviceability.hook";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 // API
 import { fetchPlaces } from "@/components/common/map/location-picker/select-places.component";
@@ -30,6 +31,7 @@ type IOptionType = {
 const LocationTooltipContent: FC<{
   handleClose: () => void;
 }> = ({ handleClose }) => {
+  const { updateSelectedAddress } = useLocationTooltipStateContext();
   const input_ref = useRef<HTMLInputElement>(null);
   const [is_delivery_unavailable, setIsDeliveryUnavailable] = useState(false);
   const timeout_ref = useRef<NodeJS.Timeout | null>(null);
@@ -37,7 +39,7 @@ const LocationTooltipContent: FC<{
 
   const [query, setQuery] = useState("");
   const [options, setOptions] = useState<IOptionType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [is_loading, setIsLoading] = useState(false);
 
   const verify_pincode_serviceability_mutation =
     useVerifyPincodeServiceability();
@@ -81,6 +83,7 @@ const LocationTooltipContent: FC<{
         pin_code: mapped.pincode,
       })
       .then((data) => {
+        updateSelectedAddress?.(mapped.area);
         handleClose();
       })
       .catch((err) => {
@@ -112,6 +115,7 @@ const LocationTooltipContent: FC<{
             },
             {
               onSuccess() {
+                updateSelectedAddress?.(mapped.area);
                 handleClose();
               },
               onError(err) {
@@ -204,9 +208,9 @@ const LocationTooltipContent: FC<{
           </div>
         ) : (
           <>
-            {(isLoading || options?.length > 0) && (
+            {(is_loading || options?.length > 0) && (
               <div className="overflow-hidden rounded-md border border-gray-300 bg-white">
-                {isLoading ? (
+                {is_loading ? (
                   <div className="px-3 py-3 text-sm text-gray-600">
                     Searching locations...
                   </div>
@@ -231,7 +235,7 @@ const LocationTooltipContent: FC<{
               </div>
             )}
 
-            {!isLoading &&
+            {!is_loading &&
               query.trim() &&
               (!options || options?.length === 0) && (
                 <div className="mt-2 rounded-md border border-gray-300 px-3 py-3 text-sm text-gray-600">
