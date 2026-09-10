@@ -1,5 +1,12 @@
 import { useRouter } from "next/router";
-import { createElement, Fragment, useEffect, useRef, useMemo } from "react";
+import {
+  createElement,
+  Fragment,
+  useEffect,
+  useRef,
+  useMemo,
+  useState,
+} from "react";
 import { createRoot, Root } from "react-dom/client";
 
 // types
@@ -67,16 +74,67 @@ const debouncedSearch = debouncePromise(async (query: string) => {
 const AutoComplete: FC<
   AutocompleteProps & {
     show_search_icon_only?: boolean;
+    animate_categories: string[];
   }
-> = ({ className, show_search_icon_only, ...auto_complete_props }) => {
+> = ({
+  className,
+  show_search_icon_only,
+  animate_categories,
+  ...auto_complete_props
+}) => {
   const router = useRouter();
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
 
-  const { refine: setQuery } = useSearchBox();
+  //categories animation
+  const [text, setText] = useState("");
+  const [is_deleting, setIsDeleting] = useState(false);
+  const [category_index, setCategoryIndex] = useState(0);
+
+  const { refine: setQuery, query } = useSearchBox();
   const { refine: setPage } = usePagination();
 
+  useEffect(() => {
+    if (!animate_categories.length || query) return;
+    console.log("current query : ", query);
+
+    //start text animation if not started and completed
+    if (!is_deleting && text === animate_categories[category_index]) {
+      const deleting_text_timeout = setTimeout(() => {
+        setIsDeleting(true);
+      }, 2500);
+
+      return () => clearTimeout(deleting_text_timeout);
+    }
+
+    //update the category if animation completed and start again
+    if (is_deleting && text === "") {
+      setIsDeleting(false);
+      setCategoryIndex((prev) => (prev + 1) % animate_categories.length);
+      return;
+    }
+
+    //decrease the length of text if deleting else increase
+    const updating_text_timeout = setTimeout(() => {
+      setText(
+        is_deleting
+          ? animate_categories[category_index].slice(0, text.length - 1)
+          : animate_categories[category_index].slice(0, text.length + 1),
+      );
+    }, 150);
+    return () => clearTimeout(updating_text_timeout);
+  }, [animate_categories, query, is_deleting, category_index, text]);
+
+  useEffect(() => {
+    const input = autocomplete_container_ref.current?.querySelector(
+      "input",
+    ) as HTMLInputElement | null;
+
+    if (!input) return;
+
+    input.placeholder = "";
+  }, []);
   const plugins = useMemo(() => {
     const algolia_insights_plugin = createAlgoliaInsightsPlugin({
       insightsClient,
@@ -187,9 +245,7 @@ const AutoComplete: FC<
             ? "!w-10 !min-w-10  items-center justify-center  [& > aa-DetachedSearchButtonPlaceholder]:hidden !bg-transparent"
             : "flex-row-reverse justify-between",
         ),
-        detachedSearchButtonPlaceholder: show_search_icon_only
-          ? "hidden"
-          : "flex-1 pl-3",
+        detachedSearchButtonPlaceholder: "hidden",
         detachedSearchButtonIcon: show_search_icon_only
           ? "[&_svg]:!text-gray-900"
           : "!text-orange-500 bg-orange-500",
@@ -202,6 +258,7 @@ const AutoComplete: FC<
       },
 
       getSources({ query }) {
+        setQuery(query);
         return query
           ? [
               {
@@ -286,7 +343,19 @@ const AutoComplete: FC<
     };
   }, [plugins]);
 
-  return <div className={clsx(className)} ref={autocomplete_container_ref} />;
+  return (
+    <div className={clsx("relative", className)}>
+      <div ref={autocomplete_container_ref} />
+
+      {!query &&
+        animate_categories.length > 0 &&
+        animate_categories[category_index] !== "" && (
+          <div className="pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-gray-400">
+            Search "{text}"
+          </div>
+        )}
+    </div>
+  );
 };
 
 export default AutoComplete;
