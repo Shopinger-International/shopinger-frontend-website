@@ -14,26 +14,19 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { generateSlug } from "@/helpers/product.helper";
 
 // api hooks
-import useRelatedProducts from "@/hooks/axios/product/use-related-products.hook";
+import useTopProducts from "@/hooks/axios/product/use-top-products.hook";
 import { useCarousel } from "@/hooks/common/use-carousel";
 
 type IProps = {
   product_id: number;
   category_mappings: Array<IFormattedCategoryMapping>;
 };
-const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
-  const { data: related_products = [] } = useRelatedProducts(product_id);
-  const {
-    goToNext,
-    goToPrev,
-    can_scroll_next,
-    can_scroll_prev,
-    ref: embla_ref,
-  } = useCarousel();
-
-  const formatted_related_products = related_products.flatMap((product) => {
+const TopProducts: FC<IProps> = ({ product_id, category_mappings }) => {
+  const { data: top_products = [] } = useTopProducts(product_id);
+  const { goToNext, goToPrev, can_scroll_next, can_scroll_prev, ref } =
+    useCarousel();
+  const formatted_top_products = top_products.flatMap((product) => {
     const { variants, title, brand, product_medias } = product;
-
     return variants.map((variant) => {
       const updated_title =
         !brand ||
@@ -81,18 +74,18 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
     });
   });
 
-  if (related_products.length === 0) return null;
+  if (top_products.length === 0) return null;
   return (
     <section className="mb-8" aria-labelledby="similar-products">
       <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
         <h2 className="font-semibold lg:text-xl" id="similar-products">
-          Similar Products
+          Top Products in this Category
         </h2>
         {/* Left arrow */}
         <div
           className="relative mx-auto"
           role="region"
-          aria-label="Related Products Region"
+          aria-label="Top Products Region"
         >
           {/* Left arrow */}
           <button
@@ -104,9 +97,9 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
             <ChevronLeft aria-hidden={true} />
           </button>
 
-          <div className="embla__viewport overflow-hidden" ref={embla_ref}>
+          <div className="embla__viewport overflow-hidden" ref={ref}>
             <div className="embla__container flex gap-6">
-              {formatted_related_products.map(
+              {formatted_top_products.map(
                 (
                   { title, src, variant_medias_with_title, selling_price, mrp },
                   index,
@@ -139,4 +132,4 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
     </section>
   );
 };
-export default RelatedProducts;
+export default TopProducts;
