@@ -15,11 +15,7 @@ import {
 } from "lucide-react";
 
 // helpers
-import {
-  mapPlaceToForm,
-  getAddressFromCoords,
-  mapGeocodeToForm,
-} from "@/helpers/address.helper";
+import { mapPlaceToForm } from "@/helpers/address.helper";
 
 // hooks
 import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pincode-serviceability.hook";
