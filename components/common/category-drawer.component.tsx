@@ -94,14 +94,25 @@ type IProps = {
   is_open: boolean;
   handleClose: () => void;
 };
-
+// const category_imgages = [
+//     "https://cdn.shopinger.co.in/uploads/categories/1788739137352-5ba4175f-7c0f-437d-b102-343600efee70.png",
+//     "https://cdn.shopinger.co.in/uploads/categories/1788738850114-022260e0-82e1-4839-a672-379671f97310.png",
+//     "https://cdn.shopinger.co.in/uploads/categories/1788739422695-2e02e0c2-4970-4bd7-bbed-b6bfe0750ce5.png",
+//     "https://cdn.shopinger.co.in/uploads/categories/1788739782360-8277e49f-f54c-4432-9bcc-1c0f33ecb42d.png",
+//     "https://cdn.shopinger.co.in/uploads/categories/1788740809662-f4dba49d-b3e0-43f7-ae96-f726f560aa9f.png",
+//     "https://cdn.shopinger.co.in/uploads/categories/1788741483403-55f6cdc9-3d5f-4c8e-9e43-2ce6513df7c6.png",
+//     "https://cdn.shopinger.co.in/uploads/categories/1788741669998-11720c18-f890-4edc-9ab5-08a06d2e500f.png",
+//     "https://cdn.shopinger.co.in/uploads/categories/1788741772681-723baac7-06c5-4613-9856-49b34576564e.png",
+//     "https://cdn.shopinger.co.in/uploads/categories/1788741669998-11720c18-f890-4edc-9ab5-08a06d2e500f.png",
+//     "https://cdn.shopinger.co.in/uploads/categories/1788741863507-22e199a8-89f2-42ca-9257-c64b37ecc2cb.png",
+//   ];
 const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
   const [selected_main_category_id, setSelectedMainCatgoryId] = useState<
     number | null
   >(null);
   const { data: categories } = useCategories(true, "subsub");
   const router = useRouter();
-
+  console.log(categories);
   useEffect(() => {
     categories && setSelectedMainCatgoryId(categories[0].id);
   }, [categories]);
