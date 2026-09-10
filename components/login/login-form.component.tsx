@@ -145,7 +145,7 @@ const LoginForm: FC<IProps> = ({
         <button
           onClick={() => router.push("/")}
           className={clsx(
-            "text-md absolute top-6 right-6 inline-block font-semibold text-orange-500 cursor-pointer",
+            "text-md absolute top-6 right-6 inline-block cursor-pointer font-semibold text-orange-500",
             !is_login_page && "lg:hidden",
           )}
         >
@@ -341,8 +341,8 @@ const LoginForm: FC<IProps> = ({
                             setFieldValue(field.name, val);
                           }
                         }}
-                        maxLength={6}
-                        containerClassName="flex gap-2"
+                        max_length={6}
+                        container_class_name="flex gap-2"
                       />
                       {meta.touched && meta.error && (
                         <p className="text-red-500">{meta.error}</p>
