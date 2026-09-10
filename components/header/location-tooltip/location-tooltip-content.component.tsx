@@ -30,7 +30,6 @@ type IOptionType = {
 const LocationTooltipContent: FC<{
   handleClose: () => void;
 }> = ({ handleClose }) => {
-  const [is_focused, setIsFocused] = useState(false);
   const input_ref = useRef<HTMLInputElement>(null);
   const [is_delivery_unavailable, setIsDeliveryUnavailable] = useState(false);
   const timeout_ref = useRef<NodeJS.Timeout | null>(null);
@@ -132,14 +131,6 @@ const LocationTooltipContent: FC<{
     );
   };
 
-  console.log(
-    "value of test",
-    !isLoading && query.trim() && options?.length === 0,
-    !isLoading,
-    query.trim(),
-    options,
-  );
-
   return (
     <div className="w-full">
       {/* Search */}
@@ -151,8 +142,6 @@ const LocationTooltipContent: FC<{
             ref={input_ref}
             type="text"
             value={query}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search location..."
             className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
@@ -182,7 +171,7 @@ const LocationTooltipContent: FC<{
           </button>
         )}
         {/* Delivery unavailable */}
-        {!is_focused && is_delivery_unavailable ? (
+        {is_delivery_unavailable && !query.length ? (
           <div className="rounded-md border border-gray-300 bg-white p-4">
             <div className="flex items-start gap-3">
               <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-orange-50">
@@ -225,7 +214,7 @@ const LocationTooltipContent: FC<{
                   <div className="max-h-80 overflow-y-auto">
                     {options.map((option) => (
                       <button
-                        key={option.value}
+                        key={option.data.id}
                         type="button"
                         onClick={() => handleSelect(option)}
                         className="flex w-full items-start gap-2.5 border-b border-gray-300 px-3 py-3 text-left transition-colors last:border-b-0 hover:bg-orange-100"
