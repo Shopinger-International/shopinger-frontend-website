@@ -6,7 +6,13 @@ import type { FC } from "react";
 import type { IPlace } from "@/types/address";
 
 // icons
-import { MapPin, Search, MapPinned, LocateFixed } from "lucide-react";
+import {
+  MapPin,
+  Search,
+  MapPinned,
+  LocateFixed,
+  ChevronRight,
+} from "lucide-react";
 
 // helpers
 import {
@@ -18,6 +24,8 @@ import {
 // hooks
 import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pincode-serviceability.hook";
 import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
+import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
+import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 
 // API
 import { fetchPlaces } from "@/components/common/map/location-picker/select-places.component";
@@ -32,6 +40,7 @@ const LocationTooltipContent: FC<{
   handleClose: () => void;
 }> = ({ handleClose }) => {
   const { updateSelectedAddress } = useLocationTooltipStateContext();
+  const { updateState } = useAddressDrawerContext();
   const input_ref = useRef<HTMLInputElement>(null);
   const [is_delivery_unavailable, setIsDeliveryUnavailable] = useState(false);
   const timeout_ref = useRef<NodeJS.Timeout | null>(null);
@@ -40,6 +49,7 @@ const LocationTooltipContent: FC<{
   const [query, setQuery] = useState("");
   const [options, setOptions] = useState<IOptionType[]>([]);
   const [is_loading, setIsLoading] = useState(false);
+  const { data: user_addresses = [] } = useUserAddresses();
 
   const verify_pincode_serviceability_mutation =
     useVerifyPincodeServiceability();
@@ -242,6 +252,43 @@ const LocationTooltipContent: FC<{
                   No locations found
                 </div>
               )}
+            {user_addresses.length > 0 && (
+              <div className="overflow-hidden rounded-md border border-gray-300 bg-white">
+                <div className="border-b border-gray-300 px-3 py-2.5">
+                  <p className="text-xs font-semibold tracking-wide text-gray-600 uppercase">
+                    Saved addresses
+                  </p>
+                </div>
+
+                <div>
+                  {user_addresses.map((address) => (
+                    <button
+                      key={address.id}
+                      type="button"
+                      onClick={() => {
+                        updateState?.({
+                          address_id: address.id,
+                        });
+                        handleClose();
+                      }}
+                      className="group flex w-full items-center gap-3 border-b border-gray-100 px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-orange-50/60"
+                    >
+                      <div className="flex size-7.5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors group-hover:bg-orange-50 group-hover:text-orange-500">
+                        <MapPin className="size-3.5" />
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-gray-600">
+                          {address.formatted_address}
+                        </p>
+                      </div>
+
+                      <ChevronRight className="size-4 shrink-0 text-gray-300 transition-colors group-hover:text-orange-500" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
