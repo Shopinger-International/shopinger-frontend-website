@@ -9,9 +9,9 @@ import type { IPlace } from "@/types/address";
 import {
   MapPin,
   Search,
-  MapPinned,
   LocateFixed,
   ChevronRight,
+  MapPinned,
 } from "lucide-react";
 
 // helpers
@@ -27,6 +27,7 @@ import { useLocationTooltipStateContext } from "@/provider/location-tooltip.prov
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // API
 import { fetchPlaces } from "@/components/common/map/location-picker/select-places.component";
@@ -41,7 +42,9 @@ const LocationTooltipContent: FC<{
   handleClose: () => void;
 }> = ({ handleClose }) => {
   const { updateSelectedAddress } = useLocationTooltipStateContext();
-  const { openModal, updateState } = useAddressDrawerContext();
+  const { openModal: openAddressModal, updateState } =
+    useAddressDrawerContext();
+  const { openModal: openLoginModal } = useLoginModalContext();
   const { data: user_details, isPending } = useUserDetails();
   const input_ref = useRef<HTMLInputElement>(null);
   const [is_delivery_unavailable, setIsDeliveryUnavailable] = useState(false);
@@ -271,8 +274,15 @@ const LocationTooltipContent: FC<{
                       To access your saved addresses{" "}
                       <button
                         type="button"
-                        onClick={() => {}}
-                        className="font-semibold text-orange-500 hover:text-orange-600 underline"
+                        onClick={() => {
+                          openLoginModal({
+                            is_modal: true,
+                            title: "Login for better experience",
+                            onSuccess() {},
+                            onCancel() {},
+                          });
+                        }}
+                        className="cursor-pointer font-semibold text-orange-500 underline hover:text-orange-600"
                       >
                         Login
                       </button>
@@ -320,8 +330,7 @@ const LocationTooltipContent: FC<{
                     <button
                       type="button"
                       onClick={() => {
-                        handleClose();
-                        openModal();
+                        openAddressModal();
                       }}
                       className="shrink-0 text-xs font-semibold text-orange-500 hover:text-orange-600"
                     >

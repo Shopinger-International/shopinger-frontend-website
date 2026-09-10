@@ -7,6 +7,7 @@ import { useAddressDrawerContext } from "@/provider/selected-address-provider.co
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
+import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // helpers
 import clsx from "clsx";
@@ -22,8 +23,10 @@ const LocationTooltip: FC<{
   className: string;
 }> = ({ className }) => {
   const { selected_address } = useLocationTooltipStateContext();
+  const { is_modal_open: is_login_modal_open } = useLoginModalContext();
   const [default_open, setIsDefaultOpen] = useState(false);
-  const { address_id } = useAddressDrawerContext();
+  const { address_id, is_modal_open: is_address_modal_open } =
+    useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
   const { data: user_addresses, isPending: is_user_address_pending } =
     useUserAddresses();
@@ -53,8 +56,11 @@ const LocationTooltip: FC<{
     <Tooltip
       placement="bottom-start"
       trigger="click"
+      toggle={!default_open}
       offset_distance={12}
-      default_open={default_open}
+      default_open={
+        default_open && !is_login_modal_open && !is_address_modal_open
+      }
       className={clsx(
         "z-50 w-3/4 rounded-xl border border-gray-300 bg-white shadow-lg sm:w-100",
       )}

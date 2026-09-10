@@ -38,6 +38,7 @@ type TooltipProps = {
   trigger?: "hover" | "click";
   static_offset?: number;
   show_overlay?: boolean;
+  toggle?: boolean;
 };
 
 const Tooltip: FC<TooltipProps> = ({
@@ -52,6 +53,7 @@ const Tooltip: FC<TooltipProps> = ({
   trigger = "hover",
   static_offset,
   show_overlay = false,
+  toggle = true,
 }) => {
   const [open, setOpen] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
@@ -84,6 +86,7 @@ const Tooltip: FC<TooltipProps> = ({
   });
   const click = useClick(context, {
     enabled: show_tooltip && trigger == "click",
+    toggle,
   });
   const dismiss = useDismiss(context, {
     enabled: show_tooltip,
