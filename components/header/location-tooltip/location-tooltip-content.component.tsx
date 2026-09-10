@@ -26,6 +26,7 @@ import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pin
 import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // API
 import { fetchPlaces } from "@/components/common/map/location-picker/select-places.component";
@@ -40,7 +41,8 @@ const LocationTooltipContent: FC<{
   handleClose: () => void;
 }> = ({ handleClose }) => {
   const { updateSelectedAddress } = useLocationTooltipStateContext();
-  const { updateState } = useAddressDrawerContext();
+  const { openModal, updateState } = useAddressDrawerContext();
+  const { data: user_details, isPending } = useUserDetails();
   const input_ref = useRef<HTMLInputElement>(null);
   const [is_delivery_unavailable, setIsDeliveryUnavailable] = useState(false);
   const timeout_ref = useRef<NodeJS.Timeout | null>(null);
@@ -252,7 +254,7 @@ const LocationTooltipContent: FC<{
                   No locations found
                 </div>
               )}
-            {user_addresses.length > 0 && (
+            {!query.trim().length && (
               <div className="overflow-hidden rounded-md border border-gray-300 bg-white">
                 <div className="border-b border-gray-300 px-3 py-2.5">
                   <p className="text-xs font-semibold tracking-wide text-gray-600 uppercase">
@@ -260,33 +262,73 @@ const LocationTooltipContent: FC<{
                   </p>
                 </div>
 
-                <div>
-                  {user_addresses.map((address) => (
+                {!user_details && !isPending ? (
+                  <div className="flex items-center gap-3 px-3 py-2.5">
+                    <div className="flex size-7.5 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-500">
+                      <MapPin className="size-3.5" />
+                    </div>
+                    <p className="min-w-0 flex-1 text-sm text-gray-500">
+                      To access your saved addresses{" "}
+                      <button
+                        type="button"
+                        onClick={() => {}}
+                        className="font-semibold text-orange-500 hover:text-orange-600 underline"
+                      >
+                        Login
+                      </button>
+                      .
+                    </p>
+                  </div>
+                ) : !!user_addresses.length ? (
+                  <div>
+                    {user_addresses.map((address) => (
+                      <button
+                        key={address.id}
+                        type="button"
+                        onClick={() => {
+                          updateState?.({
+                            address_id: address.id,
+                          });
+                          handleClose();
+                        }}
+                        className="group flex w-full items-center gap-3 border-b border-gray-300 px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-orange-50"
+                      >
+                        <div className="flex size-7.5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors group-hover:bg-orange-50 group-hover:text-orange-500">
+                          <MapPin className="size-3.5" />
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-semibold text-gray-600">
+                            {address.formatted_address}
+                          </p>
+                        </div>
+
+                        <ChevronRight className="size-4 shrink-0 text-gray-600 transition-colors group-hover:text-orange-500" />
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3 px-3 py-2.5">
+                    <div className="flex size-7.5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+                      <MapPin className="size-3.5" />
+                    </div>
+
+                    <p className="min-w-0 flex-1 text-xs text-gray-500">
+                      No saved addresses yet
+                    </p>
+
                     <button
-                      key={address.id}
                       type="button"
                       onClick={() => {
-                        updateState?.({
-                          address_id: address.id,
-                        });
                         handleClose();
+                        openModal();
                       }}
-                      className="group flex w-full items-center gap-3 border-b border-gray-100 px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-orange-50/60"
+                      className="shrink-0 text-xs font-semibold text-orange-500 hover:text-orange-600"
                     >
-                      <div className="flex size-7.5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors group-hover:bg-orange-50 group-hover:text-orange-500">
-                        <MapPin className="size-3.5" />
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-gray-600">
-                          {address.formatted_address}
-                        </p>
-                      </div>
-
-                      <ChevronRight className="size-4 shrink-0 text-gray-300 transition-colors group-hover:text-orange-500" />
+                      Add address
                     </button>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
             )}
           </>
