@@ -15,7 +15,7 @@ import { Search } from "lucide-react";
 import axios from "axios";
 import clsx from "clsx";
 
-type IOptionType = {
+export type IOptionType = {
   label: string;
   value: string;
   data: IPlace;
@@ -48,9 +48,14 @@ export const fetchPlaces = async (search_query: string) => {
 type IProps = {
   ref: Ref<SelectInstance>;
   handleOnChange: (option: IOptionType) => void;
+  auto_focus?: boolean;
 };
 
-const SelectPlaces: FC<IProps> = ({ ref, handleOnChange }) => {
+const SelectPlaces: FC<IProps> = ({
+  ref,
+  handleOnChange,
+  auto_focus = false,
+}) => {
   const [query, setQuery] = useState("");
   const [value, setValue] = useState<IOptionType | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -82,7 +87,7 @@ const SelectPlaces: FC<IProps> = ({ ref, handleOnChange }) => {
   return (
     <AsyncSelect
       ref={ref}
-      autoFocus={true}
+      autoFocus={auto_focus}
       value={value} //
       inputValue={query}
       cacheOptions

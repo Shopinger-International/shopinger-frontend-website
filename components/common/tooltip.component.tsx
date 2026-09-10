@@ -34,6 +34,8 @@ type TooltipProps = {
   show_tooltip?: boolean;
   default_open?: boolean;
   strategy?: "absolute" | "fixed";
+  trigger?: "hover" | "click";
+  static_offset?: number;
 };
 
 const Tooltip: FC<TooltipProps> = ({
@@ -45,6 +47,8 @@ const Tooltip: FC<TooltipProps> = ({
   show_tooltip = true,
   default_open = false,
   strategy = "absolute",
+  trigger = "hover",
+  static_offset
 }) => {
   const [open, setOpen] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
@@ -69,14 +73,14 @@ const Tooltip: FC<TooltipProps> = ({
   });
 
   const hover = useHover(context, {
-    enabled: show_tooltip,
+    enabled: show_tooltip && trigger == "hover" && !default_open,
     handleClose: safePolygon(),
   });
   const focus = useFocus(context, {
     enabled: show_tooltip,
   });
   const click = useClick(context, {
-    enabled: show_tooltip,
+    enabled: show_tooltip && trigger == "click",
   });
   const dismiss = useDismiss(context, {
     enabled: show_tooltip,
@@ -123,6 +127,7 @@ const Tooltip: FC<TooltipProps> = ({
               stroke="#d1d5db"
               strokeWidth={1}
               tipRadius={2}
+              staticOffset={static_offset}
               style={{
                 filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
               }}
