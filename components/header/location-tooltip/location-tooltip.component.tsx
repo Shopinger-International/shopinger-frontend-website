@@ -6,6 +6,7 @@ import type { FC } from "react";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
+import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 
 // helpers
 import clsx from "clsx";
@@ -24,13 +25,11 @@ const LocationTooltip: FC<{
   const [default_open, setIsDefaultOpen] = useState(false);
   const { address_id } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
+  const { data: user_addresses, isPending: is_user_address_pending } =
+    useUserAddresses();
 
-  const user_address = user_details?.user_addresses?.find(
+  const user_address = user_addresses?.find(
     (address) => address.id == address_id,
-  );
-
-  const default_address = user_details?.user_addresses.find(
-    (address) => address.is_default,
   );
 
   const delivery_time = user_details ? "45" : "10";
@@ -46,9 +45,10 @@ const LocationTooltip: FC<{
   })();
 
   useEffect(() => {
-    if (default_address) return;
+    if (user_selected_address || is_user_address_pending) return;
     setIsDefaultOpen(true);
-  }, [selected_address]);
+  }, [user_selected_address, is_user_address_pending]);
+
   return (
     <Tooltip
       placement="bottom-start"
@@ -60,6 +60,7 @@ const LocationTooltip: FC<{
       )}
       strategy="fixed"
       static_offset={20}
+      show_overlay={!user_selected_address}
       content={({ handleClose }) => (
         <LocationTooltipContent
           handleClose={() => {

@@ -37,6 +37,7 @@ type TooltipProps = {
   strategy?: "absolute" | "fixed";
   trigger?: "hover" | "click";
   static_offset?: number;
+  show_overlay?: boolean;
 };
 
 const Tooltip: FC<TooltipProps> = ({
@@ -50,6 +51,7 @@ const Tooltip: FC<TooltipProps> = ({
   strategy = "absolute",
   trigger = "hover",
   static_offset,
+  show_overlay = false,
 }) => {
   const [open, setOpen] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
@@ -113,7 +115,9 @@ const Tooltip: FC<TooltipProps> = ({
 
       {show_tooltip && open && (
         <FloatingPortal>
-          <FloatingOverlay className="bg-black/30" lockScroll />
+          {show_overlay && (
+            <FloatingOverlay className="bg-black/30" lockScroll />
+          )}
           <div
             ref={refs.setFloating}
             style={floatingStyles}
