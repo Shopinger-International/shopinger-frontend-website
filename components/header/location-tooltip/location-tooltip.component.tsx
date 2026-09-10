@@ -1,3 +1,4 @@
+import { useState } from "react";
 // types
 import type { FC } from "react";
 
@@ -18,6 +19,7 @@ import LocationTooltipContent from "@/components/header/location-tooltip/locatio
 const LocationTooltip: FC<{
   className: string;
 }> = ({ className }) => {
+  const [default_open, setIsDefaultOpen] = useState(true);
   const { address_id } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
 
@@ -31,13 +33,21 @@ const LocationTooltip: FC<{
     <Tooltip
       placement="bottom-start"
       trigger="click"
-      offset_distance={6}
+      offset_distance={12}
+      default_open={default_open}
       className={clsx(
         "z-50 w-3/4 rounded-xl border border-gray-300 bg-white shadow-lg sm:w-100",
       )}
       strategy="fixed"
       static_offset={20}
-      content={() => <LocationTooltipContent />}
+      content={({ handleClose }) => (
+        <LocationTooltipContent
+          handleClose={() => {
+            setIsDefaultOpen(false);
+            handleClose();
+          }}
+        />
+      )}
     >
       {() => (
         <div className={clsx("min-w-0 items-center text-white", className)}>

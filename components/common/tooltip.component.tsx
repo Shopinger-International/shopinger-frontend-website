@@ -20,6 +20,7 @@ import {
   useInteractions,
   FloatingPortal,
   FloatingArrow,
+  FloatingOverlay,
 } from "@floating-ui/react";
 
 // helpers
@@ -48,7 +49,7 @@ const Tooltip: FC<TooltipProps> = ({
   default_open = false,
   strategy = "absolute",
   trigger = "hover",
-  static_offset
+  static_offset,
 }) => {
   const [open, setOpen] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
@@ -112,6 +113,7 @@ const Tooltip: FC<TooltipProps> = ({
 
       {show_tooltip && open && (
         <FloatingPortal>
+          <FloatingOverlay className="bg-black/30" lockScroll />
           <div
             ref={refs.setFloating}
             style={floatingStyles}
@@ -132,7 +134,7 @@ const Tooltip: FC<TooltipProps> = ({
                 filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
               }}
             />
-            <div className="overflow-hidden rounded-lg">
+            <div className="overflow-hidden rounded-lg outline-none">
               {content({ handleClose: () => setOpen(false) })}
             </div>
           </div>

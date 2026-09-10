@@ -6,10 +6,14 @@ import type { FC } from "react";
 import type { IPlace } from "@/types/address";
 
 // icons
-import { MapPin, Search, MapPinned } from "lucide-react";
+import { MapPin, Search, MapPinned, LocateFixed } from "lucide-react";
 
 // helpers
-import { mapPlaceToForm } from "@/helpers/address.helper";
+import {
+  mapPlaceToForm,
+  getAddressFromCoords,
+  mapGeocodeToForm,
+} from "@/helpers/address.helper";
 
 // hooks
 import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pincode-serviceability.hook";
@@ -23,10 +27,14 @@ type IOptionType = {
   data: IPlace;
 };
 
-const LocationTooltipContent: FC = () => {
+const LocationTooltipContent: FC<{
+  handleClose: () => void;
+}> = ({ handleClose }) => {
+  const [is_focused, setIsFocused] = useState(false);
   const input_ref = useRef<HTMLInputElement>(null);
   const [is_delivery_unavailable, setIsDeliveryUnavailable] = useState(false);
   const timeout_ref = useRef<NodeJS.Timeout | null>(null);
+  const [is_locating, setIsLocating] = useState(false);
 
   const [query, setQuery] = useState("");
   const [options, setOptions] = useState<IOptionType[]>([]);
@@ -74,7 +82,7 @@ const LocationTooltipContent: FC = () => {
         pin_code: mapped.pincode,
       })
       .then((data) => {
-        console.log("value of data", data);
+        handleClose();
       })
       .catch((err) => {
         if (err instanceof AxiosError) {
@@ -88,6 +96,50 @@ const LocationTooltipContent: FC = () => {
     setOptions([]);
   };
 
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported");
+      return;
+    }
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        getAddressFromCoords(latitude, longitude).then((data) => {
+          const mapped = mapGeocodeToForm(data);
+          verify_pincode_serviceability_mutation.mutate(
+            {
+              pin_code: mapped.pincode,
+            },
+            {
+              onSuccess() {
+                handleClose();
+              },
+              onError(err) {
+                setIsDeliveryUnavailable(true);
+              },
+              onSettled() {
+                setIsLocating(false);
+              },
+            },
+          );
+        });
+      },
+      () => {
+        alert("Unable to fetch location");
+        setIsLocating(false);
+      },
+    );
+  };
+
+  console.log(
+    "value of test",
+    !isLoading && query.trim() && options?.length === 0,
+    !isLoading,
+    query.trim(),
+    options,
+  );
+
   return (
     <div className="w-full">
       {/* Search */}
@@ -99,6 +151,8 @@ const LocationTooltipContent: FC = () => {
             ref={input_ref}
             type="text"
             value={query}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search location..."
             className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
@@ -107,8 +161,28 @@ const LocationTooltipContent: FC = () => {
       </div>
 
       <div className="bg-gray-100 p-2.5">
+        {!query.trim() && !is_delivery_unavailable && (
+          <button
+            type="button"
+            onClick={handleUseCurrentLocation}
+            disabled={is_locating}
+            className="mb-2.5 flex w-full items-center gap-3 rounded-md border border-gray-300 bg-white px-3 py-2.5 text-left transition-colors hover:bg-orange-50"
+          >
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-500">
+              <LocateFixed className="size-4" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-orange-500">
+                {is_locating ? "Detecting location..." : "Use current location"}
+              </p>
+              <p className="text-xs text-gray-600">
+                Enable current location for better experience
+              </p>
+            </div>
+          </button>
+        )}
         {/* Delivery unavailable */}
-        {is_delivery_unavailable ? (
+        {!is_focused && is_delivery_unavailable ? (
           <div className="rounded-md border border-gray-300 bg-white p-4">
             <div className="flex items-start gap-3">
               <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-orange-50">
@@ -116,11 +190,11 @@ const LocationTooltipContent: FC = () => {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-800">
+                <p className="text-sm font-semibold">
                   Delivery isn’t available here
                 </p>
 
-                <p className="mt-0.5 text-xs leading-4 text-gray-500">
+                <p className="mt-0.5 text-xs leading-4 font-medium text-gray-600">
                   We’re not delivering to this area yet.
                 </p>
               </div>
@@ -141,10 +215,10 @@ const LocationTooltipContent: FC = () => {
           </div>
         ) : (
           <>
-            {(isLoading || options.length > 0) && (
+            {(isLoading || options?.length > 0) && (
               <div className="overflow-hidden rounded-md border border-gray-300 bg-white">
                 {isLoading ? (
-                  <div className="px-3 py-3 text-sm text-gray-500">
+                  <div className="px-3 py-3 text-sm text-gray-600">
                     Searching locations...
                   </div>
                 ) : (
@@ -168,11 +242,13 @@ const LocationTooltipContent: FC = () => {
               </div>
             )}
 
-            {!isLoading && query.trim() && options.length === 0 && (
-              <div className="mt-2 rounded-md border border-gray-200 px-3 py-3 text-sm text-gray-500">
-                No locations found
-              </div>
-            )}
+            {!isLoading &&
+              query.trim() &&
+              (!options || options?.length === 0) && (
+                <div className="mt-2 rounded-md border border-gray-300 px-3 py-3 text-sm text-gray-600">
+                  No locations found
+                </div>
+              )}
           </>
         )}
       </div>

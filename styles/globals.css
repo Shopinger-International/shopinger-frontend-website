@@ -181,6 +181,9 @@
 .tooltip-jiggle {
   animation: login-tooltip-jiggle 4s linear infinite;
 }
+:focus-visible {
+  outline: none !important;
+}
 
 @media (max-width: 1024px) {
   body.snackbar-offset .notistack-SnackbarContainer {
