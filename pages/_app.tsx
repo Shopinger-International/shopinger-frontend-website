@@ -87,19 +87,19 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
               }}
             >
               <LoginModalProvider>
-                <LoginTooltipProvider>
-                  <LogoutModalProvider>
-                    <MegaMenuProvider>
-                      <CategoryDrawerProvider>
-                        <LocationTooltipStateProvider>
+                <LocationTooltipStateProvider>
+                  <LoginTooltipProvider>
+                    <LogoutModalProvider>
+                      <MegaMenuProvider>
+                        <CategoryDrawerProvider>
                           <SelectedAddressProvider>
                             {getLayout(<Component {...pageProps} />)}
                           </SelectedAddressProvider>
-                        </LocationTooltipStateProvider>
-                      </CategoryDrawerProvider>
-                    </MegaMenuProvider>
-                  </LogoutModalProvider>
-                </LoginTooltipProvider>
+                        </CategoryDrawerProvider>
+                      </MegaMenuProvider>
+                    </LogoutModalProvider>
+                  </LoginTooltipProvider>
+                </LocationTooltipStateProvider>
               </LoginModalProvider>
             </SnackbarProvider>
           </AlgoliaInsightsProvider>
