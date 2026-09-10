@@ -103,7 +103,7 @@ const AutoComplete: FC<
     if (!is_deleting && text === animate_categories[category_index]) {
       const deleting_text_timeout = setTimeout(() => {
         setIsDeleting(true);
-      }, 4000);
+      }, 2500);
 
       return () => clearTimeout(deleting_text_timeout);
     }
@@ -116,16 +116,13 @@ const AutoComplete: FC<
     }
 
     //decrease the length of text if deleting else increase
-    const updating_text_timeout = setTimeout(
-      () => {
-        setText(
-          is_deleting
-            ? animate_categories[category_index].slice(0, text.length - 1)
-            : animate_categories[category_index].slice(0, text.length + 1),
-        );
-      },
-      is_deleting ? 100 : 150,
-    );
+    const updating_text_timeout = setTimeout(() => {
+      setText(
+        is_deleting
+          ? animate_categories[category_index].slice(0, text.length - 1)
+          : animate_categories[category_index].slice(0, text.length + 1),
+      );
+    }, 150);
     return () => clearTimeout(updating_text_timeout);
   }, [animate_categories, query, is_deleting, category_index, text]);
 
@@ -350,11 +347,13 @@ const AutoComplete: FC<
     <div className={clsx("relative", className)}>
       <div ref={autocomplete_container_ref} />
 
-      {!query && animate_categories.length > 0 && (
-        <div className="pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-gray-400">
-          Search "{text}"
-        </div>
-      )}
+      {!query &&
+        animate_categories.length > 0 &&
+        animate_categories[category_index] !== "" && (
+          <div className="pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-gray-400">
+            Search "{text}"
+          </div>
+        )}
     </div>
   );
 };
