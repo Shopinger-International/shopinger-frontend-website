@@ -31,6 +31,7 @@ import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // API
 import { fetchPlaces } from "@/components/common/map/location-picker/select-places.component";
+import { getUserLocation } from "@/helpers/address.helper";
 
 type IOptionType = {
   label: string;
@@ -119,35 +120,31 @@ const LocationTooltipContent: FC<{
       return;
     }
     setIsLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        getAddressFromCoords(latitude, longitude).then((data) => {
-          const mapped = mapGeocodeToForm(data);
-          verify_pincode_serviceability_mutation.mutate(
-            {
-              pin_code: mapped.pincode,
+    getUserLocation({
+      handleSuccess(mapped) {
+        verify_pincode_serviceability_mutation.mutate(
+          {
+            pin_code: mapped.pincode,
+          },
+          {
+            onSuccess() {
+              updateSelectedAddress?.(mapped.area);
+              handleClose();
             },
-            {
-              onSuccess() {
-                updateSelectedAddress?.(mapped.area);
-                handleClose();
-              },
-              onError(err) {
-                setIsDeliveryUnavailable(true);
-              },
-              onSettled() {
-                setIsLocating(false);
-              },
+            onError(err) {
+              setIsDeliveryUnavailable(true);
             },
-          );
-        });
+            onSettled() {
+              setIsLocating(false);
+            },
+          },
+        );
       },
-      () => {
+      handleError() {
         alert("Unable to fetch location");
         setIsLocating(false);
       },
-    );
+    });
   };
 
   return (

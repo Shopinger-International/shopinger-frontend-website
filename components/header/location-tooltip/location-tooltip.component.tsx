@@ -11,6 +11,7 @@ import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // helpers
 import clsx from "clsx";
+import { getUserLocation } from "@/helpers/address.helper";
 
 // icons
 import { ChevronRight, MapPin } from "lucide-react";
@@ -22,7 +23,8 @@ import LocationTooltipContent from "@/components/header/location-tooltip/locatio
 const LocationTooltip: FC<{
   className: string;
 }> = ({ className }) => {
-  const { selected_address } = useLocationTooltipStateContext();
+  const { selected_address, updateSelectedAddress } =
+    useLocationTooltipStateContext();
   const { is_modal_open: is_login_modal_open } = useLoginModalContext();
   const [default_open, setIsDefaultOpen] = useState(false);
   const { address_id, is_modal_open: is_address_modal_open } =
@@ -49,7 +51,20 @@ const LocationTooltip: FC<{
 
   useEffect(() => {
     if (user_selected_address || is_user_address_pending) return;
-    setIsDefaultOpen(true);
+    navigator.permissions.query({ name: "geolocation" }).then((result) => {
+      if (result.state == "granted") {
+        getUserLocation({
+          handleSuccess(data) {
+            updateSelectedAddress?.(data.area);
+          },
+          handleError() {
+            setIsDefaultOpen(true);
+          },
+        });
+      } else {
+        setIsDefaultOpen(true);
+      }
+    });
   }, [user_selected_address, is_user_address_pending]);
 
   return (
