@@ -20,6 +20,7 @@ import CategoryDrawerProvider from "@/provider/category-drawer.provider";
 import MegaMenuProvider from "@/provider/mega-menu-provider";
 import LoginTooltipProvider from "@/provider/login-tooltip.provider";
 import LocationTooltipStateProvider from "@/provider/location-tooltip.provider";
+import LocationDrawerProvider from "@/provider/location-drawer.provider";
 
 // react query
 import {
@@ -88,17 +89,19 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
             >
               <LoginModalProvider>
                 <LocationTooltipStateProvider>
-                  <LoginTooltipProvider>
-                    <LogoutModalProvider>
-                      <MegaMenuProvider>
-                        <CategoryDrawerProvider>
-                          <SelectedAddressProvider>
-                            {getLayout(<Component {...pageProps} />)}
-                          </SelectedAddressProvider>
-                        </CategoryDrawerProvider>
-                      </MegaMenuProvider>
-                    </LogoutModalProvider>
-                  </LoginTooltipProvider>
+                  <LocationDrawerProvider>
+                    <LoginTooltipProvider>
+                      <LogoutModalProvider>
+                        <MegaMenuProvider>
+                          <CategoryDrawerProvider>
+                            <SelectedAddressProvider>
+                              {getLayout(<Component {...pageProps} />)}
+                            </SelectedAddressProvider>
+                          </CategoryDrawerProvider>
+                        </MegaMenuProvider>
+                      </LogoutModalProvider>
+                    </LoginTooltipProvider>
+                  </LocationDrawerProvider>
                 </LocationTooltipStateProvider>
               </LoginModalProvider>
             </SnackbarProvider>

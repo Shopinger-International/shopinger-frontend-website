@@ -10,7 +10,7 @@ import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
-import LocationTooltip from "@/components/header/location-tooltip/location-tooltip.component";
+import LocationTooltip from "@/components/header/location/location-tooltip.component";
 
 // icons
 import { Menu, CircleUserIcon } from "lucide-react";
@@ -19,6 +19,7 @@ import { Menu, CircleUserIcon } from "lucide-react";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 
 const Header: FC<{
   show_filter_sort_bar?: boolean;
@@ -29,6 +30,7 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
+  const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
@@ -128,12 +130,12 @@ const Header: FC<{
 
         {/* CENTER: Location + Searchbar */}
         <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-8">
-          {/* Mobile view of LocationBlock */}
-          {/* <LocationTooltip className="flex lg:hidden" /> */}
-
-          {/* Desktop view of LocationBlock placed to the left of SearchBar */}
-          {!is_mobile && (
-            <LocationTooltip className="hidden shrink-0 lg:flex" />
+          {is_mounted && (
+            <LocationTooltip
+              className={
+                is_mobile ? "flex lg:hidden" : "hidden shrink-0 lg:flex"
+              }
+            />
           )}
 
           <div className="flex w-full items-center gap-3">
