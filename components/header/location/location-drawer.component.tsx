@@ -29,7 +29,7 @@ const LocationDrawer: FC<IProps> = ({ toggle, open, onClose }) => {
       <div className="fixed inset-0 flex items-end justify-center">
         <DialogPanel
           transition
-          className="relative min-h-1/2 w-full transform overflow-visible rounded-t-xl bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out outline-none data-closed:translate-y-full"
+          className="relative min-h-2/3 w-full transform overflow-visible rounded-t-xl bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out outline-none data-closed:translate-y-full"
         >
           {/* Keep floating close CTA */}
           {toggle && (
@@ -42,11 +42,6 @@ const LocationDrawer: FC<IProps> = ({ toggle, open, onClose }) => {
               <X className="size-6" strokeWidth={2.5} />
             </button>
           )}
-
-          {/* Drag handle */}
-          <div className="flex justify-center pt-2.5 pb-1">
-            <span className="h-1 w-10 rounded-full bg-gray-300" />
-          </div>
 
           {/* Content */}
           <div className="max-h-[calc(85dvh-20px)] overflow-y-auto overscroll-contain">
