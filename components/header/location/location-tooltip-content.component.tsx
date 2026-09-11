@@ -150,7 +150,6 @@ const LocationTooltipContent: FC<{
     let status_obj: PermissionStatus | null = null;
 
     const updatePermissionState = (status: PermissionStatus) => {
-      console.log("value of status")
       if (!current_location_subtitle_ref.current) return;
       setLocationAccessEnabled(
         status.state == "prompt" || status.state == "granted",
@@ -158,7 +157,6 @@ const LocationTooltipContent: FC<{
     };
 
     const handleStateChange = (event: Event) => {
-      console.log("inside handle change")
       updatePermissionState(event.target as PermissionStatus);
     };
 
@@ -182,7 +180,7 @@ const LocationTooltipContent: FC<{
   return (
     <div className="w-full">
       {/* Search */}
-      <div className="border-b border-gray-300 p-2.5">
+      <div className="overflow-y-auto border-b border-gray-300 p-2.5">
         <div className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2.5 focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-500 sm:px-4 sm:py-2">
           <Search className="size-5 shrink-0 text-gray-400" />
 
@@ -197,7 +195,7 @@ const LocationTooltipContent: FC<{
         </div>
       </div>
 
-      <div className="bg-gray-100 p-2.5">
+      <div className="overflow-y-auto bg-gray-100 p-2.5">
         {!query.trim() &&
           !is_delivery_unavailable &&
           (location_access_enabled ? (
@@ -339,7 +337,6 @@ const LocationTooltipContent: FC<{
                           openLoginModal({
                             is_modal: true,
                             title: "Login for better experience",
-                            onSuccess() {},
                             onCancel() {},
                           });
                         }}

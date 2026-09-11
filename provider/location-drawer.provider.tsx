@@ -4,6 +4,9 @@ import type { FC, ReactNode } from "react";
 
 // local components
 import LocationDrawer from "@/components/header/location/location-drawer.component";
+import useDefaultLocationTooltipOpen from "@/hooks/common/use-default-location.hook";
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 
 type ILocationDrawerContext = {
   is_drawer_open: boolean;
@@ -21,22 +24,32 @@ export const useLocationDrawerContext = () => {
 const LocationDrawerProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
+  const is_mounted = useIsMounted();
+  const is_mobile = useIsMobile();
+  const { default_open, updateDefaultOpen } = useDefaultLocationTooltipOpen();
   const [is_drawer_open, setIsDrawerOpen] = useState(false);
-  return (
-    <LocationDrawerContext.Provider
-      value={{
-        is_drawer_open,
-        updateState(val) {
-          setIsDrawerOpen(val);
-        },
-      }}
-    >
-      <LocationDrawer
-        open={is_drawer_open}
-        onClose={() => setIsDrawerOpen(false)}
-      />
-      {children}
-    </LocationDrawerContext.Provider>
-  );
+  if (is_mobile && is_mounted) {
+    return (
+      <LocationDrawerContext.Provider
+        value={{
+          is_drawer_open,
+          updateState(val) {
+            setIsDrawerOpen(val);
+          },
+        }}
+      >
+        <LocationDrawer
+          toggle={!default_open}
+          open={default_open || is_drawer_open}
+          onClose={() => {
+            updateDefaultOpen(false);
+            setIsDrawerOpen(false);
+          }}
+        />
+        {children}
+      </LocationDrawerContext.Provider>
+    );
+  }
+  return <>{children}</>;
 };
 export default LocationDrawerProvider;

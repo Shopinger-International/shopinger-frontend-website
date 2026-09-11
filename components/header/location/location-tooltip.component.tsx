@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 // types
 import type { FC } from "react";
 
@@ -6,14 +5,13 @@ import type { FC } from "react";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
-import useUserAddresses from "@/hooks/axios/address/use-user-addresses.hook";
 import { useLoginModalContext } from "@/provider/login-modal-provider";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import { useLocationDrawerContext } from "@/provider/location-drawer.provider";
+import useDefaultLocationTooltipOpen from "@/hooks/common/use-default-location.hook";
 
 // helpers
 import clsx from "clsx";
-import { getUserLocation } from "@/helpers/address.helper";
 
 // icons
 import { ChevronDown, MapPin } from "lucide-react";
@@ -26,39 +24,15 @@ const LocationTooltip: FC<{
   className: string;
 }> = ({ className }) => {
   const is_mobile = useIsMobile();
-  const { selected_address, updateSelectedAddress } =
-    useLocationTooltipStateContext();
-    const {updateState:updateLocationDrawerState} = useLocationDrawerContext();
+  const { selected_address } = useLocationTooltipStateContext();
+  const { updateState: updateLocationDrawerState } = useLocationDrawerContext();
   const { is_modal_open: is_login_modal_open } = useLoginModalContext();
-  const [default_open, setIsDefaultOpen] = useState(false);
   const { is_modal_open: is_address_modal_open } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
-  const { isPending: is_user_address_pending } = useUserAddresses();
+  const { default_open, updateDefaultOpen } = useDefaultLocationTooltipOpen();
 
   const delivery_time = user_details ? "45" : "10";
 
-  useEffect(() => {
-    if (
-      selected_address ||
-      is_user_address_pending ||
-      user_details?.user_addresses?.length
-    )
-      return;
-    navigator.permissions.query({ name: "geolocation" }).then((result) => {
-      if (result.state == "granted") {
-        getUserLocation({
-          handleSuccess(data) {
-            updateSelectedAddress?.(data.area);
-          },
-          handleError() {
-            setIsDefaultOpen(true);
-          },
-        });
-      } else {
-        setIsDefaultOpen(true);
-      }
-    });
-  }, [selected_address, is_user_address_pending]);
   if (is_mobile) {
     return (
       <div className={clsx("min-w-0 items-center text-white", className)}>
@@ -134,9 +108,7 @@ const LocationTooltip: FC<{
       trigger="click"
       toggle={!default_open}
       offset_distance={12}
-      default_open={
-        default_open && !is_login_modal_open && !is_address_modal_open
-      }
+      default_open={default_open}
       className={clsx(
         "z-50 w-3/4 rounded-xl border border-gray-300 bg-white shadow-lg sm:w-100",
       )}
@@ -147,7 +119,7 @@ const LocationTooltip: FC<{
       content={({ handleClose }) => (
         <LocationTooltipContent
           handleClose={() => {
-            setIsDefaultOpen(false);
+            updateDefaultOpen(false);
             handleClose();
           }}
         />
