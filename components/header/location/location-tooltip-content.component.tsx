@@ -252,7 +252,7 @@ const LocationTooltipContent: FC<{
         {/* Delivery unavailable */}
         {is_delivery_unavailable && !query.length ? (
           <div className="flex h-full flex-col justify-center space-y-4 rounded-md bg-white p-6 text-center">
-            <div className="relative mx-auto flex size-60 shrink-0 items-center justify-center">
+            <div className="relative mx-auto flex size-60 lg:size-40 shrink-0 items-center justify-center">
               <Image
                 src="/not-available-at-location.png"
                 fill={true}
