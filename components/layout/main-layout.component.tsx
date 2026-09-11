@@ -19,6 +19,7 @@ import { HAS_LOGIN_SHOWN } from "@/constants/common.constant";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 const AddAddressModal = dynamic(
   () =>
@@ -80,6 +81,7 @@ const MainLayout: FC<{
   } = useAddressDrawerContext();
   const login_modal_state = useLoginModalContext();
   const logout_modal_state = useLogoutModalContext();
+  const { selected_address } = useLocationTooltipStateContext();
 
   const { show: show_footer } = useContext(FooterStateContext);
   const is_mobile = useIsMobile();
@@ -101,7 +103,14 @@ const MainLayout: FC<{
 
   useEffect(() => {
     const has_login_shown = sessionStorage.getItem(HAS_LOGIN_SHOWN);
-    if (has_login_shown || is_pending || user_details || !is_home) return;
+    if (
+      has_login_shown ||
+      is_pending ||
+      user_details ||
+      !is_home ||
+      !selected_address
+    )
+      return;
     const timeout = setTimeout(() => {
       login_modal_state.openModal({
         is_modal: false,
@@ -112,7 +121,7 @@ const MainLayout: FC<{
       sessionStorage.setItem(HAS_LOGIN_SHOWN, "true");
     }, 2000);
     return () => clearTimeout(timeout);
-  }, [user_details, is_pending, is_home]);
+  }, [user_details, is_pending, is_home, selected_address]);
 
   return (
     <div

@@ -8,6 +8,7 @@ import type { FC, ReactNode } from "react";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import { useLoginModalContext } from "./login-modal-provider";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 type ILoginTooltipContext = {
   show_tooltip: boolean;
@@ -26,6 +27,7 @@ export const useLoginTooltipContext = () => {
 const LoginTooltipProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
+  const { selected_address } = useLocationTooltipStateContext();
   const { data: user_details, isPending: is_pending } = useUserDetails();
   const { is_modal_open: is_login_modal_open } = useLoginModalContext();
   const is_logged_in = !!user_details;
@@ -33,13 +35,13 @@ const LoginTooltipProvider: FC<{
   const is_mobile = useIsMobile();
 
   useEffect(() => {
-    if (is_pending || is_logged_in || is_mobile) return;
+    if (is_pending || is_logged_in || is_mobile || !selected_address) return;
     setShowTooltip(true);
     const timeout = setTimeout(() => {
       setShowTooltip(false);
     }, 20000);
     return () => clearInterval(timeout);
-  }, [is_logged_in, is_pending, is_mobile]);
+  }, [is_logged_in, is_pending, is_mobile, selected_address]);
 
   useEffect(() => {
     is_login_modal_open && setShowTooltip(false);
