@@ -10,10 +10,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // api hooks
 import { useCarousel } from "@/hooks/common/use-carousel";
+import { IVariantMediaWithTitle } from "@/hoc/product/with-product-gallery-functionality.hoc";
 
 type IProps = {
   heading: string;
-  data: any;
+  data: {
+    title: string;
+    src: string;
+    variant_medias_with_title: IVariantMediaWithTitle[];
+    selling_price: number;
+    mrp: number;
+  }[];
   aria_label: string;
 };
 const ProductSection: FC<IProps> = ({ heading, data, aria_label }) => {
