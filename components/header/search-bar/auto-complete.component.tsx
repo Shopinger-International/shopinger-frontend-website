@@ -116,16 +116,13 @@ const AutoComplete: FC<
     }
 
     //decrease the length of text if deleting else increase
-    const updating_text_timeout = setTimeout(
-      () => {
-        setText(
-          is_deleting
-            ? animate_categories[category_index].slice(0, text.length - 1)
-            : animate_categories[category_index].slice(0, text.length + 1),
-        );
-      },
-      is_deleting ? 50 : 100,
-    );
+    const updating_text_timeout = setTimeout(() => {
+      setText(
+        is_deleting
+          ? animate_categories[category_index].slice(0, text.length - 1)
+          : animate_categories[category_index].slice(0, text.length + 1),
+      );
+    }, 50);
     return () => clearTimeout(updating_text_timeout);
   }, [animate_categories, query, is_deleting, category_index, text]);
 
