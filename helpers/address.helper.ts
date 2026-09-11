@@ -88,3 +88,25 @@ export const getAddressFromCoords = async (
   );
   return data.results[0]; // most relevant result
 };
+
+export const getUserLocation = ({
+  handleSuccess,
+  handleError,
+}: {
+  handleSuccess: (data: ReturnType<typeof mapGeocodeToForm>) => void;
+  handleError: () => void;
+}) => {
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude, longitude } = pos.coords;
+      getAddressFromCoords(latitude, longitude).then((data) => {
+        const mapped = mapGeocodeToForm(data);
+        handleSuccess(mapped);
+      });
+    },
+    () => {
+      alert("Unable to fetch location");
+      handleError();
+    },
+  );
+};

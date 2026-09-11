@@ -31,6 +31,7 @@ const useUserAddresses = () => {
       const user_addresses = await getUserAddresses();
       return user_addresses;
     },
+    retry: 1,
   });
 };
 export default useUserAddresses;

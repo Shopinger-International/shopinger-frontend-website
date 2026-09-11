@@ -10,108 +10,17 @@ import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
+import LocationTooltip from "@/components/header/location/location-tooltip.component";
 
 // icons
-import { Menu, ChevronRight, CircleUserIcon, MapPin } from "lucide-react";
-
-// helpers
-import { clsx } from "clsx";
+import { Menu, CircleUserIcon } from "lucide-react";
 
 // hooks
-import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
-import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 
-const LocationBlock: FC<{
-  className: string;
-}> = ({ className }) => {
-  const { address_id, openDrawer } = useAddressDrawerContext();
-  const { data: user_details } = useUserDetails();
-
-  const user_address = user_details?.user_addresses?.find(
-    (address) => address.id == address_id,
-  );
-
-  const delivery_time = user_details ? "45" : "10";
-
-  return (
-    <button
-      onClick={openDrawer}
-      className={clsx("min-w-0 items-center text-white", className)}
-      aria-label={
-        user_address
-          ? `Update delivery location. Current location: ${user_address.state} ${user_address.pincode}`
-          : "Add delivery location"
-      }
-    >
-      {/* ================= MOBILE ================= */}
-      <div className="flex w-full min-w-0 items-center gap-2 lg:hidden">
-        {/* Location */}
-        <div className="flex min-w-0 flex-1 items-center gap-1">
-          <MapPin aria-hidden={true} className="size-3 shrink-0 text-white" />
-
-          <span className="min-w-0 truncate text-sm">
-            {user_address
-              ? user_address.house_number
-                ? `${user_address.house_number}, ${user_address.area}`
-                : user_address.area
-              : "Choose delivery location"}
-          </span>
-          {/* Arrow */}
-          <ChevronRight className="size-4 shrink-0" aria-hidden={true} />
-        </div>
-
-        {/* Delivery */}
-        <div className="flex shrink-0 items-center gap-1">
-          <div>
-            <span className="text-[11px] font-semibold whitespace-nowrap">
-              Delivery in
-            </span>
-            <div className="flex flex-row items-center gap-1">
-              <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
-                {delivery_time} MIN
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ================= DESKTOP ================= */}
-      <div className="hidden lg:flex lg:flex-col lg:items-start">
-        {/* Delivery time */}
-        <div className="flex items-center gap-1">
-          <span className="text-sm font-semibold">Delivery in</span>
-
-          <span
-            className={clsx(
-              "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
-            )}
-          >
-            <span className="flex items-center gap-1">{delivery_time} MIN</span>
-          </span>
-        </div>
-
-        {/* Location */}
-        {user_address ? (
-          <div className="mt-0.5 flex w-full max-w-xs items-center gap-1 text-left text-xs">
-            <MapPin aria-hidden={true} className="size-3 shrink-0 text-white" />
-
-            <span className="max-w-44 truncate">
-              {user_address.house_number
-                ? `${user_address.house_number}, `
-                : ""}
-              {user_address.area}
-            </span>
-          </div>
-        ) : (
-          <span className="mt-0.5 text-xs">Add your location</span>
-        )}
-      </div>
-    </button>
-  );
-};
 const Header: FC<{
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
@@ -121,6 +30,7 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
+  const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
@@ -220,11 +130,13 @@ const Header: FC<{
 
         {/* CENTER: Location + Searchbar */}
         <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-8">
-          {/* Mobile view of LocationBlock */}
-          <LocationBlock className="flex lg:hidden" />
-
-          {/* Desktop view of LocationBlock placed to the left of SearchBar */}
-          <LocationBlock className="hidden shrink-0 lg:flex" />
+          {is_mounted && (
+            <LocationTooltip
+              className={
+                is_mobile ? "flex lg:hidden" : "hidden shrink-0 lg:flex"
+              }
+            />
+          )}
 
           <div className="flex w-full items-center gap-3">
             <SearchBar />

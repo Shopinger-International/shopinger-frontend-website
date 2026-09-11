@@ -45,7 +45,7 @@ const DeliveryDetails: FC = () => {
 
           <div className="space-y-0.5">
             <p className="text-sm font-semibold text-gray-900">
-              Same day Delivery
+              Delivery in minutes*
             </p>
             <p className="text-xs text-gray-600">
               Fast & reliable doorstep delivery

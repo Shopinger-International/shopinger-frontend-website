@@ -1,8 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 
-// types
-import type { AxiosError } from "axios";
-
 // lib
 import webAxios from "@/lib/axios/web.lib";
 
@@ -12,6 +9,7 @@ interface VerifyOtpPayload {
 
 interface VerifyOtpResponse {
   message?: string;
+  is_serviceable: boolean;
   data: {
     pincode: string;
     delivery_fee: number;
