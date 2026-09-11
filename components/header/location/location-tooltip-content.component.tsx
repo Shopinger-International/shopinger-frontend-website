@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { AxiosError } from "axios";
 import { useEffect, useRef, useState } from "react";
 
@@ -178,7 +179,7 @@ const LocationTooltipContent: FC<{
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="h-full w-full">
       {/* Search */}
       <div className="overflow-y-auto border-b border-gray-300 p-2.5">
         <div className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2.5 focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-500 sm:px-4 sm:py-2">
@@ -195,7 +196,7 @@ const LocationTooltipContent: FC<{
         </div>
       </div>
 
-      <div className="overflow-y-auto bg-gray-100 p-2.5">
+      <div className="h-[calc(100%-63px)] overflow-y-auto bg-gray-100 p-2.5">
         {!query.trim() &&
           !is_delivery_unavailable &&
           (location_access_enabled ? (
@@ -250,23 +251,26 @@ const LocationTooltipContent: FC<{
           ))}
         {/* Delivery unavailable */}
         {is_delivery_unavailable && !query.length ? (
-          <div className="rounded-md border border-gray-300 bg-white p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-orange-50">
-                <MapPinned className="size-4.5 text-orange-500" />
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold">
-                  Delivery isn’t available here
-                </p>
-
-                <p className="mt-0.5 text-xs leading-4 font-medium text-gray-600">
-                  We’re not delivering to this area yet.
-                </p>
-              </div>
+          <div className="flex h-full flex-col justify-center space-y-4 rounded-md bg-white p-6 text-center">
+            <div className="relative mx-auto flex size-60 shrink-0 items-center justify-center">
+              <Image
+                src="/not-available-at-location.png"
+                fill={true}
+                alt="not-available"
+                className="object-contain"
+              />
             </div>
 
+            {/* Centered Content */}
+            <div className="space-y-1">
+              <p className="text-2xl font-semibold text-gray-900">Sorry !</p>
+              <p className="text-lg font-semibold text-gray-900">
+                Shopinger is not available in your area
+              </p>
+              <p className="text-gray-500">Coming soon</p>
+            </div>
+
+            {/* Button */}
             <button
               type="button"
               onClick={() => {
@@ -275,9 +279,9 @@ const LocationTooltipContent: FC<{
                 setIsDeliveryUnavailable(false);
                 input_ref.current?.focus();
               }}
-              className="mt-3 flex h-9 w-full items-center justify-center rounded-md bg-orange-500 px-3 text-xs font-semibold text-white transition-colors hover:bg-orange-600"
+              className="flex h-9 w-full shrink-0 items-center justify-center rounded-md bg-orange-500 px-3 font-semibold text-white transition-colors hover:bg-orange-600"
             >
-              Try another location
+              Choose another location
             </button>
           </div>
         ) : (
