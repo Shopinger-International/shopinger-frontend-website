@@ -5,16 +5,13 @@ import Link from "next/link";
 import type { FC } from "react";
 import type { ICategory } from "@/hooks/axios/common/use-categories";
 
-//logo
-import Logo from "@/public/dark-mobile-logo.png";
-
 // icons
 import {
   Menu,
   ChevronLeft,
   ChevronRight,
   CreditCard,
-  LayoutGrid,
+  LayoutDashboard,
 } from "lucide-react";
 
 // hooks
@@ -27,15 +24,18 @@ import clsx from "clsx";
 // data
 import { whatsapp_templates } from "@/data/whatsapp-templates.data";
 import Image from "next/image";
+import { useCategoryContext } from "@/provider/selected-category-provider";
 
 const CategorySection: FC = () => {
   const params = useParams<{ main_category_slug: string }>();
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: categories = [] } = useCategories(true);
-  const [selected_category, setSelectedCategory] = useState<ICategory | null>();
-  const [selected_sub_category, setSelectedSubCategory] = useState<
-    ICategory["sub_categories"][number] | null
-  >();
+  const {
+    selected_category,
+    setSelectedCategory,
+    selected_sub_category,
+    setSelectedSubCategory,
+  } = useCategoryContext();
   const [can_scroll_left, setCanScrollLeft] = useState(false);
   const [can_scroll_right, setCanScrollRight] = useState(false);
   const nav_ref = useRef<HTMLDivElement>(null);
@@ -173,7 +173,7 @@ const CategorySection: FC = () => {
                       hide_nav && "hidden",
                     )}
                   >
-                    <LayoutGrid
+                    <LayoutDashboard
                       className={clsx(
                         "size-6 transition-colors",
                         selected_category == null
@@ -290,7 +290,7 @@ const CategorySection: FC = () => {
           </Link>
         </div>
       </div>
-      {selected_category && (
+      {/* {selected_category && (
         <div className="flex items-center gap-6 bg-gray-100 px-4 py-2 text-gray-900 shadow-lg">
           <span className="text-md hidden shrink-0 font-semibold text-orange-500 lg:inline-block lg:text-lg">
             {selected_category.name}
@@ -334,7 +334,7 @@ const CategorySection: FC = () => {
             <ChevronRight className="h-6 w-6" />
           </button>
         </div>
-      )}
+      )} */}
     </>
   );
 };

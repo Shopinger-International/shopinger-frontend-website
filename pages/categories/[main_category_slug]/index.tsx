@@ -20,6 +20,7 @@ import createCategoryJSONLD from "@/seo/category.jsonld";
 
 // analytics
 import useCategoryViewed from "@/hooks/analytics/use-category-viewed.hook";
+import CategoryHome from "@/components/categories/category-home";
 
 type IProps = {
   category_slug: string;
@@ -61,10 +62,7 @@ const MainCategoryPage: NextPageWithLayout<IProps> = ({ category_slug }) => {
           {category_name.toLowerCase()}.
         </p>
         <div className="max-w-8xl mx-auto mt-(--header-height) space-y-3 pb-4">
-          <CategoryProducts
-            category_slug={category_slug}
-            category_type="main"
-          />
+          <CategoryHome />
         </div>
       </section>
     </>
@@ -89,7 +87,7 @@ MainCategoryPage.getLayout = function getLayout(page: ReactElement) {
   return (
     <FooterStateProvider default_show={false}>
       <FiltersSortBarStateProvider>
-        <MainLayout show_filter_sort_bar={true}>{page}</MainLayout>
+        <MainLayout>{page}</MainLayout>
       </FiltersSortBarStateProvider>
     </FooterStateProvider>
   );
