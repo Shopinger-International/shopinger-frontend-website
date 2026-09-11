@@ -189,7 +189,7 @@ const LocationTooltipContent: FC<{
             type="text"
             value={query}
             onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Search location..."
+            placeholder="Search area, city or PIN code"
             className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
           />
         </div>
@@ -203,7 +203,7 @@ const LocationTooltipContent: FC<{
               type="button"
               onClick={handleUseCurrentLocation}
               disabled={is_locating}
-              className="mb-2.5 flex w-full items-center gap-3 rounded-md border border-gray-300 bg-white px-3 py-2.5 text-left transition-colors hover:bg-orange-50"
+              className="mb-2.5 flex w-full items-center gap-3 rounded-md bg-white px-3 py-2.5 text-left transition-colors hover:bg-orange-50"
             >
               <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-500">
                 <LocateFixed className="size-4" />
@@ -218,7 +218,7 @@ const LocationTooltipContent: FC<{
                   ref={current_location_subtitle_ref}
                   className="text-xs text-gray-600"
                 >
-                  Enable current location for better experience
+                  Get accurate availability and delivery time
                 </p>
               </div>
             </button>
@@ -277,7 +277,7 @@ const LocationTooltipContent: FC<{
               }}
               className="mt-3 flex h-9 w-full items-center justify-center rounded-md bg-orange-500 px-3 text-xs font-semibold text-white transition-colors hover:bg-orange-600"
             >
-              Change location
+              Try another location
             </button>
           </div>
         ) : (
@@ -317,8 +317,8 @@ const LocationTooltipContent: FC<{
                 </div>
               )}
             {!query.trim().length && (
-              <div className="overflow-hidden rounded-md border border-gray-300 bg-white">
-                <div className="border-b border-gray-300 px-3 py-2.5">
+              <div className="overflow-hidden rounded-md bg-white">
+                <div className="px-3 py-2.5">
                   <p className="text-xs font-semibold tracking-wide text-gray-600 uppercase">
                     Saved addresses
                   </p>
@@ -330,7 +330,6 @@ const LocationTooltipContent: FC<{
                       <MapPin className="size-3.5" />
                     </div>
                     <p className="min-w-0 flex-1 text-sm text-gray-500">
-                      To access your saved addresses{" "}
                       <button
                         type="button"
                         onClick={() => {
@@ -343,8 +342,8 @@ const LocationTooltipContent: FC<{
                         className="cursor-pointer font-semibold text-orange-500 underline hover:text-orange-600"
                       >
                         Login
-                      </button>
-                      .
+                      </button>{" "}
+                      to see your saved addresses.
                     </p>
                   </div>
                 ) : !!user_addresses.length ? (
