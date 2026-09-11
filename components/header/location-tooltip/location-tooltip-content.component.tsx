@@ -150,6 +150,7 @@ const LocationTooltipContent: FC<{
     let status_obj: PermissionStatus | null = null;
 
     const updatePermissionState = (status: PermissionStatus) => {
+      console.log("value of status")
       if (!current_location_subtitle_ref.current) return;
       setLocationAccessEnabled(
         status.state == "prompt" || status.state == "granted",
@@ -157,6 +158,7 @@ const LocationTooltipContent: FC<{
     };
 
     const handleStateChange = (event: Event) => {
+      console.log("inside handle change")
       updatePermissionState(event.target as PermissionStatus);
     };
 
@@ -358,6 +360,9 @@ const LocationTooltipContent: FC<{
                           updateState?.({
                             address_id: address.id,
                           });
+                          updateSelectedAddress?.(
+                            `${address.house_number ?? ""}${address.house_number ? "," : ""} ${address.area}`,
+                          );
                           handleClose();
                         }}
                         className="group flex w-full items-center gap-3 border-b border-gray-300 px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-orange-50"

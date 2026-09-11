@@ -27,30 +27,19 @@ const LocationTooltip: FC<{
     useLocationTooltipStateContext();
   const { is_modal_open: is_login_modal_open } = useLoginModalContext();
   const [default_open, setIsDefaultOpen] = useState(false);
-  const { address_id, is_modal_open: is_address_modal_open } =
-    useAddressDrawerContext();
+  const { is_modal_open: is_address_modal_open } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
-  const { data: user_addresses, isPending: is_user_address_pending } =
-    useUserAddresses();
-
-  const user_address = user_addresses?.find(
-    (address) => address.id == address_id,
-  );
+  const { isPending: is_user_address_pending } = useUserAddresses();
 
   const delivery_time = user_details ? "45" : "10";
 
-  const user_selected_address = (function () {
-    if (selected_address) return selected_address;
-    if (user_address) {
-      return user_address.house_number
-        ? `${user_address.house_number}, ${user_address.area}`
-        : user_address.area;
-    }
-    return;
-  })();
-
   useEffect(() => {
-    if (user_selected_address || is_user_address_pending) return;
+    if (
+      selected_address ||
+      is_user_address_pending ||
+      user_details?.user_addresses?.length
+    )
+      return;
     navigator.permissions.query({ name: "geolocation" }).then((result) => {
       if (result.state == "granted") {
         getUserLocation({
@@ -65,7 +54,7 @@ const LocationTooltip: FC<{
         setIsDefaultOpen(true);
       }
     });
-  }, [user_selected_address, is_user_address_pending]);
+  }, [selected_address, is_user_address_pending]);
 
   return (
     <Tooltip
@@ -79,9 +68,10 @@ const LocationTooltip: FC<{
       className={clsx(
         "z-50 w-3/4 rounded-xl border border-gray-300 bg-white shadow-lg sm:w-100",
       )}
+      show_tooltip={!is_login_modal_open && !is_address_modal_open}
       strategy="fixed"
       static_offset={20}
-      show_overlay={!user_selected_address}
+      show_overlay={!selected_address}
       content={({ handleClose }) => (
         <LocationTooltipContent
           handleClose={() => {
@@ -103,7 +93,7 @@ const LocationTooltip: FC<{
               />
 
               <span className="min-w-0 truncate text-sm">
-                {user_selected_address ?? "Choose delivery location"}
+                {selected_address ?? "Choose delivery location"}
               </span>
               {/* Arrow */}
               <ChevronRight className="size-4 shrink-0" aria-hidden={true} />
@@ -142,16 +132,14 @@ const LocationTooltip: FC<{
             </div>
 
             {/* Location */}
-            {user_selected_address ? (
+            {selected_address ? (
               <div className="mt-0.5 flex w-full max-w-xs items-center gap-1 text-left text-xs">
                 <MapPin
                   aria-hidden={true}
                   className="size-3 shrink-0 text-white"
                 />
 
-                <span className="max-w-44 truncate">
-                  {user_selected_address}
-                </span>
+                <span className="max-w-44 truncate">{selected_address}</span>
               </div>
             ) : (
               <span className="mt-0.5 text-xs">Add your location</span>
