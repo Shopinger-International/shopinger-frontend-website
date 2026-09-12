@@ -176,18 +176,21 @@ const LocationTooltip: FC<{
             </div>
 
             {/* Location */}
-            {selected_address ? (
-              <div className="mt-0.5 flex w-full max-w-xs items-center gap-1 text-left text-xs">
-                <MapPin
-                  aria-hidden={true}
-                  className="size-3 shrink-0 text-white"
-                />
+            <div className="flex items-center">
+              {selected_address ? (
+                <div className="mt-0.5 flex w-full max-w-xs items-center gap-1 text-left text-xs">
+                  <MapPin
+                    aria-hidden={true}
+                    className="size-3 shrink-0 text-white"
+                  />
 
-                <span className="max-w-44 truncate">{selected_address}</span>
-              </div>
-            ) : (
-              <span className="mt-0.5 text-xs">Add your location</span>
-            )}
+                  <span className="max-w-44 truncate">{selected_address}</span>
+                </div>
+              ) : (
+                <span className="mt-0.5 text-xs">Add your location</span>
+              )}
+              <ChevronDown className="size-4 shrink-0" aria-hidden={true} />
+            </div>
           </div>
         </div>
       )}
