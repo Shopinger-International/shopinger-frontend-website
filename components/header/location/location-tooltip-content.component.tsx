@@ -184,7 +184,7 @@ const LocationTooltipContent: FC<{
   return (
     <div className="h-full w-full">
       {/* Heading & Subtitle Header */}
-      <div className="sticky top-0 space-y-4 border-b border-gray-300 bg-white p-2.5">
+      <div className="sticky top-0 space-y-4 border-b border-gray-300 bg-white p-3 lg:p-2.5">
         <div>
           <h2 className="text-base font-bold">Your Location</h2>
           <p className="text-xs text-gray-600 sm:text-sm">
@@ -208,7 +208,7 @@ const LocationTooltipContent: FC<{
         </div>
       </div>
 
-      <div className="h-[calc(100%-63px)] overflow-y-auto bg-gray-100 p-2.5">
+      <div className="h-[calc(100%-63px)] overflow-y-auto bg-gray-100 p-3 lg:p-2.5">
         {!query.trim() &&
           !is_delivery_unavailable &&
           (location_access_enabled ? (
