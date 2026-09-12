@@ -88,6 +88,7 @@ const AutoComplete: FC<
   const root_ref = useRef<HTMLElement | null>(null);
 
   //categories animation
+  const [show_animation, setShowAnimation] = useState(true);
   const [text, setText] = useState("");
   const [is_deleting, setIsDeleting] = useState(false);
   const [category_index, setCategoryIndex] = useState(0);
@@ -326,6 +327,13 @@ const AutoComplete: FC<
     });
 
     const handleScroll = (event: Event) => {
+      const input = autocomplete_container_ref.current?.querySelector(
+        "input",
+      ) as HTMLInputElement | null;
+      //if input has value and show animation is true then make show animation false
+      if (show_animation && input?.value) {
+        setShowAnimation(false);
+      }
       // Check if the scroll target is NOT inside the autocomplete panel
       const is_scrolling_inside_panel = root_ref.current?.contains(
         event.target as Node,
@@ -348,6 +356,7 @@ const AutoComplete: FC<
       <div ref={autocomplete_container_ref} />
 
       {!query &&
+        show_animation &&
         animate_categories.length > 0 &&
         animate_categories[category_index] !== "" && (
           <div className="pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-gray-400">
