@@ -119,7 +119,7 @@ const Tooltip: FC<TooltipProps> = ({
       {show_tooltip && open && (
         <FloatingPortal>
           {show_overlay && (
-            <FloatingOverlay className="bg-black/30 z-100" lockScroll />
+            <FloatingOverlay className="bg-black/40 z-100" lockScroll />
           )}
           <div
             ref={refs.setFloating}
