@@ -7,7 +7,7 @@ import type { FC } from "react";
 import type { IPlace } from "@/types/address";
 
 // icons
-import { MapPin, Search, LocateFixed, ChevronRight } from "lucide-react";
+import { MapPin, Search, LocateFixed, ChevronRight, X } from "lucide-react";
 
 // helpers
 import { mapPlaceToForm } from "@/helpers/address.helper";
@@ -31,8 +31,9 @@ type IOptionType = {
 };
 
 const LocationTooltipContent: FC<{
+  toggle: boolean;
   handleClose: () => void;
-}> = ({ handleClose }) => {
+}> = ({ toggle, handleClose }) => {
   const [location_access_enabled, setLocationAccessEnabled] = useState(true);
   const current_location_subtitle_ref = useRef<HTMLParagraphElement>(null);
   const { updateSelectedAddress } = useLocationTooltipStateContext();
@@ -49,6 +50,7 @@ const LocationTooltipContent: FC<{
   const [options, setOptions] = useState<IOptionType[]>([]);
   const [is_loading, setIsLoading] = useState(false);
   const { data: user_addresses = [] } = useUserAddresses();
+  const search_result_ref = useRef<HTMLDivElement>(null);
 
   const verify_pincode_serviceability_mutation =
     useVerifyPincodeServiceability();
@@ -70,6 +72,7 @@ const LocationTooltipContent: FC<{
         setIsLoading(true);
 
         const places = await fetchPlaces(value);
+        search_result_ref.current?.scrollIntoView({});
 
         setOptions(
           places?.map((place) => ({
@@ -181,10 +184,20 @@ const LocationTooltipContent: FC<{
       }
     };
   }, []);
+
   return (
     <div className="h-full w-full">
       {/* Heading & Subtitle Header */}
+
       <div className="sticky top-0 space-y-4 border-b border-gray-300 bg-white p-3 lg:p-2.5">
+        {toggle && (
+          <button
+            onClick={handleClose}
+            className="absolute top-6 right-6 z-20 lg:hidden"
+          >
+            <X className="size-5" strokeWidth={2.5} />
+          </button>
+        )}
         <div>
           <h2 className="text-base font-bold">Your Location</h2>
           <p className="text-xs text-gray-600 sm:text-sm">
@@ -201,7 +214,7 @@ const LocationTooltipContent: FC<{
               type="text"
               value={query}
               onChange={(e) => handleSearch(e.target.value)}
-              placeholder="Search area, city or PIN code"
+              placeholder="Search area, city or PIN code - 110008"
               className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
             />
           </div>
@@ -310,7 +323,10 @@ const LocationTooltipContent: FC<{
                     Searching locations...
                   </div>
                 ) : (
-                  <div className="overflow-y-auto lg:max-h-80">
+                  <div
+                    ref={search_result_ref}
+                    className="testing overflow-y-auto lg:max-h-80"
+                  >
                     {options.map((option) => (
                       <button
                         key={option.data.id}
@@ -369,7 +385,7 @@ const LocationTooltipContent: FC<{
                   </div>
                 ) : !!user_addresses.length ? (
                   <div>
-                    {user_addresses.map((address) => (
+                    {user_addresses.slice(0, 3).map((address) => (
                       <button
                         key={address.id}
                         type="button"

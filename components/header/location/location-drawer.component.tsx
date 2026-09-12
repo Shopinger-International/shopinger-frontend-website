@@ -29,7 +29,7 @@ const LocationDrawer: FC<IProps> = ({ toggle, open, onClose }) => {
       <div className="fixed inset-0 flex items-end justify-center">
         <DialogPanel
           transition
-          className="relative h-2/3 w-full transform overflow-hidden rounded-t-xl bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out outline-none data-closed:translate-y-full"
+          className="relative h-full w-full transform overflow-hidden bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out outline-none data-closed:translate-y-full"
         >
           {/* Keep floating close CTA */}
           {toggle && (
@@ -45,7 +45,7 @@ const LocationDrawer: FC<IProps> = ({ toggle, open, onClose }) => {
 
           {/* Content */}
           <div className="h-full overflow-y-auto">
-            <LocationTooltipContent handleClose={onClose} />
+            <LocationTooltipContent toggle={toggle} handleClose={onClose} />
           </div>
         </DialogPanel>
       </div>
