@@ -145,9 +145,10 @@ const LocationTooltipContent: FC<{
     let status_obj: PermissionStatus | null = null;
 
     const updatePermissionState = (status: PermissionStatus) => {
-      if (!current_location_subtitle_ref.current) return;
+      if (!is_mounted) return;
+
       setLocationAccessEnabled(
-        status.state == "prompt" || status.state == "granted",
+        status.state === "prompt" || status.state === "granted",
       );
     };
 
@@ -155,23 +156,31 @@ const LocationTooltipContent: FC<{
       updatePermissionState(event.target as PermissionStatus);
     };
 
-    navigator.permissions?.query({ name: "geolocation" }).then((status) => {
-      // If the component already unmounted before the promise resolved, abort
-      if (!is_mounted) return;
+    navigator.permissions
+      ?.query({ name: "geolocation" })
+      .then((status) => {
+        if (!is_mounted) return;
 
-      status_obj = status;
-      updatePermissionState(status_obj);
-      status_obj.addEventListener("change", handleStateChange);
-    });
+        status_obj = status;
+
+        // Initial state
+        updatePermissionState(status);
+
+        // Listen for permission changes
+        status.addEventListener("change", handleStateChange);
+      })
+      .catch((error) => {
+        console.error("Unable to query geolocation permission:", error);
+      });
 
     return () => {
       is_mounted = false;
+
       if (status_obj) {
         status_obj.removeEventListener("change", handleStateChange);
       }
     };
   }, []);
-
   return (
     <div className="h-full w-full">
       {/* Heading & Subtitle Header */}
@@ -273,7 +282,7 @@ const LocationTooltipContent: FC<{
               <p className="text-base font-semibold text-gray-900 sm:text-lg">
                 Shopinger is not available in your area
               </p>
-              <p className="text-sm text-orange-500 font-medium">Coming soon</p>
+              <p className="text-sm font-medium text-orange-500">Coming soon</p>
             </div>
 
             {/* Button */}
