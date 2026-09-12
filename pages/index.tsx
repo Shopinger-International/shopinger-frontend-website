@@ -1,4 +1,4 @@
-// types
+// types 
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { GetServerSideProps } from "next";
