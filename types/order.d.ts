@@ -20,7 +20,7 @@ type IOrderItem = {
   status: string;
   quantity: number;
   cancelled_quantity: number;
-  product_review: IReview[];
+  product_review: IReview;
 };
 
 type IOrderStatusHistory = {
@@ -72,7 +72,7 @@ type IOrder = {
   status: IOrderStatus;
   payment_status: string;
   payment_method: string;
-  total_mrp:number;
+  total_mrp: number;
   sub_total: number;
   platform_fee: number;
   total_amount: number;

@@ -13,7 +13,7 @@ type IRequestPayload = {
   review_id: number;
   reason: IReason;
   description?: string;
-  sources: ISource;
+  source: ISource;
 };
 
 type IResponse = {
