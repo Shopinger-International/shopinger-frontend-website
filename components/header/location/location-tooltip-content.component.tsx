@@ -7,13 +7,7 @@ import type { FC } from "react";
 import type { IPlace } from "@/types/address";
 
 // icons
-import {
-  MapPin,
-  Search,
-  LocateFixed,
-  ChevronRight,
-  MapPinned,
-} from "lucide-react";
+import { MapPin, Search, LocateFixed, ChevronRight } from "lucide-react";
 
 // helpers
 import { mapPlaceToForm } from "@/helpers/address.helper";
@@ -180,19 +174,28 @@ const LocationTooltipContent: FC<{
 
   return (
     <div className="h-full w-full">
-      {/* Search */}
-      <div className="overflow-y-auto border-b border-gray-300 p-2.5">
-        <div className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2.5 focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-500 sm:px-4 sm:py-2">
-          <Search className="size-5 shrink-0 text-gray-400" />
+      {/* Heading & Subtitle Header */}
+      <div className="sticky top-0 space-y-4 border-b border-gray-300 bg-white p-2.5">
+        <div>
+          <h2 className="text-base font-bold">Your Location</h2>
+          <p className="text-xs text-gray-600 sm:text-sm">
+            Check Shopinger availability in your area
+          </p>
+        </div>
+        {/* Search */}
+        <div>
+          <div className="flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2.5 focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-500 sm:px-4 sm:py-2">
+            <Search className="size-5 shrink-0 text-gray-400" />
 
-          <input
-            ref={input_ref}
-            type="text"
-            value={query}
-            onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Search area, city or PIN code"
-            className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
-          />
+            <input
+              ref={input_ref}
+              type="text"
+              value={query}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Search area, city or PIN code"
+              className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
+            />
+          </div>
         </div>
       </div>
 
@@ -227,7 +230,7 @@ const LocationTooltipContent: FC<{
             <button
               type="button"
               disabled
-              className="mb-2.5 flex w-full cursor-not-allowed items-center gap-3 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-left"
+              className="mb-2.5 flex w-full cursor-not-allowed items-center gap-3 rounded-md border border-red-100 bg-red-50 px-3 py-2.5 text-left"
             >
               <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-red-100">
                 <LocateFixed className="size-4 text-red-500" />
@@ -251,8 +254,9 @@ const LocationTooltipContent: FC<{
           ))}
         {/* Delivery unavailable */}
         {is_delivery_unavailable && !query.length ? (
-          <div className="flex h-full flex-col justify-center space-y-4 rounded-md bg-white p-6 text-center">
-            <div className="relative mx-auto flex  size-40 shrink-0 items-center justify-center">
+          <div className="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-4 rounded-md bg-white p-6 text-center sm:p-8">
+            {/* Responsive Image Container (capped for desktop) */}
+            <div className="relative mx-auto flex size-32 shrink-0 items-center justify-center sm:size-40">
               <Image
                 src="/not-available-at-location.png"
                 fill={true}
@@ -262,27 +266,31 @@ const LocationTooltipContent: FC<{
             </div>
 
             {/* Centered Content */}
-            <div className="space-y-1">
-              <p className="text-2xl font-semibold text-gray-900">Sorry !</p>
-              <p className="text-lg font-semibold text-gray-900">
+            <div className="space-y-1 sm:space-y-1.5">
+              <p className="text-xl font-semibold text-gray-900 sm:text-2xl">
+                Sorry !
+              </p>
+              <p className="text-base font-semibold text-gray-900 sm:text-lg">
                 Shopinger is not available in your area
               </p>
-              <p className="text-gray-500">Coming soon</p>
+              <p className="text-sm text-orange-500 font-medium">Coming soon</p>
             </div>
 
             {/* Button */}
-            <button
-              type="button"
-              onClick={() => {
-                setQuery("");
-                setOptions([]);
-                setIsDeliveryUnavailable(false);
-                input_ref.current?.focus();
-              }}
-              className="flex h-9 w-full shrink-0 items-center justify-center rounded-md bg-orange-500 px-3 font-semibold text-white transition-colors hover:bg-orange-600"
-            >
-              Choose another location
-            </button>
+            <div className="w-full pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery("");
+                  setOptions([]);
+                  setIsDeliveryUnavailable(false);
+                  input_ref.current?.focus();
+                }}
+                className="flex h-10 w-full items-center justify-center rounded-md bg-orange-500 px-6 font-semibold text-white transition-colors hover:bg-orange-600 sm:h-10"
+              >
+                Try another location
+              </button>
+            </div>
           </div>
         ) : (
           <>
@@ -343,9 +351,9 @@ const LocationTooltipContent: FC<{
                             onCancel() {},
                           });
                         }}
-                        className="cursor-pointer font-semibold text-orange-500 underline hover:text-orange-600"
+                        className="cursor-pointer font-semibold text-orange-500 hover:text-orange-600"
                       >
-                        Login
+                        Log in
                       </button>{" "}
                       to see your saved addresses.
                     </p>
