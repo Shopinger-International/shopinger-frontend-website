@@ -310,7 +310,7 @@ const LocationTooltipContent: FC<{
                     Searching locations...
                   </div>
                 ) : (
-                  <div className="max-h-80 overflow-y-auto">
+                  <div className="overflow-y-auto lg:max-h-80">
                     {options.map((option) => (
                       <button
                         key={option.data.id}
