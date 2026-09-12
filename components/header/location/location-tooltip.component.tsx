@@ -126,6 +126,7 @@ const LocationTooltip: FC<{
       show_overlay={!selected_address}
       content={({ handleClose }) => (
         <LocationTooltipContent
+          toggle = {false}
           handleClose={() => {
             updateDefaultOpen(false);
             handleClose();
