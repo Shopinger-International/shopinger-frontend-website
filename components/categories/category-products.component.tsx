@@ -16,6 +16,7 @@ import SortFilterHeaderSkeleton from "@/components/categories/sort-filter-header
 import SideFilter from "@/components/categories/side-filters/side-filters.component";
 import SortFilterDrawer from "@/components/categories/sort-filter-header/sort-filter-drawer.component";
 import SideFiltersSkeleton from "./side-filters/side-filters-skeleton.component";
+import ProductNotFound from "./product-not-found.component";
 
 // hooks
 import useGetProductsByCategory from "@/hooks/axios/categories/use-get-category-product.hook";
@@ -297,19 +298,23 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
             )}
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-            {isProductPending
-              ? Array.from({ length: 12 }).map((_, i) => (
-                  <ProductCardSkeleton key={`initial-skeleton-${i}`} />
-                ))
-              : formatted_category_products?.map((product, index) =>
-                  product ? (
-                    <ProductCard
-                      {...product}
-                      index={index}
-                      key={`category-product-${product?.variant_id}`}
-                    />
-                  ) : null,
-                )}
+            {isProductPending ? (
+              Array.from({ length: 12 }).map((_, i) => (
+                <ProductCardSkeleton key={`initial-skeleton-${i}`} />
+              ))
+            ) : formatted_category_products?.length === 0 ? (
+              <ProductNotFound query={search} />
+            ) : (
+              formatted_category_products?.map((product, index) =>
+                product ? (
+                  <ProductCard
+                    {...product}
+                    index={index}
+                    key={`category-product-${product.variant_id}`}
+                  />
+                ) : null,
+              )
+            )}
 
             {/* infinite scroll loading */}
             {!isProductPending &&

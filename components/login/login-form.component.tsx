@@ -177,7 +177,7 @@ const LoginForm: FC<IProps> = ({
             : "text-xl font-bold",
         )}
       >
-        {heading_text ?? "Login or Sign Up"}
+        {heading_text ?? "Log in"}
       </h2>
 
       {!show_otp ? (

@@ -255,7 +255,7 @@ const MegaMenu: FC<IProps> = ({
               <LogOut className="size-5 text-gray-600" />
 
               <span className="flex-1 text-left text-sm font-medium">
-                Logout
+                Log out
               </span>
 
               <ChevronRight className="size-5 text-gray-400 transition-transform group-hover:translate-x-1" />
@@ -270,7 +270,7 @@ const MegaMenu: FC<IProps> = ({
               <LogIn className="size-5 text-gray-600" />
 
               <span className="flex-1 text-left text-sm font-medium">
-                Login
+                Log In
               </span>
 
               <ChevronRight className="size-5 text-gray-400 transition-transform group-hover:translate-x-1" />
