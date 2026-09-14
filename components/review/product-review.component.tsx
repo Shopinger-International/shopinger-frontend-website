@@ -52,7 +52,6 @@ const ProductReview: FC<IProps> = ({
   filter_state,
   handleReportModalState,
 }) => {
-  console.log("value of source", source);
   const { openModal: openLoginModal } = useLoginModalContext();
   const react_to_review_mutation = useReactToReviewMutation(
     product_id,
