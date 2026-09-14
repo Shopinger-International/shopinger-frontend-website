@@ -88,7 +88,9 @@ const RatingSummaryPopover: FC<IProps> = ({
                 })
                 .map(([rating, count], index) => {
                   const percent =
-                    total_reviews > 0 ? (count / total_reviews) * 100 : 0;
+                    total_reviews > 0
+                      ? ((count / total_reviews) * 100).toFixed(1)
+                      : 0;
                   return (
                     <div
                       key={`rating-breakdown-${index}`}
