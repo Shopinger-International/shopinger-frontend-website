@@ -164,11 +164,11 @@ const BottomMobileNav: FC = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    let prev_scroll_pos = window.pageYOffset;
+    let prev_scroll_pos = window.scrollY;
     function handleScroll() {
-      const current_scroll_pos = window.pageYOffset;
+      const current_scroll_pos = window.scrollY;
       if (bottom_ref.current) {
-        if (current_scroll_pos > prev_scroll_pos) {
+        if (current_scroll_pos > prev_scroll_pos && current_scroll_pos > 54) {
           bottom_ref.current.style.bottom = "-54px";
         } else {
           bottom_ref.current.style.bottom = "0";
@@ -176,7 +176,7 @@ const BottomMobileNav: FC = () => {
       }
       prev_scroll_pos = current_scroll_pos;
     }
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
