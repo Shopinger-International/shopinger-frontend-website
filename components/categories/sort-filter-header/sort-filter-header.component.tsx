@@ -163,7 +163,7 @@ const SelectInput: FC<{
         >
           <ListboxOptions
             className={clsx(
-              "absolute right-0 z-20 mt-2 max-h-60 w-full space-y-1 overflow-auto rounded-xl border border-gray-300 bg-white p-1 shadow-md outline-none",
+              "absolute right-0 z-20 mt-2 max-h-60 w-full space-y-1 overflow-auto rounded-xl border border-gray-300 bg-white p-1 z-50 shadow-md outline-none",
             )}
           >
             {sort_options.map((option) => (
