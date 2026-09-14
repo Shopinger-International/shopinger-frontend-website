@@ -86,7 +86,7 @@ export const DIMENSION_ATTR = {
 type IProps = {
   product: IProduct;
   category_mappings: Array<IFormattedCategoryMapping>;
-  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
+  handleReportModalState: ({ open, review_id, source }: IReportModalState) => void;
 };
 
 const ProductDetails: FC<IProps> = ({

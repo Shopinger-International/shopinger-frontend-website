@@ -103,7 +103,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
       <ReportModal
         review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
-        source={report_modal_state.source}
+        source={report_modal_state.source as ISource}
         onClose={() => {
           setReportModalState({
             open: false,
@@ -167,7 +167,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
                 key={`product-review-${review.id}`}
                 product_id={product_id}
                 filter_state={filter_state}
-                handleReportModalState={({ open, review_id, source }) =>
+                handleReportModalState={({ open, review_id, source }) => {
                   setReportModalState({
                     open,
                     ...(review_id
@@ -176,8 +176,8 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
                           source,
                         }
                       : {}),
-                  })
-                }
+                  });
+                }}
               />
             ))}
           </div>

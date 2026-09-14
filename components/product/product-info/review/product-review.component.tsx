@@ -24,7 +24,11 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 type IProps = IReview & {
   product_id: number;
-  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
+  handleReportModalState: ({
+    open,
+    review_id,
+    source,
+  }: IReportModalState) => void;
 };
 
 const ProductReview: FC<IProps> = ({
@@ -79,7 +83,7 @@ const ProductReview: FC<IProps> = ({
               if (is_reacted) {
                 delete_review_reaction_mutation.mutate({
                   review_id: id,
-                  source
+                  source,
                 });
                 return;
               }
@@ -114,6 +118,7 @@ const ProductReview: FC<IProps> = ({
               handleReportModalState({
                 open: true,
                 review_id: id,
+                source,
               });
             }}
           >

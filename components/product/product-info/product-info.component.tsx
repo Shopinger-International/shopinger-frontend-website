@@ -46,7 +46,11 @@ type IProps = {
   selected_attributes: Record<string, any>;
   category_mappings: Array<IFormattedCategoryMapping>;
   is_product_available: boolean;
-  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
+  handleReportModalState: ({
+    open,
+    review_id,
+    source,
+  }: IReportModalState) => void;
 };
 
 const ProductInfo: FC<IProps> = ({
@@ -64,7 +68,7 @@ const ProductInfo: FC<IProps> = ({
   const is_logged_in = !!user_details;
   const create_buying_intent_mutation = useCreateBuyingIntentMutation();
   const add_to_cart_mutation = useAddToCartMutation();
-  const { title, brand} = product;
+  const { title, brand } = product;
   const updated_title =
     !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
       ? title
