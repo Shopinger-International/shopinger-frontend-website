@@ -90,7 +90,7 @@ const Tooltip: FC<TooltipProps> = ({
   });
   const dismiss = useDismiss(context, {
     enabled: show_tooltip,
-    outsidePress: !default_open,
+    // outsidePress: !default_open,
   });
   const role = useRole(context, { role: "tooltip" });
 
