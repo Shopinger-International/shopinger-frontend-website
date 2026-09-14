@@ -6,6 +6,8 @@ import {
 } from "@headlessui/react";
 import { Check, Search, Send, X } from "lucide-react";
 import { useState } from "react";
+import { FaWhatsapp } from "react-icons/fa6";
+import { MdSearchOff } from "react-icons/md";
 
 export default function ProductNotFound({ query }: { query: string }) {
   const [is_open, setIsOpen] = useState(false);
@@ -41,7 +43,7 @@ export default function ProductNotFound({ query }: { query: string }) {
   Please let me know if you can arrange this product.
   `.trim();
 
-    const whatsapp_number = "+919794294041"; // your WhatsApp number
+    const whatsapp_number = "+919415761434"; // your WhatsApp number
 
     const whatsapp_url = `https://wa.me/${whatsapp_number}?text=${encodeURIComponent(
       message,
@@ -57,7 +59,7 @@ export default function ProductNotFound({ query }: { query: string }) {
       {!sent_request ? (
         <div className="flex flex-col items-center text-center">
           <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-orange-50">
-            <Search className="size-8 text-orange-500" />
+            <MdSearchOff className="size-28 text-orange-500" />
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 md:text-4xl">
@@ -69,8 +71,8 @@ export default function ProductNotFound({ query }: { query: string }) {
           </p>
 
           <p className="mt-2 max-w-lg text-sm text-gray-500 md:text-base">
-            Can't find what you're looking for? Request this product and we'll
-            try to arrange it for you.
+            Can’t find what you need? Request it and we’ll try to make it
+            available for you
           </p>
 
           <button
@@ -78,7 +80,7 @@ export default function ProductNotFound({ query }: { query: string }) {
             onClick={() => setIsOpen(true)}
             className="mt-5 flex items-center gap-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600"
           >
-            <Search className="size-4" />
+            <Send className="size-4" />
             Request this Product
           </button>
 
@@ -97,10 +99,6 @@ export default function ProductNotFound({ query }: { query: string }) {
                     <DialogTitle className="text-lg font-bold text-slate-900">
                       Request <span className="text-orange-500">Product</span>
                     </DialogTitle>
-
-                    <Description className="text-xs text-slate-500">
-                      We'll try to arrange it for you.
-                    </Description>
                   </div>
 
                   <button
@@ -180,7 +178,7 @@ export default function ProductNotFound({ query }: { query: string }) {
                   <div className="mt-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <span className="text-xs font-medium text-slate-600">
-                        Notify:
+                        Notify me by:
                       </span>
 
                       <label className="flex cursor-pointer items-center gap-1.5 text-xs">
@@ -208,8 +206,8 @@ export default function ProductNotFound({ query }: { query: string }) {
                       type="submit"
                       className="flex h-10 items-center gap-2 rounded-lg bg-orange-500 px-5 text-sm font-semibold text-white transition hover:bg-orange-600"
                     >
-                      <Send className="size-4" />
-                      Request
+                      <FaWhatsapp className="size-4" />
+                      Send
                     </button>
                   </div>
                 </form>
@@ -220,12 +218,12 @@ export default function ProductNotFound({ query }: { query: string }) {
       ) : (
         <div className="flex flex-col items-center text-center">
           <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-green-50">
-            <div className="flex size-12 items-center justify-center rounded-full bg-orange-500">
+            <div className="flex size-12 items-center justify-center rounded-full bg-green-500">
               <Check className="size-7 text-white" strokeWidth={3} />
             </div>
           </div>
 
-          <h2 className="text-2xl font-bold text-slate-900">Request Sent!</h2>
+          <h2 className="text-2xl font-bold text-slate-900">Request Sent</h2>
 
           <p className="mt-1 text-sm text-slate-500">
             We've received your request for
@@ -234,10 +232,6 @@ export default function ProductNotFound({ query }: { query: string }) {
           <p className="mt-1 max-w-md truncate text-base font-semibold text-orange-500">
             "{query}"
           </p>
-
-          <div className="mt-4 rounded-lg bg-green-50 px-4 py-2.5 text-xs text-green-700">
-            We'll contact you if we're able to arrange this product.
-          </div>
         </div>
       )}
     </div>

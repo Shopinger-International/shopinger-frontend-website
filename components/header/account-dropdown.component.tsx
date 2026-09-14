@@ -53,7 +53,7 @@ const AccountDropdown: FC = () => {
                   href="/login"
                   className="rounded-lg bg-orange-500 py-2 text-center font-semibold text-white transition hover:bg-orange-600"
                 >
-                  Login
+                  Log in
                 </Link>
               </div>
             )}
@@ -107,7 +107,7 @@ const AccountDropdown: FC = () => {
                   )}
                 >
                   <LogOut className="size-5" />
-                  <span>Logout</span>
+                  <span>Log Out</span>
                 </button>
               </div>
             )}
@@ -135,7 +135,7 @@ const AccountDropdown: FC = () => {
               )}
             >
               <CircleUserRound className="size-6" strokeWidth={1.5} />
-              <span className="font-semibold">Login</span>
+              <span className="font-semibold">Log In</span>
               <Triangle
                 className={clsx(
                   "size-2.5 fill-white transition-transform",
