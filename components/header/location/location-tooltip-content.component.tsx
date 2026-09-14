@@ -199,7 +199,10 @@ const LocationTooltipContent: FC<{
           </button>
         )} */}
 
-        <button onClick={handleClose} className="absolute top-6 right-6 z-20 cursor-pointer">
+        <button
+          onClick={handleClose}
+          className="absolute top-6 right-6 z-20 cursor-pointer"
+        >
           <X className="size-5" strokeWidth={2.5} />
         </button>
         <div>
@@ -324,12 +327,6 @@ const LocationTooltipContent: FC<{
                 Explore Shopinger
               </button>
             </div>
-            {/* <button
-              onClick={handleClose}
-              className="font-semibold text-orange-500 underline"
-            >
-              Explore All
-            </button> */}
           </div>
         ) : (
           <>
