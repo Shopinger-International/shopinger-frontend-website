@@ -220,6 +220,10 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   useEffect(() => {
     updateShowFooter?.(!hasNextPage && !isProductPending);
   }, [hasNextPage, isProductPending]);
+
+  if (!category_products?.length && !isProductPending && !isFetchingNextPage) {
+    return <ProductNotFound query={search} />;
+  }
   return (
     <>
       <>
