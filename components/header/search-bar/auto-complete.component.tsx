@@ -127,15 +127,6 @@ const AutoComplete: FC<
     return () => clearTimeout(updating_text_timeout);
   }, [animate_categories, query, is_deleting, category_index, text]);
 
-  useEffect(() => {
-    const input = autocomplete_container_ref.current?.querySelector(
-      "input",
-    ) as HTMLInputElement | null;
-
-    if (!input) return;
-
-    input.placeholder = "";
-  }, []);
   const plugins = useMemo(() => {
     const algolia_insights_plugin = createAlgoliaInsightsPlugin({
       insightsClient,
@@ -312,6 +303,10 @@ const AutoComplete: FC<
         setQuery("");
         setPage(0);
       },
+      onStateChange(props) {
+        setQuery(props.state.query);
+        setShowAnimation(props.state.query ? false : true);
+      },
 
       renderer: { createElement, Fragment, render: () => {} },
       render({ children }, root) {
@@ -359,7 +354,7 @@ const AutoComplete: FC<
         show_animation &&
         animate_categories.length > 0 &&
         animate_categories[category_index] !== "" && (
-          <div className="pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-gray-400">
+          <div className="pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-xs text-gray-400 sm:text-sm">
             Search "{text}"
           </div>
         )}
