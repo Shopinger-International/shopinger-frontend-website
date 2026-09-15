@@ -72,7 +72,7 @@ const useGetCategoryProducts = ({
     ],
 
     initialPageParam: 1,
-
+    retry: 1,
     queryFn: async ({ pageParam }) => {
       const response = await Axios.get<IResponseType>(
         "/get-products-by-category-slug",
