@@ -56,7 +56,7 @@ const MegaMenuProvider: FC<{
         handleShowLoginModal={() => {
           openLoginModal({
             is_modal: true,
-            title: "Login for better experience",
+            title: "Log in for better experience",
             onSuccess() {
               setMegaMenuDrawerState({
                 is_drawer_open: false,

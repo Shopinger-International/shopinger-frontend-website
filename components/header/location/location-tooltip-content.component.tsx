@@ -386,13 +386,13 @@ const LocationTooltipContent: FC<{
                         onClick={() => {
                           openLoginModal({
                             is_modal: true,
-                            title: "Login for better experience",
+                            title: "Log in for better experience",
                             onCancel() {},
                           });
                         }}
                         className="cursor-pointer font-semibold text-orange-500 hover:text-orange-600"
                       >
-                        Log in
+                        Log In
                       </button>{" "}
                       to see your saved addresses.
                     </p>

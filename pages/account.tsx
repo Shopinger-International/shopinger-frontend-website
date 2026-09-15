@@ -99,7 +99,7 @@ const AccountPage: NextPageWithLayout = () => {
             onClick={() => openLogoutModal({})}
             className="w-full rounded-md bg-red-500 py-2 font-semibold text-white disabled:bg-red-300 lg:hidden"
           >
-            Logout
+            Log out
           </button>
         </div>
       </section>

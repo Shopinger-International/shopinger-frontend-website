@@ -126,7 +126,7 @@ const NProducts = () => {
             <h3 className="w-full text-center text-sm leading-5 font-semibold text-gray-900 sm:text-xl">
               {user_details
                 ? "Explore more products based on your interests"
-                : "Login to see personalized products"}
+                : "Log in to see personalized products"}
             </h3>
 
             <button
@@ -138,7 +138,7 @@ const NProducts = () => {
                 } else {
                   openLoginModal({
                     is_modal: true,
-                    title: "Login for better experience",
+                    title: "Log In for better experience",
                     onSuccess() {},
                     onCancel() {},
                   });
@@ -152,7 +152,7 @@ const NProducts = () => {
                   ? isFetchingNextPage
                     ? "Loading..."
                     : "View more"
-                  : "Login"}
+                  : "Log In"}
               </span>
               <ArrowRight className="size-4 text-white" />
             </button>

@@ -90,7 +90,7 @@ const MainLayout: FC<{
     return new Promise<IUser>((resolve, reject) => {
       login_modal_state.openModal({
         is_modal: true,
-        title: "Login to Add Address",
+        title: "Log in to Add Address",
         onSuccess(user) {
           resolve(user as IUser);
         },
@@ -114,7 +114,7 @@ const MainLayout: FC<{
     const timeout = setTimeout(() => {
       login_modal_state.openModal({
         is_modal: false,
-        title: "Login for better experience",
+        title: "Log In for better experience",
         onSuccess(user) {},
         onCancel() {},
       });

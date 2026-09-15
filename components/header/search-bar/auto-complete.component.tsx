@@ -55,6 +55,10 @@ type IAutocompleteSuggestion = AutocompleteQuerySuggestionsHit & {
 };
 
 const debouncedSearch = debouncePromise(async (query: string) => {
+  // Reject queries that don't contain at least one letter or number
+  if (!/[a-zA-Z0-9]/.test(query)) {
+    return [];
+  }
   return getAlgoliaResults<IAutocompleteItem>({
     searchClient: search_client,
     queries: [
@@ -87,18 +91,17 @@ const AutoComplete: FC<
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
 
+  const { refine: setQuery, query } = useSearchBox();
+  const { refine: setPage } = usePagination();
+
   //categories animation
-  const [show_animation, setShowAnimation] = useState(true);
+  const [show_animation, setShowAnimation] = useState(query ? false : true);
   const [text, setText] = useState("");
   const [is_deleting, setIsDeleting] = useState(false);
   const [category_index, setCategoryIndex] = useState(0);
 
-  const { refine: setQuery, query } = useSearchBox();
-  const { refine: setPage } = usePagination();
-
   useEffect(() => {
     if (!animate_categories.length || query) return;
-    console.log("current query : ", query);
 
     //start text animation if not started and completed
     if (!is_deleting && text === animate_categories[category_index]) {
