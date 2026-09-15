@@ -67,9 +67,6 @@ const ProductReview: FC<IProps> = ({
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-900">
               {user.name}{" "}
-              <span className="hidden text-gray-600 sm:inline">
-                (Ghaziabad, UP)
-              </span>
             </span>
             <span className="text-xs font-medium text-gray-600">
               {formatDate(created_at)}
