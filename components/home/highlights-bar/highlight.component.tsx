@@ -1,24 +1,27 @@
-// type
 import type { FC } from "react";
+import Image from "next/image";
 import type { IconType } from "react-icons/lib";
 
 const Highlight: FC<{
   icon: IconType;
   title: string;
-  para: string;
-}> = ({ icon: Icon, title, para }) => {
+  image_path: string;
+}> = ({ title, image_path }) => {
   return (
-    <div className="flex shrink-0 items-center gap-3">
-      <Icon className="size-6 text-gray-900" strokeWidth={1.75} />
-      <div>
-        <span className="block text-[11px] font-semibold sm:text-[12px]">
-          {title}
-        </span>
-        <p className="text-[10px] font-medium text-gray-600 sm:text-[11px]">
-          {para}
-        </p>
+    <div className="flex max-w-50 flex-1 items-center justify-center">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <Image
+          src={image_path}
+          width={40}
+          height={40}
+          alt={title}
+          className="size-7 object-contain"
+        />
+
+        <h3 className="text-xs font-semibold text-gray-900">{title}</h3>
       </div>
     </div>
   );
 };
+
 export default Highlight;

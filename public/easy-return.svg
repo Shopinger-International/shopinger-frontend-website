@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220" fill="none">
+  <title>Easy Returns</title>
+  <g transform="translate(0 10)" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="#101820" stroke-width="7" d="M109 20a80 80 0 1 0 74 111"/>
+    <path stroke="#FF6B00" stroke-width="7" d="M109 20a80 80 0 0 1 75 53m-16-10 18 13 13-18"/>
+    <path stroke="#101820" stroke-width="7" d="m72 87 42-23 42 23-42 24-42-24ZM72 87v48l42 24 42-24V87M114 111v48m-21-83 42 24"/>
+  </g>
+</svg>
