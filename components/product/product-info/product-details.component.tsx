@@ -86,7 +86,11 @@ export const DIMENSION_ATTR = {
 type IProps = {
   product: IProduct;
   category_mappings: Array<IFormattedCategoryMapping>;
-  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
+  handleReportModalState: ({
+    open,
+    review_id,
+    source,
+  }: IReportModalState) => void;
 };
 
 const ProductDetails: FC<IProps> = ({
@@ -99,7 +103,7 @@ const ProductDetails: FC<IProps> = ({
     product;
   const { data } = useProductReviews({
     productId: product.id,
-    sort: "helpful",
+    sort: "highest",
   });
 
   const rating_summary = data?.pages[0].summary;

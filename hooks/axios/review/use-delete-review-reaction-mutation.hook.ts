@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import type { IFilterType } from "@/hooks/axios/review/use-product-reviews.hook";
 import type { IProductReviewsPageType } from "@/hooks/axios/review/use-product-reviews.hook";
+import type { ISource } from "@/types/review";
 
 // helpers
 import Axios from "@/lib/axios/private.lib";
@@ -15,6 +16,7 @@ type IResponse = {
 };
 type IRequestPayload = {
   review_id: number;
+  source: ISource;
 };
 
 const useDeleteReviewReactionMutation = (
@@ -23,9 +25,14 @@ const useDeleteReviewReactionMutation = (
 ) => {
   const query_client = useQueryClient();
   return useMutation<IResponse, AxiosError<IResponse>, IRequestPayload>({
-    async mutationFn({ review_id }) {
+    async mutationFn({ review_id, source }) {
       const response = await Axios.delete<IResponse>(
         `/remove-reaction/${review_id}`,
+        {
+          params: {
+            source,
+          },
+        },
       );
       return response.data;
     },
