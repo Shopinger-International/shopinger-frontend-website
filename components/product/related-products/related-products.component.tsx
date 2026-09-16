@@ -23,14 +23,19 @@ type IProps = {
 };
 const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
   const { data: related_products = [] } = useRelatedProducts(product_id);
-  const {
-    goToNext,
-    goToPrev,
-    can_scroll_next,
-    can_scroll_prev,
-    ref: embla_ref,
-  } = useCarousel();
+  const [embla_ref, embla_api] = useEmblaCarousel({
+    loop: false,
+    align: "start",
+  });
+  const [can_scroll_prev, setCanScrollPrev] = useState(false);
+  const [can_scroll_next, setCanScrollNext] = useState(false);
+  const goToPrev = useCallback(() => {
+    embla_api?.scrollPrev();
+  }, [embla_api]);
 
+  const goToNext = useCallback(() => {
+    embla_api?.scrollNext();
+  }, [embla_api]);
   const formatted_related_products = related_products.flatMap((product) => {
     const { variants, title, brand, product_medias } = product;
 
@@ -77,10 +82,29 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
         variant_medias_with_title,
         selling_price: variant.variant_pricing.selling_price_with_commission,
         mrp: variant.variant_pricing.mrp,
+        average_rating: product.average_rating,
       };
     });
   });
 
+  useEffect(() => {
+    if (!embla_api) return;
+
+    const updateScrollButtons = () => {
+      setCanScrollPrev(embla_api.canScrollPrev());
+      setCanScrollNext(embla_api.canScrollNext());
+    };
+
+    updateScrollButtons();
+
+    embla_api.on("select", updateScrollButtons);
+    embla_api.on("reInit", updateScrollButtons);
+
+    return () => {
+      embla_api.off("select", updateScrollButtons);
+      embla_api.off("reInit", updateScrollButtons);
+    };
+  }, [embla_api]);
   if (related_products.length === 0) return null;
   return (
     <section className="mb-8" aria-labelledby="similar-products">
@@ -108,7 +132,14 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
             <div className="embla__container flex gap-6">
               {formatted_related_products.map(
                 (
-                  { title, src, variant_medias_with_title, selling_price, mrp },
+                  {
+                    title,
+                    src,
+                    variant_medias_with_title,
+                    selling_price,
+                    mrp,
+                    average_rating,
+                  },
                   index,
                 ) => (
                   <Link href={src} className="embla__slide">
@@ -117,6 +148,7 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
                       thumbnail={variant_medias_with_title[0].media}
                       thumbnail_title={variant_medias_with_title[0].image_title}
                       selling_price={selling_price}
+                      average_rating={average_rating}
                       mrp={mrp}
                     />
                   </Link>
