@@ -16,7 +16,6 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
-import RelatedProducts from "@/components/product/related-products/related-products.component";
 import ReportModal from "@/components/review/report-modal.component";
 import Seo from "@/components/common/seo";
 import TopProducts from "@/components/product/related-products/top-products.component";
@@ -232,6 +231,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant_medias_with_title,
           selling_price: variant.variant_pricing.selling_price_with_commission,
           mrp: variant.variant_pricing.mrp,
+          average_rating: product.average_rating,
         };
       });
     }),

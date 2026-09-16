@@ -109,6 +109,7 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
   return (
     <section className="mb-8" aria-labelledby="similar-products">
       <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
+      <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
         <h2 className="font-semibold lg:text-xl" id="similar-products">
           Similar Products
         </h2>
@@ -121,6 +122,7 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
           {/* Left arrow */}
           <button
             disabled={!can_scroll_prev}
+            disabled={!can_scroll_prev}
             aria-label="Show previous products"
             onClick={goToPrev}
             className="absolute top-1/2 -left-5 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-2 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
@@ -128,6 +130,7 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
             <ChevronLeft aria-hidden={true} />
           </button>
 
+          <div className="embla__viewport overflow-hidden" ref={embla_ref}>
           <div className="embla__viewport overflow-hidden" ref={embla_ref}>
             <div className="embla__container flex gap-6">
               {formatted_related_products.map(
@@ -154,11 +157,14 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
                   </Link>
                 ),
               )}
+                ),
+              )}
             </div>
           </div>
 
           {/* Right arrow */}
           <button
+            disabled={!can_scroll_next}
             disabled={!can_scroll_next}
             aria-label="Show more products"
             onClick={goToNext}
