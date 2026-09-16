@@ -1,13 +1,45 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
+
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
+
 // provider
 import { useCategoryContext } from "@/provider/selected-category-provider";
+
+interface SubCategoryImageProps {
+  src?: string | null;
+  alt: string;
+}
+
+function SubCategoryImage({ src, alt }: SubCategoryImageProps) {
+  const [image_error, setImageError] = useState(false);
+
+  if (!src || image_error) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-gray-50">
+        <span className="text-[10px] text-gray-400">No image</span>
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes="120px"
+      className="object-contain object-center p-1 transition-transform duration-200 group-hover:scale-105"
+      onError={() => setImageError(true)}
+    />
+  );
+}
 
 export default function SubCategorySection() {
   const { data } = useCategories(true, "sub");
   const router = useRouter();
+
   const { selected_category, selected_sub_category, setSelectedSubCategory } =
     useCategoryContext();
 
@@ -19,23 +51,23 @@ export default function SubCategorySection() {
 
   if (!category?.sub_categories?.length) return null;
 
+  const has_multiple_rows = category.sub_categories.length > 3;
+
   return (
-    <section className="w-full min-w-0 overflow-hidden bg-white px-4 py-4 md:px-6">
+    <section className="w-full min-w-0 overflow-hidden bg-white px-4 py-3 md:px-6">
       {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 md:text-2xl">
-            Explore {category.name}
-          </h2>
-        </div>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-base font-semibold text-gray-900 md:text-xl">
+          Explore {category.name}
+        </h2>
       </div>
 
       {/* Subcategories */}
       <div
-        className={`no-scrollbar grid w-full max-w-full gap-3 overflow-x-auto overflow-y-hidden pr-4 pb-1 ${
-          category.sub_categories.length > 3
-            ? "h-[220px] auto-cols-[140px] grid-flow-col grid-rows-2"
-            : "h-[105px] auto-cols-[140px] grid-flow-col grid-rows-1"
+        className={`no-scrollbar grid w-full min-w-0 grid-flow-col gap-2 overflow-x-auto overflow-y-hidden ${
+          has_multiple_rows
+            ? "h-[176px] auto-cols-[120px] grid-rows-2"
+            : "h-[88px] auto-cols-[120px] grid-rows-1"
         }`}
       >
         {category.sub_categories.map((sub_category) => {
@@ -49,7 +81,7 @@ export default function SubCategorySection() {
                 setSelectedSubCategory(sub_category);
                 router.push(`${category.slug}/${sub_category.slug}`);
               }}
-              className={`group flex h-[104px] w-[140px] shrink-0 flex-col overflow-hidden rounded-xl border bg-white text-left transition-all duration-200 ${
+              className={`group flex h-[84px] w-[120px] shrink-0 flex-col overflow-hidden rounded-xl border bg-white transition-all duration-200 ${
                 is_selected
                   ? "border-orange-500 bg-orange-50/40 shadow-sm"
                   : "border-gray-200 hover:border-orange-300 hover:shadow-sm"
@@ -57,31 +89,20 @@ export default function SubCategorySection() {
             >
               {/* Image */}
               <div
-                className={`relative h-[85px] w-full overflow-hidden ${
+                className={`relative h-[58px] w-full shrink-0 overflow-hidden ${
                   is_selected ? "bg-orange-50" : "bg-gray-50"
                 }`}
               >
-                {sub_category ? (
-                  <Image
-                    src={
-                      "https://imgs.search.brave.com/jxIsST-j7vBayFEdFxDVxh5CT5t3C2Za-rRf7UwkFXg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2VsZWN0ZWRob21t/ZS5pbi9jZG4vc2hv/cC9maWxlcy85MDI0/NTA3MDJfZzFfMjRi/YmZhYzMtMWVjNC00/ODcyLWEwMjAtM2M2/MzI3OTdiNjBkLndl/YnA_dj0xNzgzOTI2/ODI4JndpZHRoPTEz/NTA"
-                    }
-                    alt={sub_category.name}
-                    fill
-                    sizes="140px"
-                    className="object-cover transition-transform duration-200 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center">
-                    <span className="text-xs text-gray-400">No image</span>
-                  </div>
-                )}
+                <SubCategoryImage
+                  src={sub_category.media}
+                  alt={sub_category.name}
+                />
               </div>
 
               {/* Name */}
-              <div className="flex min-h-[45px] items-center justify-center px-2 py-1.5">
+              <div className="flex min-h-0 flex-1 items-center justify-center px-1.5">
                 <span
-                  className={`line-clamp-2 text-center text-xs leading-4 font-medium ${
+                  className={`line-clamp-2 text-center text-[11px] leading-[14px] font-medium ${
                     is_selected ? "text-orange-600" : "text-gray-700"
                   }`}
                 >
