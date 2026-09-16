@@ -1,6 +1,7 @@
 import { useParams } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 // types
 import type { FC } from "react";
 
@@ -17,13 +18,14 @@ import {
 import useCategories from "@/hooks/axios/common/use-categories";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 
+//context
+import { useCategoryContext } from "@/provider/selected-category-provider";
+
 // helpers
 import clsx from "clsx";
 
 // data
 import { whatsapp_templates } from "@/data/whatsapp-templates.data";
-import Image from "next/image";
-import { useCategoryContext } from "@/provider/selected-category-provider";
 
 const CategorySection: FC = () => {
   const params = useParams<{ main_category_slug: string }>();

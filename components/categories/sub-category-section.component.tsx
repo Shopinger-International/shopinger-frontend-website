@@ -1,9 +1,9 @@
+import Image from "next/image";
+import { useRouter } from "next/router";
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
 // provider
 import { useCategoryContext } from "@/provider/selected-category-provider";
-import Image from "next/image";
-import { useRouter } from "next/router";
 
 export default function SubCategorySection() {
   const { data } = useCategories(true, "sub");
