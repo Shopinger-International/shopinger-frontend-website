@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 // types
 import type { FC, ReactElement } from "react";
 import type { Placement } from "@floating-ui/react";
@@ -20,6 +20,7 @@ import {
   useInteractions,
   FloatingPortal,
   FloatingArrow,
+  FloatingOverlay,
 } from "@floating-ui/react";
 
 // helpers
@@ -32,6 +33,12 @@ type TooltipProps = {
   offset_distance?: number;
   placement: Placement;
   show_tooltip?: boolean;
+  default_open?: boolean;
+  strategy?: "absolute" | "fixed";
+  trigger?: "hover" | "click";
+  static_offset?: number;
+  show_overlay?: boolean;
+  toggle?: boolean;
 };
 
 const Tooltip: FC<TooltipProps> = ({
@@ -41,6 +48,12 @@ const Tooltip: FC<TooltipProps> = ({
   offset_distance = 20,
   placement,
   show_tooltip = true,
+  default_open = false,
+  strategy = "absolute",
+  trigger = "hover",
+  static_offset,
+  show_overlay = false,
+  toggle = true,
 }) => {
   const [open, setOpen] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
@@ -49,7 +62,13 @@ const Tooltip: FC<TooltipProps> = ({
     placement: placement,
     open,
     onOpenChange: setOpen,
-    whileElementsMounted: autoUpdate,
+    ...(strategy == "absolute"
+      ? {
+          whileElementsMounted: autoUpdate,
+        }
+      : {
+          strategy: "fixed",
+        }),
     middleware: [
       offset(offset_distance),
       flip(),
@@ -59,17 +78,19 @@ const Tooltip: FC<TooltipProps> = ({
   });
 
   const hover = useHover(context, {
-    enabled: show_tooltip,
+    enabled: show_tooltip && trigger == "hover" && !default_open,
     handleClose: safePolygon(),
   });
   const focus = useFocus(context, {
     enabled: show_tooltip,
   });
   const click = useClick(context, {
-    enabled: show_tooltip,
+    enabled: show_tooltip && trigger == "click",
+    toggle,
   });
   const dismiss = useDismiss(context, {
     enabled: show_tooltip,
+    // outsidePress: !default_open,
   });
   const role = useRole(context, { role: "tooltip" });
 
@@ -80,6 +101,10 @@ const Tooltip: FC<TooltipProps> = ({
     click,
     role,
   ]);
+
+  useEffect(() => {
+    setOpen(default_open);
+  }, [default_open]);
 
   return (
     <>
@@ -93,11 +118,14 @@ const Tooltip: FC<TooltipProps> = ({
 
       {show_tooltip && open && (
         <FloatingPortal>
+          {show_overlay && (
+            <FloatingOverlay className="bg-black/40 z-100" lockScroll />
+          )}
           <div
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            className={clsx("relative z-50", className)}
+            className={clsx("relative z-120", className)}
           >
             <FloatingArrow
               ref={arrow_ref}
@@ -108,11 +136,14 @@ const Tooltip: FC<TooltipProps> = ({
               stroke="#d1d5db"
               strokeWidth={1}
               tipRadius={2}
+              staticOffset={static_offset}
               style={{
                 filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
               }}
             />
-            {content({ handleClose: () => setOpen(false) })}
+            <div className="overflow-hidden rounded-lg outline-none">
+              {content({ handleClose: () => setOpen(false) })}
+            </div>
           </div>
         </FloatingPortal>
       )}

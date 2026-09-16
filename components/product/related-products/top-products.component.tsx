@@ -14,31 +14,19 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { generateSlug } from "@/helpers/product.helper";
 
 // api hooks
-import useRelatedProducts from "@/hooks/axios/product/use-related-products.hook";
+import useTopProducts from "@/hooks/axios/product/use-top-products.hook";
 import { useCarousel } from "@/hooks/common/use-carousel";
 
 type IProps = {
   product_id: number;
   category_mappings: Array<IFormattedCategoryMapping>;
 };
-const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
-  const { data: related_products = [] } = useRelatedProducts(product_id);
-  const [embla_ref, embla_api] = useEmblaCarousel({
-    loop: false,
-    align: "start",
-  });
-  const [can_scroll_prev, setCanScrollPrev] = useState(false);
-  const [can_scroll_next, setCanScrollNext] = useState(false);
-  const goToPrev = useCallback(() => {
-    embla_api?.scrollPrev();
-  }, [embla_api]);
-
-  const goToNext = useCallback(() => {
-    embla_api?.scrollNext();
-  }, [embla_api]);
-  const formatted_related_products = related_products.flatMap((product) => {
+const TopProducts: FC<IProps> = ({ product_id, category_mappings }) => {
+  const { data: top_products = [] } = useTopProducts(product_id);
+  const { goToNext, goToPrev, can_scroll_next, can_scroll_prev, ref } =
+    useCarousel();
+  const formatted_top_products = top_products.flatMap((product) => {
     const { variants, title, brand, product_medias } = product;
-
     return variants.map((variant) => {
       const updated_title =
         !brand ||
@@ -82,46 +70,25 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
         variant_medias_with_title,
         selling_price: variant.variant_pricing.selling_price_with_commission,
         mrp: variant.variant_pricing.mrp,
-        average_rating: product.average_rating,
       };
     });
   });
 
-  useEffect(() => {
-    if (!embla_api) return;
-
-    const updateScrollButtons = () => {
-      setCanScrollPrev(embla_api.canScrollPrev());
-      setCanScrollNext(embla_api.canScrollNext());
-    };
-
-    updateScrollButtons();
-
-    embla_api.on("select", updateScrollButtons);
-    embla_api.on("reInit", updateScrollButtons);
-
-    return () => {
-      embla_api.off("select", updateScrollButtons);
-      embla_api.off("reInit", updateScrollButtons);
-    };
-  }, [embla_api]);
-  if (related_products.length === 0) return null;
+  if (top_products.length === 0) return null;
   return (
     <section className="mb-8" aria-labelledby="similar-products">
       <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
-      <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
         <h2 className="font-semibold lg:text-xl" id="similar-products">
-          Similar Products
+          Top Products in this Category
         </h2>
         {/* Left arrow */}
         <div
           className="relative mx-auto"
           role="region"
-          aria-label="Related Products Region"
+          aria-label="Top Products Region"
         >
           {/* Left arrow */}
           <button
-            disabled={!can_scroll_prev}
             disabled={!can_scroll_prev}
             aria-label="Show previous products"
             onClick={goToPrev}
@@ -130,19 +97,11 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
             <ChevronLeft aria-hidden={true} />
           </button>
 
-          <div className="embla__viewport overflow-hidden" ref={embla_ref}>
-          <div className="embla__viewport overflow-hidden" ref={embla_ref}>
+          <div className="embla__viewport overflow-hidden" ref={ref}>
             <div className="embla__container flex gap-6">
-              {formatted_related_products.map(
+              {formatted_top_products.map(
                 (
-                  {
-                    title,
-                    src,
-                    variant_medias_with_title,
-                    selling_price,
-                    mrp,
-                    average_rating,
-                  },
+                  { title, src, variant_medias_with_title, selling_price, mrp },
                   index,
                 ) => (
                   <Link href={src} className="embla__slide">
@@ -151,12 +110,9 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
                       thumbnail={variant_medias_with_title[0].media}
                       thumbnail_title={variant_medias_with_title[0].image_title}
                       selling_price={selling_price}
-                      average_rating={average_rating}
                       mrp={mrp}
                     />
                   </Link>
-                ),
-              )}
                 ),
               )}
             </div>
@@ -164,7 +120,6 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
 
           {/* Right arrow */}
           <button
-            disabled={!can_scroll_next}
             disabled={!can_scroll_next}
             aria-label="Show more products"
             onClick={goToNext}
@@ -177,4 +132,4 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
     </section>
   );
 };
-export default RelatedProducts;
+export default TopProducts;

@@ -316,6 +316,8 @@ const ProductInfo: FC<IProps> = ({
               );
             } else {
               openLoginModal({
+                is_modal: true,
+                title: "Log in to complete your purchase",
                 onSuccess(user) {
                   if (user) {
                     create_buying_intent_mutation.mutate(

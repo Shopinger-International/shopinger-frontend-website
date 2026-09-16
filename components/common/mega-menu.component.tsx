@@ -23,6 +23,7 @@ import {
 import useCategories from "@/hooks/axios/common/use-categories";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import { useLogoutModalContext } from "@/provider/logout-modal-provider";
+import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 
 // helpers
 import clsx from "clsx";
@@ -139,6 +140,8 @@ const MenuGroup: FC<IMenuGroupProps> = ({
   default_open = false,
   children,
 }) => {
+  const { closeDrawer } = useMegaMenuContext();
+
   return (
     <Disclosure
       as="section"
@@ -166,6 +169,7 @@ const MenuGroup: FC<IMenuGroupProps> = ({
             <div className="pb-2">
               {list_items.map(({ icon: Icon, label, href, target }) => (
                 <Link
+                  onClick={closeDrawer}
                   key={label}
                   href={href}
                   className="group flex items-center gap-4 px-6 py-3 transition-colors hover:bg-orange-50"
@@ -251,7 +255,7 @@ const MegaMenu: FC<IProps> = ({
               <LogOut className="size-5 text-gray-600" />
 
               <span className="flex-1 text-left text-sm font-medium">
-                Logout
+                Log out
               </span>
 
               <ChevronRight className="size-5 text-gray-400 transition-transform group-hover:translate-x-1" />
@@ -266,7 +270,7 @@ const MegaMenu: FC<IProps> = ({
               <LogIn className="size-5 text-gray-600" />
 
               <span className="flex-1 text-left text-sm font-medium">
-                Login
+                Log In
               </span>
 
               <ChevronRight className="size-5 text-gray-400 transition-transform group-hover:translate-x-1" />

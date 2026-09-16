@@ -10,88 +10,17 @@ import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
+import LocationTooltip from "@/components/header/location/location-tooltip.component";
 
 // icons
-import { Menu, ChevronRight } from "lucide-react";
-
-// helpers
-import { clsx } from "clsx";
+import { Menu, CircleUserIcon } from "lucide-react";
 
 // hooks
-import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
-import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
+import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 
-// icons
-import { CircleUserIcon, MapPin } from "lucide-react";
-
-const LocationBlock: FC<{
-  className: string;
-}> = ({ className }) => {
-  const { address_id, openDrawer } = useAddressDrawerContext();
-  const { data: user_details } = useUserDetails();
-  const user_address = user_details?.user_addresses?.find(
-    (address) => address.id == address_id,
-  );
-
-  return (
-    <button
-      onClick={openDrawer}
-      className={clsx("items-center gap-2 text-white", className)}
-      aria-label={
-        user_address
-          ? `Update delivery location. Current location: ${user_address.state} ${user_address.pincode}`
-          : "Add delivery location"
-      }
-    >
-      <div className="flex min-w-0 items-center gap-2 lg:flex-col lg:items-start lg:gap-0">
-        {user_address ? (
-          <>
-            <span className="hidden text-sm font-semibold lg:block">
-              Delivery in minutes*
-            </span>
-            <div className="flex w-full max-w-xs items-center gap-1 text-left text-xs">
-              <MapPin
-                aria-hidden={true}
-                className="size-3 shrink-0 text-white"
-              />
-              <span className="block truncate lg:hidden">
-                {user_address.house_number
-                  ? `${user_address.house_number}, `
-                  : ""}
-                {user_address.area}
-              </span>
-
-              <span className="hidden truncate lg:inline-block lg:max-w-44">
-                {user_address.house_number
-                  ? `${user_address.house_number}, `
-                  : ""}
-                {user_address.area}
-              </span>
-            </div>
-          </>
-        ) : (
-          <>
-            {/* Mobile */}
-            <span className="text-sm lg:hidden">Choose delivery location</span>
-
-            {/* Desktop */}
-            <>
-              <span className="hidden text-sm font-semibold lg:block">
-                Delivery in minutes*
-              </span>
-              <span className="hidden text-xs lg:block">Add your location</span>
-            </>
-          </>
-        )}
-      </div>
-
-      <ChevronRight className="size-4 shrink-0 lg:hidden" aria-hidden />
-    </button>
-  );
-};
 const Header: FC<{
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
@@ -101,6 +30,7 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
+  const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
@@ -144,7 +74,7 @@ const Header: FC<{
 
       if (current_scroll_pos > prev_scroll_pos) {
         // Scrolling down
-        header_ref.current.style.top = "-64px";
+        header_ref.current.style.top = "-96px";
       } else if (current_scroll_pos < prev_scroll_pos) {
         // Scrolling up
         header_ref.current.style.top = "0";
@@ -200,11 +130,13 @@ const Header: FC<{
 
         {/* CENTER: Location + Searchbar */}
         <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-8">
-          {/* Mobile view of LocationBlock */}
-          <LocationBlock className="flex lg:hidden" />
-
-          {/* Desktop view of LocationBlock placed to the left of SearchBar */}
-          <LocationBlock className="hidden shrink-0 lg:flex" />
+          {is_mounted && (
+            <LocationTooltip
+              className={
+                is_mobile ? "flex lg:hidden" : "hidden shrink-0 lg:flex"
+              }
+            />
+          )}
 
           <div className="flex w-full items-center gap-3">
             <SearchBar />

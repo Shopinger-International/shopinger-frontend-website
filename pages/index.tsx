@@ -179,7 +179,7 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
 
 HomePage.getLayout = function getLayout(page: ReactElement) {
   return (
-    <FooterStateProvider default_show={false}>
+    <FooterStateProvider default_show={true}>
       <MainLayout show_bottom_navigation={true}>{page}</MainLayout>
     </FooterStateProvider>
   );

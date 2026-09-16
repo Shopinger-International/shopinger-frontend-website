@@ -10,9 +10,10 @@ import withProductGalleryFunctionality from "@/hoc/product/with-product-gallery-
 
 // local components
 import ProductGalleryDialog from "@/components/product/product-gallary/product-gallary-dialog.component";
+import ShareLinkModal from "@/components/common/share-modal.component";
 
 // icons
-import { Heart } from "lucide-react";
+import { Heart, Share } from "lucide-react";
 
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
@@ -36,6 +37,9 @@ type IProps = {
   sub_sub_category_id: number;
   variant_medias_with_title: IVariantMediaWithTitle[];
   product_title: string;
+  product_image: string;
+  product_selling_price: number;
+  product_mrp: number;
 };
 
 const THUMBNAIL_LIMIT = 5;
@@ -46,6 +50,9 @@ const ProductGallary: FC<IProps> = ({
   sub_sub_category_id,
   variant_medias_with_title,
   product_title,
+  product_image,
+  product_selling_price,
+  product_mrp,
 }) => {
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
@@ -55,11 +62,19 @@ const ProductGallary: FC<IProps> = ({
   const [show_zoom, setShowZoom] = useState(false);
   const [zoom_position, setZoomPosition] = useState({ x: 0, y: 0 });
   const [show_full_gallary, setShowFullGallary] = useState(false);
-
+  const [show_share_dialog, setShowShareDialog] = useState(false);
   const [selected_thumbnail_index, setSelectedThumbnailIndex] =
     useState<number>(0);
   return (
     <>
+      <ShareLinkModal
+        show_share_dialog={show_share_dialog}
+        onShowShareDialog={setShowShareDialog}
+        product_image={product_image}
+        product_mrp={product_mrp}
+        product_selling_price={product_selling_price}
+        product_title={product_title}
+      />
       <ProductGalleryDialog
         product_title={product_title}
         open={show_full_gallary}
@@ -142,66 +157,81 @@ const ProductGallary: FC<IProps> = ({
                   setZoomPosition({ x, y });
                 }}
               >
-                <button
-                  type="button"
-                  aria-label={
-                    wishlist_data?.is_wishlisted
-                      ? "Remove from wishlist"
-                      : "Add to wishlist"
-                  }
-                  title={
-                    wishlist_data?.is_wishlisted
-                      ? "Remove from wishlist"
-                      : "Add to wishlist"
-                  }
-                  className="absolute top-0 right-0 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white"
-                  disabled={
-                    add_to_wishlist_mutation.isPending ||
-                    remove_from_wishlist_mutation.isPending
-                  }
-                  onClick={() => {
-                    wishlist_data?.is_wishlisted
-                      ? remove_from_wishlist_mutation.mutate(
-                          { variant_id },
-                          {
-                            onSuccess() {
-                              removedFromWishlistEvent({
-                                user_id,
-                                product_id,
-                                variant_id,
-                                category_id: sub_sub_category_id,
-                                category_type: "SUB_SUB",
-                                source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                              });
+                <div className="absolute right-0 flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    aria-label={
+                      wishlist_data?.is_wishlisted
+                        ? "Remove from wishlist"
+                        : "Add to wishlist"
+                    }
+                    title={
+                      wishlist_data?.is_wishlisted
+                        ? "Remove from wishlist"
+                        : "Add to wishlist"
+                    }
+                    className="top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
+                    disabled={
+                      add_to_wishlist_mutation.isPending ||
+                      remove_from_wishlist_mutation.isPending
+                    }
+                    onClick={() => {
+                      wishlist_data?.is_wishlisted
+                        ? remove_from_wishlist_mutation.mutate(
+                            { variant_id },
+                            {
+                              onSuccess() {
+                                removedFromWishlistEvent({
+                                  user_id,
+                                  product_id,
+                                  variant_id,
+                                  category_id: sub_sub_category_id,
+                                  category_type: "SUB_SUB",
+                                  source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                                });
+                              },
                             },
-                          },
-                        )
-                      : add_to_wishlist_mutation.mutate(
-                          { variant_id },
-                          {
-                            onSuccess() {
-                              addedToWishlistEvent({
-                                user_id,
-                                product_id,
-                                variant_id,
-                                category_id: sub_sub_category_id,
-                                category_type: "SUB_SUB",
-                                source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                              });
+                          )
+                        : add_to_wishlist_mutation.mutate(
+                            { variant_id },
+                            {
+                              onSuccess() {
+                                addedToWishlistEvent({
+                                  user_id,
+                                  product_id,
+                                  variant_id,
+                                  category_id: sub_sub_category_id,
+                                  category_type: "SUB_SUB",
+                                  source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                                });
+                              },
                             },
-                          },
-                        );
-                  }}
-                >
-                  <Heart
-                    aria-hidden={true}
-                    className={clsx(
-                      "size-6 text-orange-500",
-                      wishlist_data?.is_wishlisted && "fill-orange-500",
-                    )}
-                    strokeWidth={2}
-                  />
-                </button>
+                          );
+                    }}
+                  >
+                    <Heart
+                      aria-hidden={true}
+                      className={clsx(
+                        "size-5 text-orange-500",
+                        wishlist_data?.is_wishlisted && "fill-orange-500",
+                      )}
+                      strokeWidth={2}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowShareDialog(true)}
+                    aria-label={"Share Product"}
+                    title={"Share Product"}
+                    className="top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
+                  >
+                    <Share
+                      aria-hidden={true}
+                      className={clsx("size-5 text-orange-500")}
+                      strokeWidth={2}
+                    />
+                  </button>
+                </div>
                 <Image
                   sizes="512px"
                   fill
@@ -249,5 +279,8 @@ export default withProductGalleryFunctionality<
     | "product_id"
     | "variant_id"
     | "sub_sub_category_id"
+    | "product_image"
+    | "product_selling_price"
+    | "product_mrp"
   >
 >(ProductGallary);

@@ -1,32 +1,55 @@
-import { useRouter } from "next/router";
+import { useContext, useState } from "react";
+import { createContext } from "react";
 // types
-import type { FC } from "react";
-
-// hooks
-import useIsMounted from "@/hooks/common/use-is-mounted.hook";
-import useUIHistory from "@/hooks/common/use-ui-history.hook";
+import type { FC, ReactNode } from "react";
 
 // local components
 import CategoryDrawer from "@/components/common/category-drawer.component";
 
+type ICategoryDrawerContext = {
+  is_drawer_open: boolean;
+  updateDrawerState?: (val: boolean) => void;
+};
+
+const CategoryDrawerContext = createContext<ICategoryDrawerContext>({
+  is_drawer_open: false,
+});
+
 export const useCategoryDrawerContext = () => {
-  const router = useRouter();
-  const is_mounted = useIsMounted();
-  const { open, close } = useUIHistory();
-  const is_drawer_open = is_mounted && router.query.category_drawer === "1";
+  const { is_drawer_open, updateDrawerState } = useContext(
+    CategoryDrawerContext,
+  );
   return {
     is_drawer_open,
-    openDrawer: () =>
-      open({
-        category_drawer: "1",
-      }),
-    closeDrawer: close,
+    openDrawer: () => updateDrawerState?.(true),
+    closeDrawer: () => updateDrawerState?.(false),
   };
 };
 
-const CategoryDrawerProvider: FC = () => {
-  const { is_drawer_open, closeDrawer } = useCategoryDrawerContext();
-  return <CategoryDrawer is_open={is_drawer_open} handleClose={closeDrawer} />;
+const CategoryDrawerProvider: FC<{
+  children: ReactNode;
+}> = ({ children }) => {
+  const [category_drawer_state, setCategoryDrawerState] = useState({
+    is_drawer_open: false,
+  });
+  return (
+    <CategoryDrawerContext.Provider
+      value={{
+        ...category_drawer_state,
+        updateDrawerState: (val) =>
+          setCategoryDrawerState((prev) => ({
+            ...prev,
+            is_drawer_open: val,
+          })),
+      }}
+    >
+      <CategoryDrawer
+        is_open={category_drawer_state.is_drawer_open}
+        handleClose={() => setCategoryDrawerState({ is_drawer_open: false })}
+      />
+      {children}
+    </CategoryDrawerContext.Provider>
+  );
 };
 
 export default CategoryDrawerProvider;

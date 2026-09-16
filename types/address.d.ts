@@ -44,9 +44,6 @@ export interface IAddress {
   // Type & labeling
   address_type: IAddressType;
 
-  // Delivery help
-  delivery_instructions?: string;
-
   // User preference
   is_default: boolean;
 

@@ -145,6 +145,8 @@ const ReportModal: FC<IProps> = ({ review_id, is_open, source, onClose }) => {
                 );
               } else {
                 openLoginModal({
+                  is_modal: true,
+                  title: "Login to report",
                   onSuccess() {
                     report_review_mutation.mutate(
                       {
@@ -164,6 +166,7 @@ const ReportModal: FC<IProps> = ({ review_id, is_open, source, onClose }) => {
                       },
                     );
                   },
+                  onCancel() {},
                 });
               }
             }}
