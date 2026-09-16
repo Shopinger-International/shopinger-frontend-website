@@ -14,7 +14,7 @@ import { FREE_SHIPPING_THRESHOLD } from "@/constants/charges.const";
 const highlights_data = [
   {
     icon: HandCoins,
-    title: "COD Available",
+    title: "COD",
     image_path: "./cod.svg",
   },
   {

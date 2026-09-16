@@ -42,9 +42,8 @@ const useAllCamapigns = ({
   display_scope?: string;
   category_slug?: string;
 }) => {
-  console.log(display_scope, category_slug, "display_scope, category_slug");
   return useQuery({
-    queryKey: ["campaigns"],
+    queryKey: ["campaigns", display_scope, category_slug],
     async queryFn() {
       return getCampaigns({ display_scope, category_slug });
     },

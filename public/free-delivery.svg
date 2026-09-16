@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220" fill="none">
-  <title>Free Delivery Above ₹39</title>
-  <g transform="translate(0 10)" stroke-linecap="round" stroke-linejoin="round">
-    <path stroke="#101820" stroke-width="7" d="M51 75h91v78H51zM142 98h29l27 29v26h-56M171 98v29h27"/>
-    <circle cx="83" cy="155" r="18" fill="white" stroke="#101820" stroke-width="7"/>
-    <circle cx="169" cy="155" r="18" fill="white" stroke="#101820" stroke-width="7"/>
-    <path stroke="#FF6B00" stroke-width="7" d="M17 96h23M9 116h31M20 136h20"/>
-    <circle cx="146" cy="56" r="45" fill="#FF6B00"/>
-    <text x="146" y="66" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700">₹39+</text>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 64 64" role="img" aria-label="free-delivery"><g fill="none" stroke="#182027" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></g><g fill="none" stroke="#FF6900" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M23 23H29Q34 23 34 27Q34 31 29 31Q35 31 35 36Q35 41 29 41H23M42 39Q52 35 52 28Q52 23 47 23Q41 23 41 28Q41 33 47 33Q50 33 52 30"/><path d="M49 13 50 8M55 16 59 12M58 21 62 20" stroke-width="1.6"/><path d="M7 47Q32 42 57 47" stroke-width="1.8"/></g><g stroke="#182027" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 25H14M4 29H14M7 25Q16 25 11 33L5 33 13 40M57 32H63M60 29V35"/></g></svg>

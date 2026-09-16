@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220" fill="none">
-  <title>Easy Returns</title>
-  <g transform="translate(0 10)" stroke-linecap="round" stroke-linejoin="round">
-    <path stroke="#101820" stroke-width="7" d="M109 20a80 80 0 1 0 74 111"/>
-    <path stroke="#FF6B00" stroke-width="7" d="M109 20a80 80 0 0 1 75 53m-16-10 18 13 13-18"/>
-    <path stroke="#101820" stroke-width="7" d="m72 87 42-23 42 23-42 24-42-24ZM72 87v48l42 24 42-24V87M114 111v48m-21-83 42 24"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 64 64" role="img" aria-label="easy-return"><g fill="none" stroke="#182027" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M50 48A24 24 0 1 1 32 8"/><path d="m19 28 13-7 13 7v16l-13 7-13-7ZM19 28 32 35 45 28M32 35V51M25 25 38 32"/></g><g fill="none" stroke="#FF6900" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8A24 24 0 0 1 54 23M48 21 54 25 59 19"/></g></svg>

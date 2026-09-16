@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 // types
 import type { FC } from "react";
-import type { ICategory } from "@/hooks/axios/common/use-categories";
 
 // icons
 import {
@@ -48,17 +47,34 @@ const CategorySection: FC = () => {
     setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth);
   };
 
-  const category_imgages = [
-    "https://cdn.shopinger.co.in/uploads/categories/1788739137352-5ba4175f-7c0f-437d-b102-343600efee70.png",
-    "https://cdn.shopinger.co.in/uploads/categories/1788738850114-022260e0-82e1-4839-a672-379671f97310.png",
-    "https://cdn.shopinger.co.in/uploads/categories/1788739422695-2e02e0c2-4970-4bd7-bbed-b6bfe0750ce5.png",
-    "https://cdn.shopinger.co.in/uploads/categories/1788739782360-8277e49f-f54c-4432-9bcc-1c0f33ecb42d.png",
-    "https://cdn.shopinger.co.in/uploads/categories/1788740809662-f4dba49d-b3e0-43f7-ae96-f726f560aa9f.png",
-    "https://cdn.shopinger.co.in/uploads/categories/1788741483403-55f6cdc9-3d5f-4c8e-9e43-2ce6513df7c6.png",
-    "https://cdn.shopinger.co.in/uploads/categories/1788741772681-723baac7-06c5-4613-9856-49b34576564e.png",
-    "https://cdn.shopinger.co.in/uploads/categories/1788741669998-11720c18-f890-4edc-9ab5-08a06d2e500f.png",
-    "https://cdn.shopinger.co.in/uploads/categories/1788741669998-11720c18-f890-4edc-9ab5-08a06d2e500f.png",
-    "https://cdn.shopinger.co.in/uploads/categories/1788741863507-22e199a8-89f2-42ca-9257-c64b37ecc2cb.png",
+  const category_images = [
+    "/icons/appliances.svg",
+    "/icons/mobile.svg",
+    "/icons/home-and-kitchen.svg",
+    "/icons/western-wear.svg",
+    "/icons/ethnic-wear.svg",
+    "/icons/books-and-stationery.svg",
+    "/icons/beauty.svg",
+    "/icons/gadgets.svg",
+    "/icons/toys-and-games.svg",
+    "/icons/wellness-and-home-spa.svg",
+    "/icons/grocery.svg",
+    "/icons/women-footwear.svg",
+    "/icons/men-footwear.svg",
+    "/icons/health-and-personal-care.svg",
+    "/icons/automotive.svg",
+    "/icons/bags.svg",
+    "/icons/fresh-products.svg",
+    "/icons/gardening-and-outdoor.svg",
+    "/icons/jewellery.svg",
+    "/icons/kids-fashion.svg",
+    "/icons/kids-footwear.svg",
+    "/icons/medicine.svg",
+    "/icons/mens-fashion.svg",
+    "/icons/pet-care.svg",
+    "/icons/school-uniform.svg",
+    "/icons/sports.svg",
+    "/icons/women-suits.svg",
   ];
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -166,7 +182,7 @@ const CategorySection: FC = () => {
                 >
                   <div
                     className={clsx(
-                      "flex h-12 w-12 items-center justify-center rounded-full transition-all duration-800 ease-in-out",
+                      "flex h-9 w-9 items-center justify-center rounded-full transition-all duration-800 ease-in-out",
                       selected_category == null
                         ? "bg-orange-100"
                         : "bg-gray-100 group-hover:bg-gray-200",
@@ -175,7 +191,7 @@ const CategorySection: FC = () => {
                   >
                     <LayoutDashboard
                       className={clsx(
-                        "size-6 transition-colors",
+                        "size-5 transition-colors",
                         selected_category == null
                           ? "text-orange-500"
                           : "text-gray-700",
@@ -209,13 +225,13 @@ const CategorySection: FC = () => {
                         >
                           <div
                             className={clsx(
-                              "flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl transition-all duration-800 ease-in-out",
+                              "flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl transition-all duration-800 ease-in-out",
                               hide_nav && "hidden",
                             )}
                           >
-                            {category_imgages[index] ? (
+                            {category_images[index] ? (
                               <Image
-                                src={category_imgages[index]}
+                                src={category_images[index]}
                                 alt={name}
                                 width={48}
                                 height={48}
@@ -290,51 +306,6 @@ const CategorySection: FC = () => {
           </Link>
         </div>
       </div>
-      {/* {selected_category && (
-        <div className="flex items-center gap-6 bg-gray-100 px-4 py-2 text-gray-900 shadow-lg">
-          <span className="text-md hidden shrink-0 font-semibold text-orange-500 lg:inline-block lg:text-lg">
-            {selected_category.name}
-          </span>
-
-          <nav
-            ref={sub_nav_ref}
-            aria-label={`${selected_category.name} subcategories`}
-            className="no-scrollbar min-w-0 flex-1 overflow-x-auto"
-          >
-            <ul className="flex items-center gap-6 whitespace-nowrap">
-              {selected_category.sub_categories?.map((sub_category) => {
-                const { id, name, slug: sub_slug } = sub_category;
-                return (
-                  <li key={`sub-category-${id}`}>
-                    <Link
-                      className={clsx(
-                        "group flex shrink-0 items-center gap-2 rounded-md py-1.5 font-medium hover:underline",
-                        selected_sub_category?.id == id &&
-                          "font-semibold underline",
-                      )}
-                      replace={true}
-                      href={`/categories/${selected_category.slug}/${sub_slug}`}
-                      onClick={() => setSelectedSubCategory(sub_category)}
-                    >
-                      <span className="text-sm">{name}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-
-          <button
-            onClick={() =>
-              sub_nav_ref.current?.scrollBy({ left: 200, behavior: "smooth" })
-            }
-            aria-label="Scroll categories right"
-            className="shrink-0 rounded-full p-1 hover:bg-gray-100"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-        </div>
-      )} */}
     </>
   );
 };

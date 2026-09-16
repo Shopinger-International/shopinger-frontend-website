@@ -7,7 +7,6 @@ import type { GetServerSideProps } from "next";
 import MainLayout from "@/components/layout/main-layout.component";
 
 // local components
-import CategoryProducts from "@/components/categories/category-products.component";
 import Seo from "@/components/common/seo";
 
 // provider

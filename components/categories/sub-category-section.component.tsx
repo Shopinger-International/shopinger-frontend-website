@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 
 export default function SubCategorySection() {
   const { data } = useCategories(true, "sub");
-  //   const {} = useCarousel();
   const router = useRouter();
   const { selected_category, selected_sub_category, setSelectedSubCategory } =
     useCategoryContext();
@@ -19,50 +18,26 @@ export default function SubCategorySection() {
   );
 
   if (!category?.sub_categories?.length) return null;
-  //   category.sub_categories = [
-  //     ...category.sub_categories,
-  //     {
-  //       id: 576,
-  //       name: "fadfasd",
-  //     },
-  //     {
-  //       id: 567,
-  //       name: "fad",
-  //     },
-  //     {
-  //       id: 734,
-  //       name: "fadfafasd",
-  //     },
-  //     {
-  //       id: 234,
-  //       name: "fadfewewasd",
-  //     },
-  //     {
-  //       id: 987,
-  //       name: "fadfavvvsd",
-  //     },
-  //     {
-  //       id: 345,
-  //       name: "fadfasd",
-  //     },
-  //   ];
+
   return (
     <section className="w-full min-w-0 overflow-hidden bg-white px-4 py-4 md:px-6">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900 md:text-2xl">
-            Shop by Subcategories
-          </h2>
-
-          <p className="mt-0.5 text-xs text-gray-500 md:text-sm">
             Explore {category.name}
-          </p>
+          </h2>
         </div>
       </div>
 
       {/* Subcategories */}
-      <div className="no-scrollbar grid h-[220px] w-full max-w-full grid-flow-col grid-rows-2 gap-3 overflow-x-auto overflow-y-hidden pr-4 pb-1">
+      <div
+        className={`no-scrollbar grid w-full max-w-full gap-3 overflow-x-auto overflow-y-hidden pr-4 pb-1 ${
+          category.sub_categories.length > 3
+            ? "h-[220px] auto-cols-[140px] grid-flow-col grid-rows-2"
+            : "h-[105px] auto-cols-[140px] grid-flow-col grid-rows-1"
+        }`}
+      >
         {category.sub_categories.map((sub_category) => {
           const is_selected = selected_sub_category?.id === sub_category.id;
 
@@ -74,7 +49,7 @@ export default function SubCategorySection() {
                 setSelectedSubCategory(sub_category);
                 router.push(`${category.slug}/${sub_category.slug}`);
               }}
-              className={`group flex w-[140px] shrink-0 flex-col overflow-hidden rounded-xl border bg-white text-left transition-all duration-200 ${
+              className={`group flex h-[104px] w-[140px] shrink-0 flex-col overflow-hidden rounded-xl border bg-white text-left transition-all duration-200 ${
                 is_selected
                   ? "border-orange-500 bg-orange-50/40 shadow-sm"
                   : "border-gray-200 hover:border-orange-300 hover:shadow-sm"

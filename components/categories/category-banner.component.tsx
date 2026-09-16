@@ -1,7 +1,12 @@
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
+//icons
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRef } from "react";
+
+//helpers
+import { cn } from "@/lib/utils";
 
 interface IBanner {
   id: string;
@@ -12,17 +17,22 @@ interface IBanner {
 
 interface CategoryBannerSectionProps {
   banners: IBanner[];
+  className?: string;
 }
 
-export function CategoryBannerSection({ banners }: CategoryBannerSectionProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+export function CategoryBannerSection({
+  banners,
+  className,
+}: CategoryBannerSectionProps) {
+  const container_ref = useRef<HTMLDivElement>(null);
+  const [active_index, setActiveIndex] = useState(0);
 
   const scroll = (direction: "left" | "right") => {
-    if (!containerRef.current) return;
+    if (!container_ref.current) return;
 
-    const width = containerRef.current.clientWidth;
+    const width = container_ref.current.clientWidth;
 
-    containerRef.current.scrollBy({
+    container_ref.current.scrollBy({
       left: direction === "left" ? -width : width,
       behavior: "smooth",
     });
@@ -31,7 +41,12 @@ export function CategoryBannerSection({ banners }: CategoryBannerSectionProps) {
   if (!banners?.length) return null;
 
   return (
-    <section className="w-full min-w-0 overflow-hidden bg-white px-4 py-3 md:px-6">
+    <section
+      className={cn(
+        "mb-0 w-full min-w-0 overflow-hidden bg-white py-3 md:px-6",
+        className,
+      )}
+    >
       <div className="group relative w-full">
         {/* Left button */}
         {banners.length > 1 && (
@@ -47,7 +62,17 @@ export function CategoryBannerSection({ banners }: CategoryBannerSectionProps) {
 
         {/* Banners */}
         <div
-          ref={containerRef}
+          ref={container_ref}
+          onScroll={() => {
+            if (!container_ref.current) return;
+
+            const index = Math.round(
+              container_ref.current.scrollLeft /
+                container_ref.current.clientWidth,
+            );
+
+            setActiveIndex(index);
+          }}
           className="no-scrollbar flex w-full min-w-0 snap-x snap-mandatory gap-0 overflow-x-auto scroll-smooth"
         >
           {banners.map((banner) => {
@@ -93,19 +118,24 @@ export function CategoryBannerSection({ banners }: CategoryBannerSectionProps) {
         )}
       </div>
 
-      {/* Dots */}
-      {banners.length > 1 && (
-        <div className="mt-2 flex items-center justify-center gap-1.5">
-          {banners.map((banner, index) => (
-            <span
-              key={banner.id}
-              className={`h-1.5 rounded-full ${
-                index === 0 ? "w-5 bg-orange-500" : "w-1.5 bg-gray-300"
-              }`}
-            />
-          ))}
-        </div>
-      )}
+      <div className="mt-2 flex items-center justify-center gap-1.5">
+        {banners.map((banner, index) => (
+          <button
+            key={banner.id}
+            type="button"
+            aria-label={`Go to banner ${index + 1}`}
+            onClick={() => {
+              container_ref.current?.scrollTo({
+                left: index * container_ref.current.clientWidth,
+                behavior: "smooth",
+              });
+            }}
+            className={`h-1.5 rounded-full transition-all duration-200 ${
+              index === active_index ? "w-5 bg-orange-500" : "w-1.5 bg-gray-300"
+            }`}
+          />
+        ))}
+      </div>
     </section>
   );
 }
