@@ -13,7 +13,7 @@ import Footer from "@/components/footer/footer.component";
 import LoginModal from "@/components/login/login-modal.component";
 import SelectAddressDrawer from "@/components/common/select-address-drawer.component";
 import AlertPopup from "@/components/common/alert-popup.component";
-
+import OvernightClosedBanner from "@/components/common/overnight-closed-banner.component";
 // const
 import { HAS_LOGIN_SHOWN } from "@/constants/common.constant";
 
@@ -130,6 +130,8 @@ const MainLayout: FC<{
         show_bottom_navigation && "mb-16.5",
       )}
     >
+    
+      <OvernightClosedBanner />
       <Header
         show_filter_sort_bar={show_filter_sort_bar}
         disable_side_filter={disable_side_filter}
