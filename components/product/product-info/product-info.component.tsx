@@ -46,7 +46,11 @@ type IProps = {
   selected_attributes: Record<string, any>;
   category_mappings: Array<IFormattedCategoryMapping>;
   is_product_available: boolean;
-  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
+  handleReportModalState: ({
+    open,
+    review_id,
+    source,
+  }: IReportModalState) => void;
 };
 
 const ProductInfo: FC<IProps> = ({

@@ -8,6 +8,7 @@ import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 import type { IDisplayAreaType } from "@/types/category-attribute-mapping";
+import type { ISource } from "@/types/review";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -250,6 +251,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       <ReportModal
         review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
+        source={report_modal_state.source as ISource}
         onClose={() => setReportModalState({ open: false })}
       />
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
@@ -289,9 +291,10 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           category_mappings={category_mappings}
-          handleReportModalState={({ open, review_id }) =>
+          handleReportModalState={({ open, review_id, source }) =>
             setReportModalState({
               open,
+              source,
               ...(review_id
                 ? {
                     review_id,
