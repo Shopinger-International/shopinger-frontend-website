@@ -38,8 +38,6 @@ const MobileAddressModal = dynamic(
 );
 
 // provider
-import MegaMenuProvider from "@/provider/mega-menu-provider";
-import CategoryDrawerProvider from "@/provider/category-drawer.provider";
 import { SelectedCategoryProivder } from "@/provider/selected-category-provider";
 
 // hooks
@@ -142,8 +140,6 @@ const MainLayout: FC<{
           is_bottom_navigation_showing={show_bottom_navigation}
         />
         <main>
-          <MegaMenuProvider />
-          <CategoryDrawerProvider />
           <LoginModal
             is_modal={is_mobile || !!login_modal_state.is_modal}
             heading_text={
