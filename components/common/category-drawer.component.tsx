@@ -99,7 +99,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
     number | null
   >(null);
   const { data: categories } = useCategories(true, "subsub");
-
+  const router = useRouter();
   useEffect(() => {
     categories && setSelectedMainCatgoryId(categories[0].id);
   }, [categories]);

@@ -285,7 +285,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
           </div>
         )}
 
-        <div className="flex-1 space-y-4">
+        <div className="min-w-0 flex-1 space-y-4">
           <div className="hidden lg:block">
             {is_category_sorting_filters_pending ? (
               <SortFilterHeaderSkeleton />
@@ -320,7 +320,6 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
               )
             )}
 
-            {/* infinite scroll loading */}
             {!isProductPending &&
               isFetchingNextPage &&
               Array.from({ length: 12 }).map((_, i) => (
