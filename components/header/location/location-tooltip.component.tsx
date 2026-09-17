@@ -1,5 +1,5 @@
 // types
-import type { FC } from "react";
+import { useEffect, useState, type FC } from "react";
 
 // hooks
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
@@ -19,6 +19,7 @@ import { ChevronDown, MapPin } from "lucide-react";
 // local components
 import Tooltip from "@/components/common/tooltip.component";
 import LocationTooltipContent from "@/components/header/location/location-tooltip-content.component";
+import { SELECTED_ADDRESS } from "@/constants/common.constant";
 
 const LocationTooltip: FC<{
   className: string;
@@ -31,8 +32,15 @@ const LocationTooltip: FC<{
   const { data: user_details } = useUserDetails();
   const { default_open, updateDefaultOpen } = useDefaultLocationTooltipOpen();
 
-  const delivery_time = user_details ? "45" : "10";
+  const [delivery_time, setDeliveryTime] = useState(10);
 
+  useEffect(() => {
+    const hasAddress = localStorage.getItem(SELECTED_ADDRESS);
+
+    if (hasAddress || selected_address) {
+      setDeliveryTime(40);
+    }
+  }, [selected_address]);
   if (is_mobile) {
     return (
       <div className={clsx("min-w-0 items-center text-white", className)}>

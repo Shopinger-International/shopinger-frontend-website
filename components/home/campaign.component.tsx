@@ -15,7 +15,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Campaign: FC = () => {
-  const { data: campaigns = [] } = useAllCamapigns();
+  const { data: campaigns = [] } = useAllCamapigns({});
   const [embla_ref, emabla_api] = useEmblaCarousel(
     { loop: true, align: "start" },
     [
