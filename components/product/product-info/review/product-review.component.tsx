@@ -24,7 +24,11 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 type IProps = IReview & {
   product_id: number;
-  handleReportModalState: ({ open, review_id }: IReportModalState) => void;
+  handleReportModalState: ({
+    open,
+    review_id,
+    source,
+  }: IReportModalState) => void;
 };
 
 const ProductReview: FC<IProps> = ({
@@ -32,6 +36,7 @@ const ProductReview: FC<IProps> = ({
   user,
   rating,
   title,
+  source,
   comment,
   created_at,
   helpful_count,
@@ -62,9 +67,6 @@ const ProductReview: FC<IProps> = ({
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-900">
               {user.name}{" "}
-              <span className="hidden text-gray-600 sm:inline">
-                (Ghaziabad, UP)
-              </span>
             </span>
             <span className="text-xs font-medium text-gray-600">
               {formatDate(created_at)}
@@ -78,22 +80,28 @@ const ProductReview: FC<IProps> = ({
               if (is_reacted) {
                 delete_review_reaction_mutation.mutate({
                   review_id: id,
+                  source,
                 });
                 return;
               }
               if (is_logged_in) {
                 react_to_review_mutation.mutate({
                   review_id: id,
+                  source,
                 });
                 return;
               }
 
               openLoginModal({
+                is_modal:true,
+                title: "Login to React",
                 onSuccess: () => {
                   react_to_review_mutation.mutate({
                     review_id: id,
+                    source,
                   });
                 },
+                onCancel() {},
               });
             }}
           >
@@ -110,6 +118,7 @@ const ProductReview: FC<IProps> = ({
               handleReportModalState({
                 open: true,
                 review_id: id,
+                source,
               });
             }}
           >

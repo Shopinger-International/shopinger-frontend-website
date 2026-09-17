@@ -226,7 +226,13 @@ const CheckoutSummary: FC<IProps> = ({
           type="button"
           className="relative w-full cursor-pointer overflow-hidden rounded-md bg-orange-500 py-2 font-semibold text-white before:absolute before:inset-y-0 before:-left-full before:w-1/3 before:skew-x-[-20deg] before:animate-[wipe_1.5s_ease-in-out_infinite] before:bg-white/50 before:blur-sm"
           onClick={() => {
-            if (!user_detail) return openLoginModal({});
+            if (!user_detail)
+              return openLoginModal({
+                is_modal: true,
+                title: "Log in to proceed to checkout",
+                onSuccess() {},
+                onCancel() {},
+              });
             if (!selected_address) {
               openAddressDrawer();
               return;

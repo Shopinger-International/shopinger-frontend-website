@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
 
 // types
 import type { FC } from "react";
@@ -100,7 +99,6 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
     number | null
   >(null);
   const { data: categories } = useCategories(true, "subsub");
-  const router = useRouter();
 
   useEffect(() => {
     categories && setSelectedMainCatgoryId(categories[0].id);
@@ -124,7 +122,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
         >
           <div className="flex items-center justify-between border-b border-gray-300 px-4 py-2">
             <div className="flex items-center gap-6">
-              <button onClick={() => router.back()} aria-label="Go back">
+              <button onClick={handleClose} aria-label="Go back">
                 <ArrowLeft className="size-6" />
               </button>
               <span className="font-semibold">All Categories</span>
@@ -132,14 +130,14 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
             <SearchBar show_search_icon_only={true} />
           </div>
           <div className="flex min-h-0 flex-1">
-            <div className="no-scrollbar flex h-[calc(100%-var(--bottom-nav-height))] w-22 flex-col items-center overflow-y-auto border-e border-gray-300 bg-gray-50">
+            <div className="no-scrollbar flex h-[calc(100%-var(--bottom-nav-height))] w-22 flex-col items-center overflow-y-auto border-e border-gray-300 bg-gray-50 pb-30">
               {categories?.map(({ id, name, media }) => (
                 <button
                   key={`category-${id}`}
                   className={clsx(
                     "flex w-full flex-col items-center gap-1 px-1 pt-2 pb-1",
                     selected_main_category_id == id &&
-                      "bg-orange-500 text-white",
+                      "border-r-3 border-orange-500 bg-orange-100 text-gray-900",
                   )}
                   onClick={() => setSelectedMainCatgoryId(id)}
                 >
@@ -175,7 +173,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                 </button>
               ))}
             </div>
-            <div className="flex h-[calc(100%-var(--bottom-nav-height))] flex-1 flex-col overflow-y-auto px-4 py-2">
+            <div className="flex h-[calc(100%-var(--bottom-nav-height))] flex-1 flex-col overflow-y-auto px-4 pt-2 pb-30">
               {categories
                 ?.find((category) => category.id == selected_main_category_id)
                 ?.sub_categories.map(

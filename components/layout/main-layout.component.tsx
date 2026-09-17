@@ -1,6 +1,7 @@
+import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 // types
 import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
@@ -12,6 +13,13 @@ import Footer from "@/components/footer/footer.component";
 import LoginModal from "@/components/login/login-modal.component";
 import SelectAddressDrawer from "@/components/common/select-address-drawer.component";
 import AlertPopup from "@/components/common/alert-popup.component";
+
+// const
+import { HAS_LOGIN_SHOWN } from "@/constants/common.constant";
+
+// hooks
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 const AddAddressModal = dynamic(
   () =>
@@ -28,10 +36,6 @@ const MobileAddressModal = dynamic(
     ssr: false,
   },
 );
-
-// provider
-import MegaMenuProvider from "@/provider/mega-menu-provider";
-import CategoryDrawerProvider from "@/provider/category-drawer.provider";
 
 // hooks
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
@@ -63,6 +67,9 @@ const MainLayout: FC<{
   disable_side_filter = false,
   show_bottom_navigation = false,
 }) => {
+  const router = useRouter();
+  const is_home = router.isReady && router.pathname == "/";
+  const { data: user_details, isPending: is_pending } = useUserDetails();
   const logout_mutation = useLogoutMutation();
   const {
     is_drawer_open: is_adddress_drawer_open,
@@ -74,6 +81,7 @@ const MainLayout: FC<{
   } = useAddressDrawerContext();
   const login_modal_state = useLoginModalContext();
   const logout_modal_state = useLogoutModalContext();
+  const { selected_address } = useLocationTooltipStateContext();
 
   const { show: show_footer } = useContext(FooterStateContext);
   const is_mobile = useIsMobile();
@@ -81,6 +89,8 @@ const MainLayout: FC<{
   const openLoginModal = () => {
     return new Promise<IUser>((resolve, reject) => {
       login_modal_state.openModal({
+        is_modal: true,
+        title: "Log in to Add Address",
         onSuccess(user) {
           resolve(user as IUser);
         },
@@ -90,6 +100,28 @@ const MainLayout: FC<{
       });
     });
   };
+
+  useEffect(() => {
+    const has_login_shown = sessionStorage.getItem(HAS_LOGIN_SHOWN);
+    if (
+      has_login_shown ||
+      is_pending ||
+      user_details ||
+      !is_home ||
+      !selected_address
+    )
+      return;
+    const timeout = setTimeout(() => {
+      login_modal_state.openModal({
+        is_modal: false,
+        title: "Log In for better experience",
+        onSuccess(user) {},
+        onCancel() {},
+      });
+      sessionStorage.setItem(HAS_LOGIN_SHOWN, "true");
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, [user_details, is_pending, is_home, selected_address]);
 
   return (
     <div
@@ -104,9 +136,11 @@ const MainLayout: FC<{
         is_bottom_navigation_showing={show_bottom_navigation}
       />
       <main>
-        <MegaMenuProvider />
-        <CategoryDrawerProvider />
         <LoginModal
+          is_modal={is_mobile || !!login_modal_state.is_modal}
+          heading_text={
+            login_modal_state.title ?? "Login for better experience"
+          }
           open={login_modal_state.is_modal_open}
           handleClose={() => {
             login_modal_state.onCancel?.();

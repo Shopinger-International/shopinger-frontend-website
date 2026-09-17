@@ -1,6 +1,7 @@
 // types
 import type { FC } from "react";
 import type { FieldProps } from "formik";
+import type { ISource } from "@/types/review";
 
 // external components
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -86,10 +87,11 @@ const reasons: Array<{
 type IProps = {
   review_id: number;
   is_open: boolean;
+  source: ISource;
   onClose: () => void;
 };
 
-const ReportModal: FC<IProps> = ({ review_id, is_open, onClose }) => {
+const ReportModal: FC<IProps> = ({ review_id, is_open, source, onClose }) => {
   const { openModal: openLoginModal } = useLoginModalContext();
   const report_review_mutation = useReportReviewMutation();
   const { data: user_details } = useUserDetails();
@@ -127,6 +129,7 @@ const ReportModal: FC<IProps> = ({ review_id, is_open, onClose }) => {
                 report_review_mutation.mutate(
                   {
                     review_id,
+                    source,
                     reason: values.reason as IReason,
                     ...(description
                       ? {
@@ -142,10 +145,13 @@ const ReportModal: FC<IProps> = ({ review_id, is_open, onClose }) => {
                 );
               } else {
                 openLoginModal({
+                  is_modal: true,
+                  title: "Login to report",
                   onSuccess() {
                     report_review_mutation.mutate(
                       {
                         review_id,
+                        source,
                         reason: values.reason as IReason,
                         ...(description
                           ? {
@@ -160,6 +166,7 @@ const ReportModal: FC<IProps> = ({ review_id, is_open, onClose }) => {
                       },
                     );
                   },
+                  onCancel() {},
                 });
               }
             }}

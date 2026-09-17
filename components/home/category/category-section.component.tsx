@@ -79,7 +79,6 @@ const CategorySection: FC<{
           >
             <ChevronLeft />
           </button>
-
           {/* Embla Viewport */}
           <div className="overflow-hidden" ref={embla_ref}>
             {/* Embla Container */}
