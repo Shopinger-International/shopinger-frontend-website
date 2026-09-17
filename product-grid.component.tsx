@@ -71,7 +71,7 @@ const ProductGridSection: FC<IProps> = ({
         have_variants: variants.length > 1,
         total_reviews: reviews_count,
         product_reviews_link,
-        avg_rating,
+        avg_rating: Number(product.average_rating),
         bought_last_month,
         is_wishlisted: !!first_variant._count?.wishlists,
         sub_sub_category_id,
