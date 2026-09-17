@@ -14,7 +14,7 @@ const Rating: FC<IProps> = ({ total_stars, size, custom_rating, gap = 2 }) => {
       className="flex"
       style={{ gap }}
       role="img"
-      aria-label={`${custom_rating.toFixed(1)} out of ${total_stars} stars`}
+      aria-label={`${custom_rating?.toFixed(1)} out of ${total_stars} stars`}
     >
       {Array.from({ length: total_stars }, (_, i) => {
         const index = i + 1;

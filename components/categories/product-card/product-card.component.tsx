@@ -192,7 +192,7 @@ const ProductCard: FC<IProps> = ({
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
               <span className="text-xs font-medium sm:text-base">
-                {avg_rating.toFixed(1)}
+                {avg_rating?.toFixed(1)}
               </span>
               <Rating
                 total_stars={5}

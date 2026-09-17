@@ -251,6 +251,7 @@ const MobileAddressModal: FC<IProps> = ({
                   {/* SEARCH */}
                   <div className="absolute top-4 z-20 w-full px-4">
                     <SelectPlaces
+                      auto_focus={true}
                       ref={select_places_ref}
                       handleOnChange={(val) => {
                         const mapped = mapPlaceToForm(val.data);

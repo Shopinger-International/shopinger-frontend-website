@@ -232,6 +232,7 @@ const AddAddressModal: FC<IProps> = ({
                       {/* Search */}
                       <div className="absolute top-4 right-0 left-0 z-10 px-4">
                         <SelectPlaces
+                          auto_focus={true}
                           ref={select_places_ref}
                           handleOnChange={(val) => {
                             const mapped = mapPlaceToForm(val.data);

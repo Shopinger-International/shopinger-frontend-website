@@ -18,6 +18,8 @@ type IProduct = {
   importer_name: string;
   importer_pincode: string;
   key_features: Array<string>;
+  average_rating:number;
+  total_reviews:number;
   keywords: string;
   manufacturer_address: string;
   manufacturer_name: string;

@@ -22,7 +22,7 @@ const Login: NextPageWithLayout = () => {
         <title>Login | Shopinger</title>
         <meta
           name="description"
-          content="Sign in securely to your account to manage orders, track deliveries, and continue shopping with ease."
+          content="Log in in securely to your account to manage orders, track deliveries, and continue shopping with ease."
           key="desc"
         />
       </Head>

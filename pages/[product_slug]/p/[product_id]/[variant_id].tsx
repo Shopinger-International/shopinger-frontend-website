@@ -8,6 +8,7 @@ import type IVariant from "@/types/variant";
 import type ICategoryAttributeMapping from "@/types/category-attribute-mapping";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
 import type { IDisplayAreaType } from "@/types/category-attribute-mapping";
+import type { ISource } from "@/types/review";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -15,9 +16,9 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
-import RelatedProducts from "@/components/product/related-products/related-products.component";
 import ReportModal from "@/components/review/report-modal.component";
 import Seo from "@/components/common/seo";
+import TopProducts from "@/components/product/related-products/top-products.component";
 
 // icons
 import { ChevronRight } from "lucide-react";
@@ -37,6 +38,10 @@ import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 
 // analytics
 import useProductViewed from "@/hooks/analytics/use-product-viewed.hook";
+import ProductSection from "@/components/product/product-section.component";
+import useTopProducts from "@/hooks/axios/product/use-top-products.hook";
+import useRelatedProducts from "@/hooks/axios/product/use-related-products.hook";
+import ProductGridSection from "@/product-grid.component";
 
 export const getProduct = async (
   product_id: number,
@@ -117,7 +122,8 @@ const ProductPage: NextPageWithLayout<IProps> = ({
   const variant = product.variants?.find(
     (variant) => variant.id == variant_id,
   ) as IVariant;
-
+  const { data: top_products = [] } = useTopProducts(product_id);
+  const { data: related_products = [] } = useRelatedProducts(product_id);
   const [report_modal_state, setReportModalState] = useState<IReportModalState>(
     {
       open: false,
@@ -176,6 +182,61 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     in_stock: variant.variant_inventory.stock > 0,
     manufacture: product.manufacturer_name,
   });
+  const [formatted_top_products, formatted_related_products] = [
+    top_products,
+    related_products,
+  ].map((p) =>
+    p.flatMap((product) => {
+      const { variants, title, brand, product_medias } = product;
+      return variants.map((variant) => {
+        const updated_title =
+          !brand ||
+          brand.toLocaleLowerCase() == "generic" ||
+          title.includes(brand)
+            ? title
+            : `${brand} ${title}`;
+
+        const visual_values = variant.variant_attribute_values
+          .filter(
+            ({ attribute }) =>
+              category_mappings.find(
+                (mapping) => mapping.attribute_id == attribute.id,
+              )?.is_visual,
+          )
+          .map(({ value }) => value);
+        const main_title = visual_values.length
+          ? `${updated_title} in ${visual_values.join(", ")}`
+          : `${updated_title}`;
+
+        let variant_medias = variant.variant_medias.map(({ media }) => media);
+
+        let variant_medias_with_title = (
+          variant_medias.length
+            ? variant_medias
+            : product_medias.map(({ media }) => media)
+        ).map((media, index) => {
+          const image_title = visual_values.length
+            ? `${updated_title} in ${visual_values.join(", ")} - Image ${index + 1}`
+            : `${updated_title} - Image ${index + 1}`;
+
+          return {
+            media,
+            image_title,
+          };
+        });
+        const product_slug = generateSlug(product.title);
+        return {
+          title: main_title,
+          src: `/${product_slug}/p/${product.id}/${variant?.id}`,
+          variant_medias_with_title,
+          selling_price: variant.variant_pricing.selling_price_with_commission,
+          mrp: variant.variant_pricing.mrp,
+          average_rating: product.average_rating,
+        };
+      });
+    }),
+  );
+
   return (
     <>
       <Seo
@@ -190,6 +251,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       <ReportModal
         review_id={report_modal_state.review_id as number}
         is_open={report_modal_state.open}
+        source={report_modal_state.source as ISource}
         onClose={() => setReportModalState({ open: false })}
       />
       <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
@@ -229,9 +291,10 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           variant={variant as IVariant}
           selected_attributes={selected_attributes}
           category_mappings={category_mappings}
-          handleReportModalState={({ open, review_id }) =>
+          handleReportModalState={({ open, review_id, source }) =>
             setReportModalState({
               open,
+              source,
               ...(review_id
                 ? {
                     review_id,
@@ -242,9 +305,15 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         />
       </div>
 
-      <RelatedProducts
+      <ProductSection
+        heading="Related Products"
+        aria_label="Related Products"
+        data={formatted_related_products}
+      />
+      <ProductGridSection
+        heading="Top 20 Products in this Category"
+        aria_label="Top Products"
         product_id={product_id}
-        category_mappings={category_mappings}
       />
     </>
   );

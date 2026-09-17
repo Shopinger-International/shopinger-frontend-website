@@ -25,11 +25,15 @@ const useAddReviewMutation = () => {
     FormData
   >({
     async mutationFn(payload) {
-      const { data } = await Axios.post<IResponse>("/add-review", payload, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const { data } = await Axios.post<IResponse>(
+        "/create-or-update-review",
+        payload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
       return data;
     },
     onSuccess(response) {

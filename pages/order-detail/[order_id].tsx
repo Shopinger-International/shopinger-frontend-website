@@ -116,7 +116,7 @@ const OrderDetailPage: NextPageWithLayout<{
               review_modal_state.variant.variant_medias[0]?.media.url ??
               review_modal_state.product.product_medias[0]?.media.url
             }
-            review={review_modal_state.order_item.product_review[0]}
+            review={review_modal_state.order_item.product_review}
             is_open={review_modal_state.open}
             onClose={() =>
               setReviewModalState({

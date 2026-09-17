@@ -6,6 +6,8 @@ type IReviewMedia = {
   media: IMedia;
 };
 
+export type ISource = "testing" | "real";
+
 type IReview = {
   id: number;
   user_id: number;
@@ -19,6 +21,7 @@ type IReview = {
   helpful_count: number;
   is_verified_purchase: boolean;
   is_approved: boolean;
+  source: ISource;
   variant_snapshot: {
     attributes: {
       [key: string]: any;

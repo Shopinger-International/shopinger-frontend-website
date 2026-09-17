@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
 
 // types
 import type { FC } from "react";
@@ -101,6 +100,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
   >(null);
   const router = useRouter();
   const { data: categories } = useCategories(true, "subsub");
+
   useEffect(() => {
     categories && setSelectedMainCatgoryId(categories[0].id);
   }, [categories]);
@@ -123,7 +123,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
         >
           <div className="flex items-center justify-between border-b border-gray-300 px-4 py-2">
             <div className="flex items-center gap-6">
-              <button onClick={() => router.back()} aria-label="Go back">
+              <button onClick={handleClose} aria-label="Go back">
                 <ArrowLeft className="size-6" />
               </button>
               <span className="font-semibold">All Categories</span>

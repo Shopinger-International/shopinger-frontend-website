@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { useState, useContext } from "react";
 import { createContext } from "react";
 
@@ -6,11 +5,8 @@ import { createContext } from "react";
 import type { FC, ReactNode } from "react";
 import type IUser from "@/types/user";
 
-// hooks
-import useIsMounted from "@/hooks/common/use-is-mounted.hook";
-import useUIHistory from "@/hooks/common/use-ui-history.hook";
-
 type ILoginModalState = {
+  is_modal_open: boolean;
   title?: string;
   is_modal?: boolean;
   onSuccess?: (value: IUser) => void;
@@ -21,25 +17,23 @@ type ILoginModalContext = ILoginModalState & {
   updateState?: (payload: Partial<ILoginModalState>) => void;
 };
 
-const LoginModalContext = createContext<ILoginModalContext>({});
+const LoginModalContext = createContext<ILoginModalContext>({
+  is_modal_open: false,
+});
 
 export const useLoginModalContext = () => {
-  const router = useRouter();
   const data = useContext(LoginModalContext);
-  const is_mounted = useIsMounted();
-  const is_modal_open = is_mounted && router.query.login_modal === "1";
-  const { open, close } = useUIHistory();
   return {
-    is_modal_open,
     openModal: (payload: Partial<ILoginModalState>) => {
-      open({
-        login_modal: "1",
+      data.updateState?.({
+        ...payload,
+        is_modal_open: true,
       });
-      data.updateState?.(payload);
     },
     closeModal: () => {
-      close();
-      data.updateState?.({});
+      data.updateState?.({
+        is_modal_open: false,
+      });
     },
     ...data,
   };
@@ -50,16 +44,19 @@ const LoginModalProvider: FC<{
 }> = ({ children }) => {
   const [login_modal_state, setLoginModalState] = useState<ILoginModalState>({
     is_modal: true,
+    is_modal_open: false,
   });
   return (
     <LoginModalContext.Provider
       value={{
         ...login_modal_state,
-        updateState: (payload) =>
+        updateState: (payload) => {
+          console.log("value of payload", payload);
           setLoginModalState((prev) => ({
             ...prev,
             ...payload,
-          })),
+          }));
+        },
       }}
     >
       {children}

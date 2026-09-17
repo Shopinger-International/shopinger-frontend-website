@@ -34,10 +34,15 @@ const ShareLinkModal: FC<IProps> = ({
   const [has_copied, setHasCopied] = useState(false);
   const [url, setUrl] = useState("");
 
+  const getCurrentUrl = () => {
+    return window.location.href;
+  };
   const copyLink = async () => {
     try {
-      setUrl(window.location.href);
-      await navigator.clipboard.writeText(url);
+      const currentUrl = getCurrentUrl();
+
+      setUrl(currentUrl);
+      await navigator.clipboard.writeText(currentUrl);
 
       setHasCopied(true);
 
@@ -50,14 +55,18 @@ const ShareLinkModal: FC<IProps> = ({
   };
 
   const shareOnWhatsApp = () => {
-    const text = `Check out ${product_title} on Shopinger\n${url}`;
+    const currentUrl = getCurrentUrl();
+
+    const text = `Check out ${product_title} on Shopinger\n${currentUrl}`;
 
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   const shareOnGmail = () => {
+    const currentUrl = getCurrentUrl();
+
     const subject = encodeURIComponent(product_title);
-    const body = encodeURIComponent(`Check out this product:\n\n${url}`);
+    const body = encodeURIComponent(`Check out this product:\n\n${currentUrl}`);
 
     window.open(
       `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`,
@@ -69,12 +78,12 @@ const ShareLinkModal: FC<IProps> = ({
   const shareOnInstagram = async () => {
     await copyLink();
 
-    // Instagram doesn't provide a normal web URL
-    // for directly sharing a website link.
     window.open("https://www.instagram.com/", "_blank");
   };
 
   const shareNative = async () => {
+    const currentUrl = getCurrentUrl();
+
     if (!navigator.share) {
       await copyLink();
       return;
@@ -84,10 +93,9 @@ const ShareLinkModal: FC<IProps> = ({
       await navigator.share({
         title: product_title,
         text: `Check out ${product_title} on Shopinger`,
-        url: url,
+        url: currentUrl,
       });
     } catch (error) {
-      // User closed the native share sheet
       if (error instanceof DOMException && error.name === "AbortError") {
         return;
       }

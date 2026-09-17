@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 
 // types
 import type { IReason } from "@/components/review/report-modal.component";
+import type { ISource } from "@/types/review";
 
 // helpers
 import Axios from "@/lib/axios/private.lib";
@@ -12,6 +13,7 @@ type IRequestPayload = {
   review_id: number;
   reason: IReason;
   description?: string;
+  source: ISource;
 };
 
 type IResponse = {

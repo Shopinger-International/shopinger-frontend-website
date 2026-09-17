@@ -10,14 +10,20 @@ type IProps = {
   thumbnail_title: string;
   selling_price: number;
   mrp: number;
+  average_rating:number;
   className?: string;
 };
 
-const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp, className }) => {
+const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp,average_rating, className }) => {
   const discount_percentage = Math.round(((mrp - selling_price) / mrp) * 100);
   return (
-    <article className={cn("min-h-84 w-60 shrink-0 rounded-lg border border-gray-300 p-4", className)}>
-      <div className="relative flex h-38 w-auto justify-center">
+    <article
+      className={cn(
+        "min-h-84 rounded-lg border border-gray-300 p-4",
+        className,
+      )}
+    >
+      <div className="relative flex h-38 justify-center">
         <Image
           src={thumbnail.url}
           alt=""
@@ -29,7 +35,7 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp, classNa
       </div>
 
       <p className="mt-4 flex items-center gap-1 text-sm text-gray-700">
-        <span aria-hidden="true">4.6</span>
+        <span aria-hidden="true">{average_rating}</span>
         <span aria-hidden="true" className="text-orange-500">
           ★
         </span>
