@@ -89,7 +89,7 @@ const LocationBlock: FC<{
               "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
             )}
           >
-            <span className="flex items-center gap-1">{delivery_time} MIN</span>
+            <span className="flex items-center gap-1">{delivery_time} min</span>
           </span>
         </div>
 
