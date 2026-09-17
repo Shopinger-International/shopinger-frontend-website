@@ -17,22 +17,35 @@ export type IResponse = {
   error?: string;
 };
 
-export const getCampaigns = async () => {
+export const getCampaigns = async ({
+  display_scope,
+  category_slug,
+}: {
+  display_scope?: string;
+  category_slug?: string;
+}) => {
   const { data } = await webAxios.get<IResponse>(`/get-campaigns`, {
     params: {
       is_active: true,
       status: "active",
+      display_scope,
+      category_slug,
     },
   });
   return data.data;
 };
 
-// 4. Your final, clean type
-const useAllCamapigns = () => {
+const useAllCamapigns = ({
+  display_scope = "HOME",
+  category_slug,
+}: {
+  display_scope?: string;
+  category_slug?: string;
+}) => {
   return useQuery({
-    queryKey: ["campaigns"],
+    queryKey: ["campaigns", display_scope, category_slug],
     async queryFn() {
-      return getCampaigns();
+      return getCampaigns({ display_scope, category_slug });
     },
   });
 };

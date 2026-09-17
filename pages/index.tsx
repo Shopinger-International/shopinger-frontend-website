@@ -8,15 +8,14 @@ import type { DehydratedState } from "@tanstack/react-query";
 import MainLayout from "@/components/layout/main-layout.component";
 
 // local components
-import Campaign from "@/components/home/campaign.component";
 import ProductGrid from "@/components/home/product-grid.component";
 import BestDeals from "@/components/home/best-deals/best-deals.component";
 import CategorySection from "@/components/home/category/category-section.component";
 import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
 import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
-import CampaignTimer from "@/components/header/campaign-timer.component";
 import NProducts from "@/components/home/n-products/n-products.component";
+import { CategoryBannerSection } from "@/components/categories/category-banner.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -28,6 +27,7 @@ import { QueryClient, dehydrate } from "@tanstack/react-query";
 import useFeed from "@/hooks/axios/home/use-feed.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
+import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
 
 // helpers
 import { getCampaigns } from "@/hooks/axios/campaign/use-campaigns.hook";
@@ -44,6 +44,14 @@ type IProps = {
 const HomePage: NextPageWithLayout = () => {
   useSnackbarOffset({});
   const { data: home_feed } = useFeed();
+  const { data: campaigns = [] } = useAllCamapigns({});
+  const banners = campaigns.map((campaign) => ({
+    id: campaign.id.toString(),
+    image: campaign.banner,
+    href: `/campaign/${campaign.id}/${campaign.slug}`,
+    alt: campaign.title,
+  }));
+
   const product_recommendations = home_feed?.product_recommendations ?? [];
   const continue_shopping_recommendations =
     home_feed?.continue_shopping_recommendations ?? [];
@@ -84,8 +92,7 @@ const HomePage: NextPageWithLayout = () => {
       />
       <div className="space-y-4 pt-(--header-height)">
         <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
-          <Campaign />
-          <CampaignTimer />
+          <CategoryBannerSection banners={banners} />
           <HighlightsBar />
           {/* <ProductMarquee /> */}
           {continue_shopping_recommendations.length >= 6 && (
@@ -162,7 +169,7 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
     prefetchCommonData(query_client, cookie),
     query_client.prefetchQuery({
       queryKey: ["campaigns"],
-      queryFn: () => getCampaigns(),
+      queryFn: () => getCampaigns({ display_scope: "HOME" }),
     }),
     query_client.prefetchQuery({
       queryKey: ["feed"],
