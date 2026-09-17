@@ -1,4 +1,3 @@
-"use client";
 import {
   createContext,
   useContext,
@@ -21,7 +20,7 @@ interface ICategoryContext {
 
 const CategoryContext = createContext<ICategoryContext | undefined>(undefined);
 
-export const SelectedCategoryProivder: FC<{ children: ReactNode }> = ({
+export const SelectedCategoryProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [selected_category, setSelectedCategory] = useState<ICategory | null>(
