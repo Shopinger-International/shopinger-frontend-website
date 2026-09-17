@@ -158,7 +158,7 @@ const ProductInfo: FC<IProps> = ({
             product_reviews_link={`/${product_slug}/p/${product.id}/reviews`}
           >
             <span className="inline-flex cursor-pointer items-center gap-1">
-              <strong className="font-medium">4.6 </strong>{" "}
+              <strong className="font-medium">{product.average_rating} </strong>{" "}
               <span className="sr-only">out of 5 stars</span>{" "}
               <Star
                 className="inline size-4 fill-amber-300 text-amber-300"
@@ -174,11 +174,11 @@ const ProductInfo: FC<IProps> = ({
           <Link
             href={`/${product_slug}/p/${product.id}/reviews`}
             className="text-orange-500"
-            aria-label={`view all ${2847} reviews`}
+            aria-label={`view all ${product.total_reviews ?? 0} reviews`}
           >
-            2,847 reviews
+            {product.total_reviews} reviews
           </Link>{" "}
-          <span className="inline">500+ bought in past month</span>
+          <span className="inline">10+ bought in past month</span>
         </p>
       </section>
 

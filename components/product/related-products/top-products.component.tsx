@@ -26,7 +26,7 @@ const TopProducts: FC<IProps> = ({ product_id, category_mappings }) => {
   const { goToNext, goToPrev, can_scroll_next, can_scroll_prev, ref } =
     useCarousel();
   const formatted_top_products = top_products.flatMap((product) => {
-    const { variants, title, brand, product_medias } = product;
+    const { variants, title, brand, product_medias ,average_rating} = product;
     return variants.map((variant) => {
       const updated_title =
         !brand ||
@@ -70,6 +70,7 @@ const TopProducts: FC<IProps> = ({ product_id, category_mappings }) => {
         variant_medias_with_title,
         selling_price: variant.variant_pricing.selling_price_with_commission,
         mrp: variant.variant_pricing.mrp,
+        average_rating
       };
     });
   });
@@ -101,7 +102,7 @@ const TopProducts: FC<IProps> = ({ product_id, category_mappings }) => {
             <div className="embla__container flex gap-6">
               {formatted_top_products.map(
                 (
-                  { title, src, variant_medias_with_title, selling_price, mrp },
+                  { title, src, variant_medias_with_title, selling_price, mrp,average_rating },
                   index,
                 ) => (
                   <Link href={src} className="embla__slide">
@@ -111,6 +112,7 @@ const TopProducts: FC<IProps> = ({ product_id, category_mappings }) => {
                       thumbnail_title={variant_medias_with_title[0].image_title}
                       selling_price={selling_price}
                       mrp={mrp}
+                      average_rating={average_rating}
                     />
                   </Link>
                 ),

@@ -20,6 +20,7 @@ type IProps = {
     variant_medias_with_title: IVariantMediaWithTitle[];
     selling_price: number;
     mrp: number;
+    average_rating: number;
   }[];
   aria_label: string;
 };
@@ -59,11 +60,19 @@ const ProductSection: FC<IProps> = ({ heading, data, aria_label }) => {
             <div className="embla__container flex gap-6">
               {data?.map(
                 (
-                  { title, src, variant_medias_with_title, selling_price, mrp },
+                  {
+                    title,
+                    src,
+                    variant_medias_with_title,
+                    selling_price,
+                    mrp,
+                    average_rating,
+                  },
                   index: number,
                 ) => (
                   <Link key={index} href={src} className="embla__slide">
                     <ProductCard
+                      average_rating={average_rating}
                       title={title}
                       thumbnail={variant_medias_with_title[0].media}
                       thumbnail_title={variant_medias_with_title[0].image_title}
