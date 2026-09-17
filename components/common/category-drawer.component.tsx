@@ -98,7 +98,6 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
   const [selected_main_category_id, setSelectedMainCatgoryId] = useState<
     number | null
   >(null);
-  const router = useRouter();
   const { data: categories } = useCategories(true, "subsub");
 
   useEffect(() => {
