@@ -31,17 +31,10 @@ const CategorySection: FC = () => {
   const params = useParams<{ main_category_slug: string }>();
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: categories = [] } = useCategories(true);
-  const {
-    selected_category,
-    setSelectedCategory,
-    selected_sub_category,
-    setSelectedSubCategory,
-  } = useCategoryContext();
+  const { selected_category, setSelectedCategory } = useCategoryContext();
   const [can_scroll_left, setCanScrollLeft] = useState(false);
   const [can_scroll_right, setCanScrollRight] = useState(false);
   const nav_ref = useRef<HTMLDivElement>(null);
-  const sub_nav_ref = useRef<HTMLDivElement>(null);
-
   const [hide_nav, setHideNav] = useState(false);
   const updateScrollState = (el: HTMLDivElement | null) => {
     if (!el) return;
@@ -174,6 +167,7 @@ const CategorySection: FC = () => {
                 {/* All */}
                 <Link
                   href="/"
+                  onClick={() => setSelectedCategory(null)}
                   aria-label="All categories"
                   className={clsx(
                     "group flex w-20 shrink-0 flex-col items-center justify-center gap-1 rounded-xl py-2 transition-colors",
