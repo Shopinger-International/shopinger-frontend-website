@@ -18,8 +18,8 @@ function SubCategoryImage({ src, alt }: SubCategoryImageProps) {
 
   if (!src || image_error) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-gray-50">
-        <span className="text-[10px] text-gray-400">No image</span>
+      <div className="flex h-full w-full items-center justify-center rounded-full border border-gray-300 bg-gray-50">
+        <span className="text-[10px] text-gray-400">N/A</span>
       </div>
     );
   }
@@ -29,8 +29,8 @@ function SubCategoryImage({ src, alt }: SubCategoryImageProps) {
       src={src}
       alt={alt}
       fill
-      sizes="120px"
-      className="object-contain object-center p-1 transition-transform duration-200 group-hover:scale-105"
+      sizes="75px"
+      className="object-cover object-center"
       onError={() => setImageError(true)}
     />
   );
@@ -54,9 +54,9 @@ export default function SubCategorySection() {
   const has_multiple_rows = category.sub_categories.length > 3;
 
   return (
-    <section className="w-full min-w-0 overflow-hidden bg-white px-4 py-3 md:px-6">
+    <section className="w-full min-w-0 overflow-hidden bg-white px-4 py-4 md:px-6">
       {/* Header */}
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <h2 className="text-base font-semibold text-gray-900 md:text-xl">
           Explore {category.name}
         </h2>
@@ -64,10 +64,10 @@ export default function SubCategorySection() {
 
       {/* Subcategories */}
       <div
-        className={`no-scrollbar grid w-full min-w-0 grid-flow-col gap-2 overflow-x-auto overflow-y-hidden ${
+        className={`no-scrollbar grid w-full min-w-0 grid-flow-col gap-1 overflow-x-auto overflow-y-hidden ${
           has_multiple_rows
-            ? "h-[176px] auto-cols-[120px] grid-rows-2"
-            : "h-[88px] auto-cols-[120px] grid-rows-1"
+            ? "h-[190px] auto-cols-[105px] grid-rows-2 md:h-[238px] md:auto-cols-[150px]"
+            : "h-[100px] auto-cols-[105px] grid-rows-1 md:h-[116px] md:auto-cols-[150px]"
         }`}
       >
         {category.sub_categories.map((sub_category) => {
@@ -81,16 +81,12 @@ export default function SubCategorySection() {
                 setSelectedSubCategory(sub_category);
                 router.push(`${category.slug}/${sub_category.slug}`);
               }}
-              className={`group flex h-[84px] w-[120px] shrink-0 flex-col overflow-hidden rounded-xl border bg-white transition-all duration-200 ${
-                is_selected
-                  ? "border-orange-500 bg-orange-50/40 shadow-sm"
-                  : "border-gray-200 hover:border-orange-300 hover:shadow-sm"
-              }`}
+              className="group flex h-[92px] w-[105px] shrink-0 flex-col items-center gap-1 md:h-[112px] md:w-[150px]"
             >
-              {/* Image */}
+              {/* Circular Image */}
               <div
-                className={`relative h-[58px] w-full shrink-0 overflow-hidden ${
-                  is_selected ? "bg-orange-50" : "bg-gray-50"
+                className={`relative size-14 shrink-0 overflow-hidden rounded-full md:size-18.5 ${
+                  is_selected ? "ring-2 ring-orange-500 ring-offset-2" : ""
                 }`}
               >
                 <SubCategoryImage
@@ -100,15 +96,15 @@ export default function SubCategorySection() {
               </div>
 
               {/* Name */}
-              <div className="flex min-h-0 flex-1 items-center justify-center px-1.5">
-                <span
-                  className={`line-clamp-2 text-center text-[11px] leading-[14px] font-medium ${
-                    is_selected ? "text-orange-600" : "text-gray-700"
-                  }`}
-                >
-                  {sub_category.name}
-                </span>
-              </div>
+              <span
+                className={`line-clamp-2 px-1 text-center text-[10px] leading-[13px] md:px-2 md:text-[11px] md:leading-[14px] ${
+                  is_selected
+                    ? "font-semibold text-orange-600"
+                    : "font-medium text-gray-700"
+                }`}
+              >
+                {sub_category.name}
+              </span>
             </button>
           );
         })}
