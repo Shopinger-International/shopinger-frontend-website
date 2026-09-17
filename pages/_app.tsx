@@ -21,6 +21,7 @@ import MegaMenuProvider from "@/provider/mega-menu-provider";
 import LoginTooltipProvider from "@/provider/login-tooltip.provider";
 import LocationTooltipStateProvider from "@/provider/location-tooltip.provider";
 import LocationDrawerProvider from "@/provider/location-drawer.provider";
+import { SelectedCategoryProvider } from "@/provider/selected-category-provider";
 
 // react query
 import {
@@ -87,23 +88,25 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                 error: ErrorSnackbar,
               }}
             >
-              <LoginModalProvider>
-                <LocationTooltipStateProvider>
-                  <LocationDrawerProvider>
-                    <LoginTooltipProvider>
-                      <LogoutModalProvider>
-                        <MegaMenuProvider>
-                          <CategoryDrawerProvider>
-                            <SelectedAddressProvider>
-                              {getLayout(<Component {...pageProps} />)}
-                            </SelectedAddressProvider>
-                          </CategoryDrawerProvider>
-                        </MegaMenuProvider>
-                      </LogoutModalProvider>
-                    </LoginTooltipProvider>
-                  </LocationDrawerProvider>
-                </LocationTooltipStateProvider>
-              </LoginModalProvider>
+              <SelectedCategoryProvider>
+                <LoginModalProvider>
+                  <LocationTooltipStateProvider>
+                    <LocationDrawerProvider>
+                      <LoginTooltipProvider>
+                        <LogoutModalProvider>
+                          <MegaMenuProvider>
+                            <CategoryDrawerProvider>
+                              <SelectedAddressProvider>
+                                {getLayout(<Component {...pageProps} />)}
+                              </SelectedAddressProvider>
+                            </CategoryDrawerProvider>
+                          </MegaMenuProvider>
+                        </LogoutModalProvider>
+                      </LoginTooltipProvider>
+                    </LocationDrawerProvider>
+                  </LocationTooltipStateProvider>
+                </LoginModalProvider>
+              </SelectedCategoryProvider>
             </SnackbarProvider>
           </AlgoliaInsightsProvider>
         </HydrationBoundary>

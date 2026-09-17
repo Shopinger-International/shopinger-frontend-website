@@ -37,9 +37,6 @@ const MobileAddressModal = dynamic(
   },
 );
 
-// provider
-import { SelectedCategoryProivder } from "@/provider/selected-category-provider";
-
 // hooks
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import { useAddressDrawerContext } from "@/provider/selected-address-provider.component";
@@ -127,80 +124,78 @@ const MainLayout: FC<{
   }, [user_details, is_pending, is_home, selected_address]);
 
   return (
-    <SelectedCategoryProivder>
-      <div
-        className={clsx(
-          `${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900 lg:mb-0`,
-          show_bottom_navigation && "mb-16.5",
-        )}
-      >
-        <Header
-          show_filter_sort_bar={show_filter_sort_bar}
-          disable_side_filter={disable_side_filter}
-          is_bottom_navigation_showing={show_bottom_navigation}
+    <div
+      className={clsx(
+        `${poppins.variable} ${poppins.className} relative min-h-screen bg-white text-gray-900 lg:mb-0`,
+        show_bottom_navigation && "mb-16.5",
+      )}
+    >
+      <Header
+        show_filter_sort_bar={show_filter_sort_bar}
+        disable_side_filter={disable_side_filter}
+        is_bottom_navigation_showing={show_bottom_navigation}
+      />
+      <main>
+        <LoginModal
+          is_modal={is_mobile || !!login_modal_state.is_modal}
+          heading_text={
+            login_modal_state.title ?? "Login for better experience"
+          }
+          open={login_modal_state.is_modal_open}
+          handleClose={() => {
+            login_modal_state.onCancel?.();
+            login_modal_state.closeModal();
+          }}
+          handleOnSuccess={(user) => {
+            login_modal_state.onSuccess?.(user);
+            login_modal_state.closeModal();
+          }}
         />
-        <main>
-          <LoginModal
-            is_modal={is_mobile || !!login_modal_state.is_modal}
-            heading_text={
-              login_modal_state.title ?? "Login for better experience"
-            }
-            open={login_modal_state.is_modal_open}
-            handleClose={() => {
-              login_modal_state.onCancel?.();
-              login_modal_state.closeModal();
-            }}
-            handleOnSuccess={(user) => {
-              login_modal_state.onSuccess?.(user);
-              login_modal_state.closeModal();
-            }}
-          />
-          <AlertPopup
-            open={logout_modal_state.is_modal_open}
-            title="Do you really want to logout?"
-            handleConfirmation={() => {
-              logout_mutation.mutate(undefined, {
-                onSuccess: logout_modal_state.onSuccess,
+        <AlertPopup
+          open={logout_modal_state.is_modal_open}
+          title="Do you really want to logout?"
+          handleConfirmation={() => {
+            logout_mutation.mutate(undefined, {
+              onSuccess: logout_modal_state.onSuccess,
+            });
+          }}
+          handleCancellation={logout_modal_state.closeModal}
+        />
+        {is_mobile ? (
+          <MobileAddressModal
+            open={is_address_modal_open}
+            onClose={closeAddressModal}
+            initial_data={address_data ?? null}
+            handleLogin={openLoginModal}
+            handleOnSuccess={(address) => {
+              updateState?.({
+                address_id: address.id,
+                data: null,
               });
+              is_adddress_drawer_open && closeAddressDrawer();
             }}
-            handleCancellation={logout_modal_state.closeModal}
           />
-          {is_mobile ? (
-            <MobileAddressModal
-              open={is_address_modal_open}
-              onClose={closeAddressModal}
-              initial_data={address_data ?? null}
-              handleLogin={openLoginModal}
-              handleOnSuccess={(address) => {
-                updateState?.({
-                  address_id: address.id,
-                  data: null,
-                });
-                is_adddress_drawer_open && closeAddressDrawer();
-              }}
-            />
-          ) : (
-            <AddAddressModal
-              open={is_address_modal_open}
-              onClose={closeAddressModal}
-              initial_data={address_data ?? null}
-              handleLogin={openLoginModal}
-              handleOnSuccess={(address) => {
-                updateState?.({
-                  address_id: address.id,
-                  data: null,
-                });
-                is_adddress_drawer_open && closeAddressDrawer();
-              }}
-            />
-          )}
-          <SelectAddressDrawer />
-          {children}
-        </main>
-        {show_bottom_navigation && <BottomMobileNav />}
-        {show_footer && <Footer />}
-      </div>
-    </SelectedCategoryProivder>
+        ) : (
+          <AddAddressModal
+            open={is_address_modal_open}
+            onClose={closeAddressModal}
+            initial_data={address_data ?? null}
+            handleLogin={openLoginModal}
+            handleOnSuccess={(address) => {
+              updateState?.({
+                address_id: address.id,
+                data: null,
+              });
+              is_adddress_drawer_open && closeAddressDrawer();
+            }}
+          />
+        )}
+        <SelectAddressDrawer />
+        {children}
+      </main>
+      {show_bottom_navigation && <BottomMobileNav />}
+      {show_footer && <Footer />}
+    </div>
   );
 };
 
