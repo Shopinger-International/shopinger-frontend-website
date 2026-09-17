@@ -23,21 +23,16 @@ type IProps = {
 };
 const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
   const { data: related_products = [] } = useRelatedProducts(product_id);
-  const [embla_ref, embla_api] = useEmblaCarousel({
-    loop: false,
-    align: "start",
-  });
-  const [can_scroll_prev, setCanScrollPrev] = useState(false);
-  const [can_scroll_next, setCanScrollNext] = useState(false);
-  const goToPrev = useCallback(() => {
-    embla_api?.scrollPrev();
-  }, [embla_api]);
+  const {
+    goToNext,
+    goToPrev,
+    can_scroll_next,
+    can_scroll_prev,
+    ref: embla_ref,
+  } = useCarousel();
 
-  const goToNext = useCallback(() => {
-    embla_api?.scrollNext();
-  }, [embla_api]);
   const formatted_related_products = related_products.flatMap((product) => {
-    const { variants, title, brand, product_medias } = product;
+    const { variants, title, brand, product_medias, average_rating } = product;
 
     return variants.map((variant) => {
       const updated_title =
@@ -82,33 +77,14 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
         variant_medias_with_title,
         selling_price: variant.variant_pricing.selling_price_with_commission,
         mrp: variant.variant_pricing.mrp,
-        average_rating: product.average_rating,
+        average_rating,
       };
     });
   });
 
-  useEffect(() => {
-    if (!embla_api) return;
-
-    const updateScrollButtons = () => {
-      setCanScrollPrev(embla_api.canScrollPrev());
-      setCanScrollNext(embla_api.canScrollNext());
-    };
-
-    updateScrollButtons();
-
-    embla_api.on("select", updateScrollButtons);
-    embla_api.on("reInit", updateScrollButtons);
-
-    return () => {
-      embla_api.off("select", updateScrollButtons);
-      embla_api.off("reInit", updateScrollButtons);
-    };
-  }, [embla_api]);
   if (related_products.length === 0) return null;
   return (
     <section className="mb-8" aria-labelledby="similar-products">
-      <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
       <div className="mx-auto max-w-6xl space-y-4 px-4 lg:space-y-6">
         <h2 className="font-semibold lg:text-xl" id="similar-products">
           Similar Products
@@ -122,7 +98,6 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
           {/* Left arrow */}
           <button
             disabled={!can_scroll_prev}
-            disabled={!can_scroll_prev}
             aria-label="Show previous products"
             onClick={goToPrev}
             className="absolute top-1/2 -left-5 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-2 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
@@ -130,7 +105,6 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
             <ChevronLeft aria-hidden={true} />
           </button>
 
-          <div className="embla__viewport overflow-hidden" ref={embla_ref}>
           <div className="embla__viewport overflow-hidden" ref={embla_ref}>
             <div className="embla__container flex gap-6">
               {formatted_related_products.map(
@@ -151,12 +125,10 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
                       thumbnail={variant_medias_with_title[0].media}
                       thumbnail_title={variant_medias_with_title[0].image_title}
                       selling_price={selling_price}
-                      average_rating={average_rating}
                       mrp={mrp}
+                      average_rating={average_rating}
                     />
                   </Link>
-                ),
-              )}
                 ),
               )}
             </div>
@@ -164,7 +136,6 @@ const RelatedProducts: FC<IProps> = ({ product_id, category_mappings }) => {
 
           {/* Right arrow */}
           <button
-            disabled={!can_scroll_next}
             disabled={!can_scroll_next}
             aria-label="Show more products"
             onClick={goToNext}
