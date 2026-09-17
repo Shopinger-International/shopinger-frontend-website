@@ -134,12 +134,13 @@ const MainLayout: FC<{
           show_bottom_navigation && "mb-16.5",
         )}
       >
-        <OvernightClosedBanner />
+        
         <Header
           show_filter_sort_bar={show_filter_sort_bar}
           disable_side_filter={disable_side_filter}
           is_bottom_navigation_showing={show_bottom_navigation}
         />
+        <OvernightClosedBanner />
         <main>
           <LoginModal
             is_modal={is_mobile || !!login_modal_state.is_modal}
