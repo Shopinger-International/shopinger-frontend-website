@@ -3,10 +3,10 @@ import Image from "next/image";
 
 // types
 import type { FC } from "react";
+import ICampaign from "@/types/campaign";
 
 // hooks
 import useEmblaCarousel from "embla-carousel-react";
-import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
 
 // external packages
 import Autoplay from "embla-carousel-autoplay";
@@ -14,8 +14,11 @@ import Autoplay from "embla-carousel-autoplay";
 // icons
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const Campaign: FC = () => {
-  const { data: campaigns = [] } = useAllCamapigns({});
+type ICampaignProps = {
+  campaigns: ICampaign[];
+};
+
+const Campaign: FC<ICampaignProps> = ({ campaigns }) => {
   const [embla_ref, emabla_api] = useEmblaCarousel(
     { loop: true, align: "start" },
     [

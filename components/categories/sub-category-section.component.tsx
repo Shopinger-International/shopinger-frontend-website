@@ -8,12 +8,12 @@ import useCategories from "@/hooks/axios/common/use-categories";
 // provider
 import { useCategoryContext } from "@/provider/selected-category-provider";
 
-interface SubCategoryImageProps {
+interface ISubCategoryImageProps {
   src?: string | null;
   alt: string;
 }
 
-function SubCategoryImage({ src, alt }: SubCategoryImageProps) {
+function SubCategoryImage({ src, alt }: ISubCategoryImageProps) {
   const [image_error, setImageError] = useState(false);
 
   if (!src || image_error) {
@@ -54,7 +54,7 @@ export default function SubCategorySection() {
   const has_multiple_rows = category.sub_categories.length > 3;
 
   return (
-    <section className="w-full min-w-0 overflow-hidden bg-white px-4 py-4 md:px-6">
+    <section className="w-full min-w-0 overflow-hidden bg-white">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-base font-semibold text-gray-900 md:text-xl">
