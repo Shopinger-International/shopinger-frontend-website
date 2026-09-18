@@ -15,6 +15,8 @@ import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
 import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
 import NProducts from "@/components/home/n-products/n-products.component";
+import Campaign from "@/components/home/campaign.component";
+import CampaignTimer from "@/components/header/campaign-timer.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -35,8 +37,6 @@ import createHomeJSONLD from "@/seo/home.jsonld";
 
 // provider
 import FooterStateProvider from "@/provider/footer-state-provider";
-import Campaign from "@/components/home/campaign.component";
-import CampaignTimer from "@/components/header/campaign-timer.component";
 
 type IProps = {
   dehydratedState: DehydratedState;
