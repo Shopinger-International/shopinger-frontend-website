@@ -15,7 +15,6 @@ import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
 import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
 import NProducts from "@/components/home/n-products/n-products.component";
-import { CategoryBannerSection } from "@/components/categories/category-banner.component";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -36,6 +35,8 @@ import createHomeJSONLD from "@/seo/home.jsonld";
 
 // provider
 import FooterStateProvider from "@/provider/footer-state-provider";
+import Campaign from "@/components/home/campaign.component";
+import CampaignTimer from "@/components/header/campaign-timer.component";
 
 type IProps = {
   dehydratedState: DehydratedState;
@@ -44,13 +45,7 @@ type IProps = {
 const HomePage: NextPageWithLayout = () => {
   useSnackbarOffset({});
   const { data: home_feed } = useFeed();
-  const { data: campaigns = [] } = useAllCamapigns({});
-  const banners = campaigns.map((campaign) => ({
-    id: campaign.id.toString(),
-    image: campaign.banner,
-    href: `/campaign/${campaign.id}/${campaign.slug}`,
-    alt: campaign.title,
-  }));
+  const { data: campaigns = [] } = useAllCamapigns({ display_scope: "HOME" });
 
   const product_recommendations = home_feed?.product_recommendations ?? [];
   const continue_shopping_recommendations =
@@ -92,7 +87,8 @@ const HomePage: NextPageWithLayout = () => {
       />
       <div className="space-y-4 pt-(--header-height)">
         <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
-          <CategoryBannerSection banners={banners} />
+          <Campaign campaigns={campaigns} />
+          <CampaignTimer />
           <HighlightsBar />
           {/* <ProductMarquee /> */}
           {continue_shopping_recommendations.length >= 6 && (
