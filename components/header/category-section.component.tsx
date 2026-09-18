@@ -71,24 +71,65 @@ const CategorySection: FC = () => {
     "/icons/sports.svg",
     "/icons/women-suits.svg",
   ];
+  const hideNavRef = useRef(false);
+
   useEffect(() => {
     let lastScrollY = window.scrollY;
+    let lastDirection: "up" | "down" | null = null;
+    let directionStartY = window.scrollY;
+
+    const DIRECTION_THRESHOLD = 40;
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      if (currentScrollY > lastScrollY && currentScrollY > 0) {
-        // scrolling down
-        setHideNav(true);
-      } else if (currentScrollY < lastScrollY) {
-        // scrolling up
-        setHideNav(false);
+      // Always show at top
+      if (currentScrollY <= 5) {
+        if (hideNavRef.current) {
+          hideNavRef.current = false;
+          setHideNav(false);
+        }
+
+        lastScrollY = currentScrollY;
+        directionStartY = currentScrollY;
+        lastDirection = null;
+        return;
+      }
+
+      const direction = currentScrollY > lastScrollY ? "down" : "up";
+
+      // Direction changed — don't react yet
+      if (direction !== lastDirection) {
+        lastDirection = direction;
+        directionStartY = currentScrollY;
+        lastScrollY = currentScrollY;
+        return;
+      }
+
+      const distance = Math.abs(currentScrollY - directionStartY);
+
+      if (distance >= DIRECTION_THRESHOLD) {
+        if (direction === "down" && !hideNavRef.current) {
+          hideNavRef.current = true;
+          setHideNav(true);
+
+          directionStartY = currentScrollY;
+        }
+
+        if (direction === "up" && hideNavRef.current) {
+          hideNavRef.current = false;
+          setHideNav(false);
+
+          directionStartY = currentScrollY;
+        }
       }
 
       lastScrollY = currentScrollY;
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -129,7 +170,7 @@ const CategorySection: FC = () => {
 
   return (
     <>
-      <div className="bg-white px-4 py-0.5 transition-all duration-500 ease-in-out">
+      <div className={clsx("sticky top-0 z-40 bg-white px-4 py-0.5", "mb-2")}>
         <div className="flex items-center justify-between gap-4 text-orange-500">
           {/* Left Section: Menu + Navigation */}
           <div className="flex min-w-0 items-center gap-4">
