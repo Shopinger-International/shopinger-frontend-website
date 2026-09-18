@@ -1,10 +1,14 @@
+// types
 import type { FC } from "react";
 
+// headless ui
 import { Dialog, DialogPanel } from "@headlessui/react";
 
-import LocationTooltipContent from "./location-tooltip-content.component";
+// local components
+import LocationTooltipContent from "@/components/header/location/location-tooltip-content.component";
 
-import { X } from "lucide-react";
+// hooks
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 type IProps = {
   toggle: boolean;
@@ -13,6 +17,7 @@ type IProps = {
 };
 
 const LocationDrawer: FC<IProps> = ({ toggle, open, onClose }) => {
+  const { updateIsShown } = useLocationTooltipStateContext();
   return (
     <Dialog
       open={open}
@@ -33,7 +38,13 @@ const LocationDrawer: FC<IProps> = ({ toggle, open, onClose }) => {
         >
           {/* Content */}
           <div className="h-full overflow-y-auto">
-            <LocationTooltipContent toggle={toggle} handleClose={onClose} />
+            <LocationTooltipContent
+              toggle={toggle}
+              handleClose={() => {
+                onClose();
+                updateIsShown?.(true);
+              }}
+            />
           </div>
         </DialogPanel>
       </div>
