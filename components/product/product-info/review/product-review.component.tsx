@@ -24,7 +24,6 @@ import { useLoginModalContext } from "@/provider/login-modal-provider";
 // api hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
-
 type IProps = IReview & {
   product_id: number;
   handleReportModalState: ({
@@ -67,7 +66,7 @@ const ProductReview: FC<IProps> = ({
   useEffect(() => {
     const element = comment_ref.current;
 
-    if (!element) return;
+    if (!element || is_expanded) return;
 
     const checkOverflow = () => {
       setIsTruncated(element.scrollHeight > element.clientHeight);
@@ -80,7 +79,7 @@ const ProductReview: FC<IProps> = ({
     return () => {
       window.removeEventListener("resize", checkOverflow);
     };
-  }, [comment]);
+  }, [comment, is_expanded]);
 
   return (
     <div className="space-y-2 rounded-xl border border-gray-300 bg-gray-50 p-6">
