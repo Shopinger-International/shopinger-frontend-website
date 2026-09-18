@@ -7,11 +7,14 @@ import type { ReactNode, FC } from "react";
 import { SELECTED_ADDRESS } from "@/constants/common.constant";
 
 type ILocationStateTooltip = {
+  is_shown: boolean; // remove it when, location modal would be shown till user don't provide his location
   selected_address: string | null;
   updateSelectedAddress?: (address: string) => void;
+  updateIsShown?: (val: boolean) => void;
 };
 
 const LocationTooltipStateContext = createContext<ILocationStateTooltip>({
+  is_shown: false,
   selected_address: null,
 });
 
@@ -23,6 +26,7 @@ export const useLocationTooltipStateContext = () => {
 const LocationTooltipStateProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
+  const [is_shown, setIsShown] = useState(false);
   const [selected_address, setSelectedAddress] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,10 +36,14 @@ const LocationTooltipStateProvider: FC<{
   return (
     <LocationTooltipStateContext.Provider
       value={{
+        is_shown,
         selected_address,
         updateSelectedAddress(address) {
           localStorage.setItem(SELECTED_ADDRESS, address);
           setSelectedAddress(address);
+        },
+        updateIsShown(val: boolean) {
+          setIsShown(val);
         },
       }}
     >
