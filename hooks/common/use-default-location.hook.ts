@@ -12,7 +12,7 @@ import { getUserLocation } from "@/helpers/address.helper";
 
 const useDefaultLocationTooltipOpen = () => {
   const [default_open, setIsDefaultOpen] = useState<boolean>(false);
-  const { selected_address, updateSelectedAddress } =
+  const { is_shown, selected_address, updateSelectedAddress } =
     useLocationTooltipStateContext();
   const { data: user_details } = useUserDetails();
   const { isPending: is_user_address_pending } = useUserAddresses();
@@ -22,6 +22,7 @@ const useDefaultLocationTooltipOpen = () => {
     if (
       selected_address ||
       is_user_address_pending ||
+      is_shown ||
       user_details?.user_addresses?.length
     )
       return;
@@ -39,7 +40,7 @@ const useDefaultLocationTooltipOpen = () => {
         setIsDefaultOpen(true);
       }
     });
-  }, [selected_address, is_user_address_pending]);
+  }, [selected_address, is_user_address_pending, is_shown]); // is_shown - remove it when, location modal would be shown till user don't provide his location
   return {
     default_open:
       default_open && !is_login_modal_open && !is_address_modal_open,

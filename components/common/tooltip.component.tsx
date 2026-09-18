@@ -39,6 +39,7 @@ type TooltipProps = {
   static_offset?: number;
   show_overlay?: boolean;
   toggle?: boolean;
+  handleOverlayClick?: () => void;
 };
 
 const Tooltip: FC<TooltipProps> = ({
@@ -54,6 +55,7 @@ const Tooltip: FC<TooltipProps> = ({
   static_offset,
   show_overlay = false,
   toggle = true,
+  handleOverlayClick,
 }) => {
   const [open, setOpen] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
@@ -90,7 +92,7 @@ const Tooltip: FC<TooltipProps> = ({
   });
   const dismiss = useDismiss(context, {
     enabled: show_tooltip,
-    // outsidePress: !default_open,
+    outsidePress: !default_open,
   });
   const role = useRole(context, { role: "tooltip" });
 
@@ -119,7 +121,11 @@ const Tooltip: FC<TooltipProps> = ({
       {show_tooltip && open && (
         <FloatingPortal>
           {show_overlay && (
-            <FloatingOverlay className="bg-black/40 z-100" lockScroll />
+            <FloatingOverlay
+              className="z-100 bg-black/40"
+              lockScroll
+              onClick={() => handleOverlayClick?.()}
+            />
           )}
           <div
             ref={refs.setFloating}

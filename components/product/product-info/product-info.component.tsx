@@ -189,10 +189,7 @@ const ProductInfo: FC<IProps> = ({
       />
       <CheckDeliveryAvailability />
       <DeliveryDetails />
-      <p className="order-6 mb-4 font-medium">
-        Sold by{" "}
-        <strong className="font-medium text-orange-500">Himang Retails</strong>
-      </p>
+      
       <ProductDetails
         product={product}
         category_mappings={category_mappings}

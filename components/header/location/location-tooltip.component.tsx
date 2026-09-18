@@ -24,7 +24,8 @@ const LocationTooltip: FC<{
   className: string;
 }> = ({ className }) => {
   const is_mobile = useIsMobile();
-  const { selected_address } = useLocationTooltipStateContext();
+  const { is_shown, selected_address, updateIsShown } =
+    useLocationTooltipStateContext();
   const { updateState: updateLocationDrawerState } = useLocationDrawerContext();
   const { is_modal_open: is_login_modal_open } = useLoginModalContext();
   const { is_modal_open: is_address_modal_open } = useAddressDrawerContext();
@@ -108,7 +109,7 @@ const LocationTooltip: FC<{
       trigger="click"
       toggle={!default_open}
       offset_distance={12}
-      default_open={default_open}
+      default_open={default_open && !is_shown}
       className={clsx(
         "z-50 w-3/4 rounded-xl border border-gray-300 bg-white shadow-lg sm:w-100",
       )}
@@ -118,9 +119,10 @@ const LocationTooltip: FC<{
       show_overlay={!selected_address}
       content={({ handleClose }) => (
         <LocationTooltipContent
-          toggle = {false}
+          toggle={false}
           handleClose={() => {
             updateDefaultOpen(false);
+            updateIsShown?.(true);
             handleClose();
           }}
         />
