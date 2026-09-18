@@ -124,7 +124,10 @@ const Tooltip: FC<TooltipProps> = ({
             <FloatingOverlay
               className="z-100 bg-black/40"
               lockScroll
-              onClick={() => handleOverlayClick?.()}
+              onClick={() => {
+                setOpen(true); // remove it when location tooltip have been be shown until user doesn't provide his/her location
+                handleOverlayClick?.();
+              }}
             />
           )}
           <div

@@ -117,6 +117,7 @@ const LocationTooltip: FC<{
       strategy="fixed"
       static_offset={20}
       show_overlay={!selected_address}
+      handleOverlayClick={() => updateIsShown?.(true)}
       content={({ handleClose }) => (
         <LocationTooltipContent
           toggle={false}
