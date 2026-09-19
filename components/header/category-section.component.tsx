@@ -161,7 +161,13 @@ const CategorySection: FC = () => {
 
   return (
     <>
-      <div className={clsx("sticky top-0 z-40 bg-white px-4 py-0.5", "mb-2")}>
+      <div
+        className={clsx(
+          "bg-white px-4 transition-[padding] duration-300 ease-in-out",
+          hide_nav ? "py-0" : "py-0.5",
+          "mb-2",
+        )}
+      >
         <div className="flex items-center justify-between gap-4 text-orange-500">
           {/* Left Section: Menu + Navigation */}
           <div className="flex min-w-0 items-center gap-4">
@@ -202,7 +208,9 @@ const CategorySection: FC = () => {
                   onClick={() => setSelectedCategory(null)}
                   aria-label="All categories"
                   className={clsx(
-                    "group flex w-20 shrink-0 flex-col items-center justify-center gap-1 rounded-xl py-2 transition-colors",
+                    "group flex w-20 shrink-0 flex-col items-center justify-center gap-1 rounded-xl py-2",
+                    "transition-[padding,gap] duration-300 ease-in-out",
+                    hide_nav ? "gap-0 py-0" : "gap-1 py-1.5",
                     selected_category == null
                       ? "bg-orange-50"
                       : "hover:bg-gray-50",
@@ -210,21 +218,18 @@ const CategorySection: FC = () => {
                 >
                   <div
                     className={clsx(
-                      "flex h-9 w-9 items-center justify-center rounded-full transition-all duration-800 ease-in-out",
+                      "flex w-9 items-center justify-center overflow-hidden rounded-full",
+                      "transition-[height] duration-300 ease-in-out",
+                      hide_nav ? "h-0" : "h-9",
                       selected_category == null
                         ? "bg-orange-100"
                         : "bg-gray-100 group-hover:bg-gray-200",
-                      hide_nav && "hidden",
                     )}
                   >
                     <LayoutDashboard
-                      className={clsx(
-                        "size-5 transition-colors",
-                        selected_category == null
-                          ? "text-orange-500"
-                          : "text-gray-700",
-                      )}
+                      className="size-5 shrink-0"
                       strokeWidth={1.8}
+                      aria-hidden="true"
                     />
                   </div>
 
@@ -241,7 +246,7 @@ const CategorySection: FC = () => {
                 </Link>
 
                 {/* Categories */}
-                <ul className="flex items-start gap-4 whitespace-nowrap">
+                <ul className="flex items-start gap-2 whitespace-nowrap">
                   {categories.map((category, index) => {
                     const { id, name } = category;
 
@@ -249,12 +254,17 @@ const CategorySection: FC = () => {
                       <li key={`category-${id}`}>
                         <Link
                           href={`/categories/${category.slug}`}
-                          className="group flex w-20 shrink-0 flex-col items-center justify-center rounded-md py-1.5"
+                          className={clsx(
+                            "group flex w-20 shrink-0 flex-col items-center justify-center rounded-md py-2",
+                            "transition-[padding,gap] duration-300 ease-in-out",
+                            hide_nav ? "gap-0 py-0" : "gap-1 py-1.5",
+                          )}
                         >
                           <div
                             className={clsx(
-                              "flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl transition-all duration-800 ease-in-out",
-                              hide_nav && "hidden",
+                              "flex w-9 items-center justify-center overflow-hidden rounded-xl",
+                              "transition-[height] duration-300 ease-in-out",
+                              hide_nav ? "h-0" : "h-9",
                             )}
                           >
                             {category_images[index] ? (
