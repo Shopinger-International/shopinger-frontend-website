@@ -22,6 +22,7 @@ import {
 // hooks
 import { useConnectionStateListener, useChannel } from "ably/react";
 import { useQueryClient } from "@tanstack/react-query";
+import IOrder from "@/types/order";
 
 const steps = [
   {
@@ -55,12 +56,14 @@ type IProps = {
   order_id: number;
   order_status: IOrderStatus;
   order_status_history: IOrderStatusHistory[];
+  payment_mode: IOrder["payment_mode"];
 };
 
 const OrderStatus: FC<IProps> = ({
   order_id,
   order_status_history,
   order_status,
+  payment_mode,
 }) => {
   const query_client = useQueryClient();
   const is_cancelled = order_status === ORDER_STATUS.CANCELLED;
@@ -106,9 +109,14 @@ const OrderStatus: FC<IProps> = ({
 
           const is_current = step.status === order_status;
 
-          const is_completed = order_status_history.some(
-            (status_history) => status_history.to_status === step.status,
-          );
+          const is_completed =
+            order_status_history.some(
+              (status_history) => status_history.to_status === step.status,
+            ) ||
+            (payment_mode === "COD" &&
+              step.status === ORDER_STATUS.ORDER_CREATED &&
+              order_status !== ORDER_STATUS.ORDER_CREATED &&
+              order_status !== ORDER_STATUS.CANCELLED);
 
           const is_cancelled_step =
             is_cancelled && step.status === ORDER_STATUS.CANCELLED;
