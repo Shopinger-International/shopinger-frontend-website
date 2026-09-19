@@ -80,7 +80,7 @@ const LocationTooltip: FC<{
               )}
             >
               <span className="flex items-center gap-1">
-                {delivery_time} MIN
+                {delivery_time} min
               </span>
             </span>
           </div>
@@ -155,7 +155,7 @@ const LocationTooltip: FC<{
                 </span>
                 <div className="flex flex-row items-center gap-1">
                   <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
-                    {delivery_time} MIN
+                    {delivery_time} min
                   </span>
                 </div>
               </div>
@@ -174,7 +174,7 @@ const LocationTooltip: FC<{
                 )}
               >
                 <span className="flex items-center gap-1">
-                  {delivery_time} MIN
+                  {delivery_time} min
                 </span>
               </span>
             </div>
