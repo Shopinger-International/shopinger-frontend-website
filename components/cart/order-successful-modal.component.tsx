@@ -1,4 +1,3 @@
-
 import { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -30,33 +29,28 @@ const OrderSuccessfulModal: FC<IProps> = ({
   const [animate, setAnimate] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    if (is_open && order_id) {
+      const animationTimer = setTimeout(() => {
+        setAnimate(true);
+      }, 500);
 
-useEffect(() => {
-  if (is_open && order_id) {
-    const animationTimer = setTimeout(() => {
-      setAnimate(true);
-    }, 500);
+      const redirectTimer = setTimeout(() => {
+        router.push(`/order-detail/${order_id}`);
+      }, 5000);
 
-    const redirectTimer = setTimeout(() => {
-      router.push(`/order-detail/${order_id}`);
-    }, 5000);
-
-    return () => {
-      clearTimeout(animationTimer);
-      clearTimeout(redirectTimer);
-    };
-  } else {
-    setAnimate(false);
-  }
-}, [is_open, order_id, router]);
+      return () => {
+        clearTimeout(animationTimer);
+        clearTimeout(redirectTimer);
+      };
+    } else {
+      setAnimate(false);
+    }
+  }, [is_open, order_id, router]);
 
   return (
     <Transition show={is_open} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-50"
-        onClose={onClose}
-      >
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
         {/* Backdrop */}
         <TransitionChild
           as={Fragment}
@@ -92,9 +86,7 @@ useEffect(() => {
                     {/* Ripple */}
                     <div
                       className={`absolute inset-0 rounded-full bg-orange-200 transition-all duration-700 ${
-                        animate
-                          ? "scale-125 opacity-0"
-                          : "scale-75 opacity-60"
+                        animate ? "scale-125 opacity-0" : "scale-75 opacity-60"
                       }`}
                     />
 
@@ -139,7 +131,7 @@ useEffect(() => {
 
                 {/* Order Info */}
                 <div
-                  className={`mt-6 rounded-xl border border-gray-100 bg-gray-50 p-4 text-left transition-all duration-500 delay-100 ${
+                  className={`mt-6 rounded-xl border border-gray-100 bg-gray-50 p-4 text-left transition-all delay-100 duration-500 ${
                     animate
                       ? "translate-y-0 opacity-100"
                       : "translate-y-3 opacity-0"
@@ -183,7 +175,7 @@ useEffect(() => {
 
                 {/* Actions */}
                 <div
-                  className={`mt-6 flex gap-3 transition-all duration-500 delay-200 ${
+                  className={`mt-6 flex gap-3 transition-all delay-200 duration-500 ${
                     animate
                       ? "translate-y-0 opacity-100"
                       : "translate-y-3 opacity-0"

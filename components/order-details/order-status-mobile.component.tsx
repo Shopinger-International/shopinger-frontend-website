@@ -1,6 +1,7 @@
 // types
 import type { FC } from "react";
 import type { IOrderStatus, IOrderStatusHistory } from "@/types/order";
+import IOrder from "@/types/order";
 
 // helpers
 import clsx from "clsx";
@@ -22,7 +23,6 @@ import {
 // hooks
 import { useConnectionStateListener, useChannel } from "ably/react";
 import { useQueryClient } from "@tanstack/react-query";
-import IOrder from "@/types/order";
 
 const steps = [
   {
@@ -99,7 +99,6 @@ const OrderStatusMobile: FC<Props> = ({
       query_client.refetchQueries({
         queryKey: ["order", order_id],
       });
-      console.log("invalidated");
     }
   });
 

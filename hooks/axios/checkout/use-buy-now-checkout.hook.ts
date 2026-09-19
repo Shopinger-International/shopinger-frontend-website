@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // types
 import type { AxiosError } from "axios";
+import IOrder, { IOrderStatus } from "@/types/order";
 
 // lib
 import Axios from "@/lib/axios/private.lib";
@@ -13,7 +14,7 @@ import { enqueueSnackbar } from "notistack";
 type IRequest = {
   intent_id: string;
   address_id: number;
-  payment_mode?: "COD" | "ONLINE";
+  payment_mode?: IOrder["payment_mode"];
   gst?: number;
   delivery_fee?: number;
 };
@@ -21,6 +22,23 @@ type IRequest = {
 type IResponse = {
   order_id: number;
   reservation_id: string;
+  reused: boolean;
+  order: Omit<IOrder, "order_items"> & {
+    order_items: Array<{
+      id: number;
+      product_id: number;
+      product: {
+        sub_sub_category_id: number;
+      };
+      variant_id: number;
+      product_name: string;
+      variant_sku: string;
+      quantity: number;
+      price: number;
+      vendor_id: number;
+      order_item_status: IOrderStatus;
+    }>;
+  };
 };
 
 const useBuyNowCheckoutMutation = () => {
