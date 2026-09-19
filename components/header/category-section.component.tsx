@@ -6,13 +6,7 @@ import Image from "next/image";
 import type { FC } from "react";
 
 // icons
-import {
-  Menu,
-  ChevronLeft,
-  ChevronRight,
-  CreditCard,
-  LayoutDashboard,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, LayoutDashboard } from "lucide-react";
 
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
@@ -23,9 +17,6 @@ import { useCategoryContext } from "@/provider/selected-category-provider";
 
 // helpers
 import clsx from "clsx";
-
-// data
-import { whatsapp_templates } from "@/data/whatsapp-templates.data";
 
 const CategorySection: FC = () => {
   const params = useParams<{ main_category_slug: string }>();
@@ -175,13 +166,13 @@ const CategorySection: FC = () => {
           {/* Left Section: Menu + Navigation */}
           <div className="flex min-w-0 items-center gap-4">
             {/* Menu Button */}
-            <button
+            {/* <button
               className="hidden shrink-0 cursor-pointer items-center gap-2.5 lg:flex"
               onClick={openMegaMenuDrawer}
             >
               <Menu className="h-7 w-7" strokeWidth={2} aria-hidden={true} />
               <span className="hidden font-semibold sm:block">Menu</span>
-            </button>
+            </button> */}
             <div className="flex min-w-0 items-center">
               {/* Left Arrow */}
               <button
@@ -312,8 +303,8 @@ const CategorySection: FC = () => {
               </button>
             </div>
           </div>
-          <div className="hidden h-10 w-0.5 bg-orange-800 lg:inline-block" />
-          <Link
+          {/* <div className="hidden h-10 w-0.5 bg-orange-800 lg:inline-block" /> */}
+          {/* <Link
             href={`https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}?text=${encodeURIComponent(whatsapp_templates.emi)}`}
             target="_blank"
             className="hidden shrink-0 flex-row items-center gap-3 lg:flex"
@@ -340,7 +331,7 @@ const CategorySection: FC = () => {
             <button className="cursor-pointer rounded-full bg-orange-500 p-0.5">
               <ChevronRight className="size-5 text-white" />
             </button>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </>

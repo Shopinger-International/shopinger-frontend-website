@@ -36,7 +36,7 @@ const LocationTooltip: FC<{
 
   if (is_mobile) {
     return (
-      <div className={clsx("min-w-0 items-center text-white", className)}>
+      <div className={clsx("min-w-0 items-center", className)}>
         {/* ================= MOBILE ================= */}
         <div className="flex w-full min-w-0 items-center gap-2 lg:hidden">
           {/* Location */}
@@ -44,9 +44,9 @@ const LocationTooltip: FC<{
             onClick={() => updateLocationDrawerState?.(true)}
             className="flex min-w-0 flex-1 items-center gap-1"
           >
-            <MapPin aria-hidden={true} className="size-3 shrink-0 text-white" />
+            <MapPin aria-hidden={true} className="size-4 shrink-0 stroke-3" />
 
-            <span className="min-w-0 truncate text-sm">
+            <span className="min-w-0 truncate text-sm font-medium">
               {selected_address ?? "Choose delivery location"}
             </span>
             {/* Arrow */}
@@ -54,7 +54,7 @@ const LocationTooltip: FC<{
           </button>
 
           {/* Delivery */}
-          <div className="flex shrink-0 items-center gap-1">
+          {/* <div className="flex shrink-0 items-center gap-1">
             <div>
               <span className="text-[11px] font-semibold whitespace-nowrap">
                 Delivery in
@@ -65,7 +65,7 @@ const LocationTooltip: FC<{
                 </span>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* ================= DESKTOP ================= */}
@@ -80,7 +80,7 @@ const LocationTooltip: FC<{
               )}
             >
               <span className="flex items-center gap-1">
-                {delivery_time} MIN
+                {delivery_time} min
               </span>
             </span>
           </div>
@@ -155,7 +155,7 @@ const LocationTooltip: FC<{
                 </span>
                 <div className="flex flex-row items-center gap-1">
                   <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
-                    {delivery_time} MIN
+                    {delivery_time} min
                   </span>
                 </div>
               </div>
@@ -174,7 +174,7 @@ const LocationTooltip: FC<{
                 )}
               >
                 <span className="flex items-center gap-1">
-                  {delivery_time} MIN
+                  {delivery_time} min
                 </span>
               </span>
             </div>
