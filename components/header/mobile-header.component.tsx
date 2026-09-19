@@ -66,7 +66,7 @@ const MobileHeader: FC = () => {
     >
       {/* Delivery & Account */}
       <div className="flex items-center justify-between">
-        <div className="flex min-w-0 flex-col">
+        <div className="flex min-w-0 flex-col gap-1">
           <p className="text-lg font-semibold">
             Delivery in{" "}
             <span className="font-bold text-orange-500">
