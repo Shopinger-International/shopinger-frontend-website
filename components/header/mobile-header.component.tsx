@@ -15,6 +15,7 @@ import SearchBar from "@/components/header/search-bar/search-bar.component";
 
 // hooks
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
+import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // helpers
@@ -45,6 +46,7 @@ const categories: ICategory[] = [
 ];
 
 const MobileHeader: FC = () => {
+  const is_mobile = useIsMobile();
   const router = useRouter();
   const { data: user_details } = useUserDetails();
   const is_mounted = useIsMounted();
@@ -74,7 +76,9 @@ const MobileHeader: FC = () => {
             </span>
           </p>
 
-          {is_mounted && <LocationTooltip className="flex lg:hidden" />}
+          {is_mounted && is_mobile && (
+            <LocationTooltip className="flex lg:hidden" />
+          )}
         </div>
 
         <Link href="/account" aria-label="Account" className="ml-3 shrink-0">
