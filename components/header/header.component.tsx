@@ -114,7 +114,7 @@ const Header: FC<{
             className="relative flex h-8 w-34 shrink-0 items-center justify-center lg:h-11 lg:w-48"
           >
             <Image
-              src="/light-logo.png"
+              src="/shopinger-logo.svg"
               alt="Shopinger"
               fill
               priority

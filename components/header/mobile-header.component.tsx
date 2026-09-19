@@ -15,10 +15,10 @@ import SearchBar from "@/components/header/search-bar/search-bar.component";
 
 // hooks
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
+import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // helpers
 import { cn } from "@/lib/utils";
-import clsx from "clsx";
 
 type ICategory = {
   label: string;
@@ -46,11 +46,10 @@ const categories: ICategory[] = [
 
 const MobileHeader: FC = () => {
   const router = useRouter();
+  const { data: user_details } = useUserDetails();
   const is_mounted = useIsMounted();
 
-  const is_home =
-    categories.find(({ label }) => label == "Shopinger")?.href == router.asPath;
-
+  const delivery_time = user_details ? "45" : "10";
   const is_grocery =
     categories.find(({ label }) => label == "Grocery")?.href == router.asPath;
 
@@ -69,7 +68,10 @@ const MobileHeader: FC = () => {
       <div className="flex items-center justify-between">
         <div className="flex min-w-0 flex-col">
           <p className="text-lg font-semibold">
-            Delivery in <span className="text-orange-500">10 minutes</span>
+            Delivery in{" "}
+            <span className="font-bold text-orange-500">
+              {delivery_time} minutes
+            </span>
           </p>
 
           {is_mounted && <LocationTooltip className="flex lg:hidden" />}
