@@ -76,7 +76,7 @@ const Header: FC<{
 
       if (current_scroll_pos > prev_scroll_pos) {
         // Scrolling down
-        header_ref.current.style.top = "-106px";
+        header_ref.current.style.top = "-110px";
       } else if (current_scroll_pos < prev_scroll_pos) {
         // Scrolling up
         header_ref.current.style.top = "0";
