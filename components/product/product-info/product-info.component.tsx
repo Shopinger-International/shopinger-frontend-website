@@ -189,7 +189,7 @@ const ProductInfo: FC<IProps> = ({
       />
       <CheckDeliveryAvailability />
       <DeliveryDetails />
-      
+
       <ProductDetails
         product={product}
         category_mappings={category_mappings}
@@ -197,7 +197,7 @@ const ProductInfo: FC<IProps> = ({
       />
       <div
         id="buy-cta-container"
-        className="fixed bottom-0 left-0 z-4 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md lg:sticky lg:border-none lg:px-0 lg:shadow-none"
+        className="fixed bottom-0 left-0 z-99 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md md:z-4 lg:sticky lg:border-none lg:px-0 lg:shadow-none"
       >
         <button
           onClick={() => {
