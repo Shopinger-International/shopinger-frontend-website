@@ -61,7 +61,7 @@ const MobileHeader: FC = () => {
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 border-none bg-orange-50 px-4 py-3 lg:hidden",
+        "flex flex-col gap-2 bg-orange-50 px-4 py-3 lg:hidden",
         is_grocery && "border-b-3 border-green-500",
         is_pharmacy && "border-b-3 border-blue-500",
       )}
