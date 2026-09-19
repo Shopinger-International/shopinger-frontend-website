@@ -11,6 +11,7 @@ import CategorySection from "@/components/header/category-section.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 import LocationTooltip from "@/components/header/location/location-tooltip.component";
+import MobileHeader from "@/components/header/mobile-header.component";
 
 // icons
 import { Menu, CircleUserIcon } from "lucide-react";
@@ -25,37 +26,16 @@ const Header: FC<{
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
   is_bottom_navigation_showing: boolean;
-  show_login_tooltip?: boolean;
-  onLoginClick?: () => void;
 }> = ({
   show_filter_sort_bar,
   disable_side_filter = false,
   is_bottom_navigation_showing,
-  show_login_tooltip = false,
-  onLoginClick,
 }) => {
   const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
-  const [is_login_tooltip_dismissed, set_is_login_tooltip_dismissed] =
-    useState(false);
-
-  useEffect(() => {
-    if (!show_login_tooltip || is_mobile) {
-      return;
-    }
-
-    const timeout_id = window.setTimeout(() => {
-      set_is_login_tooltip_dismissed(true);
-    }, 11000);
-
-    return () => window.clearTimeout(timeout_id);
-  }, [show_login_tooltip, is_mobile]);
-
-  const is_login_tooltip_visible =
-    show_login_tooltip && !is_mobile && !is_login_tooltip_dismissed;
 
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
@@ -76,7 +56,7 @@ const Header: FC<{
     return () => observer.disconnect();
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     if (!is_mobile) return;
 
     let prev_scroll_pos = window.scrollY;
@@ -96,7 +76,7 @@ const Header: FC<{
 
       if (current_scroll_pos > prev_scroll_pos) {
         // Scrolling down
-        header_ref.current.style.top = "-96px";
+        header_ref.current.style.top = "-106px";
       } else if (current_scroll_pos < prev_scroll_pos) {
         // Scrolling up
         header_ref.current.style.top = "0";
@@ -119,55 +99,9 @@ const Header: FC<{
       className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
       id="app-header"
     >
-      {!is_mobile && is_login_tooltip_visible && (
-        <div className="login-tooltip-jerk absolute top-14 right-27 z-50 w-24 rounded-lg bg-white p-2 shadow-lg">
-          <button
-            onClick={onLoginClick}
-            className="h-10 w-full rounded-lg bg-orange-500 text-sm font-semibold text-white"
-          >
-            Login
-          </button>
-        </div>
-      )}
-      <style jsx>{`
-        .login-tooltip-jerk {
-          position: absolute;
-        }
-
-        .login-tooltip-jerk::before {
-          content: "";
-          position: absolute;
-          top: -8px;
-          right: 24px;
-          border-right: 8px solid transparent;
-          border-bottom: 8px solid white;
-          border-left: 8px solid transparent;
-        }
-
-        @keyframes login-tooltip-jerk {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-
-          25% {
-            transform: translateY(-4px);
-          }
-
-          50% {
-            transform: translateY(3px);
-          }
-
-          75% {
-            transform: translateY(-2px);
-          }
-        }
-
-        .login-tooltip-jerk {
-          animation: login-tooltip-jerk 1.2s ease-in-out infinite;
-        }
-      `}</style>
-      <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
+      {/* <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8"> */}
+      <MobileHeader />
+      <div className="hidden flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button onClick={openMegaMenuDrawer}>
@@ -181,7 +115,7 @@ const Header: FC<{
             className="relative flex h-8 w-34 shrink-0 items-center justify-center lg:h-11 lg:w-48"
           >
             <Image
-              src="/light-logo.png"
+              src="/shopinger-logo.svg"
               alt="Shopinger"
               fill
               priority

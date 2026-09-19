@@ -235,7 +235,7 @@ const AutoComplete: FC<
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
         form: "!rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse !border-none",
         detachedSearchButton: clsx(
-          "!rounded-md !p-0 overflow-hidden !border-none flex !h-10",
+          "!rounded-md !p-0 overflow-hidden !border-none flex !h-10 shadow-xs",
           show_search_icon_only
             ? "!w-10 !min-w-10  items-center justify-center  [& > aa-DetachedSearchButtonPlaceholder]:hidden !bg-transparent"
             : "flex-row-reverse justify-between",
