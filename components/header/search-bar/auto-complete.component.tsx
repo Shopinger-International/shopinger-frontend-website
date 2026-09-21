@@ -79,11 +79,15 @@ const AutoComplete: FC<
   AutocompleteProps & {
     show_search_icon_only?: boolean;
     animate_categories: string[];
+    is_grocery?: boolean;
+    is_medicine?: boolean;
   }
 > = ({
   className,
   show_search_icon_only,
   animate_categories,
+  is_grocery,
+  is_medicine,
   ...auto_complete_props
 }) => {
   const router = useRouter();
@@ -243,7 +247,11 @@ const AutoComplete: FC<
         detachedSearchButtonPlaceholder: "hidden",
         detachedSearchButtonIcon: show_search_icon_only
           ? "[&_svg]:!text-gray-900"
-          : "!text-orange-500 bg-orange-500",
+          : is_grocery
+            ? "bg-green-500"
+            : is_medicine
+              ? "bg-blue-500"
+              : "!text-orange-500 bg-orange-500",
         detachedSearchButtonQuery: show_search_icon_only
           ? "hidden"
           : "pl-2 md:p-0",

@@ -10,7 +10,6 @@ import { ChevronLeft, ChevronRight, LayoutDashboard } from "lucide-react";
 
 // hooks
 import useCategories from "@/hooks/axios/common/use-categories";
-import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 
 //context
 import { useCategoryContext } from "@/provider/selected-category-provider";
@@ -20,19 +19,22 @@ import clsx from "clsx";
 
 const CategorySection: FC = () => {
   const params = useParams<{ main_category_slug: string }>();
-  const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
-  const { data: categories = [] } = useCategories(true);
-  const { selected_category, setSelectedCategory } = useCategoryContext();
+  const { data: categories = [] } = useCategories(true, "sub");
+  const { selected_category, setSelectedCategory, is_grocery, is_medicine } =
+    useCategoryContext();
   const [can_scroll_left, setCanScrollLeft] = useState(false);
   const [can_scroll_right, setCanScrollRight] = useState(false);
   const nav_ref = useRef<HTMLDivElement>(null);
   const [hide_nav, setHideNav] = useState(false);
+  const hideNavRef = useRef(false);
   const updateScrollState = (el: HTMLDivElement | null) => {
     if (!el) return;
     setCanScrollLeft(el.scrollLeft > 0);
     setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth);
   };
 
+  const separate_category_sub_categories =
+    is_grocery || is_medicine ? (selected_category?.sub_categories ?? []) : [];
   const category_images = [
     "/icons/appliances.svg",
     "/icons/mobile.svg",
@@ -62,7 +64,11 @@ const CategorySection: FC = () => {
     "/icons/sports.svg",
     "/icons/women-suits.svg",
   ];
-  const hideNavRef = useRef(false);
+
+  const display_categories =
+    separate_category_sub_categories.length > 0
+      ? separate_category_sub_categories
+      : categories;
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -247,7 +253,7 @@ const CategorySection: FC = () => {
 
                 {/* Categories */}
                 <ul className="flex items-start gap-2 whitespace-nowrap">
-                  {categories.map((category, index) => {
+                  {display_categories?.map((category, index) => {
                     const { id, name } = category;
 
                     return (

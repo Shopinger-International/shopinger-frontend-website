@@ -21,6 +21,10 @@ import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
+import { useCategoryContext } from "@/provider/selected-category-provider";
+
+//helper
+import clsx from "clsx";
 
 const Header: FC<{
   show_filter_sort_bar?: boolean;
@@ -35,6 +39,7 @@ const Header: FC<{
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
+  const { selected_category } = useCategoryContext();
   const { data: cart_details } = useCart();
 
   useLayoutEffect(() => {
@@ -100,7 +105,11 @@ const Header: FC<{
     >
       {/* <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8"> */}
       <MobileHeader />
-      <div className="hidden flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
+      <div
+        className={clsx(
+          "hidden flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8",
+        )}
+      >
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button onClick={openMegaMenuDrawer}>

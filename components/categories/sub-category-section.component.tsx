@@ -40,10 +40,16 @@ export default function SubCategorySection() {
   const { data } = useCategories(true, "sub");
   const router = useRouter();
 
-  const { selected_category, selected_sub_category, setSelectedSubCategory } =
-    useCategoryContext();
-
+  const {
+    selected_category,
+    selected_sub_category,
+    setSelectedSubCategory,
+    is_grocery,
+    is_medicine,
+  } = useCategoryContext();
   if (!data || !selected_category) return null;
+
+  if (is_grocery || is_medicine) return null;
 
   const category = data.find(
     (category) => category.id === selected_category.id,
