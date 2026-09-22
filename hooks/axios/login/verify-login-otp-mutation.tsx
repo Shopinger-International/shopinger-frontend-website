@@ -53,10 +53,10 @@ const useVerifyLoginOtp = () => {
     },
     onSuccess(response) {
       query_client.resetQueries();
-      enqueueSnackbar(response.message, {
-        key: "user-verify-login-otp-success",
-        variant: "success",
-      });
+      // enqueueSnackbar(response.message, {
+      //   key: "user-verify-login-otp-success",
+      //   variant: "success",
+      // });
     },
 
     onError(error) {
