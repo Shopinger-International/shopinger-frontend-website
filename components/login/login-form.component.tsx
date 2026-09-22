@@ -118,6 +118,7 @@ const LoginForm: FC<IProps> = ({
   const router = useRouter();
   const is_login_page = router.isReady && router.pathname == "/login";
   const [show_otp, setShowOtp] = useState<boolean>(false);
+  const [login_mode, setLoginMode] = useState<"phone" | "email">("phone");
   const [user_details, setUserDetails] =
     useState<IInitialValues>(initial_values);
   const [timer, setTimer] = useState(60);
@@ -204,14 +205,14 @@ const LoginForm: FC<IProps> = ({
             <Form onSubmit={handleSubmit} className="w-full space-y-4">
               <Field name="identifier">
                 {({ field, meta }: FieldProps<string, IInitialValues>) => {
-                  const is_phone = startsWithNumber(field.value);
+                  const is_phone = login_mode === "phone";
                   return (
                     <div className="space-y-2">
                       <label
                         htmlFor="identifier"
                         className="text-md block font-medium text-gray-700"
                       >
-                        Enter mobile number or email
+                        {is_phone ? "Enter mobile number" : "Enter email address"}
                       </label>
                       <div className="flex items-center gap-1">
                         {is_phone && (
@@ -236,29 +237,57 @@ const LoginForm: FC<IProps> = ({
                         )}
 
                         <input
-                          key="identifier-input"
+                          key={is_phone ? "phone-input" : "email-input"}
                           id="identifier"
-                          type={"text"}
-                          inputMode={is_phone ? "tel" : "email"}
-                          placeholder="Mobile number or email"
+                          type={is_phone ? "tel" : "email"}
+                          inputMode={is_phone ? "numeric" : "email"}
+                          pattern={is_phone ? "[0-9]*" : undefined}
+                          autoComplete={is_phone ? "tel" : "email"}
+                          placeholder={is_phone ? "Mobile number" : "Email address"}
                           className={clsx(
-                            "h-10 w-full rounded-r-md border border-gray-300 px-3 hover:outline-orange-500 focus:outline-orange-500",
+                            "h-10 w-full border border-gray-300 px-3",
+                            "hover:outline-orange-500 focus:outline-orange-500",
                             is_phone ? "rounded-r-md" : "rounded-md",
                           )}
                           {...field}
+                          value={field.value || ""}
                           onChange={(e) => {
-                            const value = e.target.value.toLowerCase();
+                            const value = is_phone
+                              ? e.target.value.replace(/\D/g, "")
+                              : e.target.value.toLowerCase();
+
                             setFieldValue(field.name, value);
                           }}
                         />
                       </div>
-                      {meta.touched && meta.error && (
-                        <p className="text-red-500">{meta.error}</p>
-                      )}
+                      <div className="flex items-center justify-between">
+
+                        {meta.touched && meta.error ? (
+                          <p className="text-red-500">{meta.error}</p>
+                        ) : (
+                          <div />
+                        )}
+
+
+                        <button
+                          type="button"
+                          className="cursor-pointer text-sm font-medium text-orange-500 hover:text-orange-600 focus:outline-none relative right-1"
+                          onClick={() => {
+                            setLoginMode((prev) => (prev === "phone" ? "Email" : "phone"));
+                            setFieldValue("identifier", "");
+                          }}
+                        >
+                          {is_phone ? "Use email" : "Use Phone Number"}
+                        </button>
+
+                      </div>
+
                     </div>
+
                   );
                 }}
               </Field>
+
               <button
                 onClick={() => console.log(errors)}
                 className="h-10 w-full cursor-pointer rounded-md bg-orange-500 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
@@ -269,11 +298,11 @@ const LoginForm: FC<IProps> = ({
               </button>
               <p className="-mt-1 text-center text-sm font-medium">
                 I agree to{" "}
-                <Link href="/" className="text-orange-500">
+                <Link href="/privacy-policy" className="text-orange-500">
                   T&C
                 </Link>{" "}
                 and{" "}
-                <Link href="/" className="text-orange-500">
+                <Link href="/terms-and-conditions" className="text-orange-500">
                   Privacy Policy
                 </Link>
               </p>
@@ -300,6 +329,7 @@ const LoginForm: FC<IProps> = ({
                   onSuccess(response) {
                     !is_modal && router.push("/");
                     handleOnSuccess?.(response.user);
+
                     query_client.invalidateQueries({
                       queryKey: ["product-reviews"],
                     });
@@ -370,8 +400,8 @@ const LoginForm: FC<IProps> = ({
                           identifier: user_details.identifier,
                           country_code: user_details.country?.code
                             ? getCallingCode(
-                                user_details.country.code as CountryCode,
-                              )
+                              user_details.country.code as CountryCode,
+                            )
                             : undefined,
                         },
                         {
@@ -414,4 +444,5 @@ const LoginForm: FC<IProps> = ({
     </div>
   );
 };
+
 export default LoginForm;
