@@ -87,6 +87,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                 success: SuccessSnackbar,
                 error: ErrorSnackbar,
               }}
+              maxSnack={2}
             >
               <SelectedCategoryProvider>
                 <LoginModalProvider>
