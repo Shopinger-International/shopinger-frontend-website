@@ -68,9 +68,11 @@ const DeliveryDetails: FC = () => {
         {/* FOOTER NOTE */}
         <div className="border-t border-gray-300 pt-3">
           <p className="text-xs leading-relaxed text-gray-500">
-            Orders placed after{" "}
-            <span className="font-medium text-gray-700">10 PM</span> will be
-            delivered next day.
+            Orders placed between{" "}
+            <span className="font-medium text-gray-700">10 PM</span> and{" "}
+            <span className="font-medium text-gray-700">7 AM</span> will be
+            delivered after{" "}
+            <span className="font-medium text-gray-700">7 AM</span>.
           </p>
         </div>
       </div>

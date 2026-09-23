@@ -187,7 +187,7 @@ const ProductInfo: FC<IProps> = ({
         selected_attributes={selected_attributes}
         category_mappings={category_mappings}
       />
-      <CheckDeliveryAvailability />
+      {/* <CheckDeliveryAvailability /> */}
       <DeliveryDetails />
 
       <ProductDetails
