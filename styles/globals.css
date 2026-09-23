@@ -127,8 +127,15 @@
   width: 40px;
 }
 
+.aa-SubmitButton {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 .aa-SubmitIcon {
   color: white !important;
+  margin: auto !important;
 }
 
 @keyframes login-tooltip-jiggle {
@@ -223,4 +230,8 @@
   .aa-DetachedFormContainer {
     border-radius: 0 !important;
   }
+}
+
+.aa-DetachedFormContainer .aa-SubmitButton {
+  display: none !important;
 }
