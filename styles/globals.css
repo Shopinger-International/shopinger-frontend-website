@@ -232,7 +232,7 @@
 
   /* White background box for loading indicator on tablet only, showing orange loader SVG */
   html body .aa-LoadingIndicator {
-    background: #ffffff !important;
+    background: #f97316 !important;
     background-color: #ffffff !important;
   }
 
