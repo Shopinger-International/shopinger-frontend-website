@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useRef } from "react";
+import { useLayoutEffect, useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -33,9 +33,19 @@ const Header: FC<{
 }) => {
   const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
+  const [show_banner, setShowBanner] = useState(true);
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
+
+  // Auto-hide banner after 15 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowBanner(false);
+    }, 15000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useLayoutEffect(() => {
     const header = document.getElementById("app-header");
@@ -182,6 +192,23 @@ const Header: FC<{
           </Link>
         </div>
       </div>
+
+      {/* Door Closed Banner */}
+      {show_banner && (
+        <div className="relative w-full">
+          <div className="relative mx-auto flex w-full max-w-8xl items-center justify-center">
+            <Image
+              src="/shopinger-door-closed-banner.svg"
+              alt="Shopinger Door Closed Banner"
+              width={1440}
+              height={300}
+              priority
+              className="w-full object-contain"
+            />
+          </div>
+        </div>
+      )}
+
       <CategorySection />
       {show_filter_sort_bar && (
         <FilterSortBar disable_side_filter={disable_side_filter} />

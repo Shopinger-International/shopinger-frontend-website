@@ -219,6 +219,9 @@ const AutoComplete: FC<
       ...auto_complete_props,
       insights: true,
       openOnFocus: true,
+      detachedMediaQuery: show_search_icon_only
+        ? "(min-width: 0px)"
+        : "none",
       plugins,
       container: autocomplete_container_ref.current,
 
@@ -324,6 +327,13 @@ const AutoComplete: FC<
       },
     });
 
+    if (!show_search_icon_only) {
+      setTimeout(() => {
+        const input = autocomplete_container_ref.current?.querySelector("input");
+        input?.focus();
+      }, 50);
+    }
+
     const handleScroll = (event: Event) => {
       const input = autocomplete_container_ref.current?.querySelector(
         "input",
@@ -354,6 +364,7 @@ const AutoComplete: FC<
       <div ref={autocomplete_container_ref} />
 
       {!query &&
+        !show_search_icon_only &&
         show_animation &&
         animate_categories.length > 0 &&
         animate_categories[category_index] !== "" && (

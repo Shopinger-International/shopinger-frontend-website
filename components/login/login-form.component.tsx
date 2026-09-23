@@ -49,49 +49,52 @@ const initial_values = {
   country: countries.find(({ name }) => name == "India"),
 };
 
-const login_validation_schema = z
-  .object({
-    identifier: z.string().trim(),
-    country: z
-      .object({
-        code: z.string(), // "IN", "US"
-      })
-      .optional(),
-  })
-  .superRefine((data, ctx) => {
-    const { identifier, country } = data;
+const getLoginValidationSchema = (mode: "phone" | "email") =>
+  z
+    .object({
+      identifier: z.string().trim(),
+      country: z
+        .object({
+          code: z.string(), // "IN", "US"
+        })
+        .optional(),
+    })
+    .superRefine((data, ctx) => {
+      const { identifier, country } = data;
 
-    const is_email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+      if (mode === "phone") {
+        const is_digit_only = /^\d+$/.test(identifier);
 
-    const is_digit_only = /^\d+$/.test(identifier);
+        if (is_digit_only && country) {
+          const phone = parsePhoneNumberFromString(
+            identifier,
+            country.code as CountryCode,
+          );
 
-    // ✅ Email
-    if (is_email) return;
+          if (phone?.isValid()) {
+            return;
+          }
+        }
 
-    // ✅ Phone with country
-    if (is_digit_only && country) {
-      const phone = parsePhoneNumberFromString(
-        identifier,
-        country.code as CountryCode,
-      );
-
-      if (!phone?.isValid()) {
         ctx.addIssue({
           path: ["identifier"],
           message: "Enter a valid phone number",
           code: "custom",
         });
-      }
-      return;
-    }
+      } else {
+        const is_email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
 
-    // ❌ Neither email nor phone
-    ctx.addIssue({
-      path: ["identifier"],
-      message: "Enter a valid phone number or email",
-      code: "custom",
+        if (is_email) {
+          return;
+        }
+
+        ctx.addIssue({
+          path: ["identifier"],
+          message: "Enter a valid email",
+          code: "custom",
+        });
+      }
     });
-  });
 
 const otp_schema = z.object({
   otp: z
@@ -184,7 +187,7 @@ const LoginForm: FC<IProps> = ({
       {!show_otp ? (
         <Formik<IInitialValues>
           initialValues={user_details}
-          validate={toFormikValidate(login_validation_schema)}
+          validate={toFormikValidate(getLoginValidationSchema(login_mode))}
           onSubmit={(values) => {
             send_otp_mutation.mutate(
               {
@@ -201,7 +204,7 @@ const LoginForm: FC<IProps> = ({
             );
           }}
         >
-          {({ values, errors, setFieldValue, handleSubmit }) => (
+          {({ values, errors, setFieldValue, setFieldError, setFieldTouched, handleSubmit }) => (
             <Form onSubmit={handleSubmit} className="w-full space-y-4">
               <Field name="identifier">
                 {({ field, meta }: FieldProps<string, IInitialValues>) => {
@@ -223,6 +226,7 @@ const LoginForm: FC<IProps> = ({
                               )}
                               <ChevronDown className="size-4" />
                             </PopoverButton>
+                            
 
                             <PopoverPanel className="absolute z-20 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                               {({ close }) => (
@@ -235,13 +239,13 @@ const LoginForm: FC<IProps> = ({
                             </PopoverPanel>
                           </Popover>
                         )}
-
-                        <input
+                          <input
                           key={is_phone ? "phone-input" : "email-input"}
                           id="identifier"
                           type={is_phone ? "tel" : "email"}
                           inputMode={is_phone ? "numeric" : "email"}
                           pattern={is_phone ? "[0-9]*" : undefined}
+                          // maxLength={is_phone ? 10 : undefined}
                           autoComplete={is_phone ? "tel" : "email"}
                           placeholder={is_phone ? "Mobile number" : "Email address"}
                           className={clsx(
@@ -260,38 +264,37 @@ const LoginForm: FC<IProps> = ({
                           }}
                         />
                       </div>
-                      <div className="flex items-center justify-between">
-
-                        {meta.touched && meta.error ? (
-                          <p className="text-red-500">{meta.error}</p>
-                        ) : (
-                          <div />
-                        )}
-
-
+                      <div className="flex items-center justify-between gap-2 pt-1">
+                        <div>
+                          {meta.touched && meta.error && (
+                            <p className="text-sm text-red-500">{meta.error}</p>
+                          )}
+                        </div>
                         <button
                           type="button"
-                          className="cursor-pointer text-sm font-medium text-orange-500 hover:text-orange-600 focus:outline-none relative right-1"
+                          className="ml-auto cursor-pointer text-sm font-medium text-orange-500 hover:text-orange-600 focus:outline-none"
                           onClick={() => {
-                            setLoginMode((prev) => (prev === "phone" ? "Email" : "phone"));
+                            setLoginMode((prev) => (prev === "phone" ? "email" : "phone"));
                             setFieldValue("identifier", "");
+                            setFieldError("identifier", undefined);
+                            setFieldTouched("identifier", false, false);
                           }}
                         >
                           {is_phone ? "Use email" : "Use Phone Number"}
                         </button>
-
                       </div>
-
                     </div>
-
                   );
                 }}
               </Field>
 
               <button
                 onClick={() => console.log(errors)}
-                className="h-10 w-full cursor-pointer rounded-md bg-orange-500 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
-                disabled={send_otp_mutation.isPending}
+                className="h-10 w-full cursor-pointer rounded-md bg-orange-500 font-bold text-white shadow-sm hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
+                disabled={
+                  send_otp_mutation.isPending ||
+                  (login_mode === "phone" && values.identifier.trim().length < 10)
+                }
                 type="submit"
               >
                 Get OTP
