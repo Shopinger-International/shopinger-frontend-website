@@ -31,10 +31,10 @@ const useSendOTPMutation = () => {
       return data;
     },
     onSuccess(response) {
-      enqueueSnackbar(response.message, {
-        key: "user-login-and-register-with-otp-success",
-        variant: "success",
-      });
+      // enqueueSnackbar(response.message, {
+      //   key: "user-login-and-register-with-otp-success",
+      //   variant: "success",
+      // });
     },
 
     onError(error) {

@@ -78,7 +78,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           <AlgoliaInsightsProvider>
             <AnalyticsProvider />
             <SnackbarProvider
-              autoHideDuration={3000}
+              autoHideDuration={800}
               anchorOrigin={{
                 horizontal: "right",
                 vertical: "bottom",
@@ -87,6 +87,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                 success: SuccessSnackbar,
                 error: ErrorSnackbar,
               }}
+              maxSnack={2}
             >
               <SelectedCategoryProvider>
                 <LoginModalProvider>

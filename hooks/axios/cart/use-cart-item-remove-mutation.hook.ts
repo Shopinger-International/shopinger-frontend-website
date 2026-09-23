@@ -41,10 +41,10 @@ const useCartItemRemoveMutation = () => {
       query_client.invalidateQueries({
         queryKey: ["product-availability", product_id, variant_id],
       });
-      enqueueSnackbar(response.message, {
-        key: `remove-cart-item-success-${Date.now()}`,
-        variant: "success",
-      });
+      // enqueueSnackbar(response.message, {
+      //   key: `remove-cart-item-success-${Date.now()}`,
+      //   variant: "success",
+      // });
     },
     onError(error) {
       // @ts-ignore

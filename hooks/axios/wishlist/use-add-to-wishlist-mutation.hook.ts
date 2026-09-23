@@ -146,12 +146,12 @@ const useAddToWishlistMutation = () => {
         },
       );
 
-      enqueueSnackbar(data.message, {
-        key: `add-to-wishlist-${Date.now()}`,
-        variant: "success",
-        action_label: "View Wishlist",
-        onActionClick: () => router.push("/wishlist"),
-      });
+      // enqueueSnackbar(data.message, {
+      //   key: `add-to-wishlist-${Date.now()}`,
+      //   variant: "success",
+      //   action_label: "View Wishlist",
+      //   onActionClick: () => router.push("/wishlist"),
+      // });
     },
     onError(error) {
       if (error instanceof AxiosError) {

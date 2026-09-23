@@ -29,10 +29,10 @@ const useUpdateIntentQuantityMutation = () => {
       query_client.invalidateQueries({
         queryKey: ["buy-intent", payload.intent_id],
       });
-      enqueueSnackbar(response.message, {
-        key: `update-intent-quantity-success-${Date.now()}`,
-        variant: "success",
-      });
+      // enqueueSnackbar(response.message, {
+      //   key: `update-intent-quantity-success-${Date.now()}`,
+      //   variant: "success",
+      // });
     },
     onError(error) {
       // @ts-ignore
