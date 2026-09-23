@@ -36,10 +36,10 @@ const useCartItemDecreaseMutation = () => {
       query_client.invalidateQueries({
         queryKey: ["carts"],
       });
-      enqueueSnackbar(response.message, {
-        key: `cart-item-quantity-decrease-success-${Date.now()}`,
-        variant: "success",
-      });
+      // enqueueSnackbar(response.message, {
+      //   key: `cart-item-quantity-decrease-success-${Date.now()}`,
+      //   variant: "success",
+      // });
     },
     onError(error) {
       console.log("value of error", error);

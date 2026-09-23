@@ -29,10 +29,10 @@ const useSendOtpMutation = () => {
   return useMutation({
     mutationFn: sendOtpForUpdatingUserContact,
     onSuccess(response) {
-      enqueueSnackbar(response.message, {
-        key: "send-otp-success",
-        variant: "success",
-      });
+      // enqueueSnackbar(response.message, {
+      //   key: "send-otp-success",
+      //   variant: "success",
+      // });
     },
     onError(error) {
       // @ts-ignore

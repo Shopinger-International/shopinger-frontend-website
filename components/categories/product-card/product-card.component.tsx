@@ -91,7 +91,7 @@ const ProductCard: FC<IProps> = ({
   const is_mobile = useIsMobile();
   return (
     <div className="group relative flex min-w-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white sm:rounded-xl sm:border-gray-300">
-      <div className="absolute z-20 mt-2 w-full">
+      <div className="absolute z-1 mt-2 w-full">
         {!!discount_percentage && (
           <span className="absolute left-2 rounded-full border border-gray-300 bg-orange-500 px-2 py-0.5 text-[11px] font-semibold text-white shadow-sm sm:px-3 sm:py-1 sm:text-xs">
             -{discount_percentage}%
