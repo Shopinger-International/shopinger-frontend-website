@@ -24,9 +24,13 @@ export const search_client = algoliasearch(
 
 type IProps = {
   show_search_icon_only?: boolean;
+  disable_detached?: boolean;
 };
 
-const SearchBar: FC<IProps> = ({ show_search_icon_only = false }) => {
+const SearchBar: FC<IProps> = ({
+  show_search_icon_only = false,
+  disable_detached,
+}) => {
   const { data: categories = [] } = useCategories(true, "main");
   const animate_categories = categories.map((category) => {
     return category.name;
@@ -42,6 +46,7 @@ const SearchBar: FC<IProps> = ({ show_search_icon_only = false }) => {
         <AutoComplete
           animate_categories={animate_categories}
           show_search_icon_only={show_search_icon_only}
+          disable_detached={disable_detached}
           className={clsx(
             "relative rounded-lg",
             show_search_icon_only ? "bg-transparent" : "w-full bg-white",
@@ -55,3 +60,4 @@ const SearchBar: FC<IProps> = ({ show_search_icon_only = false }) => {
 };
 
 export default SearchBar;
+

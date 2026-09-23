@@ -78,15 +78,20 @@ const debouncedSearch = debouncePromise(async (query: string) => {
 const AutoComplete: FC<
   AutocompleteProps & {
     show_search_icon_only?: boolean;
+    disable_detached?: boolean;
     animate_categories: string[];
   }
 > = ({
   className,
   show_search_icon_only,
+  disable_detached,
   animate_categories,
   ...auto_complete_props
 }) => {
   const router = useRouter();
+  const is_home = router.pathname === "/";
+  const is_detached_disabled = disable_detached ?? is_home;
+
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
@@ -219,7 +224,9 @@ const AutoComplete: FC<
       ...auto_complete_props,
       insights: true,
       openOnFocus: true,
-      detachedMediaQuery: show_search_icon_only
+      detachedMediaQuery: is_detached_disabled
+        ? "none"
+        : show_search_icon_only
         ? "(min-width: 0px)"
         : "(max-width: 1024px)",
       plugins,
@@ -357,7 +364,8 @@ const AutoComplete: FC<
       window.removeEventListener("scroll", handleScroll, true);
       autocomplete_instance.destroy();
     };
-  }, [plugins]);
+  }, [plugins, is_detached_disabled, show_search_icon_only]);
+
 
   return (
     <div className={clsx("relative", className)}>
