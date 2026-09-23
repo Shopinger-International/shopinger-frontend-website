@@ -36,10 +36,10 @@ const useCartItemIncreaseMutation = () => {
       query_client.invalidateQueries({
         queryKey: ["carts"],
       });
-      enqueueSnackbar(response.message, {
-        key: `cart-item-quantity-increase-success-${Date.now()}`,
-        variant: "success",
-      });
+      // enqueueSnackbar(response.message, {
+      //   key: `cart-item-quantity-increase-success-${Date.now()}`,
+      //   variant: "success",
+      // });
     },
     onError(error) {
       // @ts-ignore

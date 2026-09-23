@@ -148,10 +148,10 @@ const useRemoveFromWishlistMutation = () => {
         },
       );
 
-      enqueueSnackbar(data.message, {
-        key: `remove-from-wishlist-${Date.now()}`,
-        variant: "success",
-      });
+      // enqueueSnackbar(data.message, {
+      //   key: `remove-from-wishlist-${Date.now()}`,
+      //   variant: "success",
+      // });
     },
 
     onError(error) {

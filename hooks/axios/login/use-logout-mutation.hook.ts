@@ -26,10 +26,10 @@ const useLogoutMutation = () => {
       return data;
     },
     onSuccess(response) {
-      enqueueSnackbar(response.message, {
-        key: "user-logout-success",
-        variant: "success",
-      });
+      // enqueueSnackbar(response.message, {
+      //   key: "user-logout-success",
+      //   variant: "success",
+      // });
       query_client.resetQueries();
     },
 
