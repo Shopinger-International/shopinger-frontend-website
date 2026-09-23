@@ -38,7 +38,12 @@ const SearchBar: FC<IProps> = ({
     return category.name;
   });
   return (
-    <div className={clsx("relative", !show_search_icon_only && "w-full")}>
+    <div
+      className={clsx(
+        "landing-search-wrapper relative",
+        !show_search_icon_only && "w-full",
+      )}
+    >
       <InstantSearch
         searchClient={search_client}
         indexName={ALGOLIA_INDEX.PRODUCTS}

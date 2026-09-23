@@ -242,7 +242,7 @@ const AutoComplete: FC<
         inputWrapper: "pl-2 sm:pl-3",
         submitButton: hide_submit_button
           ? "!hidden"
-          : "flex items-center justify-center bg-white lg:!bg-orange-500",
+          : "landing-search-submit-btn flex items-center justify-center !bg-orange-500 hover:!bg-orange-600 !w-12 !min-w-12 !h-full cursor-pointer transition-colors shrink-0",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
         form: "!rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse !border-none",
         detachedSearchButton: clsx(
