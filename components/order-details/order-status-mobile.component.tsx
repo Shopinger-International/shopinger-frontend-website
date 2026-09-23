@@ -56,14 +56,12 @@ type Props = {
   order_id: number;
   order_status: IOrderStatus;
   order_status_history: IOrderStatusHistory[];
-  payment_mode: IOrder["payment_mode"];
 };
 
 const OrderStatusMobile: FC<Props> = ({
   order_id,
   order_status_history,
   order_status,
-  payment_mode,
 }) => {
   const query_client = useQueryClient();
   const is_cancelled = order_status === ORDER_STATUS.CANCELLED;

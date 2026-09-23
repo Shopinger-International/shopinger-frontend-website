@@ -189,13 +189,11 @@ const OrderDetailPage: NextPageWithLayout<{
                         order_status={order.status}
                         order_status_history={order_status_history}
                         order_id={Number(order_id)}
-                        payment_mode={order.payment_mode}
                       />
                       <OrderStatusMobile
                         order_status={order.status}
                         order_status_history={order_status_history}
                         order_id={Number(order_id)}
-                        payment_mode={order.payment_mode}
                       />
                     </>
                   )}
