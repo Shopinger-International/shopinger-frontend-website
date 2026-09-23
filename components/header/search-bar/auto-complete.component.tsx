@@ -242,7 +242,7 @@ const AutoComplete: FC<
         inputWrapper: "pl-2 sm:pl-3",
         submitButton: hide_submit_button
           ? "!hidden"
-          : "flex items-center justify-center md:!bg-orange-500",
+          : "flex items-center justify-center bg-white lg:!bg-orange-500",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
         form: "!rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse !border-none",
         detachedSearchButton: clsx(
@@ -260,7 +260,7 @@ const AutoComplete: FC<
           : "pl-2 md:p-0",
 
         loadingIndicator:
-          "md:!bg-orange-500  flex items-center justify-center md:[&_svg]:!stroke-white md:[&_svg_path]:!stroke-white md:[&_svg_circle]:!stroke-white",
+          "bg-white lg:!bg-orange-500 flex items-center justify-center [&_svg]:!stroke-orange-500 [&_svg_path]:!stroke-orange-500 [&_svg_circle]:!stroke-orange-500 lg:[&_svg]:!stroke-white lg:[&_svg_path]:!stroke-white lg:[&_svg_circle]:!stroke-white",
       },
 
       getSources({ query }) {

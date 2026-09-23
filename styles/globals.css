@@ -229,6 +229,18 @@
   .aa-DetachedFormContainer {
     border-radius: 0 !important;
   }
+
+  /* White background box for loading indicator on tablet only, showing orange loader SVG */
+  html body .aa-LoadingIndicator {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+  }
+
+  html body .aa-LoadingIndicator svg,
+  html body .aa-LoadingIndicator svg path,
+  html body .aa-LoadingIndicator svg circle {
+    stroke: #f97316 !important;
+  }
 }
 
 /* Hide submit button inside detached search modal across all detached screen widths (mobile & tablet) */
