@@ -29,7 +29,7 @@ type IProps = {
 
 const SearchBar: FC<IProps> = ({
   show_search_icon_only = false,
-  disable_detached,
+  disable_detached = false,
 }) => {
   const { data: categories = [] } = useCategories(true, "main");
   const animate_categories = categories.map((category) => {
@@ -60,4 +60,3 @@ const SearchBar: FC<IProps> = ({
 };
 
 export default SearchBar;
-

@@ -194,7 +194,7 @@ const Header: FC<{
       </div>
 
       {/* Door Closed Banner */}
-      {show_banner && (
+      {/* {show_banner && (
         <div className="relative w-full">
           <div className="relative mx-auto flex w-full max-w-8xl items-center justify-center">
             <Image
@@ -207,7 +207,7 @@ const Header: FC<{
             />
           </div>
         </div>
-      )}
+      )} */}
 
       <CategorySection />
       {show_filter_sort_bar && (

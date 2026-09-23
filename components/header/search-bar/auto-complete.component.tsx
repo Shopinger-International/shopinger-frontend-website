@@ -84,14 +84,11 @@ const AutoComplete: FC<
 > = ({
   className,
   show_search_icon_only,
-  disable_detached,
+  disable_detached = false,
   animate_categories,
   ...auto_complete_props
 }) => {
   const router = useRouter();
-  const is_home = router.pathname === "/";
-  const is_detached_disabled = disable_detached ?? is_home;
-
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
@@ -224,11 +221,11 @@ const AutoComplete: FC<
       ...auto_complete_props,
       insights: true,
       openOnFocus: true,
-      detachedMediaQuery: is_detached_disabled
-        ? "none"
+      detachedMediaQuery: disable_detached
+        ? "(max-width: 767px)"
         : show_search_icon_only
-        ? "(min-width: 0px)"
-        : "(max-width: 1024px)",
+          ? "(min-width: 0px)"
+          : "(max-width: 1024px)",
       plugins,
       container: autocomplete_container_ref.current,
 
@@ -364,8 +361,7 @@ const AutoComplete: FC<
       window.removeEventListener("scroll", handleScroll, true);
       autocomplete_instance.destroy();
     };
-  }, [plugins, is_detached_disabled, show_search_icon_only]);
-
+  }, [plugins]);
 
   return (
     <div className={clsx("relative", className)}>

@@ -189,8 +189,10 @@
   body.snackbar-offset .notistack-SnackbarContainer {
     bottom: 72px !important;
   }
+}
 
-  /* Fullscreen detached search modal on tablet */
+/* Fullscreen detached search on TABLET only (768px–1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
   .aa-DetachedContainer,
   .aa-DetachedContainer--modal {
     position: fixed !important;
@@ -222,4 +224,3 @@
     border-radius: 0 !important;
   }
 }
-
