@@ -221,7 +221,7 @@ const AutoComplete: FC<
       openOnFocus: true,
       detachedMediaQuery: show_search_icon_only
         ? "(min-width: 0px)"
-        : "none",
+        : "(max-width: 1024px)",
       plugins,
       container: autocomplete_container_ref.current,
 

@@ -53,6 +53,7 @@ const MobileHeader: FC = () => {
   const is_mounted = useIsMounted();
   const [is_search_open, setIsSearchOpen] = useState(false);
 
+  const is_home = router.pathname === "/";
   const delivery_time = user_details ? "45" : "10";
   const is_grocery =
     categories.find(({ label }) => label == "Grocery")?.href == router.asPath;
@@ -69,51 +70,72 @@ const MobileHeader: FC = () => {
       )}
     >
       {/* Delivery, Search & Account */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex min-w-0 flex-col gap-1">
-          <p className="text-lg font-semibold">
-            Delivery in{" "}
-            <span className="font-bold text-orange-500">
-              {delivery_time} minutes
-            </span>
-          </p>
+      {is_home ? (
+        <div className="flex items-center justify-between">
+          <div className="flex min-w-0 flex-col gap-1">
+            <p className="text-lg font-semibold">
+              Delivery in{" "}
+              <span className="font-bold text-orange-500">
+                {delivery_time} minutes
+              </span>
+            </p>
 
-          {is_mounted && is_mobile && (
-            <LocationTooltip className="flex lg:hidden" />
-          )}
-        </div>
+            {is_mounted && is_mobile && (
+              <LocationTooltip className="flex lg:hidden" />
+            )}
+          </div>
 
-        <div className="flex items-center gap-2">
-          {is_search_open ? (
-            <div className="flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-150">
-              <div className="w-44 sm:w-64 md:w-80">
-                <SearchBar />
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsSearchOpen(false)}
-                aria-label="Close search"
-                className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-gray-200 text-gray-700 transition-colors hover:bg-gray-300"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setIsSearchOpen(true)}
-              aria-label="Search products"
-              className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-orange-100 text-gray-900 transition-colors hover:bg-orange-200"
-            >
-              <Search className="size-5" aria-hidden />
-            </button>
-          )}
-
-          <Link href="/account" aria-label="Account" className="shrink-0 p-1">
+          <Link href="/account" aria-label="Account" className="ml-3 shrink-0">
             <CircleUserIcon className="size-6 text-gray-900" aria-hidden />
           </Link>
         </div>
-      </div>
+      ) : (
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 flex-col gap-1">
+            <p className="text-lg font-semibold">
+              Delivery in{" "}
+              <span className="font-bold text-orange-500">
+                {delivery_time} minutes
+              </span>
+            </p>
+
+            {is_mounted && is_mobile && (
+              <LocationTooltip className="flex lg:hidden" />
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            {is_search_open ? (
+              <div className="flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-150">
+                <div className="w-44 sm:w-64 md:w-80">
+                  <SearchBar />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(false)}
+                  aria-label="Close search"
+                  className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-gray-200 text-gray-700 transition-colors hover:bg-gray-300"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsSearchOpen(true)}
+                aria-label="Search products"
+                className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-orange-100 text-gray-900 transition-colors hover:bg-orange-200"
+              >
+                <Search className="size-5" aria-hidden />
+              </button>
+            )}
+
+            <Link href="/account" aria-label="Account" className="shrink-0 p-1">
+              <CircleUserIcon className="size-6 text-gray-900" aria-hidden />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Quick Commerce Categories */}
       <nav
@@ -144,6 +166,9 @@ const MobileHeader: FC = () => {
           );
         })}
       </nav>
+
+      {/* Full search bar for Landing Page */}
+      {is_home && <SearchBar />}
     </div>
   );
 };
