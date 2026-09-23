@@ -79,12 +79,14 @@ const AutoComplete: FC<
   AutocompleteProps & {
     show_search_icon_only?: boolean;
     disable_detached?: boolean;
+    hide_submit_button?: boolean;
     animate_categories: string[];
   }
 > = ({
   className,
   show_search_icon_only,
   disable_detached = false,
+  hide_submit_button = false,
   animate_categories,
   ...auto_complete_props
 }) => {
@@ -238,7 +240,9 @@ const AutoComplete: FC<
           "absolute left-0 right-0 mt-2 bg-white shadow-lg sm:!rounded-lg sm:border sm:border-gray-300 z-50 shadow-sm overflow-hidden",
         list: "py-2 space-y-1 w-full ",
         inputWrapper: "pl-2 sm:pl-3",
-        submitButton: "!flex !items-center !justify-center md:!bg-orange-500",
+        submitButton: hide_submit_button
+          ? "!hidden"
+          : "flex items-center justify-center md:!bg-orange-500",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
         form: "!rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse !border-none",
         detachedSearchButton: clsx(
@@ -362,6 +366,29 @@ const AutoComplete: FC<
       autocomplete_instance.destroy();
     };
   }, [plugins]);
+
+  // Hide the submit button inside the detached search modal (category pages on tablet)
+  useEffect(() => {
+    if (!hide_submit_button) return;
+
+    const hideSubmitBtn = () => {
+      const btns = document.querySelectorAll<HTMLElement>(
+        ".aa-DetachedFormContainer .aa-SubmitButton",
+      );
+      btns.forEach((btn) => {
+        btn.style.display = "none";
+      });
+    };
+
+    // Watch for the detached modal being added to the DOM
+    const observer = new MutationObserver(hideSubmitBtn);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Also run once immediately
+    hideSubmitBtn();
+
+    return () => observer.disconnect();
+  }, [hide_submit_button]);
 
   return (
     <div className={clsx("relative", className)}>

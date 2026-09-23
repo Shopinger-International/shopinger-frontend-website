@@ -128,7 +128,6 @@
 }
 
 .aa-SubmitButton {
-  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
@@ -232,6 +231,11 @@
   }
 }
 
-.aa-DetachedFormContainer .aa-SubmitButton {
+/* Hide submit button inside detached search modal across all detached screen widths (mobile & tablet) */
+html body .aa-DetachedContainer .aa-SubmitButton,
+html body .aa-DetachedFormContainer .aa-SubmitButton {
   display: none !important;
 }
+
+
+

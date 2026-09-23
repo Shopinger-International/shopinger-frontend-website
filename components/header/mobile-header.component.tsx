@@ -108,7 +108,7 @@ const MobileHeader: FC = () => {
             {is_search_open ? (
               <div className="flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-150">
                 <div className="w-44 sm:w-64 md:w-80">
-                  <SearchBar />
+                  <SearchBar hide_submit_button />
                 </div>
                 <button
                   type="button"
