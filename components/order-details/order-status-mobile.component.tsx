@@ -118,14 +118,9 @@ const OrderStatusMobile: FC<Props> = ({
 
           const is_current = step.status === order_status;
 
-          const is_completed =
-            order_status_history.some(
-              (status_history) => status_history.to_status === step.status,
-            ) ||
-            (payment_mode === "COD" &&
-              step.status === ORDER_STATUS.ORDER_CREATED &&
-              order_status !== ORDER_STATUS.ORDER_CREATED &&
-              order_status !== ORDER_STATUS.CANCELLED);
+          const is_completed = order_status_history.some(
+            (status_history) => status_history.to_status === step.status,
+          );
           const is_cancelled_step =
             is_cancelled && step.status === ORDER_STATUS.CANCELLED;
 
