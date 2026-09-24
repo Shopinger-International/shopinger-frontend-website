@@ -12,6 +12,7 @@ import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 import LocationTooltip from "@/components/header/location/location-tooltip.component";
 import MobileHeader from "@/components/header/mobile-header.component";
+import StoreClosedBanner from "@/components/header/store-closed-banner.component";
 
 // icons
 import { Menu, CircleUserIcon } from "lucide-react";
@@ -98,8 +99,13 @@ const Header: FC<{
       className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
       id="app-header"
     >
-      {/* <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8"> */}
       <MobileHeader />
+
+      {/* Desktop Store Closed Banner */}
+      <div className="hidden bg-orange-50 px-4 py-2 lg:block border-b border-orange-100">
+        <StoreClosedBanner />
+      </div>
+
       <div className="hidden flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
