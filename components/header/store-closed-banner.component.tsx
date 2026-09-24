@@ -100,7 +100,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   open_time = "7:00 AM",
   message = "Order now. Deliveries resume at 7:00 AM.",
   className,
-  force_show = true,
+  force_show = false,
   is_desktop_header = false,
 }) => {
   const [is_closed, setIsClosed] = useState<boolean>(() => {
@@ -141,7 +141,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
 
       {/* RIGHT: Desktop view "Opens at 7:00 AM" + Sunrise Icon */}
       <div className="hidden sm:flex items-center gap-2 ml-2 shrink-0">
-        <p className="text-xs sm:text-sm font-semibold text-orange-600">
+        <p className="text-xs sm:text-sm font-semibold text-orange-500">
           Opens at {open_time}
         </p>
         <SunriseIcon className="size-5 sm:size-6 text-orange-500" />
