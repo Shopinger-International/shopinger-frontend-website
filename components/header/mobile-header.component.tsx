@@ -12,6 +12,7 @@ import ShopingerIcon from "@/components/common/icons/shopinger.icon";
 // local components
 import LocationTooltip from "@/components/header/location/location-tooltip.component";
 import SearchBar from "@/components/header/search-bar/search-bar.component";
+import StoreClosedBanner from "@/components/header/store-closed-banner.component";
 
 // hooks
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
@@ -65,7 +66,10 @@ const MobileHeader: FC = () => {
         is_pharmacy && "border-b-3 border-blue-500",
       )}
     >
-      {/* Delivery & Account Header */}
+      {/* Store Closed Banner */}
+      <StoreClosedBanner />
+
+      {/* Delivery & Account */}
       <div className="flex items-center justify-between">
         <div className="flex min-w-0 flex-col gap-1">
           <p className="text-lg font-semibold">
@@ -116,7 +120,9 @@ const MobileHeader: FC = () => {
       </nav>
 
       {/* Permanent Search Bar under category buttons */}
-      <SearchBar disable_detached />
+      <div id="mobile-header-search-container">
+        <SearchBar disable_detached />
+      </div>
     </div>
   );
 };
