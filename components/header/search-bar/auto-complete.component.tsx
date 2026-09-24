@@ -249,7 +249,7 @@ const AutoComplete: FC<
         inputWrapper: "pl-2 sm:pl-3",
         submitButton: hide_submit_button
           ? "!hidden"
-          : "landing-search-submit-btn flex items-center justify-center !bg-orange-500 hover:!bg-orange-600 !w-12 !min-w-12 !h-full cursor-pointer transition-colors shrink-0",
+          : "landing-search-submit-btn flex items-center justify-center !bg-orange-500 hover:!bg-orange-600 !w-12 !min-w-12 !h-full cursor-pointer transition-colors shrink-0 relative z-20",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
         form: "!rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse !border-none",
         detachedSearchButton: clsx(
@@ -405,8 +405,8 @@ const AutoComplete: FC<
         show_animation &&
         animate_categories.length > 0 &&
         animate_categories[category_index] !== "" && (
-          <div className="pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-xs text-gray-400 sm:text-sm">
-            Search "{text}"
+          <div className="pointer-events-none absolute inset-y-0 left-3 right-14 z-10 flex items-center overflow-hidden truncate text-xs text-gray-400 sm:text-sm max-w-[calc(100%-3.5rem)]">
+            <span className="truncate">Search &quot;{text}&quot;</span>
           </div>
         )}
     </div>
