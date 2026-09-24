@@ -76,10 +76,16 @@ const Header: FC<{
       }
 
       if (current_scroll_pos > prev_scroll_pos) {
-        // Scrolling down
-        header_ref.current.style.top = "-114px";
+        // Scrolling down: hide everything above SearchBar dynamically
+        const search_container = document.getElementById(
+          "mobile-header-search-container",
+        );
+        const hide_offset = search_container
+          ? search_container.offsetTop
+          : 114;
+        header_ref.current.style.top = `-${hide_offset}px`;
       } else if (current_scroll_pos < prev_scroll_pos) {
-        // Scrolling up
+        // Scrolling up: show full header
         header_ref.current.style.top = "0";
       }
 

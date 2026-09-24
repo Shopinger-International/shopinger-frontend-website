@@ -121,7 +121,9 @@ const MobileHeader: FC = () => {
       </nav>
 
       {/* Search */}
-      <SearchBar />
+      <div id="mobile-header-search-container">
+        <SearchBar />
+      </div>
     </div>
   );
 };

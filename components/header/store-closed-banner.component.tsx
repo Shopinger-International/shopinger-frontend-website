@@ -100,7 +100,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   open_time = "7:00 AM",
   message = "Order now. Deliveries resume at 7:00 AM.",
   className,
-  force_show = false,
+  force_show = true,
   is_desktop_header = false,
 }) => {
   const [is_closed, setIsClosed] = useState<boolean>(() => {
