@@ -18,7 +18,6 @@ import StoreClosedBanner from "@/components/header/store-closed-banner.component
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
-import { useState, useEffect } from "react";
 
 // helpers
 import { cn } from "@/lib/utils";
@@ -52,36 +51,6 @@ const MobileHeader: FC = () => {
   const router = useRouter();
   const { data: user_details } = useUserDetails();
   const is_mounted = useIsMounted();
-  const [show_search_bar, setShowSearchBar] = useState(true);
-
-  useEffect(() => {
-    let prev_scroll_pos = window.scrollY;
-
-    const handleScroll = () => {
-      const current_scroll_pos = window.scrollY;
-
-      // At top of page: always show search bar
-      if (current_scroll_pos <= 30) {
-        setShowSearchBar(true);
-        prev_scroll_pos = current_scroll_pos;
-        return;
-      }
-
-      // Scrolling DOWN -> Hide search bar
-      if (current_scroll_pos > prev_scroll_pos + 5) {
-        setShowSearchBar(false);
-      }
-      // Scrolling UP -> Show search bar
-      else if (current_scroll_pos < prev_scroll_pos - 5) {
-        setShowSearchBar(true);
-      }
-
-      prev_scroll_pos = current_scroll_pos;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const delivery_time = user_details ? "45" : "10";
   const is_grocery =
@@ -151,17 +120,8 @@ const MobileHeader: FC = () => {
         })}
       </nav>
 
-      {/* Search Bar - Collapses on scroll down, shows on scroll up */}
-      <div
-        className={cn(
-          "overflow-hidden transition-all duration-300 ease-in-out",
-          show_search_bar
-            ? "max-h-16 opacity-100 mt-1"
-            : "max-h-0 opacity-0 mt-0 pointer-events-none",
-        )}
-      >
-        <SearchBar />
-      </div>
+      {/* Search */}
+      <SearchBar />
     </div>
   );
 };

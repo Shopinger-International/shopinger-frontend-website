@@ -120,7 +120,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   const content = (
     <div
       className={cn(
-        "flex w-full items-center justify-between rounded-lg sm:rounded-xl border border-orange-200 bg-orange-50 lg:bg-white px-3 py-1.5 sm:px-4 sm:py-1.5 shadow-2xs",
+        "flex w-full items-center justify-between rounded-lg sm:rounded-xl border border-orange-200 bg-orange-50 lg:bg-white px-3 py-2 sm:px-4 sm:py-1.5 shadow-2xs",
         className,
       )}
     >
@@ -129,26 +129,19 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
         <MoonIcon className="size-6 sm:size-7 shrink-0 text-orange-500" />
 
         <div className="flex flex-col min-w-0">
-          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-            <h3 className="text-xs sm:text-sm font-bold leading-none text-gray-900 truncate">
-              {title}
-            </h3>
+          <h3 className="text-xs sm:text-sm font-bold leading-tight text-gray-900 truncate">
+            {title}
+          </h3>
 
-            {/* Mobile view: "Opens at 7:00 AM" inline or under */}
-            <span className="text-xs font-bold leading-none text-orange-600 sm:hidden">
-              · Opens at {open_time}
-            </span>
-          </div>
-
-          <p className="text-[11px] sm:text-xs font-medium leading-none text-gray-500 truncate mt-1 sm:mt-0.5">
+          <p className="text-[11px] sm:text-xs font-medium leading-tight text-gray-500 truncate mt-0.5">
             {message}
           </p>
         </div>
       </div>
 
       {/* RIGHT: Desktop view "Opens at 7:00 AM" + Sunrise Icon */}
-      <div className="flex items-center gap-2 ml-2 shrink-0">
-        <p className="hidden text-xs sm:text-sm font-semibold text-orange-600 sm:block">
+      <div className="hidden sm:flex items-center gap-2 ml-2 shrink-0">
+        <p className="text-xs sm:text-sm font-semibold text-orange-600">
           Opens at {open_time}
         </p>
         <SunriseIcon className="size-5 sm:size-6 text-orange-500" />
