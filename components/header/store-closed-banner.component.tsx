@@ -1,44 +1,20 @@
 import type { FC } from "react";
 import { cn } from "@/lib/utils";
 
-const StoreAwningIcon: FC<{ className?: string }> = ({
-  className = "size-11 text-[#F05A28]",
+const MoonIcon: FC<{ className?: string }> = ({
+  className = "size-10 text-[#F05A28]",
 }) => (
   <svg
-    viewBox="0 0 48 48"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
     aria-hidden="true"
   >
-    {/* Scalloped Awning Top */}
     <path
-      d="M7 17V11C7 9.89543 7.89543 9 9 9H39C40.1046 9 41 9.89543 41 11V17"
+      d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
       stroke="currentColor"
-      strokeWidth="3.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M7 17C7 19.2091 8.79086 21 11 21C13.2091 21 15 19.2091 15 17C15 19.2091 16.7909 21 19 21C21.2091 21 23 19.2091 23 17C23 19.2091 24.7909 21 27 21C29.2091 21 31 19.2091 31 17C31 19.2091 32.7909 21 35 21C37.2091 21 39 19.2091 39 17C39 19.2091 40.7909 21 41 21"
-      stroke="currentColor"
-      strokeWidth="3.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    {/* Store Walls & Base */}
-    <path
-      d="M9.5 21V39C9.5 40.1046 10.3954 41 11.5 41H36.5C37.6046 41 38.5 40.1046 38.5 39V21"
-      stroke="currentColor"
-      strokeWidth="3.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    {/* Arch Doorway */}
-    <path
-      d="M19.5 41V30C19.5 27.5147 21.5147 25.5 24 25.5C26.4853 25.5 28.5 27.5147 28.5 30V41"
-      stroke="currentColor"
-      strokeWidth="3.2"
+      strokeWidth="2.2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -119,36 +95,38 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   return (
     <div
       className={cn(
-        "flex w-full items-center justify-between rounded-xl sm:rounded-2xl border border-[#FEEAD9] bg-[#FFF6EE] p-3 sm:px-5 sm:py-3.5 shadow-xs",
+        "flex w-full items-center justify-between rounded-lg sm:rounded-xl border border-[#FEEAD9] bg-[#FFF6EE] lg:bg-white px-3 py-1.5 sm:px-4 sm:py-1.5 shadow-2xs",
         className,
       )}
     >
-      {/* LEFT: Store Awning Icon + Title & Description */}
-      <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-        <StoreAwningIcon className="size-10 sm:size-12 shrink-0 text-[#F05A28]" />
+      {/* LEFT: Moon Icon + Title & Description */}
+      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <MoonIcon className="size-6 sm:size-7 shrink-0 text-[#F05A28]" />
 
         <div className="flex flex-col min-w-0">
-          <h3 className="text-base sm:text-lg font-bold leading-tight text-[#0D1829] truncate">
-            {title}
-          </h3>
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            <h3 className="text-xs sm:text-sm font-bold leading-none text-[#0D1829] truncate">
+              {title}
+            </h3>
 
-          {/* Mobile view: "Opens at 7:00 AM" under title */}
-          <p className="text-sm font-bold leading-snug text-[#E03628] sm:hidden">
-            Opens at {open_time}
-          </p>
+            {/* Mobile view: "Opens at 7:00 AM" inline or under */}
+            <span className="text-xs font-bold leading-none text-[#E03628] sm:hidden">
+              · Opens at {open_time}
+            </span>
+          </div>
 
-          <p className="text-xs sm:text-sm font-medium leading-tight text-[#717D8A] truncate mt-0.5 sm:mt-0">
+          <p className="text-[11px] sm:text-xs font-medium leading-none text-[#717D8A] truncate mt-1 sm:mt-0.5">
             {message}
           </p>
         </div>
       </div>
 
       {/* RIGHT: Desktop view "Opens at 7:00 AM" + Sunrise Icon */}
-      <div className="flex items-center gap-3 ml-2 shrink-0">
-        <p className="hidden text-base sm:text-lg text-[#E03628] sm:block">
+      <div className="flex items-center gap-2 ml-2 shrink-0">
+        <p className="hidden text-xs sm:text-sm font-semibold text-[#E03628] sm:block">
           Opens at {open_time}
         </p>
-        <SunriseIcon className="size-9 sm:size-10 text-[#F05A28]" />
+        <SunriseIcon className="size-5 sm:size-6 text-[#F05A28]" />
       </div>
     </div>
   );

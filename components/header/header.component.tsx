@@ -102,7 +102,7 @@ const Header: FC<{
       <MobileHeader />
 
       {/* Desktop Store Closed Banner */}
-      <div className="hidden bg-orange-50 px-4 py-2 lg:block border-b border-orange-100">
+      <div className="hidden bg-white px-4 py-1 lg:block border-b border-gray-100">
         <StoreClosedBanner />
       </div>
 
