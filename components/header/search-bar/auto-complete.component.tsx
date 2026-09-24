@@ -81,6 +81,7 @@ const AutoComplete: FC<
     disable_detached?: boolean;
     hide_submit_button?: boolean;
     animate_categories: string[];
+    onClose?: () => void;
   }
 > = ({
   className,
@@ -88,10 +89,12 @@ const AutoComplete: FC<
   disable_detached = false,
   hide_submit_button = false,
   animate_categories,
+  onClose,
   ...auto_complete_props
 }) => {
   const router = useRouter();
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
+  const autocomplete_instance_ref = useRef<any>(null);
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
 
@@ -156,6 +159,8 @@ const AutoComplete: FC<
             },
           },
           onSelect({ item }) {
+            autocomplete_instance_ref.current?.setIsOpen(false);
+            onClose?.();
             setQuery(item.label);
             router.push(`/search?query=${item.label}`);
           },
@@ -187,6 +192,8 @@ const AutoComplete: FC<
             },
             sourceId: "query-suggestions-plugin",
             onSelect({ item }) {
+              autocomplete_instance_ref.current?.setIsOpen(false);
+              onClose?.();
               setQuery(item.query);
               const query_id = item.__autocomplete_queryID;
               const index_name = item.__autocomplete_indexName;
@@ -214,7 +221,7 @@ const AutoComplete: FC<
       });
     // return [recent_searches, query_suggestions, algolia_insights_plugin];
     return [algolia_insights_plugin];
-  }, []);
+  }, [onClose]);
 
   useEffect(() => {
     if (!autocomplete_container_ref.current) return;
@@ -288,6 +295,8 @@ const AutoComplete: FC<
                       <SearchBarHit
                         hit={item}
                         onClick={() => {
+                          autocomplete_instance.setIsOpen(false);
+                          onClose?.();
                           const query_id = item.__autocomplete_queryID;
                           const index_name = item.__autocomplete_indexName;
                           const object_id = item.objectID;
@@ -309,6 +318,8 @@ const AutoComplete: FC<
           : [];
       },
       onSubmit({ state }) {
+        autocomplete_instance.setIsOpen(false);
+        onClose?.();
         setQuery(state.query);
         router.push(`/search?query=${state.query}`);
       },
@@ -334,6 +345,8 @@ const AutoComplete: FC<
         panel_container_ref.current.render(children);
       },
     });
+
+    autocomplete_instance_ref.current = autocomplete_instance;
 
     if (!show_search_icon_only) {
       setTimeout(() => {

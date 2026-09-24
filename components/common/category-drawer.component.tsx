@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 // types
 import type { FC } from "react";
@@ -27,7 +28,14 @@ const SubSubCategorySection: FC<{
   sub_sub_categories: IBaseCategory[];
   main_category_slug?: string;
   sub_category_slug: string;
-}> = ({ name, sub_sub_categories, main_category_slug, sub_category_slug }) => {
+  handleClose: () => void;
+}> = ({
+  name,
+  sub_sub_categories,
+  main_category_slug,
+  sub_category_slug,
+  handleClose,
+}) => {
   const [is_expanded, setIsExpanded] = useState(false);
   const display_limit = 6;
   const has_more = sub_sub_categories.length > display_limit;
@@ -47,6 +55,7 @@ const SubSubCategorySection: FC<{
             <Link
               key={`sub-sub-category-${id}`}
               href={`/categories/${main_category_slug}/${sub_category_slug}/${sub_sub_category_slug}`}
+              onClick={handleClose}
               className="flex flex-col items-center gap-1.5"
             >
               <div
@@ -95,6 +104,7 @@ type IProps = {
 };
 
 const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
+  const router = useRouter();
   const [selected_main_category_id, setSelectedMainCatgoryId] = useState<
     number | null
   >(null);
@@ -103,6 +113,14 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
   useEffect(() => {
     categories && setSelectedMainCatgoryId(categories[0].id);
   }, [categories]);
+
+  // Auto-close CategoryDrawer whenever the page route changes
+  useEffect(() => {
+    if (is_open) {
+      handleClose();
+    }
+  }, [router.asPath]);
+
   return (
     <Dialog open={is_open} onClose={handleClose} className={"relative z-50"}>
       <div className="fixed inset-0 h-screen w-screen max-w-md shadow-md">
@@ -127,7 +145,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
               </button>
               <span className="font-semibold">All Categories</span>
             </div>
-            <SearchBar show_search_icon_only={true} />
+            <SearchBar show_search_icon_only={true} onClose={handleClose} />
           </div>
           <div className="flex min-h-0 flex-1">
             <div className="no-scrollbar flex h-[calc(100%-var(--bottom-nav-height))] w-22 flex-col items-center overflow-y-auto border-e border-gray-300 bg-gray-50 pb-30">
@@ -194,6 +212,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                       }
                       sub_category_slug={sub_category_slug}
                       sub_sub_categories={sub_sub_categories}
+                      handleClose={handleClose}
                     />
                   ),
                 )}
