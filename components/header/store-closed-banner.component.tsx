@@ -9,7 +9,7 @@ export const isStoreClosed = (date = new Date()): boolean => {
 };
 
 const MoonIcon: FC<{ className?: string }> = ({
-  className = "size-10 text-[#F05A28]",
+  className = "size-10 text-orange-500",
 }) => (
   <svg
     viewBox="0 0 24 24"
@@ -29,7 +29,7 @@ const MoonIcon: FC<{ className?: string }> = ({
 );
 
 const SunriseIcon: FC<{ className?: string }> = ({
-  className = "size-9 text-[#F05A28]",
+  className = "size-9 text-orange-500",
 }) => (
   <svg
     viewBox="0 0 36 36"
@@ -103,43 +103,44 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   force_show = false,
   is_desktop_header = false,
 }) => {
-  const [is_closed, setIsClosed] = useState<boolean>(false);
-  const [is_mounted, setIsMounted] = useState<boolean>(false);
+  const [is_closed, setIsClosed] = useState<boolean>(() => {
+    if (force_show) return true;
+    return isStoreClosed();
+  });
 
   useEffect(() => {
-    setIsMounted(true);
     setIsClosed(isStoreClosed());
-  }, []);
+  }, [force_show]);
 
-  // Show only when store is closed (between 10:00 PM and 6:59 AM) or force_show is true
-  if (is_mounted && !is_closed && !force_show) {
+  // Hide immediately if force_show is false and store is not closed (7:00 AM - 9:59 PM)
+  if (!force_show && !is_closed) {
     return null;
   }
 
   const content = (
     <div
       className={cn(
-        "flex w-full items-center justify-between rounded-lg sm:rounded-xl border border-[#FEEAD9] bg-[#FFF6EE] lg:bg-white px-3 py-1.5 sm:px-4 sm:py-1.5 shadow-2xs",
+        "flex w-full items-center justify-between rounded-lg sm:rounded-xl border border-orange-200 bg-orange-50 lg:bg-white px-3 py-1.5 sm:px-4 sm:py-1.5 shadow-2xs",
         className,
       )}
     >
       {/* LEFT: Moon Icon + Title & Description */}
       <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-        <MoonIcon className="size-6 sm:size-7 shrink-0 text-[#F05A28]" />
+        <MoonIcon className="size-6 sm:size-7 shrink-0 text-orange-500" />
 
         <div className="flex flex-col min-w-0">
           <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-            <h3 className="text-xs sm:text-sm font-bold leading-none text-[#0D1829] truncate">
+            <h3 className="text-xs sm:text-sm font-bold leading-none text-gray-900 truncate">
               {title}
             </h3>
 
             {/* Mobile view: "Opens at 7:00 AM" inline or under */}
-            <span className="text-xs font-bold leading-none text-[#E03628] sm:hidden">
+            <span className="text-xs font-bold leading-none text-orange-600 sm:hidden">
               · Opens at {open_time}
             </span>
           </div>
 
-          <p className="text-[11px] sm:text-xs font-medium leading-none text-[#717D8A] truncate mt-1 sm:mt-0.5">
+          <p className="text-[11px] sm:text-xs font-medium leading-none text-gray-500 truncate mt-1 sm:mt-0.5">
             {message}
           </p>
         </div>
@@ -147,10 +148,10 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
 
       {/* RIGHT: Desktop view "Opens at 7:00 AM" + Sunrise Icon */}
       <div className="flex items-center gap-2 ml-2 shrink-0">
-        <p className="hidden text-xs sm:text-sm font-semibold text-[#E03628] sm:block">
+        <p className="hidden text-xs sm:text-sm font-semibold text-orange-600 sm:block">
           Opens at {open_time}
         </p>
-        <SunriseIcon className="size-5 sm:size-6 text-[#F05A28]" />
+        <SunriseIcon className="size-5 sm:size-6 text-orange-500" />
       </div>
     </div>
   );
