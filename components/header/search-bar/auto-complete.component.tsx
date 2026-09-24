@@ -348,13 +348,6 @@ const AutoComplete: FC<
 
     autocomplete_instance_ref.current = autocomplete_instance;
 
-    if (!show_search_icon_only) {
-      setTimeout(() => {
-        const input = autocomplete_container_ref.current?.querySelector("input");
-        input?.focus();
-      }, 50);
-    }
-
     const handleScroll = (event: Event) => {
       const input = autocomplete_container_ref.current?.querySelector(
         "input",
