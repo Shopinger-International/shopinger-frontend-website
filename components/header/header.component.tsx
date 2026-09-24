@@ -102,8 +102,8 @@ const Header: FC<{
       <MobileHeader />
 
       {/* Desktop Store Closed Banner */}
-      <div className="hidden bg-white px-4 py-1 lg:block border-b border-gray-100">
-        <StoreClosedBanner />
+      <div className="hidden lg:block">
+        <StoreClosedBanner is_desktop_header />
       </div>
 
       <div className="hidden flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">

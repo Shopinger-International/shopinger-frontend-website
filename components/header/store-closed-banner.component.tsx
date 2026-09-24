@@ -1,5 +1,12 @@
+import { useState, useEffect } from "react";
 import type { FC } from "react";
 import { cn } from "@/lib/utils";
+
+export const isStoreClosed = (date = new Date()): boolean => {
+  const hours = date.getHours();
+  // Store is closed between 10:00 PM (22:00) and 6:59 AM (until 7:00 AM)
+  return hours >= 22 || hours < 7;
+};
 
 const MoonIcon: FC<{ className?: string }> = ({
   className = "size-10 text-[#F05A28]",
@@ -84,6 +91,8 @@ type IStoreClosedBannerProps = {
   open_time?: string;
   message?: string;
   className?: string;
+  force_show?: boolean;
+  is_desktop_header?: boolean;
 };
 
 const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
@@ -91,8 +100,23 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   open_time = "7:00 AM",
   message = "Order now. Deliveries resume at 7:00 AM.",
   className,
+  force_show = false,
+  is_desktop_header = false,
 }) => {
-  return (
+  const [is_closed, setIsClosed] = useState<boolean>(false);
+  const [is_mounted, setIsMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    setIsClosed(isStoreClosed());
+  }, []);
+
+  // Show only when store is closed (between 10:00 PM and 6:59 AM) or force_show is true
+  if (is_mounted && !is_closed && !force_show) {
+    return null;
+  }
+
+  const content = (
     <div
       className={cn(
         "flex w-full items-center justify-between rounded-lg sm:rounded-xl border border-[#FEEAD9] bg-[#FFF6EE] lg:bg-white px-3 py-1.5 sm:px-4 sm:py-1.5 shadow-2xs",
@@ -130,6 +154,16 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
       </div>
     </div>
   );
+
+  if (is_desktop_header) {
+    return (
+      <div className="bg-white px-4 py-1 border-b border-gray-100">
+        {content}
+      </div>
+    );
+  }
+
+  return content;
 };
 
 export default StoreClosedBanner;
