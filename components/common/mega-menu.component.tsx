@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 // types
 import type {
   FC,
@@ -192,14 +194,23 @@ const MenuGroup: FC<IMenuGroupProps> = ({
     </Disclosure>
   );
 };
+
 const MegaMenu: FC<IProps> = ({
   is_open,
   handleClose,
   handleShowLoginModal,
 }) => {
+  const router = useRouter();
   const { openModal: openLogoutModal } = useLogoutModalContext();
   const { data: user } = useUserDetails();
   const { data: categories = [] } = useCategories(true);
+
+  // Auto-close MegaMenu whenever page route changes
+  useEffect(() => {
+    if (is_open) {
+      handleClose();
+    }
+  }, [router.asPath]);
 
   return (
     <SidebarDrawer

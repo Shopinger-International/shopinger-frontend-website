@@ -50,7 +50,6 @@ const MobileHeader: FC = () => {
   const router = useRouter();
   const { data: user_details } = useUserDetails();
   const is_mounted = useIsMounted();
-
   const delivery_time = user_details ? "45" : "10";
   const is_grocery =
     categories.find(({ label }) => label == "Grocery")?.href == router.asPath;
@@ -66,7 +65,7 @@ const MobileHeader: FC = () => {
         is_pharmacy && "border-b-3 border-blue-500",
       )}
     >
-      {/* Delivery & Account */}
+      {/* Delivery & Account Header */}
       <div className="flex items-center justify-between">
         <div className="flex min-w-0 flex-col gap-1">
           <p className="text-lg font-semibold">
@@ -82,7 +81,7 @@ const MobileHeader: FC = () => {
         </div>
 
         <Link href="/account" aria-label="Account" className="ml-3 shrink-0">
-          <CircleUserIcon className="size-6" aria-hidden />
+          <CircleUserIcon className="size-6 text-gray-900" aria-hidden />
         </Link>
       </div>
 
@@ -116,8 +115,8 @@ const MobileHeader: FC = () => {
         })}
       </nav>
 
-      {/* Search */}
-      <SearchBar />
+      {/* Permanent Search Bar under category buttons */}
+      <SearchBar disable_detached />
     </div>
   );
 };

@@ -333,6 +333,7 @@ const LoginForm: FC<IProps> = ({
                     !is_modal && router.push("/");
                     handleOnSuccess?.(response.user);
 
+
                     query_client.invalidateQueries({
                       queryKey: ["product-reviews"],
                     });

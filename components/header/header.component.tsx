@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -183,6 +183,7 @@ const Header: FC<{
           </Link>
         </div>
       </div>
+
       <CategorySection />
       {show_filter_sort_bar && (
         <FilterSortBar disable_side_filter={disable_side_filter} />
