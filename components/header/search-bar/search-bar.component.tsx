@@ -24,15 +24,28 @@ export const search_client = algoliasearch(
 
 type IProps = {
   show_search_icon_only?: boolean;
+  disable_detached?: boolean;
+  hide_submit_button?: boolean;
+  onClose?: () => void;
 };
 
-const SearchBar: FC<IProps> = ({ show_search_icon_only = false }) => {
+const SearchBar: FC<IProps> = ({
+  show_search_icon_only = false,
+  disable_detached = false,
+  hide_submit_button = false,
+  onClose,
+}) => {
   const { data: categories = [] } = useCategories(true, "main");
   const animate_categories = categories.map((category) => {
     return category.name;
   });
   return (
-    <div className={clsx("relative", !show_search_icon_only && "w-full")}>
+    <div
+      className={clsx(
+        "landing-search-wrapper relative",
+        !show_search_icon_only && "w-full",
+      )}
+    >
       <InstantSearch
         searchClient={search_client}
         indexName={ALGOLIA_INDEX.PRODUCTS}
@@ -42,6 +55,9 @@ const SearchBar: FC<IProps> = ({ show_search_icon_only = false }) => {
         <AutoComplete
           animate_categories={animate_categories}
           show_search_icon_only={show_search_icon_only}
+          disable_detached={disable_detached}
+          hide_submit_button={hide_submit_button}
+          onClose={onClose}
           className={clsx(
             "relative rounded-lg",
             show_search_icon_only ? "bg-transparent" : "w-full bg-white",

@@ -78,16 +78,23 @@ const debouncedSearch = debouncePromise(async (query: string) => {
 const AutoComplete: FC<
   AutocompleteProps & {
     show_search_icon_only?: boolean;
+    disable_detached?: boolean;
+    hide_submit_button?: boolean;
     animate_categories: string[];
+    onClose?: () => void;
   }
 > = ({
   className,
   show_search_icon_only,
+  disable_detached = false,
+  hide_submit_button = false,
   animate_categories,
+  onClose,
   ...auto_complete_props
 }) => {
   const router = useRouter();
   const autocomplete_container_ref = useRef<HTMLDivElement>(null);
+  const autocomplete_instance_ref = useRef<any>(null);
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
 
@@ -152,6 +159,8 @@ const AutoComplete: FC<
             },
           },
           onSelect({ item }) {
+            autocomplete_instance_ref.current?.setIsOpen(false);
+            onClose?.();
             setQuery(item.label);
             router.push(`/search?query=${item.label}`);
           },
@@ -183,6 +192,8 @@ const AutoComplete: FC<
             },
             sourceId: "query-suggestions-plugin",
             onSelect({ item }) {
+              autocomplete_instance_ref.current?.setIsOpen(false);
+              onClose?.();
               setQuery(item.query);
               const query_id = item.__autocomplete_queryID;
               const index_name = item.__autocomplete_indexName;
@@ -210,7 +221,7 @@ const AutoComplete: FC<
       });
     // return [recent_searches, query_suggestions, algolia_insights_plugin];
     return [algolia_insights_plugin];
-  }, []);
+  }, [onClose]);
 
   useEffect(() => {
     if (!autocomplete_container_ref.current) return;
@@ -219,6 +230,11 @@ const AutoComplete: FC<
       ...auto_complete_props,
       insights: true,
       openOnFocus: true,
+      detachedMediaQuery: disable_detached
+        ? "(max-width: 767px)"
+        : show_search_icon_only
+          ? "(min-width: 0px)"
+          : "(max-width: 1024px)",
       plugins,
       container: autocomplete_container_ref.current,
 
@@ -231,7 +247,9 @@ const AutoComplete: FC<
           "absolute left-0 right-0 mt-2 bg-white shadow-lg sm:!rounded-lg sm:border sm:border-gray-300 z-50 shadow-sm overflow-hidden",
         list: "py-2 space-y-1 w-full ",
         inputWrapper: "pl-2 sm:pl-3",
-        submitButton: "md:!bg-orange-500",
+        submitButton: hide_submit_button
+          ? "!hidden"
+          : "landing-search-submit-btn flex items-center justify-center !bg-orange-500 hover:!bg-orange-600 !w-12 !min-w-12 !h-full cursor-pointer transition-colors shrink-0 relative z-20",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
         form: "!rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse !border-none",
         detachedSearchButton: clsx(
@@ -249,7 +267,7 @@ const AutoComplete: FC<
           : "pl-2 md:p-0",
 
         loadingIndicator:
-          "md:!bg-orange-500  flex items-center justify-center md:[&_svg]:!stroke-white md:[&_svg_path]:!stroke-white md:[&_svg_circle]:!stroke-white",
+          "bg-white lg:!bg-orange-500 flex items-center justify-center [&_svg]:!stroke-orange-500 [&_svg_path]:!stroke-orange-500 [&_svg_circle]:!stroke-orange-500 lg:[&_svg]:!stroke-white lg:[&_svg_path]:!stroke-white lg:[&_svg_circle]:!stroke-white",
       },
 
       getSources({ query }) {
@@ -277,6 +295,8 @@ const AutoComplete: FC<
                       <SearchBarHit
                         hit={item}
                         onClick={() => {
+                          autocomplete_instance.setIsOpen(false);
+                          onClose?.();
                           const query_id = item.__autocomplete_queryID;
                           const index_name = item.__autocomplete_indexName;
                           const object_id = item.objectID;
@@ -298,6 +318,8 @@ const AutoComplete: FC<
           : [];
       },
       onSubmit({ state }) {
+        autocomplete_instance.setIsOpen(false);
+        onClose?.();
         setQuery(state.query);
         router.push(`/search?query=${state.query}`);
       },
@@ -324,6 +346,8 @@ const AutoComplete: FC<
       },
     });
 
+    autocomplete_instance_ref.current = autocomplete_instance;
+
     const handleScroll = (event: Event) => {
       const input = autocomplete_container_ref.current?.querySelector(
         "input",
@@ -349,16 +373,40 @@ const AutoComplete: FC<
     };
   }, [plugins]);
 
+  // Hide the submit button inside the detached search modal (category pages on tablet)
+  useEffect(() => {
+    if (!hide_submit_button) return;
+
+    const hideSubmitBtn = () => {
+      const btns = document.querySelectorAll<HTMLElement>(
+        ".aa-DetachedFormContainer .aa-SubmitButton",
+      );
+      btns.forEach((btn) => {
+        btn.style.display = "none";
+      });
+    };
+
+    // Watch for the detached modal being added to the DOM
+    const observer = new MutationObserver(hideSubmitBtn);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Also run once immediately
+    hideSubmitBtn();
+
+    return () => observer.disconnect();
+  }, [hide_submit_button]);
+
   return (
     <div className={clsx("relative", className)}>
       <div ref={autocomplete_container_ref} />
 
       {!query &&
+        !show_search_icon_only &&
         show_animation &&
         animate_categories.length > 0 &&
         animate_categories[category_index] !== "" && (
-          <div className="pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-xs text-gray-400 sm:text-sm">
-            Search "{text}"
+          <div className="pointer-events-none absolute inset-y-0 left-3 right-14 z-10 flex items-center overflow-hidden truncate text-xs text-gray-400 sm:text-sm max-w-[calc(100%-3.5rem)]">
+            <span className="truncate">Search &quot;{text}&quot;</span>
           </div>
         )}
     </div>
