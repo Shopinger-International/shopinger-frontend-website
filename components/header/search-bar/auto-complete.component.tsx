@@ -55,6 +55,7 @@ type IAutocompleteSuggestion = AutocompleteQuerySuggestionsHit & {
 };
 
 const debouncedSearch = debouncePromise(async (query: string) => {
+  console.log("helllo");
   // Reject queries that don't contain at least one letter or number
   if (!/[a-zA-Z0-9]/.test(query)) {
     return [];
@@ -98,7 +99,7 @@ const AutoComplete: FC<
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
 
-  const { refine: setQuery, query } = useSearchBox();
+  const { query } = useSearchBox();
   const { refine: setPage } = usePagination();
 
   //categories animation
@@ -271,7 +272,6 @@ const AutoComplete: FC<
       },
 
       getSources({ query }) {
-        setQuery(query);
         return query
           ? [
               {
@@ -320,16 +320,13 @@ const AutoComplete: FC<
       onSubmit({ state }) {
         autocomplete_instance.setIsOpen(false);
         onClose?.();
-        setQuery(state.query);
         router.push(`/search?query=${state.query}`);
       },
 
       onReset() {
-        setQuery("");
         setPage(0);
       },
       onStateChange(props) {
-        setQuery(props.state.query);
         setShowAnimation(props.state.query ? false : true);
       },
 
@@ -363,7 +360,6 @@ const AutoComplete: FC<
 
       if (!is_scrolling_inside_panel) {
         autocomplete_instance.setIsOpen(false);
-        setQuery("");
       }
     };
     window.addEventListener("scroll", handleScroll, true);
@@ -405,7 +401,7 @@ const AutoComplete: FC<
         show_animation &&
         animate_categories.length > 0 &&
         animate_categories[category_index] !== "" && (
-          <div className="pointer-events-none absolute inset-y-0 left-3 right-14 z-10 flex items-center overflow-hidden truncate text-xs text-gray-400 sm:text-sm max-w-[calc(100%-3.5rem)]">
+          <div className="pointer-events-none absolute inset-y-0 right-14 left-3 z-10 flex max-w-[calc(100%-3.5rem)] items-center truncate overflow-hidden text-xs text-gray-400 sm:text-sm">
             <span className="truncate">Search &quot;{text}&quot;</span>
           </div>
         )}
