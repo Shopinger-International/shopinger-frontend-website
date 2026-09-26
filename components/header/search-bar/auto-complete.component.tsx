@@ -55,7 +55,6 @@ type IAutocompleteSuggestion = AutocompleteQuerySuggestionsHit & {
 };
 
 const debouncedSearch = debouncePromise(async (query: string) => {
-  console.log("helllo");
   // Reject queries that don't contain at least one letter or number
   if (!/[a-zA-Z0-9]/.test(query)) {
     return [];
@@ -162,7 +161,6 @@ const AutoComplete: FC<
           onSelect({ item }) {
             autocomplete_instance_ref.current?.setIsOpen(false);
             onClose?.();
-            setQuery(item.label);
             router.push(`/search?query=${item.label}`);
           },
         };
@@ -195,7 +193,6 @@ const AutoComplete: FC<
             onSelect({ item }) {
               autocomplete_instance_ref.current?.setIsOpen(false);
               onClose?.();
-              setQuery(item.query);
               const query_id = item.__autocomplete_queryID;
               const index_name = item.__autocomplete_indexName;
               const object_id = item.objectID;
