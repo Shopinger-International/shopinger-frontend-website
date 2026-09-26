@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { FC } from "react";
 
 // icons
-import { Heart, Star } from "lucide-react";
+import { Heart, Star, Plus, Minus } from "lucide-react";
 
 // types
 import type { IProductRecommendation } from "@/hooks/axios/home/use-feed.hook";
@@ -14,6 +14,7 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
 import useAddToWishlistMutation from "@/hooks/axios/wishlist/use-add-to-wishlist-mutation.hook";
 import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
+import useIsWishlisted from "@/hooks/axios/wishlist/use-is-wishlisted";
 import useCart from "@/hooks/axios/cart/use-cart.hook";
 import useCartItemIncreaseMutation from "@/hooks/axios/cart/use-cart-item-increase-mutation.hook";
 import useCartItemDecreaseMutation from "@/hooks/axios/cart/use-cart-item-decrease-mutation.hook";
@@ -45,19 +46,83 @@ export type IHomeProduct = IProductRecommendation & {
   sub_sub_category_id?: number;
 };
 
-type IProps = {
+interface IHomeProductCardProps {
   product: IHomeProduct;
   className?: string;
-};
+}
 
-type IQuantityControlProps = {
+interface IQuantityControlProps {
   product_id: number;
   variant_id: number;
   user_id?: number;
   sub_sub_category_id?: number;
   fullWidth?: boolean;
-};
+}
 
+// Helper functions for safe price and rating extraction from polymorphic API responses
+function extractProductPrices(product: IHomeProduct) {
+  const p = product as any;
+  const selling_price =
+    Number(
+      product.selling_price ??
+        p.selling_price_with_commission ??
+        p.variant_pricing?.selling_price_with_commission ??
+        p.variant_pricing?.selling_price ??
+        p.variants?.[0]?.variant_pricing?.selling_price_with_commission ??
+        p.variants?.[0]?.variant_pricing?.selling_price ??
+        p.price ??
+        0,
+    ) || 0;
+
+  const raw_mrp =
+    Number(
+      product.mrp ??
+        p.variant_pricing?.mrp ??
+        p.variants?.[0]?.variant_pricing?.mrp ??
+        p.variants?.[0]?.mrp ??
+        p.original_price ??
+        0,
+    ) || 0;
+
+  const raw_discount =
+    Number(
+      product.discount_percentage ??
+        product.discount ??
+        (p.discount_percentage != null
+          ? p.discount_percentage
+          : raw_mrp > selling_price && raw_mrp > 0
+            ? ((raw_mrp - selling_price) / raw_mrp) * 100
+            : 0),
+    ) || 0;
+
+  const discount_perc = Math.round(raw_discount);
+  const mrp = raw_mrp > selling_price ? raw_mrp : 0;
+
+  return { selling_price, mrp, discount_perc };
+}
+
+function extractProductRating(product: IHomeProduct) {
+  const p = product as any;
+  const avg_rating =
+    product.avg_rating ??
+    product.rating ??
+    product.average_rating ??
+    p.avg_rating ??
+    p.average_rating;
+
+  const rating_count =
+    product.rating_count ??
+    product.ratings_count ??
+    product.reviews_count ??
+    p.reviews_count ??
+    p.ratings_count ??
+    p.rating_count ??
+    p.total_reviews;
+
+  return { avg_rating, rating_count };
+}
+
+// Quantity Controller Component
 const QuantityControl: FC<IQuantityControlProps> = memo(
   ({
     product_id,
@@ -75,12 +140,12 @@ const QuantityControl: FC<IQuantityControlProps> = memo(
     let cart_quantity = 0;
     if (cart_data?.items && Array.isArray(cart_data.items)) {
       for (const item of cart_data.items) {
-        // 1. Check nested variants array
         if (Array.isArray(item.variants)) {
           const matched_variant = item.variants.find(
             (v: any) =>
               (v.id != null && Number(v.id) === Number(variant_id)) ||
-              (v.variant_id != null && Number(v.variant_id) === Number(variant_id)),
+              (v.variant_id != null &&
+                Number(v.variant_id) === Number(variant_id)),
           );
           if (matched_variant) {
             cart_quantity =
@@ -92,7 +157,6 @@ const QuantityControl: FC<IQuantityControlProps> = memo(
           }
         }
 
-        // 2. Check flat item structure
         const item_var_id = (item as any).variant_id ?? (item as any).id;
         const item_prod_id = (item as any).product_id;
 
@@ -112,14 +176,14 @@ const QuantityControl: FC<IQuantityControlProps> = memo(
 
     const [pending_qty, setPendingQty] = useState<number | null>(null);
 
-    // Smoothly clear pending_qty only after cart_quantity from useCart() catches up
+    // Smoothly clear pending_qty when cart_quantity catches up
     useEffect(() => {
       if (pending_qty !== null && cart_quantity === pending_qty) {
         setPendingQty(null);
       }
     }, [cart_quantity, pending_qty]);
 
-    // Safety timeout to clear pending_qty if network hangs
+    // Timeout safety for pending status
     useEffect(() => {
       if (pending_qty === null) return;
       const timer = setTimeout(() => {
@@ -130,18 +194,15 @@ const QuantityControl: FC<IQuantityControlProps> = memo(
 
     const display_quantity = pending_qty ?? cart_quantity;
 
-    const is_quantity_pending =
-      add_to_cart_mutation.isPending ||
-      increase_mutation.isPending ||
-      decrease_mutation.isPending ||
-      remove_mutation.isPending;
-
     const handleAddToCart = async (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
 
       try {
-        const availability = await getProductAvailability(product_id, variant_id);
+        const availability = await getProductAvailability(
+          product_id,
+          variant_id,
+        );
         if (availability && !availability.available_stock) {
           enqueueSnackbar("Product currently not available", {
             variant: "error",
@@ -236,17 +297,17 @@ const QuantityControl: FC<IQuantityControlProps> = memo(
       return (
         <div
           className={clsx(
-            "flex h-7 items-center justify-between rounded-lg bg-[#FF5300] px-1 text-white shadow-xs select-none sm:h-8",
-            fullWidth ? "w-full px-3" : "w-[68px] sm:w-[74px]",
+            "flex h-7 shrink-0 items-center justify-between rounded-lg bg-brand px-1 text-white select-none sm:h-8",
+            fullWidth ? "w-full px-3" : "w-18 sm:w-20",
           )}
         >
           <button
             type="button"
             onClick={handleDecreaseQuantity}
-            className="flex size-5 cursor-pointer items-center justify-center rounded text-xs font-black text-white hover:bg-white/20 active:scale-90"
+            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded text-white hover:bg-white/20 active:scale-90"
             aria-label="Decrease quantity"
           >
-            −
+            <Minus className="size-3.5 sm:size-4" strokeWidth={2.5} />
           </button>
           <span className="w-4 text-center text-xs font-black text-white sm:text-sm">
             {display_quantity}
@@ -254,10 +315,10 @@ const QuantityControl: FC<IQuantityControlProps> = memo(
           <button
             type="button"
             onClick={handleIncreaseQuantity}
-            className="flex size-5 cursor-pointer items-center justify-center rounded text-xs font-black text-white hover:bg-white/20 active:scale-90"
+            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded text-white hover:bg-white/20 active:scale-90"
             aria-label="Increase quantity"
           >
-            +
+            <Plus className="size-3.5 sm:size-4" strokeWidth={2.5} />
           </button>
         </div>
       );
@@ -268,8 +329,8 @@ const QuantityControl: FC<IQuantityControlProps> = memo(
         type="button"
         onClick={handleAddToCart}
         className={clsx(
-          "flex h-7 items-center justify-center cursor-pointer rounded-lg border-[1.5px] border-[#FF5300] bg-white text-xs font-extrabold text-[#FF5300] shadow-2xs transition-all hover:bg-orange-50 active:scale-95 sm:h-8",
-          fullWidth ? "w-full" : "w-[68px] sm:w-[74px]",
+          "flex h-7 shrink-0 items-center justify-center cursor-pointer rounded-lg border-2 border-brand bg-white text-xs font-extrabold text-brand transition-all hover:bg-orange-50 active:scale-95 sm:h-8",
+          fullWidth ? "w-full" : "w-18 sm:w-20",
         )}
       >
         ADD
@@ -280,80 +341,29 @@ const QuantityControl: FC<IQuantityControlProps> = memo(
 
 QuantityControl.displayName = "QuantityControl";
 
-const HomeProductCard: FC<IProps> = ({ product, className }) => {
+// Main Home Product Card Component
+const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
   const {
     product_id,
     variant_id,
     title,
     media_url,
-    selling_price: prop_selling_price,
-    mrp: prop_mrp,
-    discount_percentage: prop_discount,
-    discount,
     weight,
-    avg_rating: prop_avg_rating,
-    rating: prop_rating,
-    average_rating: prop_average_rating,
-    rating_count: prop_rating_count,
-    ratings_count: prop_ratings_count,
-    reviews_count: prop_reviews_count,
     is_wishlisted: initial_wishlisted = false,
     sub_sub_category_id = 0,
   } = product;
 
-  const avg_rating =
-    prop_avg_rating ??
-    prop_rating ??
-    prop_average_rating ??
-    (product as any).avg_rating ??
-    (product as any).average_rating;
+  const { selling_price, mrp, discount_perc } = extractProductPrices(product);
+  const { avg_rating, rating_count } = extractProductRating(product);
 
-  const rating_count =
-    prop_rating_count ??
-    prop_ratings_count ??
-    prop_reviews_count ??
-    (product as any).reviews_count ??
-    (product as any).ratings_count ??
-    (product as any).rating_count ??
-    (product as any).total_reviews;
-
-  // Read exact selling price, MRP, and discount directly from API object fields
-  // Note: API may return prices as strings, so we coerce everything to Number()
-  const selling_price = Number(
-    prop_selling_price ??
-    (product as any).selling_price_with_commission ??
-    (product as any).variant_pricing?.selling_price_with_commission ??
-    (product as any).variant_pricing?.selling_price ??
-    (product as any).variants?.[0]?.variant_pricing?.selling_price_with_commission ??
-    (product as any).variants?.[0]?.variant_pricing?.selling_price ??
-    (product as any).price ??
-    0
-  ) || 0;
-
-  const raw_mrp = Number(
-    prop_mrp ??
-    (product as any).variant_pricing?.mrp ??
-    (product as any).variants?.[0]?.variant_pricing?.mrp ??
-    (product as any).variants?.[0]?.mrp ??
-    (product as any).original_price ??
-    0
-  ) || 0;
-
-  const raw_discount = Number(
-    prop_discount ??
-    discount ??
-    ((product as any).discount_percentage != null
-      ? (product as any).discount_percentage
-      : raw_mrp > selling_price && raw_mrp > 0
-        ? ((raw_mrp - selling_price) / raw_mrp) * 100
-        : 0)
-  ) || 0;
-
-  const discount_perc = Math.round(raw_discount);
-
-  const mrp = raw_mrp > selling_price ? raw_mrp : 0;
-
+  const { data: wishlist_data } = useIsWishlisted({ variant_id });
   const [is_wishlisted, setIsWishlisted] = useState(initial_wishlisted);
+
+  useEffect(() => {
+    if (wishlist_data?.is_wishlisted !== undefined) {
+      setIsWishlisted(wishlist_data.is_wishlisted);
+    }
+  }, [wishlist_data?.is_wishlisted]);
 
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
@@ -414,12 +424,12 @@ const HomeProductCard: FC<IProps> = ({ product, className }) => {
   return (
     <div
       className={clsx(
-        "group relative flex h-full w-full flex-col justify-between rounded-2xl bg-[#FFF4EB] p-2 sm:p-2.5 transition-shadow hover:shadow-md border border-orange-100/60",
+        "group relative flex h-full w-full flex-col justify-between rounded-2xl bg-card-warm p-2 sm:p-2.5 border border-orange-100/60",
         className,
       )}
     >
       <div className="flex flex-1 flex-col justify-between">
-        {/* Top Image Container & Text */}
+        {/* Top Image Container & Details */}
         <Link
           href={product_href}
           title={`View ${title}`}
@@ -428,7 +438,7 @@ const HomeProductCard: FC<IProps> = ({ product, className }) => {
           <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white p-1.5 flex items-center justify-center">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-[#FF5300] px-2 py-0.5 text-[9px] font-black text-white shadow-2xs tracking-tight uppercase sm:text-[10px]">
+              <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-brand px-2 py-0.5 text-xs font-black text-white tracking-tight uppercase">
                 {discount_perc}% OFF
               </span>
             )}
@@ -442,12 +452,12 @@ const HomeProductCard: FC<IProps> = ({ product, className }) => {
                 remove_from_wishlist_mutation.isPending
               }
               onClick={handleWishlistClick}
-              className="absolute top-1.5 right-1.5 z-10 flex size-7 sm:size-8 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-orange-500 shadow-2xs transition-transform hover:scale-105 active:scale-95"
+              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-orange-500 transition-transform active:scale-95"
             >
               <Heart
                 className={clsx(
-                  "size-3.5 sm:size-4 text-[#FF5300]",
-                  is_wishlisted && "fill-[#FF5300]",
+                  "size-5 sm:size-6 text-brand",
+                  is_wishlisted && "fill-brand",
                 )}
                 strokeWidth={2.2}
               />
@@ -460,12 +470,12 @@ const HomeProductCard: FC<IProps> = ({ product, className }) => {
                 alt={title}
                 fill
                 sizes="(max-width: 640px) 140px, 180px"
-                className="object-contain p-1 transition-transform duration-300 group-hover:scale-105"
+                className="object-contain p-1 transition-transform duration-300"
               />
             </div>
 
             {/* Bottom-Left Rating Overlay */}
-            <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-[#008748] px-1.5 py-0.5 text-[10px] font-bold text-white shadow-xs">
+            <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating px-1.5 py-0.5 text-2xs font-bold text-white">
               <span>
                 {avg_rating != null && Number(avg_rating) > 0
                   ? Number(avg_rating).toFixed(1)
@@ -473,7 +483,7 @@ const HomeProductCard: FC<IProps> = ({ product, className }) => {
               </span>
               <Star className="size-2.5 fill-white text-white" />
               {rating_count != null && (
-                <span className="text-[9px] font-semibold text-white/90 border-l border-white/30 pl-1">
+                <span className="text-3xs font-semibold text-white/90 border-l border-white/30 pl-1">
                   {rating_count}
                 </span>
               )}
@@ -481,13 +491,13 @@ const HomeProductCard: FC<IProps> = ({ product, className }) => {
           </div>
 
           {/* Title */}
-          <h3 className="mt-2 line-clamp-2 min-h-[2.1rem] text-[11px] font-bold leading-snug text-gray-900 sm:text-xs">
+          <h3 className="mt-2 line-clamp-2 min-h-8 text-2xs font-bold leading-snug text-gray-900 sm:text-xs">
             {title}
           </h3>
 
           {/* Weight / Unit */}
           {weight && (
-            <p className="mt-0.5 text-[10px] font-medium text-gray-500 sm:text-[11px]">
+            <p className="mt-0.5 text-2xs font-medium text-gray-500 sm:text-xs">
               {weight}
             </p>
           )}
@@ -497,19 +507,19 @@ const HomeProductCard: FC<IProps> = ({ product, className }) => {
       {/* Price and Action Row (Fixed at Bottom) */}
       <div className="mt-auto flex items-center justify-between gap-1 pt-2">
         {selling_price > 0 && (
-          <div className="flex items-baseline gap-1">
-            <span className="text-sm font-black text-gray-900 sm:text-base">
+          <div className="flex flex-col sm:flex-row sm:items-baseline min-w-0">
+            <span className="text-xs font-black text-gray-900 sm:text-sm md:text-base leading-tight">
               ₹{selling_price}
             </span>
             {mrp > selling_price && (
-              <span className="text-[10px] font-medium text-gray-400 line-through sm:text-xs">
+              <span className="text-3xs font-medium text-gray-400 line-through leading-tight sm:text-2xs sm:ml-1">
                 ₹{mrp}
               </span>
             )}
           </div>
         )}
 
-        {/* Separated Quantity Controller Component */}
+        {/* Quantity Controller Component */}
         <QuantityControl
           product_id={product_id}
           variant_id={variant_id}

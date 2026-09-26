@@ -8,7 +8,7 @@ import type { IResponseType } from "@/hooks/axios/wishlist/use-get-wishlist.hook
 import type { FC } from "react";
 
 // icons
-import { Trash2 } from "lucide-react";
+import { Trash2, Plus, Minus } from "lucide-react";
 
 // hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
@@ -203,14 +203,14 @@ const WishlistQuantityControl: FC<IWishlistQuantityControlProps> = memo(
 
     if (display_quantity > 0) {
       return (
-        <div className="flex h-10 min-w-[110px] items-center justify-between rounded-md bg-[#FF5300] px-3 text-white shadow-2xs select-none sm:min-w-[120px]">
+        <div className="flex h-10 w-28 items-center justify-between rounded-md bg-brand px-2 text-white select-none sm:w-32">
           <button
             type="button"
             onClick={handleDecreaseQuantity}
-            className="flex size-6 cursor-pointer items-center justify-center rounded text-base font-black text-white hover:bg-white/20 active:scale-90"
+            className="flex size-8 cursor-pointer items-center justify-center rounded text-white hover:bg-white/20 active:scale-90"
             aria-label="Decrease quantity"
           >
-            −
+            <Minus className="size-4" strokeWidth={2.5} />
           </button>
           <span className="text-sm font-black text-white">
             {display_quantity}
@@ -218,10 +218,10 @@ const WishlistQuantityControl: FC<IWishlistQuantityControlProps> = memo(
           <button
             type="button"
             onClick={handleIncreaseQuantity}
-            className="flex size-6 cursor-pointer items-center justify-center rounded text-base font-black text-white hover:bg-white/20 active:scale-90"
+            className="flex size-8 cursor-pointer items-center justify-center rounded text-white hover:bg-white/20 active:scale-90"
             aria-label="Increase quantity"
           >
-            +
+            <Plus className="size-4" strokeWidth={2.5} />
           </button>
         </div>
       );

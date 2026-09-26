@@ -14,6 +14,15 @@
   --font-mono: var(--font-geist-mono);
   --color-bg-primary: #ff740a;
   --color-text-primary: #353535;
+  --color-brand: #FF5300;
+  --color-card-warm: #FFF4EB;
+  --color-rating: #008748;
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.75rem;
+  --text-3xs: 0.5625rem;
+  --text-3xs--line-height: 0.6875rem;
+  --text-4xs: 0.5rem;
+  --text-4xs--line-height: 0.625rem;
 }
 
 @theme {
