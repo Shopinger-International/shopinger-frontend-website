@@ -35,35 +35,6 @@ const CategorySection: FC = () => {
 
   const separate_category_sub_categories =
     is_grocery || is_medicine ? (selected_category?.sub_categories ?? []) : [];
-  const category_images = [
-    "/icons/appliances.svg",
-    "/icons/mobile.svg",
-    "/icons/home-and-kitchen.svg",
-    "/icons/western-wear.svg",
-    "/icons/ethnic-wear.svg",
-    "/icons/books-and-stationery.svg",
-    "/icons/gardening-and-outdoor.svg",
-    "/icons/beauty.svg",
-    "/icons/pet-care.svg",
-    "/icons/gadgets.svg",
-    "/icons/toys-and-games.svg",
-    "/icons/wellness-and-home-spa.svg",
-    "/icons/grocery.svg",
-    "/icons/school-uniform.svg",
-    "/icons/women-footwear.svg",
-    "/icons/men-footwear.svg",
-    "/icons/health-and-personal-care.svg",
-    "/icons/automotive.svg",
-    "/icons/bags.svg",
-    "/icons/fresh-products.svg",
-    "/icons/jewellery.svg",
-    "/icons/kids-fashion.svg",
-    "/icons/kids-footwear.svg",
-    "/icons/medicine.svg",
-    "/icons/mens-fashion.svg",
-    "/icons/sports.svg",
-    "/icons/women-suits.svg",
-  ];
 
   const display_categories =
     separate_category_sub_categories.length > 0
@@ -273,9 +244,9 @@ const CategorySection: FC = () => {
                               hide_nav ? "h-0" : "h-9",
                             )}
                           >
-                            {category_images[index] ? (
+                            {category.media.icon ? (
                               <Image
-                                src={category_images[index]}
+                                src={category.media.icon}
                                 alt={name}
                                 width={48}
                                 height={48}
