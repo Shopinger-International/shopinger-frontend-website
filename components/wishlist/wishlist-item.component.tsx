@@ -1,3 +1,4 @@
+import { useState, useEffect, memo } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,6 +16,10 @@ import useCreateBuyingIntentMutation from "@/hooks/axios/checkout/use-create-buy
 import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import { useLoginModalContext } from "@/provider/login-modal-provider";
+import useCart from "@/hooks/axios/cart/use-cart.hook";
+import useCartItemIncreaseMutation from "@/hooks/axios/cart/use-cart-item-increase-mutation.hook";
+import useCartItemDecreaseMutation from "@/hooks/axios/cart/use-cart-item-decrease-mutation.hook";
+import useCartItemRemoveMutation from "@/hooks/axios/cart/use-cart-item-remove-mutation.hook";
 
 // analytics event
 import addedToCartEvent from "@/analytics/events/added-to-cart.event";
@@ -31,6 +36,212 @@ import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
 import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
 import buyNowClickedEvent from "@/analytics/events/buy-now-clicked.event";
 
+type IWishlistQuantityControlProps = {
+  product_id: number;
+  variant_id: number;
+  user_id?: number;
+  sub_sub_category_id?: number;
+};
+
+const WishlistQuantityControl: FC<IWishlistQuantityControlProps> = memo(
+  ({ product_id, variant_id, user_id, sub_sub_category_id = 0 }) => {
+    const { data: cart_data } = useCart();
+    const add_to_cart_mutation = useAddToCartMutation();
+    const increase_mutation = useCartItemIncreaseMutation();
+    const decrease_mutation = useCartItemDecreaseMutation();
+    const remove_mutation = useCartItemRemoveMutation();
+
+    let cart_quantity = 0;
+    if (cart_data?.items && Array.isArray(cart_data.items)) {
+      for (const item of cart_data.items) {
+        if (Array.isArray(item.variants)) {
+          const matched_variant = item.variants.find(
+            (v: any) =>
+              (v.id != null && Number(v.id) === Number(variant_id)) ||
+              (v.variant_id != null && Number(v.variant_id) === Number(variant_id)),
+          );
+          if (matched_variant) {
+            cart_quantity =
+              matched_variant.selected_stock ??
+              (matched_variant as any).quantity ??
+              (matched_variant as any).qty ??
+              1;
+            break;
+          }
+        }
+
+        const item_var_id = (item as any).variant_id ?? (item as any).id;
+        const item_prod_id = (item as any).product_id;
+
+        if (
+          (item_var_id != null && Number(item_var_id) === Number(variant_id)) ||
+          (item_prod_id != null && Number(item_prod_id) === Number(product_id))
+        ) {
+          cart_quantity =
+            (item as any).selected_stock ??
+            (item as any).quantity ??
+            (item as any).qty ??
+            1;
+          break;
+        }
+      }
+    }
+
+    const [pending_qty, setPendingQty] = useState<number | null>(null);
+
+    useEffect(() => {
+      if (pending_qty !== null && cart_quantity === pending_qty) {
+        setPendingQty(null);
+      }
+    }, [cart_quantity, pending_qty]);
+
+    useEffect(() => {
+      if (pending_qty === null) return;
+      const timer = setTimeout(() => {
+        setPendingQty(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }, [pending_qty]);
+
+    const display_quantity = pending_qty ?? cart_quantity;
+
+    const handleAddToCart = async (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const product_availability = await getProductAvailability(
+        product_id,
+        variant_id,
+      );
+      if (!product_availability.available_stock) {
+        enqueueSnackbar("Product currently not available", {
+          key: `product-availability-success-${Date.now()}`,
+          variant: "error",
+        });
+        return;
+      }
+
+      setPendingQty(1);
+
+      add_to_cart_mutation.mutate(
+        {
+          product_id,
+          variant_id,
+          quantity: 1,
+        },
+        {
+          onSuccess() {
+            addedToCartEvent({
+              user_id,
+              product_id,
+              variant_id,
+              category_id: sub_sub_category_id,
+              category_type: "SUB_SUB",
+              source: ANALYTICS_SOURCE_TYPE.WISHLIST,
+            });
+          },
+          onError() {
+            setPendingQty(null);
+          },
+        },
+      );
+    };
+
+    const handleDecreaseQuantity = (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const next_qty = Math.max(0, display_quantity - 1);
+      setPendingQty(next_qty);
+
+      if (cart_quantity > 1) {
+        decrease_mutation.mutate(
+          { variant_id },
+          {
+            onError() {
+              setPendingQty(null);
+            },
+          },
+        );
+      } else {
+        remove_mutation.mutate(
+          { product_id, variant_id },
+          {
+            onError() {
+              setPendingQty(null);
+            },
+          },
+        );
+      }
+    };
+
+    const handleIncreaseQuantity = (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      setPendingQty(display_quantity + 1);
+
+      increase_mutation.mutate(
+        { variant_id },
+        {
+          onSuccess() {
+            addedToCartEvent({
+              user_id,
+              product_id,
+              variant_id,
+              category_id: sub_sub_category_id,
+              category_type: "SUB_SUB",
+              source: ANALYTICS_SOURCE_TYPE.WISHLIST,
+            });
+          },
+          onError() {
+            setPendingQty(null);
+          },
+        },
+      );
+    };
+
+    if (display_quantity > 0) {
+      return (
+        <div className="flex h-10 min-w-[110px] items-center justify-between rounded-md bg-[#FF5300] px-3 text-white shadow-2xs select-none sm:min-w-[120px]">
+          <button
+            type="button"
+            onClick={handleDecreaseQuantity}
+            className="flex size-6 cursor-pointer items-center justify-center rounded text-base font-black text-white hover:bg-white/20 active:scale-90"
+            aria-label="Decrease quantity"
+          >
+            −
+          </button>
+          <span className="text-sm font-black text-white">
+            {display_quantity}
+          </span>
+          <button
+            type="button"
+            onClick={handleIncreaseQuantity}
+            className="flex size-6 cursor-pointer items-center justify-center rounded text-base font-black text-white hover:bg-white/20 active:scale-90"
+            aria-label="Increase quantity"
+          >
+            +
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <button
+        type="button"
+        className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 transition hover:bg-gray-50 disabled:bg-gray-300 sm:flex-none sm:px-6"
+        disabled={add_to_cart_mutation.isPending}
+        onClick={handleAddToCart}
+      >
+        Add to Cart
+      </button>
+    );
+  },
+);
+
+WishlistQuantityControl.displayName = "WishlistQuantityControl";
+
 const WishlistItem: FC<IResponseType["data"][number]> = ({
   product_id,
   variant_id,
@@ -46,7 +257,6 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
   const is_logged_in = !!user_details;
   const user_id = user_details?.id;
   const create_buying_intent_mutation = useCreateBuyingIntentMutation();
-  const add_to_cart_mutation = useAddToCartMutation();
   const remove_from_wishlist_mutation = useRemoveFromWishlistMutation();
   const { openModal: openLoginModal } = useLoginModalContext();
 
@@ -138,45 +348,12 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
           <Trash2 className="size-6" />
         </button>
 
-        <button
-          type="button"
-          className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 transition hover:bg-gray-50 disabled:bg-gray-300 sm:flex-none sm:px-6"
-          disabled={add_to_cart_mutation.isPending}
-          onClick={async () => {
-            const product_availability = await getProductAvailability(
-              product_id,
-              variant_id,
-            );
-            if (!product_availability.available_stock) {
-              enqueueSnackbar("Product currently not available", {
-                key: `product-availability-success-${Date.now()}`,
-                variant: "error",
-              });
-              return;
-            }
-            add_to_cart_mutation.mutate(
-              {
-                product_id,
-                variant_id,
-                quantity: 1,
-              },
-              {
-                onSuccess() {
-                  addedToCartEvent({
-                    user_id,
-                    product_id,
-                    variant_id,
-                    category_id: sub_sub_category_id,
-                    category_type: "SUB_SUB",
-                    source: ANALYTICS_SOURCE_TYPE.WISHLIST,
-                  });
-                },
-              },
-            );
-          }}
-        >
-          Add to Cart
-        </button>
+        <WishlistQuantityControl
+          product_id={product_id}
+          variant_id={variant_id}
+          user_id={user_id}
+          sub_sub_category_id={sub_sub_category_id}
+        />
         <button
           type="button"
           className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:bg-orange-300 sm:flex-none sm:px-6"

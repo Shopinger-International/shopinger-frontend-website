@@ -8,10 +8,9 @@ import type { DehydratedState } from "@tanstack/react-query";
 import MainLayout from "@/components/layout/main-layout.component";
 
 // local components
-import ProductGrid from "@/components/home/product-grid.component";
+import HomeProductRow from "@/components/home/home-product-row.component";
 import BestDeals from "@/components/home/best-deals/best-deals.component";
 import CategorySection from "@/components/home/category/category-section.component";
-import ProductRow from "@/components/home/product-row/product-row.component";
 import Seo from "@/components/common/seo";
 import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.component";
 import NProducts from "@/components/home/n-products/n-products.component";
@@ -61,10 +60,6 @@ const HomePage: NextPageWithLayout = () => {
   const best_seller_products = home_feed?.best_seller_products ?? [];
   const deals_of_the_day = home_feed?.deals_of_the_day ?? [];
 
-  const show_trending_section = trending_product_recommendations.length >= 6;
-  const show_new_arrivals_section = new_arrivals.length >= 6;
-  const show_featured_section = featured_products.length >= 6;
-  const show_best_seller_section = best_seller_products.length >= 6;
   const { data: user } = useUserDetails();
   const is_prod = process.env.NODE_ENV == "production";
   const description =
@@ -85,70 +80,83 @@ const HomePage: NextPageWithLayout = () => {
         url={page_url}
         json_ld={JSON.stringify(json_ld)}
       />
-      <div className="space-y-4 pt-(--header-height)">
-        <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
+      <div className="space-y-6 pt-(--header-height)">
+        <div className="max-w-8xl mx-auto w-full space-y-6 px-4">
           <Campaign campaigns={campaigns} />
           <CampaignTimer />
           <HighlightsBar />
-          {/* <ProductMarquee /> */}
-          {continue_shopping_recommendations.length >= 6 && (
-            <ProductRow
+
+          {/* Continue Shopping */}
+          {continue_shopping_recommendations.length > 0 && (
+            <HomeProductRow
               products={continue_shopping_recommendations}
               title={
                 user?.name
                   ? `${user.name}, pick up where you left off`
                   : "Based on your recent browsing activity"
               }
-              background_style="bg-[#FFE2D0]"
             />
           )}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {show_trending_section && (
-              <ProductGrid
-                title={"Trending Products"}
-                products={trending_product_recommendations}
-                view_all_href="section/trending-products"
-              />
-            )}
-            {show_new_arrivals_section && (
-              <ProductGrid
-                title={"New Arrivals"}
-                products={new_arrivals}
-                view_all_href="section/new-arrivals"
-              />
-            )}
-            {show_featured_section ? (
-              <ProductGrid
-                title={"Featured"}
-                products={featured_products}
-                view_all_href="section/featured-products"
-              />
-            ) : show_best_seller_section ? (
-              <ProductGrid
-                title={"Best Seller"}
-                products={best_seller_products}
-                view_all_href="section/best-sellers"
-              />
-            ) : (
-              <></>
-            )}
-          </div>
 
-          {product_recommendations.length >= 6 && (
-            <ProductRow
-              products={product_recommendations}
-              title={"Handpicked for You"}
-              background_style="bg-lime-200"
+          {/* Trending Products Row */}
+          {trending_product_recommendations.length > 0 && (
+            <HomeProductRow
+              title="Trending Products"
+              products={trending_product_recommendations}
+              view_all_href="section/trending-products"
             />
           )}
+
+          {/* New Arrivals Row */}
+          {new_arrivals.length > 0 && (
+            <HomeProductRow
+              title="New Arrivals"
+              products={new_arrivals}
+              view_all_href="section/new-arrivals"
+            />
+          )}
+
+          {/* Featured Products Row */}
+          {featured_products.length > 0 && (
+            <HomeProductRow
+              title="Featured"
+              products={featured_products}
+              view_all_href="section/featured-products"
+            />
+          )}
+
+          {/* Best Sellers Row */}
+          {best_seller_products.length > 0 && (
+            <HomeProductRow
+              title="Best Sellers"
+              products={best_seller_products}
+              view_all_href="section/best-sellers"
+            />
+          )}
+
+          {/* Handpicked Recommendations Row */}
+          {product_recommendations.length > 0 && (
+            <HomeProductRow
+              products={product_recommendations}
+              title="Handpicked for You"
+            />
+          )}
+          {/* Deals of the Day */}
+          <BestDeals
+            products={deals_of_the_day}
+            fallback_products={
+              trending_product_recommendations.length > 0
+                ? trending_product_recommendations
+                : featured_products
+            }
+          />
         </div>
 
-        {category_recommendations.length >= 5 && (
+        {category_recommendations.length > 0 && (
           <CategorySection
             category_recommendations={category_recommendations}
           />
         )}
-        <BestDeals products={deals_of_the_day} />
         <NProducts />
       </div>
     </>
