@@ -90,7 +90,7 @@ export default function SubCategorySection() {
                 }`}
               >
                 <SubCategoryImage
-                  src={sub_category.media}
+                  src={sub_category.media.photo}
                   alt={sub_category.name}
                 />
               </div>
