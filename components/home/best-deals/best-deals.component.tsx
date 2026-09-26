@@ -7,7 +7,9 @@ import useSectionProducts from "@/hooks/axios/home/use-section-products.hook";
 
 // local components
 import HomeProductRow from "@/components/home/home-product-row.component";
-import type { IHomeProduct } from "@/components/home/home-product-card.component";
+import HomeProductCard, {
+  type IHomeProduct,
+} from "@/components/home/home-product-card.component";
 
 type IProps = {
   products: IResponse["data"]["deals_of_the_day"];
@@ -145,6 +147,7 @@ const BestDeals: FC<IProps> = ({ products = [], fallback_products = [] }) => {
       subtitle="Explore today's best discounted products and limited-time offers"
       products={final_products}
       background_style="bg-gradient-to-r from-orange-100/90 via-orange-50 to-orange-100/90 border border-orange-200/80 shadow-xs"
+      CardComponent={HomeProductCard}
     />
   );
 };

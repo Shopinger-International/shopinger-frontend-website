@@ -6,7 +6,9 @@ import useSectionProducts from "@/hooks/axios/home/use-section-products.hook";
 
 // local components
 import HomeProductRow from "@/components/home/home-product-row.component";
-import type { IHomeProduct } from "@/components/home/home-product-card.component";
+import HomeProductCard, {
+  type IHomeProduct,
+} from "@/components/home/home-product-card.component";
 
 type IProps = {
   title: string;
@@ -110,6 +112,7 @@ const HomeSectionRow: FC<IProps> = ({
       products={combined_products}
       view_all_href={view_all_href}
       background_style={background_style}
+      CardComponent={HomeProductCard}
     />
   );
 };

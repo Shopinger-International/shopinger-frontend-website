@@ -3,6 +3,7 @@ import type { ICategoryRecommendation } from "@/hooks/axios/home/use-feed.hook";
 
 // local components
 import HomeProductRow from "@/components/home/home-product-row.component";
+import HomeProductCard from "@/components/home/home-product-card.component";
 
 const CategorySection: FC<{
   category_recommendations: Array<ICategoryRecommendation>;
@@ -42,6 +43,7 @@ const CategorySection: FC<{
             title={category_name}
             products={products}
             view_all_href={category_url}
+            CardComponent={HomeProductCard}
           />
         );
       })}
