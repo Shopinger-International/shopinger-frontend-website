@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, ReactNode } from "react";
 import Link from "next/link";
 import type { FC } from "react";
 import useEmblaCarousel from "embla-carousel-react";
@@ -15,23 +15,27 @@ import HomeProductCard, {
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import clsx from "clsx";
 
-interface IHomeProductRowProps {
+interface IHomeProductRowProps<T = IHomeProduct> {
   title: string;
   subtitle?: string;
-  products: Array<IHomeProduct>;
+  products: Array<T>;
   view_all_href?: string;
   background_style?: string;
   className?: string;
+  CardComponent?: FC<{ product: T }>;
+  renderCard?: (product: T) => ReactNode;
 }
 
-const HomeProductRow: FC<IHomeProductRowProps> = ({
+const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
   title,
   subtitle,
   products,
   view_all_href,
   background_style,
   className,
-}) => {
+  CardComponent,
+  renderCard,
+}: IHomeProductRowProps<T>) => {
   const [cta_state, setCtaState] = useState<{
     can_scroll_prev?: boolean;
     can_scroll_next?: boolean;
@@ -169,14 +173,23 @@ const HomeProductRow: FC<IHomeProductRowProps> = ({
           ref={embla_ref}
         >
           <ul className="flex gap-2.5 sm:gap-3.5 py-1">
-            {products.map((product) => (
-              <li
-                key={`home-prod-${product.product_id}-${product.variant_id}`}
-                className="w-40 min-w-40 sm:w-48 sm:min-w-48 md:w-52 md:min-w-52 shrink-0 grow-0 select-none"
-              >
-                <HomeProductCard product={product} />
-              </li>
-            ))}
+            {products.map((product, idx) => {
+              const item_key = `home-prod-${product.product_id ?? idx}-${product.variant_id ?? idx}`;
+              return (
+                <li
+                  key={item_key}
+                  className="w-40 min-w-40 sm:w-48 sm:min-w-48 md:w-52 md:min-w-52 shrink-0 grow-0 select-none"
+                >
+                  {renderCard ? (
+                    renderCard(product)
+                  ) : CardComponent ? (
+                    <CardComponent product={product} />
+                  ) : (
+                    <HomeProductCard product={product} />
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
 
