@@ -95,6 +95,7 @@ const OTPModal: FC<OTPModalProps> = ({
                     setFieldValue("otp", val, false);
                   }}
                   max_length={6}
+                  autoComplete="one-time-code"
                   container_class_name="flex gap-2"
                 />
 
