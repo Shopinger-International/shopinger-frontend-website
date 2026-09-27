@@ -185,13 +185,13 @@ const MobileProductGallary: FC<IProps> = ({
       <div className="overflow-hidden" ref={embla_ref}>
         <div className="flex">
           {variant_medias_with_title.map(({ media, image_title }, index) => (
-            <div key={index} className="min-w-0 flex-[0_0_85%] pr-4">
-              <div className="relative aspect-square overflow-hidden rounded-lg border border-neutral-300">
+            <div key={index} className="min-w-0 flex-[0_0_100%]">
+              <div className="relative aspect-square overflow-hidden rounded-lg">
                 <Image
                   src={media.url}
                   alt={image_title}
                   fill
-                  sizes="(max-width: 1024px) 85vw"
+                  sizes="100vw"
                   priority={index === 0}
                   className="object-contain"
                 />
