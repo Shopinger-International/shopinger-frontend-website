@@ -197,25 +197,25 @@ const HomeProductQuantityControl: FC<IQuantityControlProps> = memo(
       return (
         <div
           className={clsx(
-            "flex h-7 shrink-0 items-center justify-between rounded-lg bg-brand px-1 text-white select-none sm:h-8",
+            "flex h-7 shrink-0 items-center justify-between rounded-lg bg-white px-1 text-brand select-none sm:h-8 border-2 border-brand",
             fullWidth ? "w-full px-3" : "w-18 sm:w-20",
           )}
         >
           <button
             type="button"
             onClick={handleDecreaseQuantity}
-            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded text-white hover:bg-white/20 active:scale-90"
+            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded text-brand hover:bg-white/20 active:scale-90"
             aria-label="Decrease quantity"
           >
             <Minus className="size-3.5 sm:size-4" strokeWidth={2.5} />
           </button>
-          <span className="w-4 text-center text-xs font-black text-white sm:text-sm">
+          <span className="w-4 text-center text-xs font-black text-brand sm:text-sm">
             {display_quantity}
           </span>
           <button
             type="button"
             onClick={handleIncreaseQuantity}
-            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded text-white hover:bg-white/20 active:scale-90"
+            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded text-brand hover:bg-white/20 active:scale-90"
             aria-label="Increase quantity"
           >
             <Plus className="size-3.5 sm:size-4" strokeWidth={2.5} />

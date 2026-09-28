@@ -144,7 +144,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
   return (
     <div
       className={clsx(
-        "group relative flex h-full w-full flex-col justify-between rounded-2xl bg-card-warm p-2 sm:p-2.5 border border-orange-100/60",
+        "group relative flex h-full w-full flex-col justify-between rounded-2xl p-2 sm:p-2.5 border border-orange-100/60",
         className,
       )}
     >
@@ -158,7 +158,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white flex items-center justify-center ">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-brand px-2 py-0.5 text-xs font-black text-white tracking-tight uppercase">
+              <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-black text-brand tracking-tight uppercase">
                 {discount_perc}% OFF
               </span>
             )}
