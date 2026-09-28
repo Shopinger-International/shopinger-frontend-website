@@ -100,7 +100,7 @@ const Header: FC<{
     >
       {/* <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8"> */}
       <MobileHeader />
-      <div className="hidden flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
+      <div className="hidden flex-col gap-1 bg-[#FFF7ED] px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button onClick={openMegaMenuDrawer}>
@@ -168,13 +168,13 @@ const Header: FC<{
           </div>
           <Link
             href="/cart-checkout"
-            className="hidden items-center gap-2 font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
+            className="hidden items-center gap-2 font-semibold text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
             aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
           >
             <span className="relative inline-block">
-              <Cart width={36} height={30} />
+              <Cart width={36} height={30} fill="black" />
 
-              <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-white">
+              <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-black">
                 {cart_details?.total_items ?? 0}
               </span>
             </span>
