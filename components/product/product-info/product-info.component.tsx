@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Script from "next/script";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 // const
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
 
 // types
-import { useEffect, type FC } from "react";
+import { type FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
