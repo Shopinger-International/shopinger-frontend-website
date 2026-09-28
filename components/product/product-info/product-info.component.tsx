@@ -1,11 +1,13 @@
 import Link from "next/link";
+import Script from "next/script";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 // const
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
 
 // types
-import type { FC } from "react";
+import { type FC } from "react";
 import type IProduct from "@/types/product";
 import type IVariant from "@/types/variant";
 import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/reviews";
@@ -108,183 +110,149 @@ const ProductInfo: FC<IProps> = ({
         )?.label ?? value,
     );
   const heading = `${updated_title} ${!!nor_visual_variant_attributes.length ? "(" + nor_visual_variant_attributes.join(", ") + ")" : ""} ${!!visual_variant_attributes.length ? " - " + visual_variant_attributes.join(", ") : " "}`;
+  const initializeAffordabilityWidget = () => {
+    if (!window.RazorpayAffordabilitySuite) return;
 
+    const container = document.getElementById("razorpay-affordability-widget");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const widget = new window.RazorpayAffordabilitySuite({
+      key: process.env.NEXT_PUBLIC_RAZORPAYKEY_ID!,
+      amount: selling_price_with_commission * 100,
+    });
+
+    widget.render();
+  };
+
+  useEffect(() => {
+    if (window.RazorpayAffordabilitySuite) {
+      initializeAffordabilityWidget();
+    }
+  }, [selling_price_with_commission]);
   return (
-    <section aria-labelledby="product-title" className="flex flex-col lg:block">
-      <h1
-        id="product-title"
-        className="order-1 mb-2 text-sm font-semibold lg:mb-3 lg:text-xl lg:font-medium"
+    <>
+      <Script
+        src="https://cdn.razorpay.com/widgets/affordability/affordability.js"
+        strategy="afterInteractive"
+        onLoad={initializeAffordabilityWidget}
+      />
+      <section
+        aria-labelledby="product-title"
+        className="flex flex-col lg:block"
       >
-        {heading}
-      </h1>
-
-      <MobileProductGallary
-        variant={variant}
-        product={product}
-        category_mappings={category_mappings}
-      />
-      {/** MRP */}
-      <section className="order-4 mb-4 flex flex-col">
-        <h2 className="sr-only">Price</h2>
-        <p>
-          <span className="text-2xl lg:text-3xl">
-            ₹{selling_price_with_commission}{" "}
-          </span>
-          {!!discount_percentage && (
-            <>
-              <span className="inline font-medium text-gray-600">
-                {discount_percentage}% off
-                <span className="sr-only">discount</span>
-              </span>
-            </>
-          )}
-        </p>
-        {mrp !== selling_price_with_commission && (
-          <p>
-            <span className="text-gray-600">M.R.P</span>{" "}
-            <span className="line-through">₹{mrp}</span>
-          </p>
-        )}
-
-        <p className="text-sm">Inclusive of all taxes</p>
-      </section>
-
-      {/** RATING */}
-      <section className="order-5">
-        <h2 className="sr-only">Product rating</h2>
-        <p className="mb-4" aria-label="Product rating and reviews">
-          <RatingSummaryPopover
-            product_id={product.id}
-            product_reviews_link={`/${product_slug}/p/${product.id}/reviews`}
-          >
-            <span className="inline-flex cursor-pointer items-center gap-1">
-              <strong className="font-medium">{product.average_rating} </strong>{" "}
-              <span className="sr-only">out of 5 stars</span>{" "}
-              <Star
-                className="inline size-4 fill-amber-300 text-amber-300"
-                aria-hidden="true"
-              />
-              <ChevronDown
-                className="inline-block size-4 text-orange-500"
-                strokeWidth={2.5}
-              />
-            </span>
-          </RatingSummaryPopover>
-          <span aria-hidden="true"> | </span>{" "}
-          <Link
-            href={`/${product_slug}/p/${product.id}/reviews`}
-            className="text-orange-500"
-            aria-label={`view all ${product.total_reviews ?? 0} reviews`}
-          >
-            {product.total_reviews} reviews
-          </Link>{" "}
-          <span className="inline">10+ bought in past month</span>
-        </p>
-      </section>
-
-      <VariantSelection
-        product={product}
-        selected_attributes={selected_attributes}
-        category_mappings={category_mappings}
-      />
-      {/* <CheckDeliveryAvailability /> */}
-      <DeliveryDetails />
-
-      <ProductDetails
-        product={product}
-        category_mappings={category_mappings}
-        handleReportModalState={handleReportModalState}
-      />
-      <div
-        id="buy-cta-container"
-        className="fixed bottom-0 left-0 z-2 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md md:z-4 lg:sticky lg:border-none lg:px-0 lg:shadow-none"
-      >
-        <button
-          onClick={() => {
-            add_to_cart_mutation.mutate(
-              {
-                product_id: product.id,
-                variant_id: variant.id,
-                quantity: 1,
-              },
-              {
-                onSuccess() {
-                  addedToCartEvent({
-                    user_id,
-                    product_id: product.id,
-                    variant_id: variant.id,
-                    category_id: product.sub_sub_category_id,
-                    category_type: "SUB_SUB",
-                    source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                  });
-
-                  const query = router.query;
-                  const query_id =
-                    typeof query.query_id === "string"
-                      ? query.query_id
-                      : undefined;
-
-                  const index_name =
-                    typeof query.index_name === "string"
-                      ? query.index_name
-                      : undefined;
-
-                  const object_id =
-                    typeof query.object_id === "string"
-                      ? query.object_id
-                      : undefined;
-
-                  query_id &&
-                    index_name &&
-                    object_id &&
-                    insightsClient("addedToCartObjectIDsAfterSearch", {
-                      eventName: "Add to Cart",
-                      index: index_name,
-                      queryID: query_id,
-                      objectIDs: [object_id],
-                      objectData: [
-                        {
-                          price: selling_price_with_commission,
-                          discount: mrp - selling_price_with_commission,
-                          quantity: 1,
-                        },
-                      ],
-                      value: selling_price_with_commission,
-                      currency: "INR",
-                    });
-                },
-              },
-            );
-          }}
-          disabled={add_to_cart_mutation.isPending || !is_product_available}
-          className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600"
+        <h1
+          id="product-title"
+          className="order-1 mb-2 text-sm font-semibold lg:mb-3 lg:text-xl lg:font-medium"
         >
-          Add to cart
-        </button>
-        <button
-          className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white disabled:bg-orange-300"
-          disabled={
-            create_buying_intent_mutation.isPending || !is_product_available
-          }
-          onClick={() => {
-            user_id &&
-              buyNowClickedEvent({
-                user_id,
-                product_id: product.id,
-                variant_id: variant.id,
-                category_id: product.sub_sub_category_id,
-                category_type: "SUB_SUB",
-                source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-              });
-            if (is_logged_in) {
-              create_buying_intent_mutation.mutate(
+          {heading}
+        </h1>
+
+        <MobileProductGallary
+          variant={variant}
+          product={product}
+          category_mappings={category_mappings}
+        />
+        {/** MRP */}
+        <section className="order-4 mb-4 flex flex-col">
+          <h2 className="sr-only">Price</h2>
+          <p>
+            <span className="text-2xl lg:text-3xl">
+              ₹{selling_price_with_commission}{" "}
+            </span>
+            {!!discount_percentage && (
+              <>
+                <span className="inline font-medium text-gray-600">
+                  {discount_percentage}% off
+                  <span className="sr-only">discount</span>
+                </span>
+              </>
+            )}
+          </p>
+          {mrp !== selling_price_with_commission && (
+            <p>
+              <span className="text-gray-600">M.R.P</span>{" "}
+              <span className="line-through">₹{mrp}</span>
+            </p>
+          )}
+
+          <p className="text-sm">Inclusive of all taxes</p>
+          <div id="razorpay-affordability-widget" />
+        </section>
+
+        {/** RATING */}
+        <section className="order-5">
+          <h2 className="sr-only">Product rating</h2>
+          <p className="mb-4" aria-label="Product rating and reviews">
+            <RatingSummaryPopover
+              product_id={product.id}
+              product_reviews_link={`/${product_slug}/p/${product.id}/reviews`}
+            >
+              <span className="inline-flex cursor-pointer items-center gap-1">
+                <strong className="font-medium">
+                  {product.average_rating}{" "}
+                </strong>{" "}
+                <span className="sr-only">out of 5 stars</span>{" "}
+                <Star
+                  className="inline size-4 fill-amber-300 text-amber-300"
+                  aria-hidden="true"
+                />
+                <ChevronDown
+                  className="inline-block size-4 text-orange-500"
+                  strokeWidth={2.5}
+                />
+              </span>
+            </RatingSummaryPopover>
+            <span aria-hidden="true"> | </span>{" "}
+            <Link
+              href={`/${product_slug}/p/${product.id}/reviews`}
+              className="text-orange-500"
+              aria-label={`view all ${product.total_reviews ?? 0} reviews`}
+            >
+              {product.total_reviews} reviews
+            </Link>{" "}
+            <span className="inline">10+ bought in past month</span>
+          </p>
+        </section>
+
+        <VariantSelection
+          product={product}
+          selected_attributes={selected_attributes}
+          category_mappings={category_mappings}
+        />
+        {/* <CheckDeliveryAvailability /> */}
+        <DeliveryDetails />
+
+        <ProductDetails
+          product={product}
+          category_mappings={category_mappings}
+          handleReportModalState={handleReportModalState}
+        />
+        <div
+          id="buy-cta-container"
+          className="fixed bottom-0 left-0 z-2 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md md:z-4 lg:sticky lg:border-none lg:px-0 lg:shadow-none"
+        >
+          <button
+            onClick={() => {
+              add_to_cart_mutation.mutate(
                 {
                   product_id: product.id,
                   variant_id: variant.id,
                   quantity: 1,
                 },
                 {
-                  onSuccess({ intent_id }) {
+                  onSuccess() {
+                    addedToCartEvent({
+                      user_id,
+                      product_id: product.id,
+                      variant_id: variant.id,
+                      category_id: product.sub_sub_category_id,
+                      category_type: "SUB_SUB",
+                      source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                    });
+
                     const query = router.query;
                     const query_id =
                       typeof query.query_id === "string"
@@ -300,68 +268,136 @@ const ProductInfo: FC<IProps> = ({
                       typeof query.object_id === "string"
                         ? query.object_id
                         : undefined;
-                    router.push({
-                      pathname: `/checkout/${intent_id}`,
-                      query: {
-                        ...(query_id ? { query_id } : {}),
-                        ...(index_name ? { index_name } : {}),
-                        ...(object_id ? { object_id } : {}),
-                      },
-                    });
+
+                    query_id &&
+                      index_name &&
+                      object_id &&
+                      insightsClient("addedToCartObjectIDsAfterSearch", {
+                        eventName: "Add to Cart",
+                        index: index_name,
+                        queryID: query_id,
+                        objectIDs: [object_id],
+                        objectData: [
+                          {
+                            price: selling_price_with_commission,
+                            discount: mrp - selling_price_with_commission,
+                            quantity: 1,
+                          },
+                        ],
+                        value: selling_price_with_commission,
+                        currency: "INR",
+                      });
                   },
                 },
               );
-            } else {
-              openLoginModal({
-                is_modal: true,
-                title: "Log in to complete your purchase",
-                onSuccess(user) {
-                  if (user) {
-                    create_buying_intent_mutation.mutate(
-                      {
-                        product_id: product.id,
-                        variant_id: variant.id,
-                        quantity: 1,
-                      },
-                      {
-                        onSuccess({ intent_id }) {
-                          const query = router.query;
-                          const query_id =
-                            typeof query.query_id === "string"
-                              ? query.query_id
-                              : undefined;
-
-                          const index_name =
-                            typeof query.index_name === "string"
-                              ? query.index_name
-                              : undefined;
-
-                          const object_id =
-                            typeof query.object_id === "string"
-                              ? query.object_id
-                              : undefined;
-                          router.push({
-                            pathname: `/checkout/${intent_id}`,
-                            query: {
-                              ...(query_id ? { query_id } : {}),
-                              ...(index_name ? { index_name } : {}),
-                              ...(object_id ? { object_id } : {}),
-                            },
-                          });
-                        },
-                      },
-                    );
-                  }
-                },
-                onCancel() {},
-              });
+            }}
+            disabled={add_to_cart_mutation.isPending || !is_product_available}
+            className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600"
+          >
+            Add to cart
+          </button>
+          <button
+            className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white disabled:bg-orange-300"
+            disabled={
+              create_buying_intent_mutation.isPending || !is_product_available
             }
-          }}
-        >
-          Buy Now
-        </button>
-      </div>
-    </section>
+            onClick={() => {
+              user_id &&
+                buyNowClickedEvent({
+                  user_id,
+                  product_id: product.id,
+                  variant_id: variant.id,
+                  category_id: product.sub_sub_category_id,
+                  category_type: "SUB_SUB",
+                  source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                });
+              if (is_logged_in) {
+                create_buying_intent_mutation.mutate(
+                  {
+                    product_id: product.id,
+                    variant_id: variant.id,
+                    quantity: 1,
+                  },
+                  {
+                    onSuccess({ intent_id }) {
+                      const query = router.query;
+                      const query_id =
+                        typeof query.query_id === "string"
+                          ? query.query_id
+                          : undefined;
+
+                      const index_name =
+                        typeof query.index_name === "string"
+                          ? query.index_name
+                          : undefined;
+
+                      const object_id =
+                        typeof query.object_id === "string"
+                          ? query.object_id
+                          : undefined;
+                      router.push({
+                        pathname: `/checkout/${intent_id}`,
+                        query: {
+                          ...(query_id ? { query_id } : {}),
+                          ...(index_name ? { index_name } : {}),
+                          ...(object_id ? { object_id } : {}),
+                        },
+                      });
+                    },
+                  },
+                );
+              } else {
+                openLoginModal({
+                  is_modal: true,
+                  title: "Log in to complete your purchase",
+                  onSuccess(user) {
+                    if (user) {
+                      create_buying_intent_mutation.mutate(
+                        {
+                          product_id: product.id,
+                          variant_id: variant.id,
+                          quantity: 1,
+                        },
+                        {
+                          onSuccess({ intent_id }) {
+                            const query = router.query;
+                            const query_id =
+                              typeof query.query_id === "string"
+                                ? query.query_id
+                                : undefined;
+
+                            const index_name =
+                              typeof query.index_name === "string"
+                                ? query.index_name
+                                : undefined;
+
+                            const object_id =
+                              typeof query.object_id === "string"
+                                ? query.object_id
+                                : undefined;
+                            router.push({
+                              pathname: `/checkout/${intent_id}`,
+                              query: {
+                                ...(query_id ? { query_id } : {}),
+                                ...(index_name ? { index_name } : {}),
+                                ...(object_id ? { object_id } : {}),
+                              },
+                            });
+                          },
+                        },
+                      );
+                    }
+                  },
+                  onCancel() {},
+                });
+              }
+            }}
+          >
+            Buy Now
+          </button>
+        </div>
+      </section>
+    </>
   );
 };
 export default ProductInfo;
