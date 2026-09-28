@@ -29,6 +29,10 @@ const useRemoveFromWishlistMutation = () => {
     },
 
     onSuccess(data, { variant_id }) {
+      query_client.setQueryData(["is-wishlisted", variant_id], {
+        success: true,
+        is_wishlisted: false,
+      });
       query_client.invalidateQueries({
         queryKey: ["is-wishlisted", variant_id],
       });
