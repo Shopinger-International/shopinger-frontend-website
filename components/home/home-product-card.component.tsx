@@ -145,7 +145,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           title={`View ${title}`}
           className="block w-full"
         >
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white p-1.5 flex items-center justify-center">
+          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white flex items-center justify-center ">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
               <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-brand px-2 py-0.5 text-xs font-black text-white tracking-tight uppercase">
@@ -180,7 +180,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
                 alt={title}
                 fill
                 sizes="(max-width: 640px) 140px, 180px"
-                className="object-contain p-1 transition-transform duration-300"
+                className="object-contain p-1 transition-transform duration-300 rounded-2xl"
               />
             </div>
 
