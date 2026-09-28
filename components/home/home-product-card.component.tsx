@@ -51,14 +51,21 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
   const first_variant = (product as any)?.variants?.[0] ?? {};
   const product_id = product.product_id ?? (product as any)?.id;
   const variant_id = product.variant_id ?? first_variant?.id ?? 0;
-  const media_url =
+
+  const raw_media =
     product.media_url ??
     first_variant?.variant_medias?.[0]?.media?.url ??
-    (product as any)?.product_medias?.[0]?.media?.url ??
-    "";
+    (product as any)?.product_medias?.[0]?.media?.url;
+
+  const media_url =
+    typeof raw_media === "string" && raw_media.trim()
+      ? raw_media.trim()
+      : typeof (raw_media as any)?.url === "string"
+        ? (raw_media as any).url
+        : "/shopinger-logo.svg";
 
   const {
-    title,
+    title = "",
     is_wishlisted: initial_wishlisted = false,
     sub_sub_category_id = 0,
   } = product;
@@ -66,17 +73,20 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
   const { selling_price, mrp, discount_perc } = extractProductPrices(product);
   const { avg_rating, rating_count } = extractProductRating(product);
 
-  const { data: wishlist_data } = useIsWishlisted({ variant_id });
-  const [is_wishlisted, setIsWishlisted] = useState(initial_wishlisted);
-
-  useEffect(() => {
-    if (wishlist_data?.is_wishlisted !== undefined) {
-      setIsWishlisted(wishlist_data.is_wishlisted);
-    }
-  }, [wishlist_data?.is_wishlisted]);
-
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
+
+  const { data: wishlist_data } = useIsWishlisted({
+    variant_id,
+    enabled: !!variant_id,
+  });
+
+  const [local_wishlisted, setLocalWishlisted] = useState<boolean | null>(null);
+
+  const is_wishlisted =
+    local_wishlisted !== null
+      ? local_wishlisted
+      : (wishlist_data?.is_wishlisted ?? product.is_wishlisted ?? initial_wishlisted);
 
   const add_to_wishlist_mutation = useAddToWishlistMutation();
   const remove_from_wishlist_mutation = useRemoveFromWishlistMutation();
@@ -89,7 +99,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
     e.stopPropagation();
 
     if (is_wishlisted) {
-      setIsWishlisted(false);
+      setLocalWishlisted(false);
       remove_from_wishlist_mutation.mutate(
         { variant_id },
         {
@@ -104,12 +114,12 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
             });
           },
           onError() {
-            setIsWishlisted(true);
+            setLocalWishlisted(true);
           },
         },
       );
     } else {
-      setIsWishlisted(true);
+      setLocalWishlisted(true);
       add_to_wishlist_mutation.mutate(
         { variant_id },
         {
@@ -124,7 +134,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
             });
           },
           onError() {
-            setIsWishlisted(false);
+            setLocalWishlisted(false);
           },
         },
       );
