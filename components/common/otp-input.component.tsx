@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 
-//types
-import type { FC, KeyboardEvent } from "react";
+// types
+import type { FC, KeyboardEvent, ClipboardEvent } from "react";
 
-//helpers
+// helpers
 import clsx from "clsx";
 
 interface OTPInputProps {
@@ -11,6 +11,7 @@ interface OTPInputProps {
   onChange: (value: string) => void;
   max_length: number;
   container_class_name?: string;
+  autoComplete?: string;
 }
 
 const OTPInput: FC<OTPInputProps> = ({
@@ -18,6 +19,7 @@ const OTPInput: FC<OTPInputProps> = ({
   onChange,
   max_length,
   container_class_name,
+  autoComplete = "one-time-code",
 }) => {
   const input_refs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -25,7 +27,65 @@ const OTPInput: FC<OTPInputProps> = ({
     Array.from({ length: max_length }, (_, index) => value[index] ?? ""),
   );
 
-  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+  const updateValue = (new_digits: string[]) => {
+    setDigits(new_digits);
+
+    onChange(new_digits.join(""));
+  };
+
+  const focusInput = (index: number) => {
+    if (index < 0 || index >= max_length) return;
+
+    input_refs.current[index]?.focus();
+
+    input_refs.current[index]?.select();
+  };
+
+  const handleChange = (index: number, inputValue: string) => {
+    const clean_value = inputValue.replace(/\D/g, "");
+
+    if (!clean_value) {
+      const new_digits = [...digits];
+
+      new_digits[index] = "";
+
+      updateValue(new_digits);
+
+      return;
+    }
+
+    // Handle multi-character input/autofill
+    if (clean_value.length > 1) {
+      const new_digits = Array(max_length).fill("");
+
+      clean_value
+        .slice(0, max_length)
+        .split("")
+        .forEach((digit, digit_index) => {
+          new_digits[digit_index] = digit;
+        });
+
+      updateValue(new_digits);
+
+      focusInput(Math.min(clean_value.length, max_length) - 1);
+
+      return;
+    }
+
+    // Normal single digit
+    const new_digits = [...digits];
+
+    new_digits[index] = clean_value;
+
+    updateValue(new_digits);
+
+    // Move to next field
+    if (index < max_length - 1) {
+      focusInput(index + 1);
+    }
+  };
+
+  const handlePaste = (event: ClipboardEvent<HTMLInputElement>) => {
     event.preventDefault();
 
     const pasted_value = event.clipboardData
@@ -41,60 +101,44 @@ const OTPInput: FC<OTPInputProps> = ({
       new_digits[index] = digit;
     });
 
-    setDigits(new_digits);
-
-    onChange(new_digits.join(""));
+    updateValue(new_digits);
 
     focusInput(Math.min(pasted_value.length, max_length) - 1);
-  };
-
-  const handleChange = (index: number, inputValue: string) => {
-    const digit = inputValue.replace(/\D/g, "").slice(-1);
-
-    const new_digits = [...digits];
-
-    new_digits[index] = digit;
-
-    setDigits(new_digits);
-
-    onChange(new_digits.join(""));
-
-    if (digit && index < max_length - 1) {
-      focusInput(index + 1);
-    }
   };
 
   const handleKeyDown = (
     index: number,
     event: KeyboardEvent<HTMLInputElement>,
   ) => {
+    // Backspace
     if (event.key === "Backspace") {
       event.preventDefault();
 
       const new_digits = [...digits];
 
-      if (digits[index]) {
-        // Clear current digit and stay here
+      // If current field has a value,
+      // clear ONLY the current field.
+      if (new_digits[index]) {
         new_digits[index] = "";
-        setDigits(new_digits);
-        onChange(new_digits.join(""));
+
+        updateValue(new_digits);
+
         return;
       }
 
-      // Current input is already empty → move backward
+      // Current field empty → go to previous field
       if (index > 0) {
         new_digits[index - 1] = "";
-        setDigits(new_digits);
-        onChange(new_digits.join(""));
 
-        input_refs.current[index - 1]?.focus({
-          preventScroll: true,
-        });
+        updateValue(new_digits);
+
+        focusInput(index - 1);
       }
 
       return;
     }
 
+    // Delete
     if (event.key === "Delete") {
       event.preventDefault();
 
@@ -102,26 +146,37 @@ const OTPInput: FC<OTPInputProps> = ({
 
       new_digits[index] = "";
 
-      setDigits(new_digits);
-      onChange(new_digits.join(""));
+      updateValue(new_digits);
 
       return;
     }
 
-    if (event.key === "ArrowLeft" && index > 0) {
+    // Arrow Left
+    if (event.key === "ArrowLeft") {
       event.preventDefault();
-      focusInput(index + 1);
+
+      if (index > 0) {
+        focusInput(index - 1);
+      }
+
       return;
     }
 
-    if (event.key === "ArrowRight" && index < max_length - 1) {
+    // Arrow Right
+    if (event.key === "ArrowRight") {
       event.preventDefault();
-      focusInput(index + 1);
-    }
-  };
 
-  const focusInput = (index: number) => {
-    input_refs.current[index]?.focus({ preventScroll: true });
+      if (index < max_length - 1) {
+        focusInput(index + 1);
+      }
+
+      return;
+    }
+
+    // Prevent non-numeric characters
+    if (event.key.length === 1 && !/[0-9]/.test(event.key)) {
+      event.preventDefault();
+    }
   };
 
   return (
@@ -131,20 +186,21 @@ const OTPInput: FC<OTPInputProps> = ({
         container_class_name,
       )}
     >
-      {digits?.map((digit, index) => (
+      {digits.map((digit, index) => (
         <input
           key={index}
-          onPaste={handlePaste}
           ref={(element) => {
             input_refs.current[index] = element;
           }}
           value={digit}
-          maxLength={1}
+          maxLength={max_length}
           inputMode="numeric"
           pattern="[0-9]*"
+          autoComplete={index === 0 ? autoComplete : "off"}
           onChange={(event) => handleChange(index, event.target.value)}
+          onPaste={handlePaste}
           onKeyDown={(event) => handleKeyDown(index, event)}
-          className="h-12 min-w-0 flex-1 rounded-md border border-gray-300 text-center text-lg font-semibold transition-all outline-none focus:border-orange-500 sm:flex-1 md:flex-1 lg:h-12 lg:w-12 lg:flex-none"
+          className="h-12 min-w-0 flex-1 rounded-md border border-gray-300 text-center text-lg font-semibold transition-all outline-none focus:border-orange-500 lg:h-12 lg:w-12 lg:flex-none"
         />
       ))}
     </div>

@@ -204,7 +204,14 @@ const LoginForm: FC<IProps> = ({
             );
           }}
         >
-          {({ values, errors, setFieldValue, setFieldError, setFieldTouched, handleSubmit }) => (
+          {({
+            values,
+            errors,
+            setFieldValue,
+            setFieldError,
+            setFieldTouched,
+            handleSubmit,
+          }) => (
             <Form onSubmit={handleSubmit} className="w-full space-y-4">
               <Field name="identifier">
                 {({ field, meta }: FieldProps<string, IInitialValues>) => {
@@ -215,7 +222,9 @@ const LoginForm: FC<IProps> = ({
                         htmlFor="identifier"
                         className="text-md block font-medium text-gray-700"
                       >
-                        {is_phone ? "Enter mobile number" : "Enter email address"}
+                        {is_phone
+                          ? "Enter mobile number"
+                          : "Enter email address"}
                       </label>
                       <div className="flex items-center gap-1">
                         {is_phone && (
@@ -226,7 +235,6 @@ const LoginForm: FC<IProps> = ({
                               )}
                               <ChevronDown className="size-4" />
                             </PopoverButton>
-                            
 
                             <PopoverPanel className="absolute z-20 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                               {({ close }) => (
@@ -239,7 +247,7 @@ const LoginForm: FC<IProps> = ({
                             </PopoverPanel>
                           </Popover>
                         )}
-                          <input
+                        <input
                           key={is_phone ? "phone-input" : "email-input"}
                           id="identifier"
                           type={is_phone ? "tel" : "email"}
@@ -247,7 +255,9 @@ const LoginForm: FC<IProps> = ({
                           pattern={is_phone ? "[0-9]*" : undefined}
                           // maxLength={is_phone ? 10 : undefined}
                           autoComplete={is_phone ? "tel" : "email"}
-                          placeholder={is_phone ? "Mobile number" : "Email address"}
+                          placeholder={
+                            is_phone ? "Mobile number" : "Email address"
+                          }
                           className={clsx(
                             "h-10 w-full border border-gray-300 px-3",
                             "hover:outline-orange-500 focus:outline-orange-500",
@@ -274,7 +284,9 @@ const LoginForm: FC<IProps> = ({
                           type="button"
                           className="ml-auto cursor-pointer text-sm font-medium text-orange-500 hover:text-orange-600 focus:outline-none"
                           onClick={() => {
-                            setLoginMode((prev) => (prev === "phone" ? "email" : "phone"));
+                            setLoginMode((prev) =>
+                              prev === "phone" ? "email" : "phone",
+                            );
                             setFieldValue("identifier", "");
                             setFieldError("identifier", undefined);
                             setFieldTouched("identifier", false, false);
@@ -293,7 +305,8 @@ const LoginForm: FC<IProps> = ({
                 className="h-10 w-full cursor-pointer rounded-md bg-orange-500 font-bold text-white shadow-sm hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
                 disabled={
                   send_otp_mutation.isPending ||
-                  (login_mode === "phone" && values.identifier.trim().length < 10)
+                  (login_mode === "phone" &&
+                    values.identifier.trim().length < 10)
                 }
                 type="submit"
               >
@@ -403,8 +416,8 @@ const LoginForm: FC<IProps> = ({
                           identifier: user_details.identifier,
                           country_code: user_details.country?.code
                             ? getCallingCode(
-                              user_details.country.code as CountryCode,
-                            )
+                                user_details.country.code as CountryCode,
+                              )
                             : undefined,
                         },
                         {
