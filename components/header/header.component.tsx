@@ -12,6 +12,7 @@ import AccountDropdown from "@/components/header/account-dropdown.component";
 import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 import LocationTooltip from "@/components/header/location/location-tooltip.component";
 import MobileHeader from "@/components/header/mobile-header.component";
+import StoreClosedBanner from "@/components/header/store-closed-banner.component";
 
 // icons
 import { Menu, CircleUserIcon } from "lucide-react";
@@ -74,10 +75,17 @@ const Header: FC<{
       }
 
       if (current_scroll_pos > prev_scroll_pos) {
-        // Scrolling down
-        header_ref.current.style.top = "-114px";
+        // Scrolling down: hide everything above SearchBar dynamically while preserving top spacing
+        const search_container = document.getElementById(
+          "mobile-header-search-container",
+        );
+        const top_spacing = 8;
+        const hide_offset = search_container
+          ? Math.max(0, search_container.offsetTop - top_spacing)
+          : 106;
+        header_ref.current.style.top = `-${hide_offset}px`;
       } else if (current_scroll_pos < prev_scroll_pos) {
-        // Scrolling up
+        // Scrolling up: show full header
         header_ref.current.style.top = "0";
       }
 
@@ -98,8 +106,12 @@ const Header: FC<{
       className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
       id="app-header"
     >
-      {/* <div className="flex flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8"> */}
       <MobileHeader />
+
+      {/* Desktop Store Closed Banner */}
+      <div className="hidden lg:block">
+        <StoreClosedBanner is_desktop_header />
+      </div>
       <div className="hidden flex-col gap-1 bg-black px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
