@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useState, useRef } from "react";
+import { useLayoutEffect, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // types
@@ -21,6 +21,9 @@ import useCart from "@/hooks/axios/cart/use-cart.hook";
 import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
+
+// helpers
+import { cn } from "@/lib/utils";
 
 const Header: FC<{
   show_filter_sort_bar?: boolean;
@@ -147,7 +150,7 @@ const Header: FC<{
               <Link
                 href="/cart-checkout"
                 className="shrink-0 lg:hidden"
-                aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
+                aria-label={`Cart with ${cart_details?.items?.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
               >
                 <span className="relative inline-block">
                   <Cart width={36} height={30} />
@@ -168,21 +171,28 @@ const Header: FC<{
           </div>
           <Link
             href="/cart-checkout"
-            className="hidden items-center gap-2 font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
-            aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
+            className={cn(
+              "hidden items-center justify-end gap-2 font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex shrink-0",
+              (cart_details?.total_items ?? 0) >= 20 ||
+                (cart_details?.total_amount ?? 0) >= 20
+                ? "w-30"
+                : "w-auto",
+            )}
+            aria-label={`Cart with ${cart_details?.items?.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
           >
-            <span className="relative inline-block">
+            <span className="relative inline-block shrink-0">
               <Cart width={36} height={30} />
 
-              <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-white">
+              <span className="pointer-events-none absolute top-3 left-5 flex size-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center text-xs font-extrabold leading-none text-white tabular-nums">
                 {cart_details?.total_items ?? 0}
               </span>
             </span>
-            <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
+            <span aria-hidden="true" className="truncate tabular-nums">
+              ₹{cart_details?.total_amount ?? 0}
+            </span>
           </Link>
         </div>
       </div>
-
       <CategorySection />
       {show_filter_sort_bar && (
         <FilterSortBar disable_side_filter={disable_side_filter} />
