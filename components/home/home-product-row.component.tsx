@@ -131,7 +131,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
         <div>
           <h2
             id={`home-row-${section_id_slug}`}
-            className="text-base font-extrabold text-gray-900 sm:text-lg md:text-xl tracking-tight"
+            className="text-base font-bold text-gray-900 sm:text-lg md:text-xl tracking-tight"
           >
             {title}
           </h2>
@@ -146,7 +146,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
           <Link
             href={view_all_href}
             title={`View all ${title}`}
-            className="text-xs font-bold text-brand transition-colors hover:text-orange-600 sm:text-sm hover:underline"
+            className="text-xs font-medium text-brand transition-colors hover:text-orange-600 sm:text-sm hover:underline"
           >
             See All →
           </Link>
