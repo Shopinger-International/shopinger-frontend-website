@@ -42,7 +42,7 @@ const SearchBar: FC<IProps> = ({
   return (
     <div
       className={clsx(
-        "landing-search-wrapper relative",
+        "landing-search-wrapper relative rounded-lg border border-gray-200",
         !show_search_icon_only && "w-full",
       )}
     >

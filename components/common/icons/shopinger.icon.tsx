@@ -21,8 +21,7 @@ const ShopingerIcon: FC<IProps> = ({ size }) => (
       fontWeight="700"
       letterSpacing="-8"
     >
-      <tspan fill="#00A63C">Shop</tspan>
-      <tspan fill="#FF6500">inger</tspan>
+      <tspan>Shopinger</tspan>
     </text>
   </svg>
 );
