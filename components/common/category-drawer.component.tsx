@@ -65,7 +65,7 @@ const SubSubCategorySection: FC<{
               >
                 {media ? (
                   <Image
-                    src={media}
+                    src={media.photo}
                     fill={true}
                     alt={name}
                     aria-hidden={true}
@@ -166,7 +166,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                   >
                     {media ? (
                       <Image
-                        src={media}
+                        src={media.photo}
                         fill={true}
                         alt={name}
                         aria-hidden={true}

@@ -8,7 +8,10 @@ export type IBaseCategory = {
   id: number;
   name: string;
   slug: string;
-  media: string;
+  media: {
+    icon: string;
+    photo: string;
+  };
 };
 
 export type ICategory = IBaseCategory & {
