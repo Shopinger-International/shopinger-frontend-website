@@ -1,6 +1,7 @@
 // types
 import type { FC } from "react";
 import type { IOrderStatus, IOrderStatusHistory } from "@/types/order";
+import IOrder from "@/types/order";
 
 // helpers
 import clsx from "clsx";
@@ -96,7 +97,6 @@ const OrderStatusMobile: FC<Props> = ({
       query_client.refetchQueries({
         queryKey: ["order", order_id],
       });
-      console.log('invalidated')
     }
   });
 
@@ -119,7 +119,6 @@ const OrderStatusMobile: FC<Props> = ({
           const is_completed = order_status_history.some(
             (status_history) => status_history.to_status === step.status,
           );
-
           const is_cancelled_step =
             is_cancelled && step.status === ORDER_STATUS.CANCELLED;
 
