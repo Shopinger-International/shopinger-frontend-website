@@ -76,7 +76,7 @@ const LocationTooltip: FC<{
 
             <span
               className={clsx(
-                "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
+                "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-black transition-transform duration-100",
               )}
             >
               <span className="flex items-center gap-1">
@@ -90,7 +90,7 @@ const LocationTooltip: FC<{
             <div className="mt-0.5 flex w-full max-w-xs items-center gap-1 text-left text-xs">
               <MapPin
                 aria-hidden={true}
-                className="size-3 shrink-0 text-white"
+                className="size-3 shrink-0 text-black"
               />
 
               <span className="max-w-44 truncate">{selected_address}</span>
@@ -163,7 +163,7 @@ const LocationTooltip: FC<{
           </div>
 
           {/* ================= DESKTOP ================= */}
-          <div className="hidden lg:flex lg:flex-col lg:items-start">
+          <div className="hidden text-black lg:flex lg:flex-col lg:items-start">
             {/* Delivery time */}
             <div className="flex items-center gap-1">
               <span className="text-sm font-semibold">Delivery in</span>
@@ -185,7 +185,7 @@ const LocationTooltip: FC<{
                 <div className="mt-0.5 flex w-full max-w-xs items-center gap-1 text-left text-xs">
                   <MapPin
                     aria-hidden={true}
-                    className="size-3 shrink-0 text-white"
+                    className="size-3 shrink-0 text-black"
                   />
 
                   <span className="max-w-44 truncate">{selected_address}</span>

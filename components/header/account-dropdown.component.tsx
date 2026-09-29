@@ -118,7 +118,7 @@ const AccountDropdown: FC = () => {
           user_details ? (
             <button
               className={clsx(
-                "flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-white",
+                "flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-black",
                 "transition hover:bg-white/10 focus:outline-none",
               )}
             >
@@ -130,7 +130,7 @@ const AccountDropdown: FC = () => {
           ) : (
             <button
               className={clsx(
-                "flex items-center gap-2 rounded-full px-3 py-2 text-white",
+                "flex items-center gap-2 rounded-full px-3 py-2 text-black",
                 "transition hover:bg-white/10 focus:outline-none",
               )}
             >
@@ -138,7 +138,7 @@ const AccountDropdown: FC = () => {
               <span className="font-semibold">Log In</span>
               <Triangle
                 className={clsx(
-                  "size-2.5 fill-white transition-transform",
+                  "size-2.5 fill-black transition-transform",
                   open ? "rotate-0" : "rotate-180",
                 )}
               />
