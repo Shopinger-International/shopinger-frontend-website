@@ -238,11 +238,7 @@ const ProductCard: FC<IProps> = ({
                   <button
                     aria-label="View rating details"
                     className={
-                      is_grocery
-                        ? "text-green-600"
-                        : is_pharmacy
-                          ? "text-blue-600"
-                          : "text-orange-500"
+                      "text-orange-500"
                     }
                     onClick={(event) => {
                       event.preventDefault();
