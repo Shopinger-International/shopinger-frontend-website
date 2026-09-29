@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { FC } from "react";
 
 // icons
-import { Heart, Star } from "lucide-react";
+import { Heart, Star, ChevronRight } from "lucide-react";
 
 // types
 import type { IProductRecommendation } from "@/hooks/axios/home/use-feed.hook";
@@ -39,6 +39,7 @@ export type IHomeProduct = IProductRecommendation & {
   reviews_count?: string | number;
   is_wishlisted?: boolean;
   sub_sub_category_id?: number;
+  have_variants?: boolean;
 };
 
 interface IHomeProductCardProps {
@@ -54,8 +55,12 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
 
   const raw_media =
     product.media_url ??
+    (product as any)?.product_thumbnail ??
+    (product as any)?.thumbnail ??
+    (product as any)?.image ??
     first_variant?.variant_medias?.[0]?.media?.url ??
-    (product as any)?.product_medias?.[0]?.media?.url;
+    (product as any)?.product_medias?.[0]?.media?.url ??
+    (product as any)?.medias?.[0]?.url;
 
   const media_url =
     typeof raw_media === "string" && raw_media.trim()
@@ -71,7 +76,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
   } = product;
 
   const { selling_price, mrp, discount_perc } = extractProductPrices(product);
-  const { avg_rating, rating_count } = extractProductRating(product);
+  const { avg_rating } = extractProductRating(product);
 
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
@@ -141,6 +146,14 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
     }
   };
 
+  const have_variants =
+    product.have_variants ??
+    (product as any).has_variants ??
+    ((product as any).variants &&
+      Array.isArray((product as any).variants) &&
+      (product as any).variants.length > 1) ??
+    false;
+
   return (
     <div
       className={clsx(
@@ -195,19 +208,12 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
             </div>
 
             {/* Bottom-Left Rating Overlay */}
-            <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating px-1.5 py-0.5 text-2xs font-bold text-white">
-              <span>
-                {avg_rating != null && Number(avg_rating) > 0
-                  ? Number(avg_rating).toFixed(1)
-                  : "0.0"}
-              </span>
-              <Star className="size-2.5 fill-white text-white" />
-              {rating_count != null && (
-                <span className="text-3xs font-semibold text-white/90 border-l border-white/30 pl-1">
-                  {rating_count}
-                </span>
-              )}
-            </div>
+            {avg_rating != null && Number(avg_rating) > 0 && (
+              <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating px-1.5 py-0.5 text-2xs font-bold text-white">
+                <span>{Number(avg_rating).toFixed(1)}</span>
+                <Star className="size-2.5 fill-white text-white" />
+              </div>
+            )}
           </div>
 
           {/* Title */}
@@ -231,13 +237,24 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
             )}
           </div>
         )}
-        <HomeProductQuantityControl
-          product_id={product_id}
-          variant_id={variant_id}
-          user_id={user_id}
-          sub_sub_category_id={sub_sub_category_id}
-          fullWidth={selling_price <= 0}
-        />
+        {have_variants ? (
+          <Link
+            href={product_href}
+            aria-label="See options"
+            className="flex h-7 sm:h-9 shrink-0 items-center justify-center gap-0.5 rounded-lg border border-gray-300 bg-white px-2 text-2xs font-bold text-gray-900 transition-colors hover:bg-gray-100 sm:rounded-xl sm:px-3 sm:text-xs"
+          >
+            <span>See options</span>
+            <ChevronRight className="size-3.5 shrink-0" />
+          </Link>
+        ) : (
+          <HomeProductQuantityControl
+            product_id={product_id}
+            variant_id={variant_id}
+            user_id={user_id}
+            sub_sub_category_id={sub_sub_category_id}
+            fullWidth={selling_price <= 0}
+          />
+        )}
       </div>
     </div>
   );

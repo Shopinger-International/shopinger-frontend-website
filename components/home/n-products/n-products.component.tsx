@@ -8,7 +8,7 @@ import { useLoginModalContext } from "@/provider/login-modal-provider";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // local components
-import ProductCard from "@/components/categories/product-card/product-card.component";
+import HomeProductCard from "@/components/home/home-product-card.component";
 import ProductCardSkeleton from "@/components/categories/product-card/product-card-skeleton.component";
 
 // helpers
@@ -53,6 +53,7 @@ const NProducts = () => {
     const product_reviews_link = `/${product_slug}/p/${product.product_id}/reviews`;
     return {
       ...product,
+      media_url: product.product_thumbnail ?? (product as any).media_url,
       src: `/${product_slug}/p/${product.product_id}/${product.variant_id}`,
       product_reviews_link,
       is_new,
@@ -93,20 +94,19 @@ const NProducts = () => {
   }, [has_started_loading_more, hasNextPage, isProductPending]);
   return (
     <div className="max-w-8xl mx-auto w-full space-y-4 px-4 pb-4">
-      <h2 className="text-lg font-semibold text-orange-500 md:text-xl">
-        Personalized Products For you
+      <h2 className="text-base font-bold text-gray-900 sm:text-lg md:text-xl tracking-tight">
+        Personalized Products For You
       </h2>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
         {isProductPending
           ? Array.from({ length: 20 }).map((_, i) => (
               <ProductCardSkeleton key={`initial-skeleton-${i}`} />
             ))
-          : formatted_products?.map((product, index) =>
+          : formatted_products?.map((product) =>
               product ? (
-                <ProductCard
-                  {...product}
-                  index={index}
-                  key={`category-product-${product?.variant_id}`}
+                <HomeProductCard
+                  product={product as any}
+                  key={`category-product-${product?.variant_id ?? product?.product_id}`}
                 />
               ) : null,
             )}

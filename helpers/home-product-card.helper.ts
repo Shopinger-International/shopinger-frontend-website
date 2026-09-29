@@ -8,7 +8,29 @@ export interface IExtractedPrices {
 
 export interface IExtractedRating {
   avg_rating: number | undefined;
-  rating_count: string | number | undefined;
+}
+
+export function extractProductRating(product: IHomeProduct): IExtractedRating {
+  if (!product) {
+    return { avg_rating: undefined };
+  }
+
+  const raw_avg_rating =
+    product.avg_rating ??
+    product.rating ??
+    product.average_rating ??
+    (product as any).reviews_avg_rating ??
+    (product as any).avg_ratings ??
+    undefined;
+
+  const avg_rating =
+    raw_avg_rating != null && !isNaN(Number(raw_avg_rating)) && Number(raw_avg_rating) > 0
+      ? Number(raw_avg_rating)
+      : undefined;
+
+  return {
+    avg_rating,
+  };
 }
 
 export function extractProductPrices(product: IHomeProduct): IExtractedPrices {
@@ -67,28 +89,5 @@ export function extractProductPrices(product: IHomeProduct): IExtractedPrices {
     selling_price,
     mrp,
     discount_perc,
-  };
-}
-
-export function extractProductRating(product: IHomeProduct): IExtractedRating {
-  if (!product) {
-    return { avg_rating: undefined, rating_count: undefined };
-  }
-
-  const avg_rating =
-    product.avg_rating ?? product.rating ?? product.average_rating ?? undefined;
-
-  const raw_rating_count =
-    product.rating_count ??
-    product.ratings_count ??
-    product.reviews_count ??
-    (product as any).total_reviews ??
-    ((product as any).bought_last_month
-      ? `${(product as any).bought_last_month}+`
-      : undefined);
-
-  return {
-    avg_rating,
-    rating_count: raw_rating_count,
   };
 }
