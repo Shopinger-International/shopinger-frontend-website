@@ -19,24 +19,30 @@
 @theme {
   --width-8xl: 96rem;
   --max-width-8xl: 96rem;
+  --animate-search-placeholder-slide-up: searchPlaceholderSlideUp 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Hide scrollbar but keep scrolling */
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE & Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
-}
-@keyframes marquee {
+@keyframes searchPlaceholderSlideUp {
   0% {
-    transform: translateX(0);
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  15% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  85% {
+    transform: translateY(0);
+    opacity: 1;
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateY(-100%);
+    opacity: 0;
   }
+}
+
+.animate-search-placeholder-slide-up {
+  animation: searchPlaceholderSlideUp 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-marquee {
