@@ -65,12 +65,15 @@ type IOrderStatus =
   | "DELIVERED"
   | "CANCELLED";
 
+type IPaymentMode = "COD" | "ONLINE";
+
 type IOrder = {
   id: number;
   order_name: string;
   status: IOrderStatus;
   payment_status: string;
   payment_method: string;
+  payment_mode: IPaymentMode;
   total_mrp: number;
   sub_total: number;
   platform_fee: number;

@@ -1,6 +1,7 @@
 // types
 import type { FC } from "react";
 import type { IOrderStatus, IOrderStatusHistory } from "@/types/order";
+import IOrder from "@/types/order";
 
 // helpers
 import clsx from "clsx";

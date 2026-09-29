@@ -1,11 +1,14 @@
+import { useState } from "react";
+
 // const
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
 import { FREE_SHIPPING_THRESHOLD } from "@/constants/charges.const";
 
 // types
-import type { FC } from "react";
+import { type FC } from "react";
 import type { IAddress } from "@/types/address";
 import type { IResponse as IVerifyPaymentResponse } from "@/hooks/axios/cart/verify-payment-mutation.hook";
+import IOrder from "@/types/order";
 
 // helpers
 import clsx from "clsx";
@@ -58,6 +61,8 @@ const CheckoutSummary: FC<IProps> = ({
   const create_razorpay_order_mutation = useCreateRazorpayOrderMutation();
   const verify_payment_mutation = useVerifyPaymentMutation();
   const { data: user_detail } = useUserDetails();
+  const [payment_mode, setPaymentMode] =
+    useState<IOrder["payment_mode"]>("ONLINE");
   const user_id = user_detail?.id;
   const delivery_fee = getDeliveryFeeAmountBasedOnTotalAmount({
     total_amount,
@@ -157,12 +162,69 @@ const CheckoutSummary: FC<IProps> = ({
           </div>
         </div>
       </div>
+      <div className="mt-6">
+        <h3 className="mb-3 text-sm font-semibold text-gray-900">
+          Payment Mode
+        </h3>
+
+        <div className="space-y-3">
+          <label
+            className={`flex cursor-pointer items-center rounded-md border p-4 ${
+              payment_mode === "ONLINE"
+                ? "border-orange-500 bg-orange-50"
+                : "border-gray-200"
+            }`}
+          >
+            <input
+              type="radio"
+              name="payment_method"
+              value="ONLINE"
+              checked={payment_mode === "ONLINE"}
+              onChange={() => setPaymentMode("ONLINE")}
+              className="h-4 w-4 accent-orange-500"
+            />
+
+            <div className="ml-3">
+              <p className="text-sm font-semibold text-gray-900">Pay Online</p>
+              <p className="text-xs text-gray-500">
+                UPI, Cards, Net Banking & more
+              </p>
+            </div>
+          </label>
+
+          <label
+            className={`flex cursor-pointer items-center rounded-md border p-4 ${
+              payment_mode === "COD"
+                ? "border-orange-500 bg-orange-50"
+                : "border-gray-200"
+            }`}
+          >
+            <input
+              type="radio"
+              name="payment_method"
+              value="COD"
+              checked={payment_mode === "COD"}
+              onChange={() => setPaymentMode("COD")}
+              className="h-4 w-4 accent-orange-500"
+            />
+
+            <div className="ml-3">
+              <p className="text-sm font-semibold text-gray-900">
+                Cash on Delivery
+              </p>
+              <p className="text-xs text-gray-500">
+                Pay when your order is delivered
+              </p>
+            </div>
+          </label>
+        </div>
+      </div>
 
       {/* ACTIONS */}
       <div className="mt-6 space-y-4">
         <button
           type="button"
-          className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white"
+          className="relative w-full cursor-pointer overflow-hidden rounded-md bg-orange-500 py-2 font-semibold text-white before:absolute before:inset-y-0 before:-left-full before:w-1/3 before:skew-x-[-20deg] before:animate-[wipe_1.5s_ease-in-out_infinite] before:bg-white/50 before:blur-sm"
           onClick={() => {
             if (!user_detail)
               return openLoginModal({
@@ -179,10 +241,32 @@ const CheckoutSummary: FC<IProps> = ({
               cart_checkout_mutation.mutate(
                 {
                   address_id: selected_address.id,
+                  payment_mode,
                 },
                 {
-                  onSuccess(data) {
-                    const order_id = data.order_id;
+                  onSuccess(response) {
+                    const order_id = response.order_id;
+                    if (payment_mode === "COD") {
+                      if (user_id) {
+                        response.order.order_items.forEach(
+                          ({ product_id, variant_id, quantity, ...item }) => {
+                            orderCompletedEvent({
+                              user_id,
+                              product_id,
+                              variant_id,
+                              order_id: Number(order_id),
+                              category_id: item.product.sub_sub_category_id,
+                              category_type: "SUB_SUB",
+                              quantity,
+                              source: ANALYTICS_SOURCE_TYPE.CHECKOUT,
+                            });
+                          },
+                        );
+                      }
+                      handleOrderSuccess(response.order);
+                      return;
+                    }
+
                     create_razorpay_order_mutation.mutate(
                       {
                         order_id,
@@ -243,10 +327,31 @@ const CheckoutSummary: FC<IProps> = ({
                 {
                   address_id: selected_address.id,
                   intent_id: intent_id as string,
+                  payment_mode,
                 },
                 {
-                  onSuccess(data) {
-                    const order_id = data.order_id;
+                  onSuccess(response) {
+                    const order_id = response.order_id;
+                    if (payment_mode === "COD") {
+                      if (user_id) {
+                        response.order.order_items.forEach(
+                          ({ product_id, variant_id, quantity, ...item }) => {
+                            orderCompletedEvent({
+                              user_id,
+                              product_id,
+                              variant_id,
+                              order_id: Number(order_id),
+                              category_id: item.product.sub_sub_category_id,
+                              category_type: "SUB_SUB",
+                              quantity,
+                              source: ANALYTICS_SOURCE_TYPE.CHECKOUT,
+                            });
+                          },
+                        );
+                      }
+                      handleOrderSuccess(response.order);
+                      return;
+                    }
                     create_razorpay_order_mutation.mutate(
                       {
                         order_id,
@@ -305,7 +410,9 @@ const CheckoutSummary: FC<IProps> = ({
             }
           }}
         >
-          <span className="relative z-10">Proceed to Pay</span>
+          <span className="relative z-10">
+            {payment_mode === "COD" ? "Place Order" : "Proceed to Pay"}
+          </span>
         </button>
       </div>
     </div>
