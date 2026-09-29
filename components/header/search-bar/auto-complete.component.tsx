@@ -101,11 +101,14 @@ const AutoComplete: FC<
   const { refine: setQuery, query } = useSearchBox();
   const { refine: setPage } = usePagination();
 
-  //categories animation
+  //categories animation (Desktop typewriter)
   const [show_animation, setShowAnimation] = useState(query ? false : true);
   const [text, setText] = useState("");
   const [is_deleting, setIsDeleting] = useState(false);
   const [category_index, setCategoryIndex] = useState(0);
+
+  // Mobile bottom-to-top vertical slide animation
+  const [mobile_category_index, setMobileCategoryIndex] = useState(0);
 
   useEffect(() => {
     if (!animate_categories.length || query) return;
@@ -136,6 +139,17 @@ const AutoComplete: FC<
     }, 50);
     return () => clearTimeout(updating_text_timeout);
   }, [animate_categories, query, is_deleting, category_index, text]);
+
+  // Mobile placeholder vertical slide timer
+  useEffect(() => {
+    if (!animate_categories.length || query) return;
+
+    const mobile_timer = setInterval(() => {
+      setMobileCategoryIndex((prev) => (prev + 1) % animate_categories.length);
+    }, 3000);
+
+    return () => clearInterval(mobile_timer);
+  }, [animate_categories, query]);
 
   const plugins = useMemo(() => {
     const algolia_insights_plugin = createAlgoliaInsightsPlugin({
@@ -403,10 +417,32 @@ const AutoComplete: FC<
       {!query &&
         !show_search_icon_only &&
         show_animation &&
-        animate_categories.length > 0 &&
-        animate_categories[category_index] !== "" && (
-          <div className="pointer-events-none absolute inset-y-0 left-3 right-14 z-10 flex items-center overflow-hidden truncate text-xs text-gray-400 sm:text-sm max-w-[calc(100%-3.5rem)]">
-            <span className="truncate">Search &quot;{text}&quot;</span>
+        animate_categories.length > 0 && (
+          <div className="pointer-events-none absolute inset-y-0 left-3 right-14 z-10 flex items-center overflow-hidden text-xs text-gray-400 sm:text-sm max-w-[calc(100%-3.5rem)]">
+            {/* Desktop: Typewriter typing animation */}
+            {animate_categories[category_index] !== "" && (
+              <span className="hidden lg:inline-block truncate">
+                Search &quot;{text}&quot;
+              </span>
+            )}
+
+            {/* Mobile: Bottom-to-top vertical slide animation */}
+            {animate_categories[
+              mobile_category_index % animate_categories.length
+            ] !== "" && (
+              <span
+                key={mobile_category_index}
+                className="inline-block lg:hidden truncate animate-search-placeholder-slide-up"
+              >
+                Search &quot;
+                {
+                  animate_categories[
+                    mobile_category_index % animate_categories.length
+                  ]
+                }
+                &quot;
+              </span>
+            )}
           </div>
         )}
     </div>
