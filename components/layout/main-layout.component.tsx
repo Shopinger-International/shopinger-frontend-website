@@ -9,6 +9,7 @@ import type IUser from "@/types/user";
 // local components
 import Header from "@/components/header/header.component";
 import BottomMobileNav from "@/components/common/bottom-mobile-nav.component";
+import ActiveOrderStatusBanner from "@/components/order/active-order-status-banner.component";
 import Footer from "@/components/footer/footer.component";
 import LoginModal from "@/components/login/login-modal.component";
 import SelectAddressDrawer from "@/components/common/select-address-drawer.component";
@@ -193,6 +194,7 @@ const MainLayout: FC<{
         <SelectAddressDrawer />
         {children}
       </main>
+      <ActiveOrderStatusBanner has_bottom_nav={show_bottom_navigation} />
       {show_bottom_navigation && <BottomMobileNav />}
       {show_footer && <Footer />}
     </div>
