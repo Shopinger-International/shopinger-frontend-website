@@ -30,6 +30,7 @@ const ActiveOrderStatusBanner = ({
   const is_mounted = useIsMounted();
   const { data: orders = [] } = useGetOrders();
   const [dismissed_ids, setDismissedIds] = useState<number[]>([]);
+  const [is_scrolling_down, setIsScrollingDown] = useState(false);
 
   // Load dismissed order IDs from localStorage
   useEffect(() => {
@@ -41,6 +42,22 @@ const ActiveOrderStatusBanner = ({
     } catch {
       // ignore storage errors
     }
+  }, []);
+
+  // Listen for page scroll to move banner down when scrolling down (matching bottom mobile nav)
+  useEffect(() => {
+    let prev_scroll_pos = window.pageYOffset;
+    function handleScroll() {
+      const current_scroll_pos = window.pageYOffset;
+      if (current_scroll_pos > prev_scroll_pos && current_scroll_pos > 30) {
+        setIsScrollingDown(true);
+      } else {
+        setIsScrollingDown(false);
+      }
+      prev_scroll_pos = current_scroll_pos;
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Show banner ONLY on the home page ('/')
@@ -93,7 +110,11 @@ const ActiveOrderStatusBanner = ({
     <div
       className={clsx(
         "fixed left-1/2 -translate-x-1/2 z-40 w-[92%] sm:w-full max-w-md transition-all duration-300 ease-in-out pointer-events-auto",
-        has_bottom_nav ? "bottom-24 lg:bottom-6" : "bottom-4",
+        has_bottom_nav
+          ? is_scrolling_down
+            ? "bottom-4 lg:bottom-6"
+            : "bottom-24 lg:bottom-6"
+          : "bottom-4",
       )}
     >
       <Link
@@ -102,13 +123,13 @@ const ActiveOrderStatusBanner = ({
         className={clsx(
           "group flex items-center justify-between gap-3.5 rounded-2xl p-2.5 text-white shadow-xl border border-white/20 backdrop-blur-sm active:scale-[0.99] transition-all duration-200 cursor-pointer",
           is_cancelled
-            ? "bg-gradient-to-r from-red-500 via-rose-500 to-red-600 shadow-red-500/25 hover:shadow-2xl hover:shadow-red-500/35"
-            : "bg-gradient-to-r from-[#ff740a] via-[#ff7a18] to-[#ff6700] shadow-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/35",
+            ? "bg-red-600 border-red-500 shadow-red-500/25 hover:shadow-2xl hover:shadow-red-500/35"
+            : "bg-emerald-600 border-emerald-500 shadow-emerald-600/25 hover:shadow-2xl hover:shadow-emerald-600/35",
         )}
       >
         <div className="flex items-center gap-3 min-w-0 flex-1">
           {/* Item image container */}
-          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-0.5 shadow-inner">
+          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-200 p-0.5 shadow-inner border border-gray-300/50">
             {item_image ? (
               <Image
                 src={item_image}
@@ -120,14 +141,14 @@ const ActiveOrderStatusBanner = ({
               <PackageCheck
                 className={clsx(
                   "h-6 w-6",
-                  is_cancelled ? "text-red-500" : "text-[#ff740a]",
+                  is_cancelled ? "text-red-500" : "text-emerald-600",
                 )}
               />
             )}
 
-            {/* Subtle corner badge on product image for multiple items so image remains fully visible */}
+            {/* Subtle corner badge on product image for multiple items */}
             {total_items > 1 && (
-              <div className="absolute bottom-0 right-0 z-10 flex items-center justify-center rounded-tl-md bg-white/95 px-1.5 py-0.5 shadow-sm border-t border-l border-black/10">
+              <div className="absolute bottom-0 right-0 z-10 flex items-center justify-center rounded-tl-md bg-white/95 px-1.5 py-0.5 shadow-sm border-t border-l border-gray-300">
                 <span className="text-[10px] font-black text-slate-900 leading-none">
                   {total_items - 1}+
                 </span>
@@ -137,14 +158,14 @@ const ActiveOrderStatusBanner = ({
 
           {/* Status info box */}
           <div className="flex flex-col min-w-0 flex-1">
-            <p className="truncate text-sm font-bold tracking-tight text-white leading-snug">
+            <p className="text-sm font-bold tracking-tight text-white leading-tight">
               {status_text}
             </p>
           </div>
         </div>
 
         {/* Action badge */}
-        <div className="flex shrink-0 items-center gap-1 rounded-full bg-white/20 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md group-hover:bg-white/30 transition-all">
+        <div className="flex shrink-0 items-center gap-1 rounded-full bg-white/20 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md group-hover:bg-white/30 transition-all">
           <span>{is_cancelled ? "View" : "Track"}</span>
           <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
         </div>
