@@ -203,7 +203,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
                 alt={title}
                 fill
                 sizes="(max-width: 640px) 140px, 180px"
-                className="object-contain p-1 transition-transform duration-300 rounded-2xl"
+                className="object-contain p-1 transition-transform duration-300 rounded-2xl pointer-events-none select-none"
               />
             </div>
 
