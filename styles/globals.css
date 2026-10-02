@@ -3,6 +3,14 @@
 
 :root {
   --header-height: 120px; /* adjust to match your header */
+  --brand: #ff740a;
+  --brand-foreground: #ffffff;
+  --background: #fff7ed;
+  --background-foreground: #111827;
+  --primary: #ff740a;
+  --primary-foreground: #ffffff;
+  --secondary: #16a34a;
+  --secondary-foreground: #ffffff;
 }
 @media (max-width: 1024px) {
   :root {
@@ -12,6 +20,14 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-brand: #ff740a;
+  --color-brand-foreground: #ffffff;
+  --color-background: #fff7ed;
+  --color-background-foreground: #111827;
+  --color-primary: #ff740a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #16a34a;
+  --color-secondary-foreground: #ffffff;
   --color-bg-primary: #ff740a;
   --color-text-primary: #353535;
 }
@@ -66,18 +82,6 @@
 .custom-bullet-active {
   background-color: #f97316;
   width: 40px;
-}
-
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --color-bg-primary: #ff740a;
-  --color-text-primary: #353535;
-}
-
-@theme {
-  --width-8xl: 96rem;
-  --max-width-8xl: 96rem;
 }
 
 /* Hide scrollbar but keep scrolling */
