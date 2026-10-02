@@ -236,9 +236,9 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
           className={clsx(
             "flex h-7 sm:h-8 shrink-0 items-center justify-between rounded-lg bg-white select-none border-2",
             is_grocery
-              ? "border-green-600 text-green-600"
+              ? "border-green-600 text-green-600 lg:border-brand lg:text-brand"
               : is_pharmacy
-                ? "border-blue-500 text-blue-500"
+                ? "border-blue-500 text-blue-500 lg:border-brand lg:text-brand"
                 : "border-brand text-brand",
             fullWidth ? "w-full px-3" : "w-full min-[230px]:w-20 px-1",
           )}
@@ -272,9 +272,9 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
         className={clsx(
           "flex h-7 sm:h-8 shrink-0 items-center justify-center cursor-pointer rounded-lg border-2 bg-white text-xs font-extrabold transition-all active:scale-95",
           is_grocery
-            ? "border-green-600 text-green-600 hover:bg-green-50 disabled:bg-gray-100"
+            ? "border-green-600 text-green-600 hover:bg-green-50 lg:border-brand lg:text-brand lg:hover:bg-orange-50 disabled:bg-gray-100"
             : is_pharmacy
-              ? "border-blue-500 text-blue-500 hover:bg-blue-50 disabled:bg-gray-100"
+              ? "border-blue-500 text-blue-500 hover:bg-blue-50 lg:border-brand lg:text-brand lg:hover:bg-orange-50 disabled:bg-gray-100"
               : "border-brand text-brand hover:bg-orange-50 disabled:bg-gray-100",
           fullWidth ? "w-full" : "w-full min-[230px]:w-20",
         )}

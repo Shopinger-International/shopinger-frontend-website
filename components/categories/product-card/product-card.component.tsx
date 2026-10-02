@@ -152,9 +152,9 @@ const ProductCard: FC<IProps> = ({
       className={clsx(
         "group relative flex h-full w-full flex-col justify-between rounded-2xl p-2 sm:p-2.5 bg-white border transition-all duration-200",
         is_grocery
-          ? "border-green-100/60"
+          ? "border-green-100/60 lg:border-orange-100/60"
           : is_pharmacy
-            ? "border-blue-100/60"
+            ? "border-blue-100/60 lg:border-orange-100/60"
             : "border-orange-100/60",
       )}
     >
@@ -173,9 +173,9 @@ const ProductCard: FC<IProps> = ({
                 className={clsx(
                   "absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold tracking-tight uppercase shadow-2xs",
                   is_grocery
-                    ? "text-green-600"
+                    ? "text-green-600 lg:text-brand"
                     : is_pharmacy
-                      ? "text-blue-500"
+                      ? "text-blue-500 lg:text-brand"
                       : "text-brand",
                 )}
               >
@@ -198,15 +198,15 @@ const ProductCard: FC<IProps> = ({
                 className={clsx(
                   "size-5 sm:size-6",
                   is_grocery
-                    ? "text-green-600"
+                    ? "text-green-600 lg:text-brand"
                     : is_pharmacy
-                      ? "text-blue-600"
+                      ? "text-blue-600 lg:text-brand"
                       : "text-brand",
                   is_wishlisted &&
                     (is_grocery
-                      ? "fill-green-600"
+                      ? "fill-green-600 lg:fill-brand"
                       : is_pharmacy
-                        ? "fill-blue-600"
+                        ? "fill-blue-600 lg:fill-brand"
                         : "fill-brand"),
                 )}
                 strokeWidth={2.2}
