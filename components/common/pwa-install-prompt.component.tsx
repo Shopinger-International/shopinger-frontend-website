@@ -16,6 +16,7 @@ export const PWAInstallPrompt: FC<IPWAInstallPromptProps> = ({
   const {
     canInstall,
     isInstalled,
+    deviceType,
     showIOSInstruction,
     promptInstall,
     dismissPrompt,
@@ -74,40 +75,57 @@ export const PWAInstallPrompt: FC<IPWAInstallPromptProps> = ({
           </div>
 
           <div className="mt-5 space-y-3 border-t border-gray-100 pt-4 text-xs">
-            {showIOSInstruction ? (
-              <div className="rounded-xl bg-blue-50/90 p-3.5 border border-blue-200/80 text-blue-950">
-                <div className="flex items-center gap-2 font-bold mb-1.5">
+            {deviceType === "ios" ? (
+              <div className="rounded-xl bg-blue-50/90 p-4 border border-blue-200/80 text-blue-950 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-blue-900 text-sm">
                   <Share className="size-4 text-blue-600" />
-                  <span>iOS Safari Instructions</span>
+                  <span>iOS (iPhone / iPad) Instructions</span>
                 </div>
-                <ol className="list-decimal pl-4 space-y-1 text-blue-900 font-medium">
-                  <li>Tap the <strong>Share</strong> button in your Safari toolbar.</li>
-                  <li>Scroll down and select <strong>Add to Home Screen</strong>.</li>
-                  <li>Tap <strong>Add</strong> at top right to install.</li>
+                <ol className="list-decimal pl-4 space-y-1.5 text-blue-900 font-medium leading-relaxed">
+                  <li>
+                    Tap the <strong>Share</strong> button <Share className="inline size-3 text-blue-600 align-baseline" /> in your Safari or Chrome toolbar.
+                  </li>
+                  <li>
+                    Scroll down and select <strong>Add to Home Screen</strong>.
+                  </li>
+                  <li>
+                    Tap <strong>Add</strong> at top right to install.
+                  </li>
+                </ol>
+              </div>
+            ) : deviceType === "android" ? (
+              <div className="rounded-xl bg-orange-50/90 p-4 border border-orange-200/80 text-orange-950 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-[#FF5300] text-sm">
+                  <Smartphone className="size-4 text-[#FF5300]" />
+                  <span>Android Instructions</span>
+                </div>
+                <ol className="list-decimal pl-4 space-y-1.5 text-gray-800 font-medium leading-relaxed">
+                  <li>
+                    Tap the 3 dots menu <strong>(⋮)</strong> at top right of your browser.
+                  </li>
+                  <li>
+                    Select <strong>Install App</strong> or <strong>Add to Home Screen</strong>.
+                  </li>
+                  <li>
+                    Confirm by tapping <strong>Install</strong>.
+                  </li>
                 </ol>
               </div>
             ) : (
-              <>
-                <div className="rounded-xl bg-orange-50/90 p-3.5 border border-orange-200/80 text-orange-950">
-                  <div className="flex items-center gap-2 font-bold mb-1 text-[#FF5300]">
-                    <MonitorCheck className="size-4 text-[#FF5300]" />
-                    <span>Desktop (Chrome / Edge / Brave)</span>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed font-medium">
-                    Look at the right side of your address bar and click the <strong>Install App (↓)</strong> icon, or select <strong>Install Shopinger</strong> from your browser menu.
-                  </p>
+              <div className="rounded-xl bg-gray-50 p-4 border border-gray-200 text-gray-900 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-gray-900 text-sm">
+                  <MonitorCheck className="size-4 text-[#FF5300]" />
+                  <span>Desktop (Chrome / Edge / Brave) Instructions</span>
                 </div>
-
-                <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200 text-gray-900">
-                  <div className="flex items-center gap-2 font-bold mb-1 text-gray-800">
-                    <Smartphone className="size-4 text-gray-700" />
-                    <span>Android Chrome</span>
-                  </div>
-                  <p className="text-gray-600 leading-relaxed font-medium">
-                    Tap the 3-dots menu <strong>(⋮)</strong> at top right and select <strong>Install App</strong> or <strong>Add to Home Screen</strong>.
-                  </p>
-                </div>
-              </>
+                <ol className="list-decimal pl-4 space-y-1.5 text-gray-700 font-medium leading-relaxed">
+                  <li>
+                    Click the <strong>Install App (↓)</strong> icon on the right side of address bar.
+                  </li>
+                  <li>
+                    Or open browser menu <strong>(⋮)</strong> and select <strong>Install Shopinger</strong>.
+                  </li>
+                </ol>
+              </div>
             )}
           </div>
 

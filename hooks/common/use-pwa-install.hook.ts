@@ -9,11 +9,14 @@ export interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
+export type DeviceType = "ios" | "android" | "desktop";
+
 export function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState<boolean>(false);
   const [isIOS, setIsIOS] = useState<boolean>(false);
+  const [deviceType, setDeviceType] = useState<DeviceType>("desktop");
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
   useEffect(() => {
@@ -26,13 +29,24 @@ export function usePWAInstall() {
       setIsInstalled(isStandalone);
     };
 
-    // Check if device is iOS Safari
-    const checkIsIOS = () => {
+    // Detect device type (iOS, Android, Desktop)
+    const detectDevice = () => {
       const userAgent = window.navigator.userAgent.toLowerCase();
-      const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
-      const isSafari =
-        /safari/.test(userAgent) && !/chrome|crios|fxios/.test(userAgent);
-      setIsIOS(isIOSDevice && isSafari);
+      const isIOSDevice =
+        /iphone|ipad|ipod/.test(userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      const isAndroidDevice = /android/.test(userAgent);
+
+      if (isIOSDevice) {
+        setDeviceType("ios");
+        setIsIOS(true);
+      } else if (isAndroidDevice) {
+        setDeviceType("android");
+        setIsIOS(false);
+      } else {
+        setDeviceType("desktop");
+        setIsIOS(false);
+      }
     };
 
     // Check if user previously dismissed the prompt in this session
@@ -44,7 +58,7 @@ export function usePWAInstall() {
     };
 
     checkIsInstalled();
-    checkIsIOS();
+    detectDevice();
     checkDismissed();
 
     // Listen for beforeinstallprompt event
@@ -115,6 +129,7 @@ export function usePWAInstall() {
     canInstall,
     isInstalled,
     isIOS,
+    deviceType,
     showIOSInstruction,
     promptInstall,
     dismissPrompt,
