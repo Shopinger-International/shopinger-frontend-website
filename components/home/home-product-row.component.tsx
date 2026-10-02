@@ -46,66 +46,37 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
     align: "start",
     dragFree: true,
     containScroll: "trimSnaps",
-    slidesToScroll: is_mobile ? 2 : 4,
   });
 
   const updateScrollButtonsState = useCallback(() => {
     if (!embla_api) return;
-    const container = embla_api.rootNode();
-    const canPrev =
-      embla_api.canScrollPrev() || (container ? container.scrollLeft > 5 : false);
-    const canNext =
-      embla_api.canScrollNext() &&
-      (container
-        ? Math.ceil(container.scrollLeft + container.clientWidth) <
-          container.scrollWidth - 10
-        : true);
-
     setCtaState({
-      can_scroll_prev: canPrev,
-      can_scroll_next: canNext,
+      can_scroll_prev: embla_api.canScrollPrev(),
+      can_scroll_next: embla_api.canScrollNext(),
     });
   }, [embla_api]);
 
   const scrollPrev = useCallback(() => {
     if (!embla_api) return;
     embla_api.scrollPrev();
-    const container = embla_api.rootNode();
-    if (container && container.scrollLeft > 0) {
-      container.scrollBy({ left: -300, behavior: "smooth" });
-    }
   }, [embla_api]);
 
   const scrollNext = useCallback(() => {
     if (!embla_api) return;
     embla_api.scrollNext();
-    const container = embla_api.rootNode();
-    if (container) {
-      container.scrollBy({ left: 300, behavior: "smooth" });
-    }
   }, [embla_api]);
 
   useEffect(() => {
     if (!embla_api) return;
 
     updateScrollButtonsState();
-    const container = embla_api.rootNode();
 
     embla_api.on("select", updateScrollButtonsState);
     embla_api.on("scroll", updateScrollButtonsState);
     embla_api.on("settle", updateScrollButtonsState);
     embla_api.on("reInit", updateScrollButtonsState);
 
-    if (container) {
-      container.addEventListener("scroll", updateScrollButtonsState, {
-        passive: true,
-      });
-    }
-
     return () => {
-      if (container) {
-        container.removeEventListener("scroll", updateScrollButtonsState);
-      }
       embla_api.off("select", updateScrollButtonsState);
       embla_api.off("scroll", updateScrollButtonsState);
       embla_api.off("settle", updateScrollButtonsState);
@@ -169,7 +140,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
 
         {/* Embla Viewport */}
         <div
-          className="overflow-x-auto no-scrollbar rounded-xl touch-pan-x"
+          className="overflow-hidden rounded-xl touch-pan-y"
           ref={embla_ref}
         >
           <ul className="flex gap-2.5 sm:gap-3.5 py-1">
