@@ -91,7 +91,7 @@ const ProductRow: FC<IProps> = ({ title, products, background_style }) => {
         )}
       </div>
 
-      <div className="overflow-hidden" ref={embla_ref}>
+      <div className="overflow-hidden touch-pan-y" ref={embla_ref}>
         <ul className="flex gap-2 sm:gap-5">
           {products.map(({ product_id, variant_id, title, media_url }) => (
             <li
