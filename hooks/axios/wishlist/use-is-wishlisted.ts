@@ -8,9 +8,10 @@ type IResponse = {
 
 type IParams = {
   variant_id: number;
+  enabled?: boolean;
 };
 
-const useIsWishlisted = ({ variant_id }: IParams) => {
+const useIsWishlisted = ({ variant_id, enabled = true }: IParams) => {
   return useQuery({
     queryKey: ["is-wishlisted", variant_id],
 
@@ -20,7 +21,8 @@ const useIsWishlisted = ({ variant_id }: IParams) => {
       return data;
     },
 
-    enabled: !!variant_id,
+    enabled: !!variant_id && enabled,
+    staleTime: 5 * 60 * 1000,
   });
 };
 

@@ -153,19 +153,40 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
 
       const product_slug = generateSlug(product.title);
       const sortedVariants = (variants || []).sort(
-        ({ variant_pricing: a }, { variant_pricing: b }) =>
-          a.selling_price_with_commission - b.selling_price_with_commission,
+        (a, b) =>
+          (a.variant_pricing?.selling_price_with_commission ?? a.variant_pricing?.selling_price ?? (a as any).selling_price ?? 0) -
+          (b.variant_pricing?.selling_price_with_commission ?? b.variant_pricing?.selling_price ?? (b as any).selling_price ?? 0),
       );
 
       const first_variant = sortedVariants[0];
 
       if (!first_variant) return null;
       const { id: variant_id, variant_medias, variant_pricing } = first_variant;
-      const { mrp, selling_price_with_commission } = variant_pricing;
 
-      const discount_percentage = Math.round(
-        ((mrp - selling_price_with_commission) / mrp) * 100,
+      const selling_price = Number(
+        variant_pricing?.selling_price_with_commission ??
+        variant_pricing?.selling_price ??
+        (first_variant as any)?.selling_price_with_commission ??
+        (first_variant as any)?.selling_price ??
+        (product as any)?.selling_price ??
+        (product as any)?.price ??
+        0,
       );
+
+      const mrp = Number(
+        variant_pricing?.mrp ??
+        (first_variant as any)?.mrp ??
+        (product as any)?.mrp ??
+        (product as any)?.original_price ??
+        (product as any)?.price ??
+        selling_price,
+      );
+
+      const discount_percentage =
+        mrp > selling_price && mrp > 0
+          ? Math.round(((mrp - selling_price) / mrp) * 100)
+          : Math.round(Number((product as any)?.discount_percentage ?? 0));
+
       const product_reviews_link = `/${product_slug}/p/${product_id}/reviews`;
       const is_new = isNewProduct(created_at);
       return {
@@ -173,8 +194,8 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         variant_id,
         title: updated_title,
         src: `/${product_slug}/p/${product.id}/${variant_id}`,
-        product_thumbnail: variant_medias[0]?.media ?? product_medias[0].media,
-        selling_price: selling_price_with_commission,
+        product_thumbnail: variant_medias[0]?.media ?? product_medias[0]?.media,
+        selling_price,
         mrp,
         discount_percentage,
         is_new,
