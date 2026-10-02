@@ -1,6 +1,7 @@
 import { useState, useEffect, memo } from "react";
 import type { FC } from "react";
 import { useRouter } from "next/router";
+import { Plus, Minus } from "lucide-react";
 import clsx from "clsx";
 
 // const & analytics
@@ -27,6 +28,7 @@ export type IProductCardQuantityControlProps = {
   query_id?: string;
   index_name?: string;
   object_id?: string;
+  fullWidth?: boolean;
 };
 
 const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
@@ -40,6 +42,7 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
     query_id,
     index_name,
     object_id,
+    fullWidth = false,
   }) => {
     const router = useRouter();
     const is_grocery =
@@ -48,8 +51,10 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
     const is_pharmacy =
       router.asPath.toLowerCase().includes("pharmacy") ||
       router.asPath.toLowerCase().includes("personal-care") ||
+      router.asPath.toLowerCase().includes("health") ||
       router.query.main_category_slug?.toString().toLowerCase().includes("pharmacy") ||
-      router.query.main_category_slug?.toString().toLowerCase().includes("personal-care");
+      router.query.main_category_slug?.toString().toLowerCase().includes("personal-care") ||
+      router.query.main_category_slug?.toString().toLowerCase().includes("health");
 
     const { data: cart_data } = useCart();
     const add_to_cart_mutation = useAddToCartMutation();
@@ -66,7 +71,8 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
           const matched_variant = item.variants.find(
             (v: any) =>
               (v.id != null && Number(v.id) === Number(variant_id)) ||
-              (v.variant_id != null && Number(v.variant_id) === Number(variant_id)),
+              (v.variant_id != null &&
+                Number(v.variant_id) === Number(variant_id)),
           );
           if (matched_variant) {
             cart_quantity =
@@ -228,32 +234,33 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
       return (
         <div
           className={clsx(
-            "flex h-7 sm:h-9 w-full items-center justify-between rounded-lg sm:rounded-xl px-2 text-white shadow-2xs select-none",
+            "flex h-7 sm:h-8 shrink-0 items-center justify-between rounded-lg bg-white select-none border-2",
             is_grocery
-              ? "bg-green-600"
+              ? "border-green-600 text-green-600"
               : is_pharmacy
-                ? "bg-blue-500"
-                : "bg-brand",
+                ? "border-blue-500 text-blue-500"
+                : "border-brand text-brand",
+            fullWidth ? "w-full px-3" : "w-full min-[230px]:w-20 px-1",
           )}
         >
           <button
             type="button"
             onClick={handleDecreaseQuantity}
-            className="flex size-5 cursor-pointer items-center justify-center rounded text-xs font-black text-white hover:bg-white/20 active:scale-90"
+            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded hover:bg-black/5 active:scale-90"
             aria-label="Decrease quantity"
           >
-            −
+            <Minus className="size-3.5 sm:size-4" strokeWidth={2.5} />
           </button>
-          <span className="text-xs sm:text-sm font-black text-white">
+          <span className="w-4 text-center text-xs sm:text-sm font-black">
             {display_quantity}
           </span>
           <button
             type="button"
             onClick={handleIncreaseQuantity}
-            className="flex size-5 cursor-pointer items-center justify-center rounded text-xs font-black text-white hover:bg-white/20 active:scale-90"
+            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded hover:bg-black/5 active:scale-90"
             aria-label="Increase quantity"
           >
-            +
+            <Plus className="size-3.5 sm:size-4" strokeWidth={2.5} />
           </button>
         </div>
       );
@@ -263,18 +270,19 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
       <button
         type="button"
         className={clsx(
-          "w-full rounded-lg py-1.5 text-xs sm:text-sm font-semibold text-white sm:rounded-xl sm:py-2.5 sm:text-sm cursor-pointer",
+          "flex h-7 sm:h-8 shrink-0 items-center justify-center cursor-pointer rounded-lg border-2 bg-white text-xs font-extrabold transition-all active:scale-95",
           is_grocery
-            ? "bg-green-600 hover:bg-green-700 disabled:bg-green-300"
+            ? "border-green-600 text-green-600 hover:bg-green-50 disabled:bg-gray-100"
             : is_pharmacy
-              ? "bg-blue-500 hover:bg-blue-700 disabled:bg-blue-300"
-              : "bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300",
+              ? "border-blue-500 text-blue-500 hover:bg-blue-50 disabled:bg-gray-100"
+              : "border-brand text-brand hover:bg-orange-50 disabled:bg-gray-100",
+          fullWidth ? "w-full" : "w-full min-[230px]:w-20",
         )}
         aria-label="Add to cart"
         disabled={add_to_cart_mutation.isPending}
         onClick={handleAddToCart}
       >
-        Add to cart
+        ADD
       </button>
     );
   },

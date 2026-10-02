@@ -217,7 +217,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           </div>
 
           {/* Title */}
-          <h3 className="mt-2 line-clamp-2 max-h-8 overflow-hidden text-ellipsis text-2xs font-bold leading-snug text-gray-900 sm:text-xs">
+          <h3 className="mt-2 line-clamp-2 text-2xs font-bold leading-snug text-gray-900 sm:text-xs">
             {title}
           </h3>
         </Link>
@@ -225,14 +225,14 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
 
       {/* Price and Action Row (Fixed at Bottom) */}
       <div className="mt-auto flex items-center justify-between gap-1 pt-2">
-        {selling_price > 0 && (
-          <div className="flex flex-col sm:flex-row sm:items-baseline min-w-0">
-            <span className="text-xs font-black text-gray-900 sm:text-sm md:text-base leading-tight">
-              ₹{selling_price}
+        {Number(selling_price) > 0 && (
+          <div className="flex flex-col sm:flex-row sm:items-baseline min-w-0 gap-0 sm:gap-1">
+            <span className="text-sm font-black text-gray-900 sm:text-base md:text-lg leading-tight truncate">
+              ₹{Number(selling_price).toLocaleString()}
             </span>
-            {mrp > selling_price && (
-              <span className="text-3xs font-medium text-gray-400 line-through leading-tight sm:text-2xs sm:ml-1">
-                ₹{mrp}
+            {Number(mrp) > Number(selling_price) && Number(mrp) > 0 && (
+              <span className="text-2xs font-medium text-gray-400 line-through leading-tight sm:text-xs truncate">
+                ₹{Number(mrp).toLocaleString()}
               </span>
             )}
           </div>

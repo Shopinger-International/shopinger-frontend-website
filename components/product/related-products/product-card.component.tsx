@@ -58,20 +58,22 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp,average_
         </p>
       )}
 
-      <div className="flex items-center gap-2 text-lg text-gray-900">
-        <span
-          aria-label={`Original price ₹${mrp}`}
-          className="text-gray-600 line-through"
-        >
-          ₹{mrp}
-        </span>
-
+      <div className="flex flex-col sm:flex-row sm:items-baseline min-w-0 gap-0 sm:gap-1.5 text-gray-900">
         <span
           aria-label={`Discounted price ₹${selling_price}`}
-          className="font-semibold"
+          className="text-sm sm:text-base md:text-lg font-black text-gray-900"
         >
           ₹{selling_price}
         </span>
+
+        {mrp > selling_price && (
+          <span
+            aria-label={`Original price ₹${mrp}`}
+            className="text-2xs sm:text-xs font-medium text-gray-400 line-through"
+          >
+            ₹{mrp}
+          </span>
+        )}
       </div>
     </article>
   );

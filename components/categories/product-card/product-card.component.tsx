@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { FC } from "react";
 import type IMedia from "@/types/media";
 import { useRouter } from "next/router";
@@ -5,10 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 // icons
-import { Heart, ChevronRight, ChevronDown } from "lucide-react";
+import { Heart, ChevronRight, Star } from "lucide-react";
 
 // local components
-import Rating from "@/components/common/rating.component";
 import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
 import ProductCardQuantityControl from "./product-card-quantity-control.component";
 
@@ -16,7 +16,6 @@ import ProductCardQuantityControl from "./product-card-quantity-control.componen
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useAddToWishlistMutation from "@/hooks/axios/wishlist/use-add-to-wishlist-mutation.hook";
 import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
-import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import addedToWishlistEvent from "@/analytics/events/added-to-wishlist.event";
 import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
@@ -54,7 +53,7 @@ const ProductCard: FC<IProps> = ({
   have_variants,
   product_reviews_link,
   avg_rating,
-  is_wishlisted,
+  is_wishlisted: initial_is_wishlisted,
   sub_sub_category_id,
   bought_last_month,
   index,
@@ -71,242 +70,235 @@ const ProductCard: FC<IProps> = ({
     typeof query.index_name === "string" ? query.index_name : undefined;
   const object_id =
     typeof query.object_id === "string" ? query.object_id : undefined;
-  const is_mobile = useIsMobile();
+
   const is_grocery =
     router.asPath.toLowerCase().includes("grocery") ||
     router.query.main_category_slug?.toString().toLowerCase().includes("grocery");
   const is_pharmacy =
     router.asPath.toLowerCase().includes("pharmacy") ||
     router.asPath.toLowerCase().includes("personal-care") ||
+    router.asPath.toLowerCase().includes("health") ||
     router.query.main_category_slug?.toString().toLowerCase().includes("pharmacy") ||
-    router.query.main_category_slug?.toString().toLowerCase().includes("personal-care");
+    router.query.main_category_slug?.toString().toLowerCase().includes("personal-care") ||
+    router.query.main_category_slug?.toString().toLowerCase().includes("health");
+
+  const [local_wishlisted, setLocalWishlisted] = useState<boolean | null>(null);
+  const is_wishlisted =
+    local_wishlisted !== null ? local_wishlisted : initial_is_wishlisted;
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (is_wishlisted) {
+      setLocalWishlisted(false);
+      remove_from_wishlist_mutation.mutate(
+        { variant_id },
+        {
+          onSuccess() {
+            removedFromWishlistEvent({
+              user_id,
+              product_id,
+              variant_id,
+              category_id: sub_sub_category_id,
+              category_type: "SUB_SUB",
+              source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+            });
+          },
+          onError() {
+            setLocalWishlisted(true);
+          },
+        },
+      );
+    } else {
+      setLocalWishlisted(true);
+      add_to_wishlist_mutation.mutate(
+        { variant_id },
+        {
+          onSuccess() {
+            addedToWishlistEvent({
+              user_id,
+              product_id,
+              variant_id,
+              category_id: sub_sub_category_id,
+              category_type: "SUB_SUB",
+              source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+            });
+          },
+          onError() {
+            setLocalWishlisted(false);
+          },
+        },
+      );
+    }
+  };
+
+  const media_url =
+    typeof product_thumbnail === "string"
+      ? product_thumbnail
+      : product_thumbnail?.url ?? "/shopinger-logo.svg";
+
+  const product_href = {
+    pathname: src,
+    query: {
+      ...(query_id && { query_id }),
+      ...(index_name && { index_name }),
+      ...(object_id && { object_id }),
+    },
+  };
 
   return (
-    <div className="group relative flex h-full min-w-0 flex-col justify-between overflow-hidden rounded-lg border border-gray-200 bg-white sm:rounded-xl sm:border-gray-300">
+    <div
+      className={clsx(
+        "group relative flex h-full w-full flex-col justify-between rounded-2xl p-2 sm:p-2.5 bg-white border transition-all duration-200",
+        is_grocery
+          ? "border-green-100/60"
+          : is_pharmacy
+            ? "border-blue-100/60"
+            : "border-orange-100/60",
+      )}
+    >
       <div className="flex flex-1 flex-col justify-between">
-        <div className="absolute z-1 mt-2 w-full">
-          {!!discount_percentage && (
-            <span
-              className={clsx(
-                "absolute left-2 rounded-full border border-gray-300 px-2 py-0.5 text-xs font-semibold text-white shadow-sm sm:px-3 sm:py-1 sm:text-xs",
-                is_grocery
-                  ? "bg-green-600"
-                  : is_pharmacy
-                    ? "bg-blue-500"
-                    : "bg-orange-500",
-              )}
-            >
-              -{Math.round(Number(discount_percentage))}%
-            </span>
-          )}
-          <button
-            aria-label="Add to wishlist"
-            className="absolute right-2 shrink-0 cursor-pointer rounded-full border border-gray-300 bg-white p-1 shadow-sm disabled:bg-gray-100"
-            disabled={
-              add_to_wishlist_mutation.isPending ||
-              remove_from_wishlist_mutation.isPending
-            }
-            onClick={() =>
-              is_wishlisted
-                ? remove_from_wishlist_mutation.mutate(
-                  { variant_id },
-                  {
-                    onSuccess() {
-                      removedFromWishlistEvent({
-                        user_id,
-                        product_id,
-                        variant_id,
-                        category_id: sub_sub_category_id,
-                        category_type: "SUB_SUB",
-                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
-                      });
-                    },
-                  },
-                )
-                : add_to_wishlist_mutation.mutate(
-                  { variant_id },
-                  {
-                    onSuccess() {
-                      addedToWishlistEvent({
-                        user_id,
-                        product_id,
-                        variant_id,
-                        category_id: sub_sub_category_id,
-                        category_type: "SUB_SUB",
-                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
-                      });
-                    },
-                  },
-                )
-            }
-          >
-            <Heart
-              aria-hidden={true}
-              className={clsx(
-                "size-4 sm:size-6",
-                is_grocery
-                  ? "text-green-600"
-                  : is_pharmacy
-                    ? "text-blue-600"
-                    : "text-orange-500",
-                is_wishlisted &&
-                (is_grocery
-                  ? "fill-green-600"
-                  : is_pharmacy
-                    ? "fill-blue-600"
-                    : "fill-orange-500"),
-              )}
-              strokeWidth={2}
-            />
-          </button>
-        </div>
+        {/* Top Image Container & Details */}
         <Link
+          href={product_href}
           title={`View ${title}`}
           aria-label={`View product ${title}`}
-          href={{
-            pathname: src,
-            query: {
-              ...(query_id && { query_id }),
-              ...(index_name && { index_name }),
-              ...(object_id && { object_id }),
-            },
-          }}
-          className="flex flex-1 flex-col justify-between"
+          className="block w-full"
         >
-          <div className="relative aspect-square overflow-hidden border-b border-gray-200 bg-gray-100 sm:aspect-3/2 sm:border-gray-300">
-            <Image
-              priority={index <= 3}
-              src={
-                typeof product_thumbnail !== "string"
-                  ? product_thumbnail.url
-                  : product_thumbnail
-              }
-              alt={`${title}`}
-              fill
-              className="object-contain object-top"
-              sizes="(max-width: 640px) 50vw, 300px"
-            />
-
-            {is_new && (
+          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white flex items-center justify-center">
+            {/* Top-Left Discount Badge */}
+            {discount_percentage > 0 && (
               <span
                 className={clsx(
-                  "absolute right-0 bottom-2 overflow-hidden px-3 py-1 text-xs font-bold text-white shadow",
+                  "absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold tracking-tight uppercase shadow-2xs",
                   is_grocery
-                    ? "bg-green-600"
+                    ? "text-green-600"
                     : is_pharmacy
-                      ? "bg-blue-500"
-                      : "bg-orange-500",
+                      ? "text-blue-500"
+                      : "text-brand",
                 )}
               >
-                NEW
-                <span
-                  className={clsx(
-                    "absolute top-0 -left-2 h-full w-3 skew-x-[-20deg]",
-                    is_grocery
-                      ? "bg-green-700"
+                {Math.round(Number(discount_percentage))}%&nbsp;&nbsp;OFF
+              </span>
+            )}
+
+            {/* Top-Right Wishlist Heart Button */}
+            <button
+              type="button"
+              aria-label="Add to wishlist"
+              disabled={
+                add_to_wishlist_mutation.isPending ||
+                remove_from_wishlist_mutation.isPending
+              }
+              onClick={handleWishlistClick}
+              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-orange-500 shadow-2xs transition-transform active:scale-95"
+            >
+              <Heart
+                className={clsx(
+                  "size-5 sm:size-6",
+                  is_grocery
+                    ? "text-green-600"
+                    : is_pharmacy
+                      ? "text-blue-600"
+                      : "text-brand",
+                  is_wishlisted &&
+                    (is_grocery
+                      ? "fill-green-600"
                       : is_pharmacy
-                        ? "bg-blue-700"
-                        : "bg-orange-600",
-                  )}
-                />
-              </span>
-            )}
-          </div>
+                        ? "fill-blue-600"
+                        : "fill-brand"),
+                )}
+                strokeWidth={2.2}
+              />
+            </button>
 
-          {/* content */}
-          <div className="flex flex-1 flex-col space-y-1.5 p-2 sm:space-y-2 sm:p-4">
-            <h3 className="line-clamp-2 max-h-[2.1rem] overflow-hidden text-ellipsis text-xs leading-4 font-medium text-gray-900 sm:max-h-[3rem] sm:text-base sm:leading-normal">
-              {title}
-            </h3>
+            {/* Product Image */}
+            <div className="relative h-full w-full">
+              <Image
+                priority={index <= 3}
+                src={media_url}
+                alt={title}
+                fill
+                sizes="(max-width: 640px) 140px, 180px"
+                className="object-contain p-1 transition-transform duration-300 rounded-2xl"
+              />
+            </div>
 
-            {/* rating */}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <span className="text-xs font-medium sm:text-base">
-                  {avg_rating?.toFixed(1)}
-                </span>
-                <Rating
-                  total_stars={5}
-                  custom_rating={avg_rating}
-                  size={is_mobile ? 14 : 16}
-                  gap={0.5}
-                />
-                <RatingSummaryPopover
-                  product_id={product_id}
-                  product_reviews_link={product_reviews_link}
+            {/* Bottom-Left Rating Overlay */}
+            {avg_rating != null && Number(avg_rating) > 0 && (
+              <RatingSummaryPopover
+                product_id={product_id}
+                product_reviews_link={product_reviews_link}
+              >
+                <button
+                  type="button"
+                  aria-label="View rating details"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }}
+                  className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating px-1.5 py-0.5 text-2xs font-bold text-white shadow-2xs cursor-pointer hover:opacity-90"
                 >
-                  <button
-                    aria-label="View rating details"
-                    className={
-                      "text-orange-500"
-                    }
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                    }}
-                  >
-                    <ChevronDown
-                      aria-hidden={true}
-                      className="size-5"
-                      strokeWidth={2.5}
-                    />
-                  </button>
-                </RatingSummaryPopover>
-              </div>
-            </div>
-            {!!bought_last_month && (
-              <p className="text-[10px] font-medium text-gray-700 sm:text-sm">
-                {bought_last_month} bought recently
-              </p>
+                  <span>{Number(avg_rating).toFixed(1)}</span>
+                  <Star className="size-2.5 fill-white text-white" />
+                </button>
+              </RatingSummaryPopover>
             )}
-
-            {/* price */}
-            <div className="flex items-center gap-2">
-              {!!discount_percentage && (
-                <span className="text-sm font-medium text-gray-600 line-through sm:text-base">
-                  ₹{mrp?.toLocaleString()}
-                </span>
-              )}
-              <span className="truncate text-sm font-semibold text-gray-900 sm:text-base">
-                ₹{selling_price.toLocaleString()}
-              </span>
-            </div>
           </div>
+
+          {/* Title */}
+          <h3 className="mt-2 line-clamp-2 text-2xs font-bold leading-snug text-gray-900 sm:text-xs">
+            {title}
+          </h3>
+
+          {/* Bought last month info */}
+          {!!bought_last_month && (
+            <p className="mt-0.5 text-3xs sm:text-2xs font-medium text-gray-500 line-clamp-1">
+              {bought_last_month} bought recently
+            </p>
+          )}
         </Link>
       </div>
 
-      <div className="mt-auto px-2 pb-2 sm:px-4 sm:pb-4">
-        <div className="w-full">
-          {have_variants ? (
-            <Link
-              aria-label={`See all options`}
-              href={{
-                pathname: src,
-                query: {
-                  ...(query_id && { query_id }),
-                  ...(index_name && { index_name }),
-                  ...(object_id && { object_id }),
-                },
-              }}
-              className="flex w-full items-center justify-center gap-0.5 rounded-md border border-gray-300 py-1.5 text-sm font-semibold text-gray-900 hover:bg-gray-100 sm:gap-1 sm:rounded-xl sm:py-2.5 sm:text-sm"
-            >
-              <span>See all options</span>
-              <ChevronRight aria-hidden={true} className="size-4 sm:size-5" />
-            </Link>
-          ) : (
-            <ProductCardQuantityControl
-              product_id={product_id}
-              variant_id={variant_id}
-              user_id={user_id}
-              sub_sub_category_id={sub_sub_category_id}
-              selling_price={selling_price}
-              mrp={mrp}
-              query_id={query_id}
-              index_name={index_name}
-              object_id={object_id}
-            />
-          )}
-        </div>
+      {/* Price and Action Row (Fixed at Bottom) */}
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-y-1.5 gap-x-1 pt-2">
+        {Number(selling_price) > 0 && (
+          <div className="flex flex-col sm:flex-row sm:items-baseline min-w-0 gap-0 sm:gap-1">
+            <span className="text-sm font-black text-gray-900 sm:text-base md:text-lg leading-tight truncate">
+              ₹{Number(selling_price).toLocaleString()}
+            </span>
+            {Number(mrp) > Number(selling_price) && Number(mrp) > 0 && (
+              <span className="text-2xs font-medium text-gray-400 line-through leading-tight sm:text-xs truncate">
+                ₹{Number(mrp).toLocaleString()}
+              </span>
+            )}
+          </div>
+        )}
+
+        {have_variants ? (
+          <Link
+            aria-label="See all options"
+            href={product_href}
+            className="flex h-7 sm:h-9 w-full min-[230px]:w-auto shrink-0 items-center justify-center gap-0.5 rounded-lg border border-gray-300 bg-white px-2 text-2xs font-medium text-gray-900 transition-colors hover:bg-gray-100 sm:rounded-xl sm:px-3 sm:text-xs"
+          >
+            <span>See options</span>
+            <ChevronRight className="size-3.5 shrink-0" />
+          </Link>
+        ) : (
+          <ProductCardQuantityControl
+            product_id={product_id}
+            variant_id={variant_id}
+            user_id={user_id}
+            sub_sub_category_id={sub_sub_category_id}
+            selling_price={selling_price}
+            mrp={mrp}
+            query_id={query_id}
+            index_name={index_name}
+            object_id={object_id}
+            fullWidth={selling_price <= 0}
+          />
+        )}
       </div>
     </div>
   );
