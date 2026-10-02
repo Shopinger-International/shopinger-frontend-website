@@ -1,0 +1,33 @@
+{
+  "name": "Shopinger",
+  "short_name": "Shopinger",
+  "description": "Shopinger - Your One-Stop Online Shopping Destination for Electronics, Fashion, Grocery & More.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "id": "/",
+  "orientation": "portrait-primary",
+  "theme_color": "#FF5300",
+  "background_color": "#FFFFFF",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
