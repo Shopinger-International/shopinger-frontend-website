@@ -72,13 +72,30 @@ const ProductCard: FC<IProps> = ({
   const object_id =
     typeof query.object_id === "string" ? query.object_id : undefined;
   const is_mobile = useIsMobile();
+  const is_grocery =
+    router.asPath.toLowerCase().includes("grocery") ||
+    router.query.main_category_slug?.toString().toLowerCase().includes("grocery");
+  const is_pharmacy =
+    router.asPath.toLowerCase().includes("pharmacy") ||
+    router.asPath.toLowerCase().includes("personal-care") ||
+    router.query.main_category_slug?.toString().toLowerCase().includes("pharmacy") ||
+    router.query.main_category_slug?.toString().toLowerCase().includes("personal-care");
 
   return (
     <div className="group relative flex h-full min-w-0 flex-col justify-between overflow-hidden rounded-lg border border-gray-200 bg-white sm:rounded-xl sm:border-gray-300">
       <div className="flex flex-1 flex-col justify-between">
         <div className="absolute z-1 mt-2 w-full">
           {!!discount_percentage && (
-            <span className="absolute left-2 rounded-full border border-gray-300 bg-orange-500 px-2 py-0.5 text-xs font-semibold text-white shadow-sm sm:px-3 sm:py-1 sm:text-xs">
+            <span
+              className={clsx(
+                "absolute left-2 rounded-full border border-gray-300 px-2 py-0.5 text-xs font-semibold text-white shadow-sm sm:px-3 sm:py-1 sm:text-xs",
+                is_grocery
+                  ? "bg-green-600"
+                  : is_pharmacy
+                    ? "bg-blue-500"
+                    : "bg-orange-500",
+              )}
+            >
               -{Math.round(Number(discount_percentage))}%
             </span>
           )}
@@ -92,42 +109,52 @@ const ProductCard: FC<IProps> = ({
             onClick={() =>
               is_wishlisted
                 ? remove_from_wishlist_mutation.mutate(
-                    { variant_id },
-                    {
-                      onSuccess() {
-                        removedFromWishlistEvent({
-                          user_id,
-                          product_id,
-                          variant_id,
-                          category_id: sub_sub_category_id,
-                          category_type: "SUB_SUB",
-                          source: ANALYTICS_SOURCE_TYPE.CATEGORY,
-                        });
-                      },
+                  { variant_id },
+                  {
+                    onSuccess() {
+                      removedFromWishlistEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                      });
                     },
-                  )
+                  },
+                )
                 : add_to_wishlist_mutation.mutate(
-                    { variant_id },
-                    {
-                      onSuccess() {
-                        addedToWishlistEvent({
-                          user_id,
-                          product_id,
-                          variant_id,
-                          category_id: sub_sub_category_id,
-                          category_type: "SUB_SUB",
-                          source: ANALYTICS_SOURCE_TYPE.CATEGORY,
-                        });
-                      },
+                  { variant_id },
+                  {
+                    onSuccess() {
+                      addedToWishlistEvent({
+                        user_id,
+                        product_id,
+                        variant_id,
+                        category_id: sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.CATEGORY,
+                      });
                     },
-                  )
+                  },
+                )
             }
           >
             <Heart
               aria-hidden={true}
               className={clsx(
-                "size-4 text-orange-500 sm:size-6",
-                is_wishlisted && "fill-orange-500",
+                "size-4 sm:size-6",
+                is_grocery
+                  ? "text-green-600"
+                  : is_pharmacy
+                    ? "text-blue-600"
+                    : "text-orange-500",
+                is_wishlisted &&
+                (is_grocery
+                  ? "fill-green-600"
+                  : is_pharmacy
+                    ? "fill-blue-600"
+                    : "fill-orange-500"),
               )}
               strokeWidth={2}
             />
@@ -161,16 +188,34 @@ const ProductCard: FC<IProps> = ({
             />
 
             {is_new && (
-              <span className="absolute right-0 bottom-2 overflow-hidden bg-orange-500 px-3 py-1 text-xs font-bold text-white shadow">
+              <span
+                className={clsx(
+                  "absolute right-0 bottom-2 overflow-hidden px-3 py-1 text-xs font-bold text-white shadow",
+                  is_grocery
+                    ? "bg-green-600"
+                    : is_pharmacy
+                      ? "bg-blue-500"
+                      : "bg-orange-500",
+                )}
+              >
                 NEW
-                <span className="absolute top-0 -left-2 h-full w-3 skew-x-[-20deg] bg-orange-600" />
+                <span
+                  className={clsx(
+                    "absolute top-0 -left-2 h-full w-3 skew-x-[-20deg]",
+                    is_grocery
+                      ? "bg-green-700"
+                      : is_pharmacy
+                        ? "bg-blue-700"
+                        : "bg-orange-600",
+                  )}
+                />
               </span>
             )}
           </div>
 
           {/* content */}
           <div className="flex flex-1 flex-col space-y-1.5 p-2 sm:space-y-2 sm:p-4">
-            <h3 className="line-clamp-2 min-h-[2.1rem] text-xs leading-4 font-medium text-gray-900 sm:min-h-[2.5rem] sm:text-base sm:leading-normal">
+            <h3 className="line-clamp-2 max-h-[2.1rem] overflow-hidden text-ellipsis text-xs leading-4 font-medium text-gray-900 sm:max-h-[3rem] sm:text-base sm:leading-normal">
               {title}
             </h3>
 
@@ -192,7 +237,13 @@ const ProductCard: FC<IProps> = ({
                 >
                   <button
                     aria-label="View rating details"
-                    className="text-orange-500"
+                    className={
+                      is_grocery
+                        ? "text-green-600"
+                        : is_pharmacy
+                          ? "text-blue-600"
+                          : "text-orange-500"
+                    }
                     onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();

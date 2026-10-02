@@ -114,7 +114,7 @@ const ProductRow: FC<IProps> = ({ title, products, background_style }) => {
                 </div>
 
                 <div className="mt-3 px-1">
-                  <h3 className="line-clamp-2 text-xs font-semibold text-gray-900 sm:text-sm">
+                  <h3 className="line-clamp-2 max-h-8 overflow-hidden text-ellipsis text-xs font-semibold text-gray-900 sm:text-sm">
                     {title}
                   </h3>
                 </div>

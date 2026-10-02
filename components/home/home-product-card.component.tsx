@@ -158,8 +158,8 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white flex items-center justify-center ">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-black text-brand tracking-tight uppercase">
-                {discount_perc}% OFF
+              <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold text-brand tracking-tight uppercase">
+                {discount_perc}%&nbsp;&nbsp;OFF
               </span>
             )}
 
@@ -211,7 +211,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           </div>
 
           {/* Title */}
-          <h3 className="mt-2 line-clamp-2 min-h-8 text-2xs font-bold leading-snug text-gray-900 sm:text-xs">
+          <h3 className="mt-2 line-clamp-2 max-h-8 overflow-hidden text-ellipsis text-2xs font-bold leading-snug text-gray-900 sm:text-xs">
             {title}
           </h3>
         </Link>

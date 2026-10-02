@@ -2,16 +2,23 @@
 import type { FC } from "react";
 
 type IProps = {
-  size: number;
+  size?: number;
+  width?: number;
+  height?: number;
+  className?: string;
 };
 
-const ShopingerIcon: FC<IProps> = ({ size }) => (
-  <svg
-    width={size}
-    height={size}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 1000 250"
-  >
+const ShopingerIcon: FC<IProps> = ({ size = 100, width, height, className }) => {
+  const w = width ?? size;
+  const h = height ?? Math.round(w / 4);
+  return (
+    <svg
+      width={w}
+      height={h}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1000 250"
+      className={className}
+    >
     <rect width="100%" height="100%" fill="none"></rect>
     <text
       x="40"
@@ -23,7 +30,8 @@ const ShopingerIcon: FC<IProps> = ({ size }) => (
     >
       <tspan>Shopinger</tspan>
     </text>
-  </svg>
-);
+    </svg>
+  );
+};
 
 export default ShopingerIcon;

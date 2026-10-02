@@ -1,5 +1,7 @@
 import { useState, useEffect, memo } from "react";
 import type { FC } from "react";
+import { useRouter } from "next/router";
+import clsx from "clsx";
 
 // const & analytics
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
@@ -39,6 +41,16 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
     index_name,
     object_id,
   }) => {
+    const router = useRouter();
+    const is_grocery =
+      router.asPath.toLowerCase().includes("grocery") ||
+      router.query.main_category_slug?.toString().toLowerCase().includes("grocery");
+    const is_pharmacy =
+      router.asPath.toLowerCase().includes("pharmacy") ||
+      router.asPath.toLowerCase().includes("personal-care") ||
+      router.query.main_category_slug?.toString().toLowerCase().includes("pharmacy") ||
+      router.query.main_category_slug?.toString().toLowerCase().includes("personal-care");
+
     const { data: cart_data } = useCart();
     const add_to_cart_mutation = useAddToCartMutation();
     const increase_mutation = useCartItemIncreaseMutation();
@@ -214,7 +226,16 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
 
     if (display_quantity > 0) {
       return (
-        <div className="flex h-7 sm:h-9 w-full items-center justify-between rounded-lg sm:rounded-xl bg-[#FF5300] px-2 text-white shadow-2xs select-none">
+        <div
+          className={clsx(
+            "flex h-7 sm:h-9 w-full items-center justify-between rounded-lg sm:rounded-xl px-2 text-white shadow-2xs select-none",
+            is_grocery
+              ? "bg-green-600"
+              : is_pharmacy
+                ? "bg-blue-500"
+                : "bg-brand",
+          )}
+        >
           <button
             type="button"
             onClick={handleDecreaseQuantity}
@@ -241,7 +262,14 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
     return (
       <button
         type="button"
-        className="w-full rounded-lg bg-orange-500 py-1.5 text-xs sm:text-sm font-semibold text-white hover:bg-orange-600 disabled:bg-orange-300 sm:rounded-xl sm:py-2.5 sm:text-sm cursor-pointer"
+        className={clsx(
+          "w-full rounded-lg py-1.5 text-xs sm:text-sm font-semibold text-white sm:rounded-xl sm:py-2.5 sm:text-sm cursor-pointer",
+          is_grocery
+            ? "bg-green-600 hover:bg-green-700 disabled:bg-green-300"
+            : is_pharmacy
+              ? "bg-blue-500 hover:bg-blue-700 disabled:bg-blue-300"
+              : "bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300",
+        )}
         aria-label="Add to cart"
         disabled={add_to_cart_mutation.isPending}
         onClick={handleAddToCart}
