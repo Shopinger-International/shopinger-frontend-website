@@ -1,6 +1,7 @@
 import { useLayoutEffect, useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 
@@ -9,7 +10,6 @@ import SearchBar from "@/components/header/search-bar/search-bar.component";
 import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
-import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 import LocationTooltip from "@/components/header/location/location-tooltip.component";
 import MobileHeader from "@/components/header/mobile-header.component";
 import StoreClosedBanner from "@/components/header/store-closed-banner.component";
@@ -23,6 +23,9 @@ import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 
+// helpers
+import { cn } from "@/lib/utils";
+
 const Header: FC<{
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
@@ -32,6 +35,10 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
+  const router = useRouter();
+  const is_product_page =
+    router.pathname.includes("/p/") || router.asPath.includes("/p/");
+
   const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
@@ -103,7 +110,10 @@ const Header: FC<{
   return (
     <header
       ref={header_ref}
-      className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
+      className={cn(
+        "fixed top-0 z-30 w-full transition-all duration-200 ease-in",
+        is_product_page && "hidden lg:block",
+      )}
       id="app-header"
     >
       <MobileHeader />
@@ -196,9 +206,6 @@ const Header: FC<{
       </div>
 
       <CategorySection />
-      {show_filter_sort_bar && (
-        <FilterSortBar disable_side_filter={disable_side_filter} />
-      )}
     </header>
   );
 };

@@ -73,7 +73,7 @@ const MobileHeader: FC = () => {
       )}
     >
       {/* Store Closed Banner */}
-      <StoreClosedBanner />
+      <StoreClosedBanner className="w-full -mt-1 mb-1" />
 
       {/* Delivery & Account Header */}
       <div className="flex items-center justify-between">

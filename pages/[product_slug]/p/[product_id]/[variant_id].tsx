@@ -350,48 +350,57 @@ export const getStaticProps = (async ({ params }) => {
     return { notFound: true };
   }
 
-  const { product } = await getProduct(product_id);
-  const category_mappings = await getMappings(product.sub_sub_category.id);
-  const formatted_mappings = category_mappings
-    .filter(
-      ({ attribute, is_hidden }) =>
-        attribute.status !== "deprecated" || is_hidden == false,
-    )
-    .map(
-      ({
-        display_area,
-        display_group,
-        display_order,
-        unit_code,
-        is_visual,
-        attribute: { id, code, options },
-      }) => ({
-        display_area,
-        display_group,
-        display_order,
-        unit_code,
-        is_visual,
-        attribute_id: id,
-        attribute_code: code,
-        options: options?.map(({ label, value }) => ({
-          label,
-          value,
-        })),
-      }),
-    );
+  try {
+    const { product } = await getProduct(product_id);
+    if (!product || !product.sub_sub_category) {
+      return { notFound: true };
+    }
 
-  if (!product) {
-    return { notFound: true };
+    const category_mappings = await getMappings(product.sub_sub_category.id);
+    const formatted_mappings = (category_mappings || [])
+      .filter(
+        ({ attribute, is_hidden }) =>
+          attribute.status !== "deprecated" || is_hidden == false,
+      )
+      .map(
+        ({
+          display_area,
+          display_group,
+          display_order,
+          unit_code,
+          is_visual,
+          attribute: { id, code, options },
+        }) => ({
+          display_area,
+          display_group,
+          display_order,
+          unit_code,
+          is_visual,
+          attribute_id: id,
+          attribute_code: code,
+          options: options?.map(({ label, value }) => ({
+            label,
+            value,
+          })),
+        }),
+      );
+
+    return {
+      props: {
+        product_id,
+        variant_id,
+        product,
+        category_mappings: formatted_mappings,
+      },
+      revalidate: 43200, // 🔥 enable ISR
+    };
+  } catch (error) {
+    console.error("Error fetching product data in getStaticProps:", error);
+    return {
+      notFound: true,
+      revalidate: 60, // 🔥 retry ISR after 60 seconds if API timed out
+    };
   }
-  return {
-    props: {
-      product_id,
-      variant_id,
-      product,
-      category_mappings: formatted_mappings,
-    },
-    revalidate: 43200, // 🔥 enable ISR
-  };
 }) satisfies GetStaticProps<IProps, IParams>;
 
 ProductPage.getLayout = function getLayout(page: ReactElement) {
