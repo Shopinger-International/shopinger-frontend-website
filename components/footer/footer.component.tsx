@@ -18,7 +18,7 @@ import { payment_methods } from "@/components/footer/footer-bottom.component";
 const Footer: FC = () => {
   return (
     <>
-      <section className="flex w-full items-center justify-center bg-linear-to-b from-[#FF6900] to-[#993F00] py-2.5">
+      <section className="flex w-full items-center justify-center py-3.5">
         <button
           onClick={() =>
             window.scrollTo({
@@ -26,12 +26,12 @@ const Footer: FC = () => {
               behavior: "smooth",
             })
           }
-          className="flex w-full items-center justify-center gap-3 font-semibold text-white"
+          className="group flex items-center justify-center gap-2.5 rounded-full bg-brand px-5 py-1.5 text-xs sm:text-sm font-bold text-brand-foreground border border-brand/20 shadow-xs hover:opacity-90 transition-all cursor-pointer"
           aria-label="back to top"
         >
           <span>Back to top</span>
-          <span className="rounded-full bg-white p-1">
-            <ArrowUp strokeWidth={3} className="size-5 text-orange-500" />
+          <span className="rounded-full bg-brand-foreground p-1 transition-colors">
+            <ArrowUp strokeWidth={2.5} className="size-3.5 text-brand" />
           </span>
         </button>
       </section>

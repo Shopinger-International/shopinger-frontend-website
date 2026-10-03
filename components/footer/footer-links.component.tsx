@@ -45,7 +45,7 @@ const footer_sections = [
 const FooterLinks: FC = () => {
   return footer_sections.map(({ title, list }) => (
     <div key={title} className="space-y-4">
-      <h4 className="font-semibold text-white uppercase">{title}</h4>
+      <h4 className="font-semibold text-background-foreground uppercase">{title}</h4>
 
       <ul className="space-y-2.5 text-sm">
         {list.map((item, index) => (
@@ -53,7 +53,7 @@ const FooterLinks: FC = () => {
             {item.href.startsWith("tel:") || item.href.startsWith("mailto:") ? (
               <a
                 href={item.href}
-                className="font-medium text-white/80 hover:text-white"
+                className="font-medium text-background-foreground/75 hover:text-brand transition-colors"
               >
                 {item.label}
               </a>
@@ -61,7 +61,7 @@ const FooterLinks: FC = () => {
               <Link
                 target="_blank"
                 href={item.href}
-                className="font-medium text-white/80 hover:text-white"
+                className="font-medium text-background-foreground/75 hover:text-brand transition-colors"
               >
                 {item.label}
               </Link>

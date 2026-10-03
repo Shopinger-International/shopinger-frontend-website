@@ -53,17 +53,23 @@ const MobileHeader: FC = () => {
   const is_mounted = useIsMounted();
   const delivery_time = user_details ? "45" : "10";
   const is_grocery =
-    categories.find(({ label }) => label == "Grocery")?.href == router.asPath;
+    categories.find(({ label }) => label == "Grocery")?.href == router.asPath ||
+    router.asPath.toLowerCase().includes("grocery");
 
   const is_pharmacy =
-    categories.find(({ label }) => label == "Pharmacy")?.href == router.asPath;
+    categories.find(({ label }) => label == "Pharmacy")?.href == router.asPath ||
+    router.asPath.toLowerCase().includes("pharmacy") ||
+    router.asPath.toLowerCase().includes("personal-care");
 
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 bg-orange-50 px-4 py-3 lg:hidden",
-        is_grocery && "border-b-3 border-green-500",
-        is_pharmacy && "border-b-3 border-blue-500",
+        "flex flex-col gap-2 px-4 py-3 lg:hidden transition-colors",
+        is_grocery
+          ? "bg-green-50"
+          : is_pharmacy
+            ? "bg-blue-50"
+            : "bg-orange-50",
       )}
     >
       {/* Store Closed Banner */}
@@ -74,7 +80,12 @@ const MobileHeader: FC = () => {
         <div className="flex min-w-0 flex-col gap-1">
           <p className="text-lg font-semibold">
             Delivery in{" "}
-            <span className="font-bold text-orange-500">
+            <span
+              className={cn(
+                "font-bold",
+                is_grocery ? "text-green-600" : is_pharmacy ? "text-blue-600" : "text-orange-500",
+              )}
+            >
               {delivery_time} minutes
             </span>
           </p>
@@ -92,18 +103,24 @@ const MobileHeader: FC = () => {
       {/* Quick Commerce Categories */}
       <nav
         aria-label="Shopinger categories"
-        className="no-scrollbar flex items-center gap-2 overflow-x-auto"
+        className="no-scrollbar flex items-center gap-2 overflow-x-auto overflow-y-hidden whitespace-nowrap py-0.5"
       >
         {categories.map(({ label, href, icon }) => {
           const is_active = href == router.asPath;
+          const is_cat_grocery = label === "Grocery";
+          const is_cat_pharmacy = label === "Pharmacy";
           return (
             <Link
               key={label}
               href={href}
               className={[
-                "flex h-10 shrink-0 items-center gap-1 rounded-md px-3 text-sm transition-colors",
+                "flex h-10 shrink-0 items-center justify-center gap-1 rounded-md px-3 text-sm transition-colors overflow-hidden",
                 is_active
-                  ? "bg-orange-100 text-orange-500"
+                  ? is_cat_grocery
+                    ? "bg-green-100 text-green-700"
+                    : is_cat_pharmacy
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-orange-100 text-orange-500"
                   : "bg-white text-gray-900 shadow-xs hover:bg-gray-50",
               ].join(" ")}
             >

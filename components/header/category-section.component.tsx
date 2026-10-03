@@ -218,8 +218,16 @@ const CategorySection: FC = () => {
 
                 {/* Categories */}
                 <ul className="flex items-start gap-2 whitespace-nowrap">
-                  {categories.map((category, index) => {
-                    const { id, name } = category;
+                    {categories.map((category, index) => {
+                    const { id, name, slug } = category;
+                    const is_item_grocery = slug.toLowerCase().includes("grocery") || name.toLowerCase().includes("grocery");
+                    const is_item_pharmacy =
+                      slug.toLowerCase().includes("pharmacy") ||
+                      slug.toLowerCase().includes("medicine") ||
+                      slug.toLowerCase().includes("personal-care") ||
+                      name.toLowerCase().includes("pharmacy") ||
+                      name.toLowerCase().includes("medicine") ||
+                      name.toLowerCase().includes("personal care");
 
                     return (
                       <li key={`category-${id}`}>
@@ -247,7 +255,16 @@ const CategorySection: FC = () => {
                                 className={`h-12 w-12 object-contain transition-transform duration-200 group-hover:scale-105`}
                               />
                             ) : (
-                              <div className="h-12 w-12 rounded-xl bg-orange-50" />
+                              <div
+                                className={clsx(
+                                  "h-12 w-12 rounded-xl",
+                                  is_item_grocery
+                                    ? "bg-green-50"
+                                    : is_item_pharmacy
+                                      ? "bg-blue-50"
+                                      : "bg-orange-50",
+                                )}
+                              />
                             )}
                           </div>
 
@@ -256,7 +273,12 @@ const CategorySection: FC = () => {
                               "max-w-20 truncate text-center text-xs font-medium text-black",
                               selected_category?.id === id &&
                                 "font-semibold underline underline-offset-4",
-                              selected_category?.id === id && "text-orange-500",
+                              selected_category?.id === id &&
+                                (is_item_grocery
+                                  ? "text-green-600"
+                                  : is_item_pharmacy
+                                    ? "text-blue-600"
+                                    : "text-orange-500"),
                             )}
                           >
                             {name}
