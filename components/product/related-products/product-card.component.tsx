@@ -46,7 +46,7 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp,average_
         <span aria-hidden="true" className="h-0.5 w-6 bg-pink-500"></span>
       </div>
 
-      <h3 className="mb-1.5 truncate text-base font-medium text-gray-800">
+      <h3 className="mb-1.5 truncate text-base font-semibold text-gray-800">
         {title}
       </h3>
       {!!discount_percentage && (

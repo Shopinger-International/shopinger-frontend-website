@@ -217,7 +217,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           </div>
 
           {/* Title */}
-          <h3 className="mt-2 line-clamp-2 text-2xs font-bold leading-snug text-gray-900 sm:text-xs">
+          <h3 className="mt-2 line-clamp-2 text-2xs font-semibold leading-snug text-gray-900 sm:text-xs">
             {title}
           </h3>
         </Link>
