@@ -32,7 +32,6 @@ import {
 
 // helpers
 import createOrganizationJSONLD from "@/seo/organization.jsonld";
-import PWAInstallPrompt from "@/components/common/pwa-install-prompt.component";
 
 const ReactQueryDevtools =
   process.env.NODE_ENV === "development"
@@ -127,7 +126,6 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                             <CategoryDrawerProvider>
                               <SelectedAddressProvider>
                                 {getLayout(<Component {...pageProps} />)}
-                                <PWAInstallPrompt variant="floating" />
                               </SelectedAddressProvider>
                             </CategoryDrawerProvider>
                           </MegaMenuProvider>

@@ -143,11 +143,11 @@ export const PWAInstallPrompt: FC<IPWAInstallPromptProps> = ({
     );
   };
 
-  // FOOTER VARIANT (Mobile Only: lg:hidden)
+  // FOOTER VARIANT
   if (variant === "footer") {
     return (
       <>
-        <div className={clsx("w-full lg:hidden my-3 px-4", className)}>
+        <div className={clsx("w-full max-w-sm my-3 px-4", className)}>
           <button
             type="button"
             onClick={handleInstallClick}
