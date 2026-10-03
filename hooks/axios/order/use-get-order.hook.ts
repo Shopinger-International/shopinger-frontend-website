@@ -31,7 +31,9 @@ const useGetOrders = () => {
       const user_orders = await getUserOrders();
       return user_orders;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 10,
+    refetchInterval: 5000,
+    retry: false,
   });
 };
 export default useGetOrders;
