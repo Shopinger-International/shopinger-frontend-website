@@ -174,7 +174,7 @@ const Header: FC<{
         </div>
 
         {/* RIGHT: Actions */}
-        <div className="order-2 flex items-center justify-end gap-8 lg:order-3">
+        <div className="order-2 flex items-center justify-end gap-4 lg:gap-6 lg:order-3">
           <div className="hidden lg:inline">
             <AccountDropdown />
           </div>

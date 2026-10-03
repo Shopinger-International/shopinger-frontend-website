@@ -1,5 +1,5 @@
 import Script from "next/script";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 // types
@@ -32,6 +32,7 @@ import {
 
 // helpers
 import createOrganizationJSONLD from "@/seo/organization.jsonld";
+import PWAInstallPrompt from "@/components/common/pwa-install-prompt.component";
 
 const ReactQueryDevtools =
   process.env.NODE_ENV === "development"
@@ -60,6 +61,33 @@ type AppPropsWithLayout = AppProps & {
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [query_client] = useState(() => new QueryClient());
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((registration) => {
+            registration.onupdatefound = () => {
+              const installingWorker = registration.installing;
+              if (installingWorker) {
+                installingWorker.onstatechange = () => {
+                  if (
+                    installingWorker.state === "installed" &&
+                    navigator.serviceWorker.controller
+                  ) {
+                    installingWorker.postMessage({ type: "SKIP_WAITING" });
+                  }
+                };
+              }
+            };
+          })
+          .catch(() => {
+          });
+      });
+    }
+  }, []);
+
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   const json_ld = createOrganizationJSONLD();
@@ -99,6 +127,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                             <CategoryDrawerProvider>
                               <SelectedAddressProvider>
                                 {getLayout(<Component {...pageProps} />)}
+                                <PWAInstallPrompt variant="floating" />
                               </SelectedAddressProvider>
                             </CategoryDrawerProvider>
                           </MegaMenuProvider>
