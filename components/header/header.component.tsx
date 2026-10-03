@@ -26,6 +26,21 @@ import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 // helpers
 import { cn } from "@/lib/utils";
 
+const updateVisibleHeaderHeight = (header: HTMLElement) => {
+  const top_offset = parseFloat(header.style.top || "0") || 0;
+  const search_block = document.getElementById(
+    "mobile-header-search-container",
+  )?.parentElement;
+  const bottom =
+    search_block && search_block.offsetHeight > 0
+      ? search_block.offsetTop + search_block.offsetHeight
+      : header.offsetHeight;
+  document.documentElement.style.setProperty(
+    "--header-visible-height",
+    `${Math.max(0, bottom + top_offset)}px`,
+  );
+};
+
 const Header: FC<{
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
@@ -54,6 +69,7 @@ const Header: FC<{
         "--header-height",
         `${header.offsetHeight + 12}px`,
       );
+      updateVisibleHeaderHeight(header);
     };
 
     setHeight();
@@ -77,6 +93,7 @@ const Header: FC<{
       // Always keep the header visible at the top.
       if (current_scroll_pos <= 0) {
         header_ref.current.style.top = "0";
+        updateVisibleHeaderHeight(header_ref.current);
         prev_scroll_pos = 0;
         return;
       }
@@ -95,6 +112,7 @@ const Header: FC<{
         // Scrolling up: show full header
         header_ref.current.style.top = "0";
       }
+      updateVisibleHeaderHeight(header_ref.current);
 
       prev_scroll_pos = current_scroll_pos;
     };
@@ -102,6 +120,7 @@ const Header: FC<{
     window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);

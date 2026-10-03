@@ -308,7 +308,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         )}
 
         <div className="min-w-0 flex-1 space-y-4">
-          <FilterSortBar className="sticky top-(--header-height) z-20 -mx-4 border-y border-gray-200" />
+          <FilterSortBar className="sticky top-(--header-visible-height) lg:top-(--header-height) z-[31] lg:z-20 -mx-4 border-y border-gray-200 transition-[top] duration-200 ease-in" />
           <div className="hidden lg:block">
             {is_category_sorting_filters_pending ? (
               <SortFilterHeaderSkeleton />

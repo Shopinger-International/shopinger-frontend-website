@@ -16,6 +16,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
+import MobileProductStickyHeader from "@/components/product/product-header/mobile-product-sticky-header.component";
 import ReportModal from "@/components/review/report-modal.component";
 import Seo from "@/components/common/seo";
 import TopProducts from "@/components/product/related-products/top-products.component";
@@ -247,6 +248,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         is_prod={is_prod}
         json_ld={JSON.stringify(product_json_ld)}
       />
+      <MobileProductStickyHeader product={product} variant={variant} />
 
       <ReportModal
         review_id={report_modal_state.review_id as number}

@@ -58,7 +58,7 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp,average_
         </p>
       )}
 
-      <div className="flex flex-col sm:flex-row sm:items-baseline min-w-0 gap-0 sm:gap-1.5 text-gray-900">
+      <div className="flex flex-col min-w-0 gap-0 text-gray-900">
         <span
           aria-label={`Discounted price ₹${selling_price}`}
           className="text-sm sm:text-base md:text-lg font-black text-gray-900"

@@ -93,7 +93,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
       aria-labelledby={`home-row-${section_id_slug}`}
       className={clsx(
         "relative rounded-2xl p-3 sm:p-4 transition-all group/row",
-        background_style ?? "bg-white border border-gray-100",
+        background_style ?? "bg-white",
         className,
       )}
     >

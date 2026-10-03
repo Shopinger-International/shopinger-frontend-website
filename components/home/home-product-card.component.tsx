@@ -226,7 +226,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
       {/* Price and Action Row (Fixed at Bottom) */}
       <div className="mt-auto flex items-center justify-between gap-1 pt-2">
         {Number(selling_price) > 0 && (
-          <div className="flex flex-col sm:flex-row sm:items-baseline min-w-0 gap-0 sm:gap-1">
+          <div className="flex flex-col min-w-0 gap-0">
             <span className="text-sm font-black text-gray-900 sm:text-base md:text-lg leading-tight truncate">
               ₹{Number(selling_price).toLocaleString()}
             </span>

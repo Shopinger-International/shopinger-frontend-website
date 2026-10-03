@@ -143,13 +143,6 @@ const ProductInfo: FC<IProps> = ({
         aria-labelledby="product-title"
         className="flex flex-col lg:block"
       >
-        <h1
-          id="product-title"
-          className="order-1 mb-2 text-sm font-semibold lg:mb-3 lg:text-xl lg:font-medium"
-        >
-          {heading}
-        </h1>
-
         <MobileProductGallary
           variant={variant}
           product={product}
@@ -157,6 +150,9 @@ const ProductInfo: FC<IProps> = ({
         />
         {/** MRP */}
         <section className="order-4 mb-4 flex flex-col">
+          <h1 id="product-title" className="mb-2 text-sm font-semibold lg:mb-3 lg:text-xl lg:font-medium">
+            {heading}
+          </h1>
           <h2 className="sr-only">Price</h2>
           <p>
             <span className="text-2xl lg:text-3xl">
