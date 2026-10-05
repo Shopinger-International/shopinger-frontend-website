@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 import type { EmblaCarouselType } from "embla-carousel";
@@ -21,7 +22,7 @@ import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-fro
 import clsx from "clsx";
 
 // icons
-import { Heart, Share } from "lucide-react";
+import { Heart, Share, ChevronLeft } from "lucide-react";
 
 // events
 import addedToWishlistEvent from "@/analytics/events/added-to-wishlist.event";
@@ -43,6 +44,7 @@ const MobileProductGallary: FC<IProps> = ({
   variant_medias_with_title,
   variant_id,
 }) => {
+  const router = useRouter();
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
   const add_to_wishlist_mutation = useAddToWishlistMutation();
@@ -86,7 +88,23 @@ const MobileProductGallary: FC<IProps> = ({
 
   return (
     <div className="relative order-2 lg:hidden">
-      <div className="absolute right-0 flex items-center justify-center gap-2">
+      {/* Floating Back Button */}
+      <button
+        type="button"
+        onClick={() => router.back()}
+        aria-label="Go back"
+        title="Go back"
+        className="absolute top-3 left-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow-xs active:scale-95 transition-transform"
+      >
+        <ChevronLeft
+          aria-hidden={true}
+          className="size-5 text-gray-800"
+          strokeWidth={2.5}
+        />
+      </button>
+
+      {/* Floating Wishlist & Share Buttons */}
+      <div className="absolute top-3 right-3 z-20 flex items-center justify-center gap-2">
         <button
           type="button"
           aria-label={
@@ -99,7 +117,7 @@ const MobileProductGallary: FC<IProps> = ({
               ? "Remove from wishlist"
               : "Add to wishlist"
           }
-          className="top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow-xs active:scale-95 transition-transform"
           disabled={
             add_to_wishlist_mutation.isPending ||
             remove_from_wishlist_mutation.isPending
@@ -171,7 +189,7 @@ const MobileProductGallary: FC<IProps> = ({
           }}
           aria-label={"Share Product"}
           title={"Share Product"}
-          className="top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow-xs active:scale-95 transition-transform"
         >
           <Share
             aria-hidden={true}

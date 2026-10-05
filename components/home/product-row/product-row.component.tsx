@@ -69,7 +69,7 @@ const ProductRow: FC<IProps> = ({ title, products, background_style }) => {
         </h2>
 
         {products.length > 4 && (
-          <div className="hidden items-center gap-2 sm:flex">
+          <div className="hidden items-center gap-2 md:flex">
             <button
               onClick={() => embla_api?.scrollPrev()}
               disabled={!cta_state.can_scroll_prev}

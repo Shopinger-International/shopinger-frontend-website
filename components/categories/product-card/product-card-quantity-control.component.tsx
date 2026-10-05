@@ -270,7 +270,7 @@ const ProductCardQuantityControl: FC<IProductCardQuantityControlProps> = memo(
       <button
         type="button"
         className={clsx(
-          "flex h-7 sm:h-8 shrink-0 items-center justify-center cursor-pointer rounded-lg border-2 bg-white text-xs font-extrabold transition-all active:scale-95",
+          "flex h-7 sm:h-8 shrink-0 items-center justify-center cursor-pointer rounded-lg border-2 bg-white text-xs font-bold transition-all active:scale-95",
           is_grocery
             ? "border-green-600 text-green-600 hover:bg-green-50 lg:border-brand lg:text-brand lg:hover:bg-orange-50 disabled:bg-gray-100"
             : is_pharmacy

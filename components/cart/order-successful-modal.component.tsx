@@ -65,17 +65,17 @@ const OrderSuccessfulModal: FC<IProps> = ({
         </TransitionChild>
 
         {/* Modal container */}
-        <div className="fixed inset-0 flex items-center justify-center p-4">
+        <div className="fixed inset-0 flex items-end justify-center p-0 sm:items-center sm:p-4">
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
-            enterFrom="opacity-0 scale-90 translate-y-5"
-            enterTo="opacity-100 scale-100 translate-y-0"
+            enterFrom="opacity-0 translate-y-full sm:scale-90 sm:translate-y-5"
+            enterTo="opacity-100 translate-y-0 sm:scale-100"
             leave="ease-in duration-200"
-            leaveFrom="opacity-100 scale-100 translate-y-0"
-            leaveTo="opacity-0 scale-95 translate-y-3"
+            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+            leaveTo="opacity-0 translate-y-full sm:scale-95 sm:translate-y-3"
           >
-            <DialogPanel className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <DialogPanel className="w-full max-w-md overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl">
               {/* Top accent */}
               <div className="h-1.5 bg-orange-500" />
 

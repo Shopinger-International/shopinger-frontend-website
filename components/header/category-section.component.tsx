@@ -45,48 +45,17 @@ const CategorySection: FC = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Always show at top
-      if (currentScrollY <= 5) {
+      if (currentScrollY <= 106) {
         if (hideNavRef.current) {
           hideNavRef.current = false;
           setHideNav(false);
         }
-
-        lastScrollY = currentScrollY;
-        directionStartY = currentScrollY;
-        lastDirection = null;
-        return;
-      }
-
-      const direction = currentScrollY > lastScrollY ? "down" : "up";
-
-      // Direction changed — don't react yet
-      if (direction !== lastDirection) {
-        lastDirection = direction;
-        directionStartY = currentScrollY;
-        lastScrollY = currentScrollY;
-        return;
-      }
-
-      const distance = Math.abs(currentScrollY - directionStartY);
-
-      if (distance >= DIRECTION_THRESHOLD) {
-        if (direction === "down" && !hideNavRef.current) {
+      } else {
+        if (!hideNavRef.current) {
           hideNavRef.current = true;
           setHideNav(true);
-
-          directionStartY = currentScrollY;
-        }
-
-        if (direction === "up" && hideNavRef.current) {
-          hideNavRef.current = false;
-          setHideNav(false);
-
-          directionStartY = currentScrollY;
         }
       }
-
-      lastScrollY = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll, {

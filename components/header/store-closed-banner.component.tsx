@@ -115,99 +115,156 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
     return null;
   }
 
-  const content = (
+  // DESKTOP BANNER (Original Design - Unchanged)
+  if (is_desktop_header) {
+    return (
+      <div className="bg-white">
+        <div
+          className={cn(
+            "flex w-full items-center justify-between bg-white px-6 py-1.5",
+            className,
+          )}
+        >
+          {/* LEFT: Moon Icon in Soft Circle + Title & Description */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-orange-100/90">
+              <MoonIcon className="size-5 text-orange-500" />
+            </div>
+
+            <div className="flex flex-col min-w-0">
+              <h3 className="text-sm font-bold leading-tight text-gray-900 truncate">
+                {title}
+              </h3>
+
+              <p className="text-xs font-medium leading-tight text-gray-500 truncate mt-0.5">
+                {message}
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT: Live Countdown Timer */}
+          <div className="flex items-center gap-2.5 shrink-0 ml-auto">
+            <div className="flex items-center gap-2.5 shrink-0">
+              <span className="text-xs font-semibold text-gray-500 leading-tight">
+                Opens in
+              </span>
+
+              <div className="flex items-center gap-1.5">
+                {/* HRS Box */}
+                <div className="flex flex-col items-center">
+                  <div
+                    suppressHydrationWarning
+                    className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-100/90 text-sm font-extrabold text-orange-500"
+                  >
+                    {time_remaining.hrs}
+                  </div>
+                  <span className="mt-0.5 text-[9px] font-bold tracking-wider text-gray-500 leading-none">
+                    HRS
+                  </span>
+                </div>
+
+                <span className="font-bold text-gray-700 text-sm -mt-3">
+                  :
+                </span>
+
+                {/* MIN Box */}
+                <div className="flex flex-col items-center">
+                  <div
+                    suppressHydrationWarning
+                    className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-100/90 text-sm font-extrabold text-orange-500"
+                  >
+                    {time_remaining.min}
+                  </div>
+                  <span className="mt-0.5 text-[9px] font-bold tracking-wider text-gray-500 leading-none">
+                    MIN
+                  </span>
+                </div>
+
+                <span className="font-bold text-gray-700 text-sm -mt-3">
+                  :
+                </span>
+
+                {/* SEC Box */}
+                <div className="flex flex-col items-center">
+                  <div
+                    suppressHydrationWarning
+                    className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-100/90 text-sm font-extrabold text-orange-500"
+                  >
+                    {time_remaining.sec}
+                  </div>
+                  <span className="mt-0.5 text-[9px] font-bold tracking-wider text-gray-500 leading-none">
+                    SEC
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // MOBILE BANNER (New Image Design)
+  return (
     <div
       className={cn(
-        "flex w-full items-center justify-between bg-transparent px-0 py-1 sm:px-2 lg:bg-white lg:px-6 lg:py-1.5",
+        "flex w-full items-center justify-between bg-[#FFF6EE] border-b border-[#F3E2D4] px-4 py-2.5 transition-all",
         className,
       )}
     >
-      {/* LEFT: Moon Icon in Soft Circle + Title & Description */}
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-        <div className="flex size-8 sm:size-9 shrink-0 items-center justify-center rounded-full bg-orange-100/90">
-          <MoonIcon className="size-4 sm:size-5 text-orange-500" />
-        </div>
+      {/* LEFT: Moon Icon + Title & Description */}
+      <div className="flex items-center gap-2.5 min-w-0">
+        <MoonIcon className="size-5 text-[#FF5300] shrink-0" />
 
         <div className="flex flex-col min-w-0">
-          <h3 className="text-xs sm:text-sm font-bold leading-tight text-gray-900 truncate">
+          <h3 className="text-xs font-extrabold leading-tight text-[#0B1E36] truncate">
             {title}
           </h3>
 
-          <p className="text-[10px] sm:text-xs font-medium leading-tight text-gray-500 truncate mt-0.5">
+          <p className="text-[10px] font-medium leading-tight text-[#7D766D] truncate mt-0.5">
             {message}
           </p>
         </div>
       </div>
 
       {/* RIGHT: Live Countdown Timer */}
-      <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 ml-auto">
-        {/* Vertical Divider Bar for Mobile only (<640px) */}
-        <div className="h-8 w-px bg-orange-200/80 shrink-0 sm:hidden" />
+      <div className="flex items-center gap-2.5 shrink-0 ml-2">
+        {/* Vertical Divider Line */}
+        <div className="h-8 w-px bg-[#EBD8C9] shrink-0" />
 
         {/* Live Countdown Timer (Opens in HH : MM : SS) */}
-        <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2.5 shrink-0">
-          <span className="text-[10px] sm:text-xs font-semibold text-gray-500 leading-tight mb-0.5 sm:mb-0">
+        <div className="flex flex-col items-center shrink-0">
+          <span className="text-[10px] font-medium text-[#938A7E] leading-none mb-1">
             Opens in
           </span>
 
-          <div className="flex items-center gap-1 sm:gap-1.5">
-            {/* HRS Box */}
-            <div className="flex flex-col items-center">
-              <div
-                suppressHydrationWarning
-                className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-md bg-orange-100/90 text-xs sm:text-sm font-extrabold text-orange-500"
-              >
-                {time_remaining.hrs}
-              </div>
-              <span className="mt-0.5 text-[8px] sm:text-[9px] font-bold tracking-wider text-gray-500 leading-none">
-                HRS
-              </span>
-            </div>
-
-            <span className="font-bold text-gray-700 text-xs sm:text-sm -mt-3">
-              :
+          {/* Digits & Colons */}
+          <div className="flex items-center text-xs font-extrabold leading-none text-[#FF5300]">
+            <span suppressHydrationWarning className="w-5 text-center">
+              {time_remaining.hrs}
             </span>
-
-            {/* MIN Box */}
-            <div className="flex flex-col items-center">
-              <div
-                suppressHydrationWarning
-                className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-md bg-orange-100/90 text-xs sm:text-sm font-extrabold text-orange-500"
-              >
-                {time_remaining.min}
-              </div>
-              <span className="mt-0.5 text-[8px] sm:text-[9px] font-bold tracking-wider text-gray-500 leading-none">
-                MIN
-              </span>
-            </div>
-
-            <span className="font-bold text-gray-700 text-xs sm:text-sm -mt-3">
-              :
+            <span className="text-gray-700 font-bold mx-0.5">:</span>
+            <span suppressHydrationWarning className="w-5 text-center">
+              {time_remaining.min}
             </span>
+            <span className="text-gray-700 font-bold mx-0.5">:</span>
+            <span suppressHydrationWarning className="w-5 text-center">
+              {time_remaining.sec}
+            </span>
+          </div>
 
-            {/* SEC Box */}
-            <div className="flex flex-col items-center">
-              <div
-                suppressHydrationWarning
-                className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-md bg-orange-100/90 text-xs sm:text-sm font-extrabold text-orange-500"
-              >
-                {time_remaining.sec}
-              </div>
-              <span className="mt-0.5 text-[8px] sm:text-[9px] font-bold tracking-wider text-gray-500 leading-none">
-                SEC
-              </span>
-            </div>
+          {/* Sub-labels underneath digits */}
+          <div className="flex items-center text-[8px] font-bold text-[#A0988C] tracking-wider leading-none mt-1">
+            <span className="w-5 text-center">HRS</span>
+            <span className="invisible mx-0.5">:</span>
+            <span className="w-5 text-center">MIN</span>
+            <span className="invisible mx-0.5">:</span>
+            <span className="w-5 text-center">SEC</span>
           </div>
         </div>
       </div>
     </div>
   );
-
-  if (is_desktop_header) {
-    return <div className="bg-white">{content}</div>;
-  }
-
-  return content;
 };
 
 export default StoreClosedBanner;

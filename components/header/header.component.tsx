@@ -1,6 +1,7 @@
 import { useLayoutEffect, useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 // types
 import type { FC } from "react";
 
@@ -9,7 +10,6 @@ import SearchBar from "@/components/header/search-bar/search-bar.component";
 import Cart from "@/components/common/icons/cart.icon";
 import CategorySection from "@/components/header/category-section.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
-import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 import LocationTooltip from "@/components/header/location/location-tooltip.component";
 import MobileHeader from "@/components/header/mobile-header.component";
 import StoreClosedBanner from "@/components/header/store-closed-banner.component";
@@ -23,6 +23,24 @@ import { useMegaMenuContext } from "@/provider/mega-menu-provider";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 
+// helpers
+import { cn } from "@/lib/utils";
+
+const updateVisibleHeaderHeight = (header: HTMLElement) => {
+  const top_offset = parseFloat(header.style.top || "0") || 0;
+  const search_block = document.getElementById(
+    "mobile-header-search-container",
+  )?.parentElement;
+  const bottom =
+    search_block && search_block.offsetHeight > 0
+      ? search_block.offsetTop + search_block.offsetHeight
+      : header.offsetHeight;
+  document.documentElement.style.setProperty(
+    "--header-visible-height",
+    `${Math.max(0, bottom + top_offset)}px`,
+  );
+};
+
 const Header: FC<{
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
@@ -32,6 +50,10 @@ const Header: FC<{
   disable_side_filter = false,
   is_bottom_navigation_showing,
 }) => {
+  const router = useRouter();
+  const is_product_page =
+    router.pathname.includes("/p/") || router.asPath.includes("/p/");
+
   const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
@@ -45,8 +67,9 @@ const Header: FC<{
     const setHeight = () => {
       document.documentElement.style.setProperty(
         "--header-height",
-        `${header.offsetHeight + 12}px`,
+        `${header.offsetHeight + 15}px`,
       );
+      updateVisibleHeaderHeight(header);
     };
 
     setHeight();
@@ -68,26 +91,20 @@ const Header: FC<{
 
       // iOS rubber-band / pull-to-refresh
       // Always keep the header visible at the top.
-      if (current_scroll_pos <= 0) {
-        header_ref.current.style.top = "0";
-        prev_scroll_pos = 0;
-        return;
-      }
+      const search_container = document.getElementById(
+        "mobile-header-search-container",
+      );
+      const top_spacing = 8;
+      const hide_offset = search_container
+        ? Math.max(0, search_container.offsetTop - top_spacing)
+        : 106;
 
-      if (current_scroll_pos > prev_scroll_pos) {
-        // Scrolling down: hide everything above SearchBar dynamically while preserving top spacing
-        const search_container = document.getElementById(
-          "mobile-header-search-container",
-        );
-        const top_spacing = 8;
-        const hide_offset = search_container
-          ? Math.max(0, search_container.offsetTop - top_spacing)
-          : 106;
-        header_ref.current.style.top = `-${hide_offset}px`;
-      } else if (current_scroll_pos < prev_scroll_pos) {
-        // Scrolling up: show full header
-        header_ref.current.style.top = "0";
-      }
+      const target_top = -Math.min(
+        Math.max(0, current_scroll_pos),
+        hide_offset,
+      );
+      header_ref.current.style.top = `${target_top}px`;
+      updateVisibleHeaderHeight(header_ref.current);
 
       prev_scroll_pos = current_scroll_pos;
     };
@@ -95,6 +112,7 @@ const Header: FC<{
     window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -103,7 +121,10 @@ const Header: FC<{
   return (
     <header
       ref={header_ref}
-      className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
+      className={cn(
+        "fixed top-0 z-30 w-full",
+        is_product_page && "hidden lg:block",
+      )}
       id="app-header"
     >
       <MobileHeader />
@@ -196,9 +217,6 @@ const Header: FC<{
       </div>
 
       <CategorySection />
-      {show_filter_sort_bar && (
-        <FilterSortBar disable_side_filter={disable_side_filter} />
-      )}
     </header>
   );
 };
