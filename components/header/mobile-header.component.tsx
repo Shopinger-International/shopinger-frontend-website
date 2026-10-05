@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 type ICategory = {
   label: string;
   href: string;
-  icon: ReactNode;
+  icon?: ReactNode;
 };
 
 const categories: ICategory[] = [
@@ -40,7 +40,7 @@ const categories: ICategory[] = [
     // icon: <GroceryIcon size={28} />,
   },
   {
-    label: "Pharmacy",
+    label: "Medicine",
     href: "/categories/Health-and-Personal-Care",
     // icon: <PharmacyIcon size={28} />,
   },
@@ -57,7 +57,7 @@ const MobileHeader: FC = () => {
     router.asPath.toLowerCase().includes("grocery");
 
   const is_pharmacy =
-    categories.find(({ label }) => label == "Pharmacy")?.href == router.asPath ||
+    categories.find(({ label }) => label == "Pharmacy" || label == "Medicine")?.href == router.asPath ||
     router.asPath.toLowerCase().includes("pharmacy") ||
     router.asPath.toLowerCase().includes("personal-care");
 
@@ -108,7 +108,7 @@ const MobileHeader: FC = () => {
         {categories.map(({ label, href, icon }) => {
           const is_active = href == router.asPath;
           const is_cat_grocery = label === "Grocery";
-          const is_cat_pharmacy = label === "Pharmacy";
+          const is_cat_pharmacy = label === "Pharmacy" || label === "Medicine";
           return (
             <Link
               key={label}
