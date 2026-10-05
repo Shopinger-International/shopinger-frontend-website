@@ -43,12 +43,12 @@ const useAddToCartMutation = () => {
       query_client.invalidateQueries({
         queryKey: ["product-availability", product_id, variant_id],
       });
-      enqueueSnackbar(response.message, {
-        key: `add-to-cart-success-${Date.now()}`,
-        variant: "success",
-        action_label: "View Cart",
-        onActionClick: () => router.push("/cart-checkout"),
-      });
+      // enqueueSnackbar(response.message, {
+      //   key: `add-to-cart-success-${Date.now()}`,
+      //   variant: "success",
+      //   action_label: "View Cart",
+      //   onActionClick: () => router.push("/cart-checkout"),
+      // });
     },
     onError(error) {
       // @ts-ignore

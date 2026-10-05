@@ -3,6 +3,7 @@
 
 :root {
   --header-height: 120px; /* adjust to match your header */
+  --header-visible-height: var(--header-height); /* updated by header.component on scroll */
   --brand: #ff740a;
   --brand-foreground: #ffffff;
   --background: #fff7ed;

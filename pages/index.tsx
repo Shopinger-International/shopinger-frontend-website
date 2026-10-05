@@ -88,7 +88,7 @@ const HomePage: NextPageWithLayout = () => {
         <div className="max-w-8xl mx-auto w-full space-y-6 px-4">
           <Campaign campaigns={campaigns} />
           <CampaignTimer />
-          <HighlightsBar />
+          {/* <HighlightsBar /> */}
 
           {/* Continue Shopping */}
           <LazyHomeSection>
