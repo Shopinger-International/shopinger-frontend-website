@@ -37,12 +37,12 @@ const categories: ICategory[] = [
   {
     label: "Grocery",
     href: "/categories/Grocery",
-    icon: <GroceryIcon size={28} />,
+    // icon: <GroceryIcon size={28} />,
   },
   {
     label: "Pharmacy",
     href: "/categories/Health-and-Personal-Care",
-    icon: <PharmacyIcon size={28} />,
+    // icon: <PharmacyIcon size={28} />,
   },
 ];
 
