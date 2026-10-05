@@ -67,7 +67,7 @@ const Header: FC<{
     const setHeight = () => {
       document.documentElement.style.setProperty(
         "--header-height",
-        `${header.offsetHeight + 12}px`,
+        `${header.offsetHeight + 15}px`,
       );
       updateVisibleHeaderHeight(header);
     };
@@ -99,13 +99,11 @@ const Header: FC<{
         ? Math.max(0, search_container.offsetTop - top_spacing)
         : 106;
 
-      if (current_scroll_pos <= hide_offset) {
-        // At top of page: show full header with categories bar
-        header_ref.current.style.top = "0";
-      } else {
-        // Once scrolled past top banner: collapse header so only SearchBar is visible
-        header_ref.current.style.top = `-${hide_offset}px`;
-      }
+      const target_top = -Math.min(
+        Math.max(0, current_scroll_pos),
+        hide_offset,
+      );
+      header_ref.current.style.top = `${target_top}px`;
       updateVisibleHeaderHeight(header_ref.current);
 
       prev_scroll_pos = current_scroll_pos;
@@ -124,7 +122,7 @@ const Header: FC<{
     <header
       ref={header_ref}
       className={cn(
-        "fixed top-0 z-30 w-full transition-all duration-200 ease-in",
+        "fixed top-0 z-30 w-full",
         is_product_page && "hidden lg:block",
       )}
       id="app-header"

@@ -103,7 +103,7 @@ const CategorySection: FC = () => {
     <>
       <div
         className={clsx(
-          "bg-white px-4 transition-[padding] duration-300 ease-in-out",
+          "hidden lg:block bg-white px-4 transition-[padding] duration-300 ease-in-out",
           hide_nav ? "py-0" : "py-0.5",
           "mb-2",
         )}
