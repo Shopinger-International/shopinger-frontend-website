@@ -91,26 +91,20 @@ const Header: FC<{
 
       // iOS rubber-band / pull-to-refresh
       // Always keep the header visible at the top.
-      if (current_scroll_pos <= 0) {
-        header_ref.current.style.top = "0";
-        updateVisibleHeaderHeight(header_ref.current);
-        prev_scroll_pos = 0;
-        return;
-      }
+      const search_container = document.getElementById(
+        "mobile-header-search-container",
+      );
+      const top_spacing = 8;
+      const hide_offset = search_container
+        ? Math.max(0, search_container.offsetTop - top_spacing)
+        : 106;
 
-      if (current_scroll_pos > prev_scroll_pos) {
-        // Scrolling down: hide everything above SearchBar dynamically while preserving top spacing
-        const search_container = document.getElementById(
-          "mobile-header-search-container",
-        );
-        const top_spacing = 8;
-        const hide_offset = search_container
-          ? Math.max(0, search_container.offsetTop - top_spacing)
-          : 106;
-        header_ref.current.style.top = `-${hide_offset}px`;
-      } else if (current_scroll_pos < prev_scroll_pos) {
-        // Scrolling up: show full header
+      if (current_scroll_pos <= hide_offset) {
+        // At top of page: show full header with categories bar
         header_ref.current.style.top = "0";
+      } else {
+        // Once scrolled past top banner: collapse header so only SearchBar is visible
+        header_ref.current.style.top = `-${hide_offset}px`;
       }
       updateVisibleHeaderHeight(header_ref.current);
 
