@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import { useState, memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { FC } from "react";
@@ -13,14 +13,16 @@ import type { IProductRecommendation } from "@/hooks/axios/home/use-feed.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useAddToWishlistMutation from "@/hooks/axios/wishlist/use-add-to-wishlist-mutation.hook";
 import useRemoveFromWishlistMutation from "@/hooks/axios/wishlist/use-remove-from-wishlist-mutation.hook";
-import useIsWishlisted from "@/hooks/axios/wishlist/use-is-wishlisted";
 
 // sub-components
 import HomeProductQuantityControl from "@/components/home/home-product-quantity-control.component";
 
 // helpers & analytics
 import { generateSlug } from "@/helpers/product.helper";
-import {extractProductPrices,extractProductRating} from "@/helpers/home-product-card.helper";
+import {
+  extractProductPrices,
+  extractProductRating,
+} from "@/helpers/home-product-card.helper";
 import addedToWishlistEvent from "@/analytics/events/added-to-wishlist.event";
 import removedFromWishlistEvent from "@/analytics/events/removed-from-wishlist.event";
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
@@ -81,17 +83,12 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
 
-  const { data: wishlist_data } = useIsWishlisted({
-    variant_id,
-    enabled: !!variant_id,
-  });
-
   const [local_wishlisted, setLocalWishlisted] = useState<boolean | null>(null);
 
   const is_wishlisted =
     local_wishlisted !== null
       ? local_wishlisted
-      : (wishlist_data?.is_wishlisted ?? product.is_wishlisted ?? initial_wishlisted);
+      : (product.is_wishlisted ?? initial_wishlisted);
 
   const add_to_wishlist_mutation = useAddToWishlistMutation();
   const remove_from_wishlist_mutation = useRemoveFromWishlistMutation();
@@ -157,7 +154,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
   return (
     <div
       className={clsx(
-        "group relative flex h-full w-full flex-col justify-between rounded-2xl p-2 sm:p-2.5 border border-orange-100/60",
+        "group relative flex h-full w-full flex-col justify-between rounded-2xl border border-orange-100/60 p-2 sm:p-2.5",
         className,
       )}
     >
@@ -168,10 +165,10 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           title={`View ${title}`}
           className="block w-full"
         >
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white flex items-center justify-center ">
+          <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-white">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold text-brand tracking-tight uppercase">
+              <span className="text-brand absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold tracking-tight uppercase">
                 {discount_perc}%&nbsp;&nbsp;OFF
               </span>
             )}
@@ -185,11 +182,11 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
                 remove_from_wishlist_mutation.isPending
               }
               onClick={handleWishlistClick}
-              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-orange-500 transition-transform active:scale-95"
+              className="absolute top-1.5 right-1.5 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-orange-500 transition-transform active:scale-95 sm:size-9"
             >
               <Heart
                 className={clsx(
-                  "size-5 sm:size-6 text-brand",
+                  "text-brand size-5 sm:size-6",
                   is_wishlisted && "fill-brand",
                 )}
                 strokeWidth={2.2}
@@ -203,13 +200,13 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
                 alt={title}
                 fill
                 sizes="(max-width: 640px) 140px, 180px"
-                className="object-contain p-1 transition-transform duration-300 rounded-2xl pointer-events-none select-none"
+                className="pointer-events-none rounded-2xl object-contain p-1 transition-transform duration-300 select-none"
               />
             </div>
 
             {/* Bottom-Left Rating Overlay */}
             {avg_rating != null && Number(avg_rating) > 0 && (
-              <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating px-1.5 py-0.5 text-2xs font-bold text-white">
+              <div className="bg-rating text-2xs absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md px-1.5 py-0.5 font-bold text-white">
                 <span>{Number(avg_rating).toFixed(1)}</span>
                 <Star className="size-2.5 fill-white text-white" />
               </div>
@@ -217,7 +214,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           </div>
 
           {/* Title */}
-          <h3 className="mt-2 line-clamp-2 text-2xs font-bold leading-snug text-gray-900 sm:text-xs">
+          <h3 className="text-2xs mt-2 line-clamp-2 leading-snug font-semibold text-gray-900 sm:text-xs">
             {title}
           </h3>
         </Link>
@@ -226,12 +223,12 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
       {/* Price and Action Row (Fixed at Bottom) */}
       <div className="mt-auto flex items-center justify-between gap-1 pt-2">
         {Number(selling_price) > 0 && (
-          <div className="flex flex-col sm:flex-row sm:items-baseline min-w-0 gap-0 sm:gap-1">
-            <span className="text-sm font-black text-gray-900 sm:text-base md:text-lg leading-tight truncate">
+          <div className="flex min-w-0 flex-col gap-0">
+            <span className="truncate text-sm leading-tight font-black text-gray-900 sm:text-base md:text-lg">
               ₹{Number(selling_price).toLocaleString()}
             </span>
             {Number(mrp) > Number(selling_price) && Number(mrp) > 0 && (
-              <span className="text-2xs font-medium text-gray-400 line-through leading-tight sm:text-xs truncate">
+              <span className="text-2xs truncate leading-tight font-medium text-gray-400 line-through sm:text-xs">
                 ₹{Number(mrp).toLocaleString()}
               </span>
             )}
@@ -241,7 +238,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           <Link
             href={product_href}
             aria-label="See options"
-            className="flex h-7 sm:h-9 shrink-0 items-center justify-center gap-0.5 rounded-lg border border-gray-300 bg-white px-2 text-2xs font-bold text-gray-900 transition-colors hover:bg-gray-100 sm:rounded-xl sm:px-3 sm:text-xs"
+            className="text-2xs flex h-7 shrink-0 items-center justify-center gap-0.5 rounded-lg border border-gray-300 bg-white px-2 font-bold text-gray-900 transition-colors hover:bg-gray-100 sm:h-9 sm:rounded-xl sm:px-3 sm:text-xs"
           >
             <span>See options</span>
             <ChevronRight className="size-3.5 shrink-0" />

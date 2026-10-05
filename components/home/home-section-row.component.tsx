@@ -40,22 +40,24 @@ const HomeSectionRow: FC<IProps> = ({
             p.product_medias?.[0]?.media?.url ??
             p.media_url ??
             "";
-          const selling_price = Number(
-            first_variant.variant_pricing?.selling_price_with_commission ??
-            first_variant.variant_pricing?.selling_price ??
-            p.selling_price_with_commission ??
-            p.selling_price ??
-            p.price ??
-            0
-          ) || 0;
-          const mrp = Number(
-            first_variant.variant_pricing?.mrp ??
-            first_variant.mrp ??
-            p.variant_pricing?.mrp ??
-            p.mrp ??
-            p.original_price ??
-            0
-          ) || 0;
+          const selling_price =
+            Number(
+              first_variant.variant_pricing?.selling_price_with_commission ??
+                first_variant.variant_pricing?.selling_price ??
+                p.selling_price_with_commission ??
+                p.selling_price ??
+                p.price ??
+                0,
+            ) || 0;
+          const mrp =
+            Number(
+              first_variant.variant_pricing?.mrp ??
+                first_variant.mrp ??
+                p.variant_pricing?.mrp ??
+                p.mrp ??
+                p.original_price ??
+                0,
+            ) || 0;
 
           const review_count_val =
             p.reviews_count ??

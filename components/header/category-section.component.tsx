@@ -132,182 +132,188 @@ const CategorySection: FC = () => {
 
   return (
     <>
-      <div
-        className={clsx(
-          "bg-white px-4 transition-[padding] duration-300 ease-in-out",
-          hide_nav ? "py-0" : "py-0.5",
-          "mb-2",
-        )}
-      >
-        <div className="flex items-center justify-between gap-4 text-orange-500">
-          {/* Left Section: Menu + Navigation */}
-          <div className="flex min-w-0 items-center gap-4">
-            {/* Menu Button */}
-            {/* <button
+      <div className="relative">
+        <div
+          className={clsx(
+            "bg-white px-4 py-0.5",
+            "transition-transform duration-300 ease-in-out will-change-transform",
+            hide_nav ? "-translate-y-full" : "translate-y-0",
+          )}
+        >
+          <div className="flex items-center justify-between gap-4 text-orange-500">
+            {/* Left Section: Menu + Navigation */}
+            <div className="flex min-w-0 items-center gap-4">
+              {/* Menu Button */}
+              {/* <button
               className="hidden shrink-0 cursor-pointer items-center gap-2.5 lg:flex"
               onClick={openMegaMenuDrawer}
             >
               <Menu className="h-7 w-7" strokeWidth={2} aria-hidden={true} />
               <span className="hidden font-semibold sm:block">Menu</span>
             </button> */}
-            <div className="flex min-w-0 items-center">
-              {/* Left Arrow */}
-              <button
-                onClick={() =>
-                  nav_ref.current?.scrollBy({ left: -200, behavior: "smooth" })
-                }
-                aria-label="Scroll categories left"
-                className={clsx(
-                  "hidden shrink-0 rounded-full p-1 lg:inline-block",
-                  can_scroll_left
-                    ? "opacity-100"
-                    : "pointer-events-none opacity-0",
-                )}
-              >
-                <ChevronLeft aria-hidden={true} className="size-6" />
-              </button>
-
-              {/* Navigation Items */}
-              <nav
-                ref={nav_ref}
-                aria-label="Main product categories"
-                className="no-scrollbar flex items-start gap-4 overflow-x-auto"
-              >
-                {/* All */}
-                <Link
-                  href="/"
-                  onClick={() => setSelectedCategory(null)}
-                  aria-label="All categories"
+              <div className="flex min-w-0 items-center">
+                {/* Left Arrow */}
+                <button
+                  onClick={() =>
+                    nav_ref.current?.scrollBy({
+                      left: -200,
+                      behavior: "smooth",
+                    })
+                  }
+                  aria-label="Scroll categories left"
                   className={clsx(
-                    "group flex w-20 shrink-0 flex-col items-center justify-center gap-1 rounded-xl py-2",
-                    "transition-[padding,gap] duration-300 ease-in-out",
-                    hide_nav ? "gap-0 py-0" : "gap-1 py-1.5",
-                    selected_category == null
-                      ? "bg-orange-50"
-                      : "hover:bg-gray-50",
+                    "hidden shrink-0 rounded-full p-1 lg:inline-block",
+                    can_scroll_left
+                      ? "opacity-100"
+                      : "pointer-events-none opacity-0",
                   )}
                 >
-                  <div
+                  <ChevronLeft aria-hidden={true} className="size-6" />
+                </button>
+
+                {/* Navigation Items */}
+                <nav
+                  ref={nav_ref}
+                  aria-label="Main product categories"
+                  className="no-scrollbar flex items-start gap-4 overflow-x-auto"
+                >
+                  {/* All */}
+                  <Link
+                    href="/"
+                    onClick={() => setSelectedCategory(null)}
+                    aria-label="All categories"
                     className={clsx(
-                      "flex w-9 items-center justify-center overflow-hidden rounded-full",
-                      "transition-[height] duration-300 ease-in-out",
-                      hide_nav ? "h-0" : "h-9",
+                      "group flex w-20 shrink-0 flex-col items-center justify-center gap-1 rounded-xl py-2",
+                      "transition-[padding,gap] duration-300 ease-in-out",
+                      hide_nav ? "gap-0 py-0" : "gap-1 py-1.5",
                       selected_category == null
-                        ? "bg-orange-100"
-                        : "bg-gray-100 group-hover:bg-gray-200",
+                        ? "bg-orange-50"
+                        : "hover:bg-gray-50",
                     )}
                   >
-                    <LayoutDashboard
-                      className="size-5 shrink-0"
-                      strokeWidth={1.8}
-                      aria-hidden="true"
-                    />
-                  </div>
+                    <div
+                      className={clsx(
+                        "flex w-9 items-center justify-center overflow-hidden rounded-full",
+                        "transition-[height] duration-300 ease-in-out",
+                        hide_nav ? "h-0" : "h-9",
+                        selected_category == null
+                          ? "bg-orange-100"
+                          : "bg-gray-100 group-hover:bg-gray-200",
+                      )}
+                    >
+                      <LayoutDashboard
+                        className="size-5 shrink-0"
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
+                    </div>
 
-                  <span
-                    className={clsx(
-                      "text-xs leading-none transition-colors",
-                      selected_category == null
-                        ? "font-semibold text-orange-600"
-                        : "font-medium text-gray-700",
-                    )}
-                  >
-                    All
-                  </span>
-                </Link>
+                    <span
+                      className={clsx(
+                        "text-xs leading-none transition-colors",
+                        selected_category == null
+                          ? "font-semibold text-orange-600"
+                          : "font-medium text-gray-700",
+                      )}
+                    >
+                      All
+                    </span>
+                  </Link>
 
-                {/* Categories */}
-                <ul className="flex items-start gap-2 whitespace-nowrap">
+                  {/* Categories */}
+                  <ul className="flex items-start gap-2 whitespace-nowrap">
                     {categories.map((category, index) => {
-                    const { id, name, slug } = category;
-                    const is_item_grocery = slug.toLowerCase().includes("grocery") || name.toLowerCase().includes("grocery");
-                    const is_item_pharmacy =
-                      slug.toLowerCase().includes("pharmacy") ||
-                      slug.toLowerCase().includes("medicine") ||
-                      slug.toLowerCase().includes("personal-care") ||
-                      name.toLowerCase().includes("pharmacy") ||
-                      name.toLowerCase().includes("medicine") ||
-                      name.toLowerCase().includes("personal care");
+                      const { id, name, slug } = category;
+                      const is_item_grocery =
+                        slug.toLowerCase().includes("grocery") ||
+                        name.toLowerCase().includes("grocery");
+                      const is_item_pharmacy =
+                        slug.toLowerCase().includes("pharmacy") ||
+                        slug.toLowerCase().includes("medicine") ||
+                        slug.toLowerCase().includes("personal-care") ||
+                        name.toLowerCase().includes("pharmacy") ||
+                        name.toLowerCase().includes("medicine") ||
+                        name.toLowerCase().includes("personal care");
 
-                    return (
-                      <li key={`category-${id}`}>
-                        <Link
-                          href={`/categories/${category.slug}`}
-                          className={clsx(
-                            "group flex w-20 shrink-0 flex-col items-center justify-center rounded-md py-2",
-                            "transition-[padding,gap] duration-300 ease-in-out",
-                            hide_nav ? "gap-0 py-0" : "gap-1 py-1.5",
-                          )}
-                        >
-                          <div
+                      return (
+                        <li key={`category-${id}`}>
+                          <Link
+                            href={`/categories/${category.slug}`}
                             className={clsx(
-                              "flex w-9 items-center justify-center overflow-hidden rounded-xl",
-                              "transition-[height] duration-300 ease-in-out",
-                              hide_nav ? "h-0" : "h-9",
+                              "group flex w-20 shrink-0 flex-col items-center justify-center rounded-md py-2",
+                              "transition-[padding,gap] duration-300 ease-in-out",
+                              hide_nav ? "gap-0 py-0" : "gap-1 py-1.5",
                             )}
                           >
-                            {category.media.icon ? (
-                              <Image
-                                src={category.media.icon}
-                                alt={name}
-                                width={48}
-                                height={48}
-                                className={`h-12 w-12 object-contain transition-transform duration-200 group-hover:scale-105`}
-                              />
-                            ) : (
-                              <div
-                                className={clsx(
-                                  "h-12 w-12 rounded-xl",
-                                  is_item_grocery
-                                    ? "bg-green-50"
+                            <div
+                              className={clsx(
+                                "flex w-9 items-center justify-center overflow-hidden rounded-xl",
+                                "transition-[height] duration-300 ease-in-out",
+                                hide_nav ? "h-0" : "h-9",
+                              )}
+                            >
+                              {category.media.icon ? (
+                                <Image
+                                  src={category.media.icon}
+                                  alt={name}
+                                  width={48}
+                                  height={48}
+                                  className={`h-12 w-12 object-contain transition-transform duration-200 group-hover:scale-105`}
+                                />
+                              ) : (
+                                <div
+                                  className={clsx(
+                                    "h-12 w-12 rounded-xl",
+                                    is_item_grocery
+                                      ? "bg-green-50"
+                                      : is_item_pharmacy
+                                        ? "bg-blue-50"
+                                        : "bg-orange-50",
+                                  )}
+                                />
+                              )}
+                            </div>
+
+                            <span
+                              className={clsx(
+                                "max-w-20 truncate text-center text-xs font-medium text-black",
+                                selected_category?.id === id &&
+                                  "font-semibold underline underline-offset-4",
+                                selected_category?.id === id &&
+                                  (is_item_grocery
+                                    ? "text-green-600"
                                     : is_item_pharmacy
-                                      ? "bg-blue-50"
-                                      : "bg-orange-50",
-                                )}
-                              />
-                            )}
-                          </div>
-
-                          <span
-                            className={clsx(
-                              "max-w-20 truncate text-center text-xs font-medium text-black",
-                              selected_category?.id === id &&
-                                "font-semibold underline underline-offset-4",
-                              selected_category?.id === id &&
-                                (is_item_grocery
-                                  ? "text-green-600"
-                                  : is_item_pharmacy
-                                    ? "text-blue-600"
-                                    : "text-orange-500"),
-                            )}
-                          >
-                            {name}
-                          </span>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </nav>
-              {/* Right Arrow */}
-              <button
-                onClick={() =>
-                  nav_ref.current?.scrollBy({ left: 200, behavior: "smooth" })
-                }
-                aria-label="Scroll categories right"
-                className={clsx(
-                  "hidden shrink-0 rounded-full p-1 lg:inline-block",
-                  can_scroll_right
-                    ? "opacity-100"
-                    : "pointer-events-none opacity-0",
-                )}
-              >
-                <ChevronRight aria-hidden={true} className="size-6" />
-              </button>
+                                      ? "text-blue-600"
+                                      : "text-orange-500"),
+                              )}
+                            >
+                              {name}
+                            </span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </nav>
+                {/* Right Arrow */}
+                <button
+                  onClick={() =>
+                    nav_ref.current?.scrollBy({ left: 200, behavior: "smooth" })
+                  }
+                  aria-label="Scroll categories right"
+                  className={clsx(
+                    "hidden shrink-0 rounded-full p-1 lg:inline-block",
+                    can_scroll_right
+                      ? "opacity-100"
+                      : "pointer-events-none opacity-0",
+                  )}
+                >
+                  <ChevronRight aria-hidden={true} className="size-6" />
+                </button>
+              </div>
             </div>
-          </div>
-          {/* <div className="hidden h-10 w-0.5 bg-orange-800 lg:inline-block" /> */}
-          {/* <Link
+            {/* <div className="hidden h-10 w-0.5 bg-orange-800 lg:inline-block" /> */}
+            {/* <Link
             href={`https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}?text=${encodeURIComponent(whatsapp_templates.emi)}`}
             target="_blank"
             className="hidden shrink-0 flex-row items-center gap-3 lg:flex"
@@ -335,6 +341,7 @@ const CategorySection: FC = () => {
               <ChevronRight className="size-5 text-white" />
             </button>
           </Link> */}
+          </div>
         </div>
       </div>
     </>

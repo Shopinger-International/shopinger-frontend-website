@@ -103,7 +103,10 @@ const Header: FC<{
   return (
     <header
       ref={header_ref}
-      className="fixed top-0 z-30 w-full transition-all duration-200 ease-in"
+      className={cn(
+        "fixed top-0 z-30 w-full transition-[top] duration-200 ease-in",
+        is_product_page && "hidden lg:block",
+      )}
       id="app-header"
     >
       <MobileHeader />
