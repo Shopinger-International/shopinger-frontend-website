@@ -98,7 +98,7 @@ const MobileProductGallary: FC<IProps> = ({
       >
         <ChevronLeft
           aria-hidden={true}
-          className="size-5 text-gray-800"
+          className="size-5 text-orange-500"
           strokeWidth={2.5}
         />
       </button>
