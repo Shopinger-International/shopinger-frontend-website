@@ -16,6 +16,7 @@ import MainLayout from "@/components/layout/main-layout.component";
 // local components
 import ProductGallary from "@/components/product/product-gallary/product-gallary.component";
 import ProductInfo from "@/components/product/product-info/product-info.component";
+import MobileProductStickyHeader from "@/components/product/product-header/mobile-product-sticky-header.component";
 import ReportModal from "@/components/review/report-modal.component";
 import Seo from "@/components/common/seo";
 import TopProducts from "@/components/product/related-products/top-products.component";
@@ -38,10 +39,11 @@ import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 
 // analytics
 import useProductViewed from "@/hooks/analytics/use-product-viewed.hook";
-import ProductSection from "@/components/product/product-section.component";
 import useTopProducts from "@/hooks/axios/product/use-top-products.hook";
 import useRelatedProducts from "@/hooks/axios/product/use-related-products.hook";
 import ProductGridSection from "@/product-grid.component";
+import HomeProductRow from "@/components/home/home-product-row.component";
+import type { IHomeProduct } from "@/components/home/home-product-card.component";
 
 export const getProduct = async (
   product_id: number,
@@ -182,60 +184,59 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     in_stock: variant.variant_inventory.stock > 0,
     manufacture: product.manufacturer_name,
   });
-  const [formatted_top_products, formatted_related_products] = [
-    top_products,
-    related_products,
-  ].map((p) =>
-    p.flatMap((product) => {
-      const { variants, title, brand, product_medias } = product;
-      return variants.map((variant) => {
-        const updated_title =
-          !brand ||
-          brand.toLocaleLowerCase() == "generic" ||
-          title.includes(brand)
-            ? title
-            : `${brand} ${title}`;
+  const formatted_related_products_list: IHomeProduct[] = (
+    related_products ?? []
+  ).map((product) => {
+    const {
+      id: p_id,
+      title,
+      brand,
+      variants = [],
+      product_medias = [],
+      average_rating,
+      sub_sub_category_id,
+    } = product;
 
-        const visual_values = variant.variant_attribute_values
-          .filter(
-            ({ attribute }) =>
-              category_mappings.find(
-                (mapping) => mapping.attribute_id == attribute.id,
-              )?.is_visual,
-          )
-          .map(({ value }) => value);
-        const main_title = visual_values.length
-          ? `${updated_title} in ${visual_values.join(", ")}`
-          : `${updated_title}`;
+    const bought_last_month = (product as any)?.bought_last_month;
 
-        let variant_medias = variant.variant_medias.map(({ media }) => media);
+    const updated_title =
+      !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
+        ? title
+        : `${brand} ${title}`;
 
-        let variant_medias_with_title = (
-          variant_medias.length
-            ? variant_medias
-            : product_medias.map(({ media }) => media)
-        ).map((media, index) => {
-          const image_title = visual_values.length
-            ? `${updated_title} in ${visual_values.join(", ")} - Image ${index + 1}`
-            : `${updated_title} - Image ${index + 1}`;
+    const first_variant = variants[0];
+    const variant_id = first_variant?.id ?? 0;
+    const selling_price =
+      first_variant?.variant_pricing?.selling_price_with_commission ?? 0;
+    const mrp = first_variant?.variant_pricing?.mrp ?? 0;
+    const discount_percentage =
+      mrp > selling_price && mrp > 0
+        ? Math.round(((mrp - selling_price) / mrp) * 100)
+        : 0;
 
-          return {
-            media,
-            image_title,
-          };
-        });
-        const product_slug = generateSlug(product.title);
-        return {
-          title: main_title,
-          src: `/${product_slug}/p/${product.id}/${variant?.id}`,
-          variant_medias_with_title,
-          selling_price: variant.variant_pricing.selling_price_with_commission,
-          mrp: variant.variant_pricing.mrp,
-          average_rating: product.average_rating,
-        };
-      });
-    }),
-  );
+    const media_url =
+      first_variant?.variant_medias?.[0]?.media?.url ??
+      product_medias[0]?.media?.url;
+
+    return {
+      ...product,
+      id: p_id,
+      product_id: p_id,
+      variant_id,
+      title: updated_title,
+      media_url,
+      product_thumbnail: media_url,
+      selling_price,
+      mrp,
+      discount_percentage,
+      average_rating: Number(average_rating ?? 0),
+      avg_rating: Number(average_rating ?? 0),
+      bought_last_month,
+      sub_sub_category_id,
+      have_variants: variants.length > 1,
+      is_wishlisted: !!(first_variant as any)?._count?.wishlists,
+    };
+  });
 
   return (
     <>
@@ -247,6 +248,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         is_prod={is_prod}
         json_ld={JSON.stringify(product_json_ld)}
       />
+      <MobileProductStickyHeader product={product} variant={variant} />
 
       <ReportModal
         review_id={report_modal_state.review_id as number}
@@ -305,11 +307,14 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         />
       </div>
 
-      <ProductSection
-        heading="Related Products"
-        aria_label="Related Products"
-        data={formatted_related_products}
-      />
+      {formatted_related_products_list.length > 0 && (
+        <div className="mx-auto max-w-6xl px-4 my-6">
+          <HomeProductRow
+            title="Related Products"
+            products={formatted_related_products_list}
+          />
+        </div>
+      )}
       <ProductGridSection
         heading="Top 20 Products in this Category"
         aria_label="Top Products"
@@ -350,48 +355,57 @@ export const getStaticProps = (async ({ params }) => {
     return { notFound: true };
   }
 
-  const { product } = await getProduct(product_id);
-  const category_mappings = await getMappings(product.sub_sub_category.id);
-  const formatted_mappings = category_mappings
-    .filter(
-      ({ attribute, is_hidden }) =>
-        attribute.status !== "deprecated" || is_hidden == false,
-    )
-    .map(
-      ({
-        display_area,
-        display_group,
-        display_order,
-        unit_code,
-        is_visual,
-        attribute: { id, code, options },
-      }) => ({
-        display_area,
-        display_group,
-        display_order,
-        unit_code,
-        is_visual,
-        attribute_id: id,
-        attribute_code: code,
-        options: options?.map(({ label, value }) => ({
-          label,
-          value,
-        })),
-      }),
-    );
+  try {
+    const { product } = await getProduct(product_id);
+    if (!product || !product.sub_sub_category) {
+      return { notFound: true };
+    }
 
-  if (!product) {
-    return { notFound: true };
+    const category_mappings = await getMappings(product.sub_sub_category.id);
+    const formatted_mappings = (category_mappings || [])
+      .filter(
+        ({ attribute, is_hidden }) =>
+          attribute.status !== "deprecated" || is_hidden == false,
+      )
+      .map(
+        ({
+          display_area,
+          display_group,
+          display_order,
+          unit_code,
+          is_visual,
+          attribute: { id, code, options },
+        }) => ({
+          display_area,
+          display_group,
+          display_order,
+          unit_code,
+          is_visual,
+          attribute_id: id,
+          attribute_code: code,
+          options: options?.map(({ label, value }) => ({
+            label,
+            value,
+          })),
+        }),
+      );
+
+    return {
+      props: {
+        product_id,
+        variant_id,
+        product,
+        category_mappings: formatted_mappings,
+      },
+      revalidate: 43200, // 🔥 enable ISR
+    };
+  } catch (error) {
+    console.error("Error fetching product data in getStaticProps:", error);
+    return {
+      notFound: true,
+      revalidate: 60, // 🔥 retry ISR after 60 seconds if API timed out
+    };
   }
-  return {
-    props: {
-      product_id,
-      variant_id,
-      product,
-      category_mappings: formatted_mappings,
-    },
-    revalidate: 43200, // 🔥 enable ISR
-  };
 }) satisfies GetStaticProps<IProps, IParams>;
 
 ProductPage.getLayout = function getLayout(page: ReactElement) {

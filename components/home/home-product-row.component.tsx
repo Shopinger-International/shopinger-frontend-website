@@ -93,7 +93,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
       aria-labelledby={`home-row-${section_id_slug}`}
       className={clsx(
         "relative rounded-2xl p-3 sm:p-4 transition-all group/row",
-        background_style ?? "bg-white border border-gray-100",
+        background_style ?? "bg-white",
         className,
       )}
     >
@@ -131,7 +131,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
           <button
             type="button"
             onClick={scrollPrev}
-            className="absolute left-0 sm:-left-3 top-1/2 -translate-y-1/2 z-20 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 hover:bg-brand hover:text-white hover:border-brand active:scale-95"
+            className="absolute left-0 sm:-left-3 top-1/2 -translate-y-1/2 z-20 hidden md:flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 hover:bg-brand hover:text-white hover:border-brand active:scale-95"
             aria-label="Scroll left"
           >
             <ChevronLeft className="size-5" />
@@ -169,7 +169,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
           <button
             type="button"
             onClick={scrollNext}
-            className="absolute right-0 sm:-right-3 top-1/2 -translate-y-1/2 z-20 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 hover:bg-brand hover:text-white hover:border-brand active:scale-95"
+            className="absolute right-0 sm:-right-3 top-1/2 -translate-y-1/2 z-20 hidden md:flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 hover:bg-brand hover:text-white hover:border-brand active:scale-95"
             aria-label="Scroll right"
           >
             <ChevronRight className="size-5" />
