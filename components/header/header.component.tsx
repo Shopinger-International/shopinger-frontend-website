@@ -122,7 +122,7 @@ const Header: FC<{
     <header
       ref={header_ref}
       className={cn(
-        "fixed top-0 z-30 w-full",
+        "fixed top-0 z-40 w-full",
         is_product_page && "hidden lg:block",
       )}
       id="app-header"
