@@ -99,6 +99,18 @@ const CategorySection: FC = () => {
     selected_category && setSelectedCategory(selected_category);
   }, [params, categories]);
 
+  const slug_check = (params?.main_category_slug || selected_category?.slug || "").toLowerCase();
+  const is_medical_page =
+    slug_check.includes("health") ||
+    slug_check.includes("personal-care") ||
+    slug_check.includes("medical") ||
+    slug_check.includes("pharmacy") ||
+    slug_check.includes("medicine");
+
+  if (is_medical_page) {
+    return null;
+  }
+
   return (
     <>
       <div

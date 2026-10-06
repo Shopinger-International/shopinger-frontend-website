@@ -40,7 +40,7 @@ const categories: ICategory[] = [
     // icon: <GroceryIcon size={28} />,
   },
   {
-    label: "Medicine",
+    label: "Medical",
     href: "/categories/Health-and-Personal-Care",
     // icon: <PharmacyIcon size={28} />,
   },
@@ -57,9 +57,10 @@ const MobileHeader: FC = () => {
     router.asPath.toLowerCase().includes("grocery");
 
   const is_pharmacy =
-    categories.find(({ label }) => label == "Pharmacy" || label == "Medicine")?.href == router.asPath ||
+    categories.find(({ label }) => label == "Pharmacy" || label == "Medicine" || label == "Medical")?.href == router.asPath ||
     router.asPath.toLowerCase().includes("pharmacy") ||
-    router.asPath.toLowerCase().includes("personal-care");
+    router.asPath.toLowerCase().includes("personal-care") ||
+    router.asPath.toLowerCase().includes("health");
 
   return (
     <div

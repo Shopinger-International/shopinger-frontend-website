@@ -7,6 +7,7 @@ import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
 import CategoryProducts from "./category-products.component";
 import Campaign from "../home/campaign.component";
 import CampaignTimer from "../header/campaign-timer.component";
+import MedicalServicesView from "./medical/medical-services-view.component";
 
 const CategoryHome: FC<{
   category_slug: string;
@@ -15,6 +16,18 @@ const CategoryHome: FC<{
     display_scope: "CATEGORY",
     category_slug: category_slug,
   });
+
+  const slug_lower = category_slug.toLowerCase();
+  const is_medical =
+    slug_lower.includes("health") ||
+    slug_lower.includes("personal-care") ||
+    slug_lower.includes("medical") ||
+    slug_lower.includes("pharmacy") ||
+    slug_lower.includes("medicine");
+
+  if (is_medical) {
+    return <MedicalServicesView />;
+  }
 
   return (
     <>
@@ -30,3 +43,4 @@ const CategoryHome: FC<{
 };
 
 export default CategoryHome;
+
