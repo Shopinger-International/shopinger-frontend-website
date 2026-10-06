@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { FC } from "react";
 import { cn } from "@/lib/utils";
+import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 
 export const isStoreClosed = (date = new Date()): boolean => {
   const hours = date.getHours();
@@ -82,9 +83,11 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   force_show = false,
   is_desktop_header = false,
 }) => {
+  const is_mounted = useIsMounted();
+
   const [is_closed, setIsClosed] = useState<boolean>(() => {
     if (force_show) return true;
-    return isStoreClosed();
+    return false;
   });
 
   const [time_remaining, setTimeRemaining] = useState({
@@ -110,8 +113,8 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
     return () => clearInterval(timer);
   }, [force_show]);
 
-  // Hide immediately if force_show is false and store is not closed (7:00 AM - 9:59 PM)
-  if (!force_show && !is_closed) {
+  // Hide during SSR or if force_show is false and store is not closed (7:00 AM - 9:59 PM)
+  if (!force_show && (!is_mounted || !is_closed)) {
     return null;
   }
 
