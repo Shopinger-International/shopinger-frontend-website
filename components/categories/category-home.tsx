@@ -1,3 +1,4 @@
+import { useState } from "react";
 // types
 import type { FC } from "react";
 
@@ -7,17 +8,36 @@ import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
 import CategoryProducts from "./category-products.component";
 import Campaign from "../home/campaign.component";
 import CampaignTimer from "../header/campaign-timer.component";
+import MedicalCategorySubHeader, {
+  MedicalHeaderTab,
+} from "./medical-category-sub-header.component";
 
 const CategoryHome: FC<{
   category_slug: string;
 }> = ({ category_slug }) => {
+  const [active_tab, setActiveTab] = useState<MedicalHeaderTab>("all");
   const { data: campaigns = [] } = useAllCamapigns({
     display_scope: "CATEGORY",
     category_slug: category_slug,
   });
 
+  const slug_lower = (category_slug || "").toLowerCase();
+  const is_medical =
+    slug_lower.includes("health") ||
+    slug_lower.includes("personal-care") ||
+    slug_lower.includes("medical") ||
+    slug_lower.includes("pharmacy") ||
+    slug_lower.includes("medicine");
+
   return (
     <>
+      {is_medical && (
+        <MedicalCategorySubHeader
+          active_tab={active_tab}
+          onTabChange={setActiveTab}
+        />
+      )}
+
       <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
         <Campaign campaigns={campaigns} />
         <CampaignTimer />
