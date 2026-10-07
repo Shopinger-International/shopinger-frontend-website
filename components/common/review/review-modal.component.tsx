@@ -190,7 +190,7 @@ const ReviewModal: FC<IProps> = ({
 
                           {field.value > 0 &&
                             !review_generator_mutation.isPending && (
-                              <span className="text-sm font-medium text-orange-500">
+                              <span className="text-sm font-medium text-brand">
                                 {rating_labels[field.value - 1]}
                               </span>
                             )}
@@ -210,7 +210,7 @@ const ReviewModal: FC<IProps> = ({
                         <input
                           {...field}
                           placeholder="Summarize your experience"
-                          className="h-10 w-full rounded-md border border-gray-300 px-3 focus:outline-orange-500"
+                          className="h-10 w-full rounded-md border border-gray-300 px-3 focus:outline-brand"
                         />
                       </div>
                     )}
@@ -228,7 +228,7 @@ const ReviewModal: FC<IProps> = ({
                           {...field}
                           rows={4}
                           placeholder="What did you like or dislike?"
-                          className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 focus:outline-orange-500"
+                          className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 focus:outline-brand"
                         />
                       </div>
                     )}
@@ -294,7 +294,7 @@ const ReviewModal: FC<IProps> = ({
                           <div
                             onDragOver={(e) => e.preventDefault()}
                             onDrop={onDropHandler}
-                            className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-gray-300 p-6 text-center transition hover:border-orange-500 hover:bg-orange-50"
+                            className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-gray-300 p-6 text-center transition hover:border-brand hover:bg-orange-50"
                           >
                             <p className="text-sm font-medium text-gray-900">
                               Drag & drop images here
@@ -327,7 +327,6 @@ const ReviewModal: FC<IProps> = ({
                                     fill
                                     className="object-cover"
                                   />
-
                                   <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/40" />
 
                                   <button
@@ -384,7 +383,7 @@ const ReviewModal: FC<IProps> = ({
 
                               {files.length + values["existing_medias"].length <
                                 5 && (
-                                <label className="flex aspect-square cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-orange-400 hover:text-orange-500">
+                                <label className="flex aspect-square cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-orange-400 hover:text-brand">
                                   +
                                   <input
                                     type="file"
@@ -420,7 +419,7 @@ const ReviewModal: FC<IProps> = ({
                       values.comment.trim().length < 10 ||
                       add_review_mutation.isPending
                     }
-                    className="rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
+                    className="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
                   >
                     Submit Review
                   </button>

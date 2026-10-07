@@ -108,7 +108,7 @@ const CategorySection: FC = () => {
           "mb-2",
         )}
       >
-        <div className="flex items-center justify-between gap-4 text-orange-500">
+        <div className="flex items-center justify-between gap-4 text-brand">
           {/* Left Section: Menu + Navigation */}
           <div className="flex min-w-0 items-center gap-4">
             {/* Menu Button */}
@@ -246,10 +246,10 @@ const CategorySection: FC = () => {
                                 "font-semibold underline underline-offset-4",
                               selected_category?.id === id &&
                                 (is_item_grocery
-                                  ? "text-green-600"
+                                  ? "text-secondary"
                                   : is_item_pharmacy
                                     ? "text-blue-600"
-                                    : "text-orange-500"),
+                                    : "text-brand"),
                             )}
                           >
                             {name}
@@ -302,7 +302,7 @@ const CategorySection: FC = () => {
               </span>
             </div>
             <div className="h-6 w-px bg-white" />
-            <button className="cursor-pointer rounded-full bg-orange-500 p-0.5">
+            <button className="cursor-pointer rounded-full bg-brand p-0.5">
               <ChevronRight className="size-5 text-white" />
             </button>
           </Link> */}

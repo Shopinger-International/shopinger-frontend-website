@@ -98,7 +98,7 @@ const MobileProductGallary: FC<IProps> = ({
       >
         <ChevronLeft
           aria-hidden={true}
-          className="size-5 text-orange-500"
+          className="size-5 text-brand"
           strokeWidth={2.5}
         />
       </button>
@@ -159,8 +159,8 @@ const MobileProductGallary: FC<IProps> = ({
           <Heart
             aria-hidden={true}
             className={clsx(
-              "size-5 text-orange-500",
-              wishlist_data?.is_wishlisted && "fill-orange-500",
+              "size-5 text-brand",
+              wishlist_data?.is_wishlisted && "fill-brand",
             )}
             strokeWidth={2}
           />
@@ -193,7 +193,7 @@ const MobileProductGallary: FC<IProps> = ({
         >
           <Share
             aria-hidden={true}
-            className={clsx("size-5 text-orange-500")}
+            className={clsx("size-5 text-brand")}
             strokeWidth={2}
           />
         </button>
@@ -230,7 +230,7 @@ const MobileProductGallary: FC<IProps> = ({
               aria-label={`Go to slide ${index + 1}`}
               className={`relative rounded-full transition-all duration-300 ${
                 active
-                  ? "h-1.5 w-8 bg-orange-500"
+                  ? "h-1.5 w-8 bg-brand"
                   : "h-1.5 w-3 bg-black/30 hover:bg-black/50"
               }`}
             />

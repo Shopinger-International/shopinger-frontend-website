@@ -213,7 +213,7 @@ const LocationTooltipContent: FC<{
         </div>
         {/* Search */}
         <div>
-          <div className="flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2.5 focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-500 sm:px-4 sm:py-2">
+          <div className="flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2.5 focus-within:border-brand focus-within:ring-1 focus-within:ring-brand sm:px-4 sm:py-2">
             <Search className="size-5 shrink-0 text-gray-400" />
 
             <input
@@ -238,11 +238,11 @@ const LocationTooltipContent: FC<{
               disabled={is_locating}
               className="mb-2.5 flex w-full items-center gap-3 rounded-md bg-white px-3 py-2.5 text-left transition-colors hover:bg-orange-50"
             >
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-500">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-orange-100 text-brand">
                 <LocateFixed className="size-4" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-orange-500">
+                <p className="text-sm font-semibold text-brand">
                   {is_locating
                     ? "Detecting location..."
                     : "Use current location"}
@@ -302,7 +302,7 @@ const LocationTooltipContent: FC<{
               <p className="text-base font-semibold text-gray-900 sm:text-lg">
                 Shopinger is not available in your area
               </p>
-              <p className="text-sm font-medium text-orange-500">Coming soon</p>
+              <p className="text-sm font-medium text-brand">Coming soon</p>
             </div>
 
             {/* Button */}
@@ -315,14 +315,14 @@ const LocationTooltipContent: FC<{
                   setIsDeliveryUnavailable(false);
                   input_ref.current?.focus();
                 }}
-                className="flex h-10 w-full items-center justify-center rounded-md bg-orange-500 px-6 font-semibold text-white transition-colors hover:bg-orange-600 sm:h-10"
+                className="flex h-10 w-full items-center justify-center rounded-md bg-brand px-6 font-semibold text-white transition-colors hover:bg-orange-600 sm:h-10"
               >
                 Try another location
               </button>
               <button
                 type="button"
                 onClick={handleClose}
-                className="flex h-10 w-full items-center justify-center rounded-md bg-orange-500 px-6 font-semibold text-white transition-colors hover:bg-orange-600 sm:h-10"
+                className="flex h-10 w-full items-center justify-center rounded-md bg-brand px-6 font-semibold text-white transition-colors hover:bg-orange-600 sm:h-10"
               >
                 Explore Shopinger
               </button>
@@ -377,7 +377,7 @@ const LocationTooltipContent: FC<{
 
                 {!user_details && !isPending ? (
                   <div className="flex items-center gap-3 px-3 py-2.5">
-                    <div className="flex size-7.5 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-500">
+                    <div className="flex size-7.5 shrink-0 items-center justify-center rounded-full bg-orange-50 text-brand">
                       <MapPin className="size-3.5" />
                     </div>
                     <p className="min-w-0 flex-1 text-sm text-gray-500">
@@ -390,7 +390,7 @@ const LocationTooltipContent: FC<{
                             onCancel() {},
                           });
                         }}
-                        className="cursor-pointer font-semibold text-orange-500 hover:text-orange-600"
+                        className="cursor-pointer font-semibold text-brand hover:text-orange-600"
                       >
                         Log In
                       </button>{" "}
@@ -414,7 +414,7 @@ const LocationTooltipContent: FC<{
                         }}
                         className="group flex w-full items-center gap-3 border-b border-gray-300 px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-orange-50"
                       >
-                        <div className="flex size-7.5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors group-hover:bg-orange-50 group-hover:text-orange-500">
+                        <div className="flex size-7.5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors group-hover:bg-orange-50 group-hover:text-brand">
                           <MapPin className="size-3.5" />
                         </div>
 
@@ -424,7 +424,7 @@ const LocationTooltipContent: FC<{
                           </p>
                         </div>
 
-                        <ChevronRight className="size-4 shrink-0 text-gray-600 transition-colors group-hover:text-orange-500" />
+                        <ChevronRight className="size-4 shrink-0 text-gray-600 transition-colors group-hover:text-brand" />
                       </button>
                     ))}
                   </div>
@@ -443,7 +443,7 @@ const LocationTooltipContent: FC<{
                       onClick={() => {
                         openAddressModal();
                       }}
-                      className="shrink-0 text-xs font-semibold text-orange-500 hover:text-orange-600"
+                      className="shrink-0 text-xs font-semibold text-brand hover:text-orange-600"
                     >
                       Add address
                     </button>

@@ -116,7 +116,7 @@ const SelectPlaces: FC<IProps> = ({
           clsx(
             "flex w-full items-center rounded-md border px-4 py-2 bg-white gap-2",
             isFocused
-              ? "ring-2 ring-orange-500 border-none outline-none scale-[1.03] shadow-lg"
+              ? "ring-2 ring-brand border-none outline-none scale-[1.03] shadow-lg"
               : "border-gray-300",
           ),
         valueContainer: () => "flex gap-1 flex-wrap",
@@ -132,7 +132,7 @@ const SelectPlaces: FC<IProps> = ({
               "cursor-not-allowed opacity-50 text-gray-400 bg-transparent",
 
             // Selected state
-            !isDisabled && isSelected && "bg-orange-500 text-white",
+            !isDisabled && isSelected && "bg-brand text-white",
 
             // Focused state
             !isDisabled &&

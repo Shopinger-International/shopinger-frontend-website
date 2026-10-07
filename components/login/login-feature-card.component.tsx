@@ -27,7 +27,7 @@ const LoginFeatureCard: FC<IProps> = ({
       <div className="flex-1 space-y-1">
         <div className="flex items-center gap-2">
           <span className="rounded-md bg-orange-100 p-1">
-            <Icon className="size-4 text-orange-500" />
+            <Icon className="size-4 text-brand" />
           </span>
           <h3 className="text-sm leading-tight font-medium">{label}</h3>
         </div>

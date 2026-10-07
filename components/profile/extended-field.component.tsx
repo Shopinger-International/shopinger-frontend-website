@@ -87,7 +87,7 @@ const ExtendedField: FC<
                       disabled && "cursor-not-allowed bg-gray-100",
                       has_error
                         ? "border-red-500"
-                        : "border-gray-300 focus:border-2 focus:border-orange-500",
+                        : "border-gray-300 focus:border-2 focus:border-brand",
                     )}
                   />
                   {children}
@@ -110,7 +110,7 @@ const ExtendedField: FC<
                       disabled && "cursor-not-allowed bg-gray-100",
                       has_error
                         ? "border-red-500"
-                        : "border-gray-300 focus:border-2 focus:border-orange-500",
+                        : "border-gray-300 focus:border-2 focus:border-brand",
                     )}
                   />
                   {children}
@@ -146,7 +146,7 @@ const ExtendedField: FC<
                     disabled && "cursor-not-allowed bg-gray-100",
                     has_error
                       ? "border-red-500"
-                      : "border-gray-300 focus:border-2 focus:border-orange-500",
+                      : "border-gray-300 focus:border-2 focus:border-brand",
                   )}
                 />
               );

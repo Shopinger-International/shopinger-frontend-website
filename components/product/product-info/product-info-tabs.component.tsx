@@ -41,7 +41,7 @@ const Description: FC<{
 
       <button
         onClick={() => setShowFullDescription((prev) => !prev)}
-        className="mt-2 text-sm font-medium text-orange-500 hover:underline lg:text-base"
+        className="mt-2 text-sm font-medium text-brand hover:underline lg:text-base"
       >
         {show_full_description ? "See less" : "See more"}
       </button>
@@ -142,7 +142,7 @@ const ProductInfoTabs: FC<{
             className={({ selected }) =>
               clsx(
                 "shrink-0 rounded-md border border-gray-300 bg-gray-100 px-2 py-1.5 text-sm text-gray-600 focus:outline-none lg:text-base",
-                selected && "bg-orange-500 text-white",
+                selected && "bg-brand text-white",
               )
             }
           >

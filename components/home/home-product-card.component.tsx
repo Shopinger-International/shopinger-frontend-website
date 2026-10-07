@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { FC } from "react";
 
 // icons
-import { Heart, Star, ChevronRight } from "lucide-react";
+import { Heart, Star, ChevronRight, ArrowDown } from "lucide-react";
 
 // types
 import type { IProductRecommendation } from "@/hooks/axios/home/use-feed.hook";
@@ -168,8 +168,9 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-white">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="text-brand absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold tracking-tight uppercase">
-                {discount_perc}%&nbsp;&nbsp;OFF
+              <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold text-brand tracking-tight uppercase inline-flex items-center gap-0.5">
+                <span>{discount_perc}%</span>
+                <ArrowDown className="size-3 shrink-0 text-brand" strokeWidth={3.5} />
               </span>
             )}
 
@@ -182,7 +183,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
                 remove_from_wishlist_mutation.isPending
               }
               onClick={handleWishlistClick}
-              className="absolute top-1.5 right-1.5 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-orange-500 transition-transform active:scale-95 sm:size-9"
+              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-brand transition-transform active:scale-95"
             >
               <Heart
                 className={clsx(
@@ -206,7 +207,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
 
             {/* Bottom-Left Rating Overlay */}
             {avg_rating != null && Number(avg_rating) > 0 && (
-              <div className="bg-rating text-2xs absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md px-1.5 py-0.5 font-bold text-white">
+              <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating-green px-1.5 py-0.5 text-2xs font-bold text-white">
                 <span>{Number(avg_rating).toFixed(1)}</span>
                 <Star className="size-2.5 fill-white text-white" />
               </div>

@@ -43,8 +43,8 @@ const CancelOrderItem: FC<IProps> = ({
       value:
         attribute.data_type === "enum"
           ? attribute.options?.find(
-              ({ value: option_value }) => value == option_value,
-            )?.label
+            ({ value: option_value }) => value == option_value,
+          )?.label
           : value,
     }),
   );
@@ -54,7 +54,7 @@ const CancelOrderItem: FC<IProps> = ({
     <div
       className={clsx(
         "rounded-xl border p-3 transition",
-        is_selected ? "border-orange-500 bg-orange-50" : "border-gray-200",
+        is_selected ? "border-brand bg-orange-50" : "border-gray-200",
       )}
     >
       <div className="flex items-start gap-3">
@@ -65,7 +65,7 @@ const CancelOrderItem: FC<IProps> = ({
           className={clsx(
             "mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded border",
             is_selected
-              ? "border-orange-500 bg-orange-500"
+              ? "border-brand bg-brand"
               : "border-gray-300 bg-white",
           )}
         >

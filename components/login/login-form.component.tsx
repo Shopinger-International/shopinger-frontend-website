@@ -149,7 +149,7 @@ const LoginForm: FC<IProps> = ({
         <button
           onClick={() => router.push("/")}
           className={clsx(
-            "text-md absolute top-6 right-6 inline-block cursor-pointer font-semibold text-orange-500",
+            "text-md absolute top-6 right-6 inline-block cursor-pointer font-semibold text-brand",
             !is_login_page && "lg:hidden",
           )}
         >
@@ -260,7 +260,7 @@ const LoginForm: FC<IProps> = ({
                           }
                           className={clsx(
                             "h-10 w-full border border-gray-300 px-3",
-                            "hover:outline-orange-500 focus:outline-orange-500",
+                            "hover:outline-brand focus:outline-brand",
                             is_phone ? "rounded-r-md" : "rounded-md",
                           )}
                           {...field}
@@ -282,7 +282,7 @@ const LoginForm: FC<IProps> = ({
                         </div>
                         <button
                           type="button"
-                          className="ml-auto cursor-pointer text-sm font-medium text-orange-500 hover:text-orange-600 focus:outline-none"
+                          className="ml-auto cursor-pointer text-sm font-medium text-brand hover:text-orange-600 focus:outline-none"
                           onClick={() => {
                             setLoginMode((prev) =>
                               prev === "phone" ? "email" : "phone",
@@ -302,7 +302,7 @@ const LoginForm: FC<IProps> = ({
 
               <button
                 onClick={() => console.log(errors)}
-                className="h-10 w-full cursor-pointer rounded-md bg-orange-500 font-bold text-white shadow-sm hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
+                className="h-10 w-full cursor-pointer rounded-md bg-brand font-bold text-white shadow-sm hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
                 disabled={
                   send_otp_mutation.isPending ||
                   (login_mode === "phone" &&
@@ -314,11 +314,11 @@ const LoginForm: FC<IProps> = ({
               </button>
               <p className="-mt-1 text-center text-sm font-medium">
                 I agree to{" "}
-                <Link href="/privacy-policy" className="text-orange-500">
+                <Link href="/privacy-policy" className="text-brand">
                   T&C
                 </Link>{" "}
                 and{" "}
-                <Link href="/terms-and-conditions" className="text-orange-500">
+                <Link href="/terms-and-conditions" className="text-brand">
                   Privacy Policy
                 </Link>
               </p>
@@ -374,7 +374,7 @@ const LoginForm: FC<IProps> = ({
                             setShowOtp(false);
                             setTimer(60);
                           }}
-                          className="flex cursor-pointer items-center gap-1 text-sm font-medium text-orange-500 hover:text-orange-600"
+                          className="flex cursor-pointer items-center gap-1 text-sm font-medium text-brand hover:text-orange-600"
                         >
                           Change
                         </button>
@@ -399,7 +399,7 @@ const LoginForm: FC<IProps> = ({
                 <button
                   type="submit"
                   disabled={verify_otp_mutation.isPending}
-                  className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
+                  className="w-full cursor-pointer rounded-md bg-brand py-2 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
                 >
                   Continue
                 </button>
@@ -429,7 +429,7 @@ const LoginForm: FC<IProps> = ({
                       );
                     }}
                     className={clsx(
-                      "cursor-pointer font-medium text-orange-500 hover:text-orange-600",
+                      "cursor-pointer font-medium text-brand hover:text-orange-600",
                       "disabled:cursor-not-allowed disabled:text-orange-300",
                     )}
                   >
@@ -438,7 +438,7 @@ const LoginForm: FC<IProps> = ({
                   {timer > 0 && (
                     <span className="font-medium">
                       in{" "}
-                      <span className="text-orange-500">
+                      <span className="text-brand">
                         {formatSeconds(timer)} sec
                       </span>
                     </span>
@@ -452,7 +452,7 @@ const LoginForm: FC<IProps> = ({
       {!is_modal && (
         <p className="absolute bottom-6 text-sm lg:hidden">
           Need Help? Call us at{" "}
-          <a href="tel:+919415761434" className="font-medium text-orange-500">
+          <a href="tel:+919415761434" className="font-medium text-brand">
             +91 9415761434
           </a>
         </p>

@@ -121,9 +121,20 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     category_type: "SUB_SUB",
   });
   const is_prod = process.env.NODE_ENV == "production";
-  const variant = product.variants?.find(
+  const default_variant: IVariant = {
+    id: variant_id || 0,
+    is_enabled: true,
+    product_id,
+    seller_sku: null,
+    system_sku: "",
+    variant_attribute_values: [],
+    variant_inventory: { stock: 0, low_stock_threshold: 0 },
+    variant_pricing: { mrp: 0, selling_price: 0, selling_price_with_commission: 0, variant_id: variant_id || 0 },
+    variant_medias: [],
+  };
+  const variant = (product.variants?.find(
     (variant) => variant.id == variant_id,
-  ) as IVariant;
+  ) || product.variants?.[0] || default_variant) as IVariant;
   const { data: top_products = [] } = useTopProducts(product_id);
   const { data: related_products = [] } = useRelatedProducts(product_id);
   const [report_modal_state, setReportModalState] = useState<IReportModalState>(

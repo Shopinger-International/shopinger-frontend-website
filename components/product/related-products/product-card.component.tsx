@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArrowDown } from "lucide-react";
 // types
 import type { FC } from "react";
 import type IMedia from "@/types/media";
@@ -36,7 +37,7 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp,average_
 
       <p className="mt-4 flex items-center gap-1 text-sm text-gray-700">
         <span aria-hidden="true">{average_rating}</span>
-        <span aria-hidden="true" className="text-orange-500">
+        <span aria-hidden="true" className="text-brand">
           ★
         </span>
         <span className="sr-only">out of 5 stars</span>
@@ -51,10 +52,11 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp,average_
       </h3>
       {!!discount_percentage && (
         <p
-          className="font-sm mb-1.5 font-medium text-orange-500"
+          className="font-sm mb-1.5 font-medium text-brand inline-flex items-center gap-0.5"
           aria-label={`${discount_percentage} percent discount`}
         >
-          {discount_percentage}% off
+          <span>{discount_percentage}%</span>
+          <ArrowDown className="size-3.5 shrink-0 text-brand" strokeWidth={3.5} />
         </p>
       )}
 

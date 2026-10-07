@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 // icons
-import { Heart, ChevronRight, Star } from "lucide-react";
+import { Heart, ChevronRight, Star, ArrowDown } from "lucide-react";
 
 // local components
 import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
@@ -173,13 +173,16 @@ const ProductCard: FC<IProps> = ({
                 className={clsx(
                   "absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold tracking-tight uppercase shadow-2xs",
                   is_grocery
-                    ? "text-green-600 lg:text-brand"
+                    ? "text-secondary lg:text-brand"
                     : is_pharmacy
                       ? "text-blue-500 lg:text-brand"
                       : "text-brand",
                 )}
               >
-                {Math.round(Number(discount_percentage))}%&nbsp;&nbsp;OFF
+                <span className="inline-flex items-center gap-0.5">
+                  {Math.round(Number(discount_percentage))}%
+                  <ArrowDown className="size-3 shrink-0" strokeWidth={3.5} />
+                </span>
               </span>
             )}
 
@@ -192,22 +195,22 @@ const ProductCard: FC<IProps> = ({
                 remove_from_wishlist_mutation.isPending
               }
               onClick={handleWishlistClick}
-              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-orange-500 shadow-2xs transition-transform active:scale-95"
+              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-brand shadow-2xs transition-transform active:scale-95"
             >
               <Heart
                 className={clsx(
                   "size-5 sm:size-6",
                   is_grocery
-                    ? "text-green-600 lg:text-brand"
+                    ? "text-secondary lg:text-brand"
                     : is_pharmacy
                       ? "text-blue-600 lg:text-brand"
                       : "text-brand",
                   is_wishlisted &&
-                    (is_grocery
-                      ? "fill-green-600 lg:fill-brand"
-                      : is_pharmacy
-                        ? "fill-blue-600 lg:fill-brand"
-                        : "fill-brand"),
+                  (is_grocery
+                    ? "fill-secondary lg:fill-brand"
+                    : is_pharmacy
+                      ? "fill-blue-600 lg:fill-brand"
+                      : "fill-brand"),
                 )}
                 strokeWidth={2.2}
               />
@@ -238,7 +241,7 @@ const ProductCard: FC<IProps> = ({
                     event.preventDefault();
                     event.stopPropagation();
                   }}
-                  className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating px-1.5 py-0.5 text-2xs font-bold text-white shadow-2xs cursor-pointer hover:opacity-90"
+                  className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating-green px-1.5 py-0.5 text-2xs font-bold text-white shadow-2xs cursor-pointer hover:opacity-90"
                 >
                   <span>{Number(avg_rating).toFixed(1)}</span>
                   <Star className="size-2.5 fill-white text-white" />

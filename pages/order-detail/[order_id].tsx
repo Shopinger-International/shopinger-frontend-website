@@ -215,7 +215,7 @@ const OrderDetailPage: NextPageWithLayout<{
                         <div className="flex h-full flex-col items-center justify-center px-6 text-center">
                           {/* Icon */}
                           <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                            <CircleAlert className="size-8 text-orange-500" />
+                            <CircleAlert className="size-8 text-brand" />
                           </div>
 
                           {/* Title */}
@@ -230,7 +230,7 @@ const OrderDetailPage: NextPageWithLayout<{
                           </p>
 
                           {/* Status pill */}
-                          <div className="mt-3 rounded-full bg-orange-500 px-3 py-1 text-[11px] font-medium text-white">
+                          <div className="mt-3 rounded-full bg-brand px-3 py-1 text-[11px] font-medium text-white">
                             Preparing order
                           </div>
                         </div>

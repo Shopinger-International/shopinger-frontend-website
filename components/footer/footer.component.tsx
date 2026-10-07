@@ -25,7 +25,7 @@ const Footer: FC = () => {
               behavior: "smooth",
             })
           }
-          className="group flex items-center justify-center gap-2.5 rounded-full bg-orange-500 px-5 py-1.5 text-xs sm:text-sm font-bold text-brand-foreground border border-brand/20 shadow-xs hover:opacity-90 transition-all cursor-pointer"
+          className="group flex items-center justify-center gap-2.5 rounded-full bg-brand px-5 py-1.5 text-xs sm:text-sm font-bold text-brand-foreground border border-brand/20 shadow-xs hover:opacity-90 transition-all cursor-pointer"
           aria-label="back to top"
         >
           <span>Back to top</span>

@@ -8,7 +8,7 @@ import type { IResponseType } from "@/hooks/axios/wishlist/use-get-wishlist.hook
 import type { FC } from "react";
 
 // icons
-import { Trash2, Plus, Minus } from "lucide-react";
+import { Trash2, Plus, Minus, ArrowDown } from "lucide-react";
 
 // hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
@@ -302,8 +302,9 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
             )}
 
             {Number(discount) > 0 && (
-              <span className="rounded-md bg-orange-100 px-2 py-1 text-xs font-semibold text-orange-700">
-                {Math.round(Number(discount))}% OFF
+              <span className="inline-flex items-center gap-0.5 rounded-md bg-orange-100 px-2 py-1 text-xs font-semibold text-orange-700">
+                <span>{Math.round(Number(discount))}%</span>
+                <ArrowDown className="size-3 shrink-0 text-orange-700" strokeWidth={3.5} />
               </span>
             )}
           </div>
@@ -356,7 +357,7 @@ const WishlistItem: FC<IResponseType["data"][number]> = ({
         />
         <button
           type="button"
-          className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:bg-orange-300 sm:flex-none sm:px-6"
+          className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:bg-orange-300 sm:flex-none sm:px-6"
           disabled={create_buying_intent_mutation.isPending}
           onClick={async () => {
             user_id &&

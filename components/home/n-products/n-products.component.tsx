@@ -145,7 +145,7 @@ const NProducts = () => {
                 }
               }}
               disabled={is_logged_in && isFetchingNextPage}
-              className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-orange-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:text-sm"
+              className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-orange-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:text-sm"
             >
               <span>
                 {user_details

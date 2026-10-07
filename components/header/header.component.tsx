@@ -67,7 +67,7 @@ const Header: FC<{
     const setHeight = () => {
       document.documentElement.style.setProperty(
         "--header-height",
-        `${header.offsetHeight + 15}px`,
+        `${header.offsetHeight + 12}px`,
       );
       updateVisibleHeaderHeight(header);
     };
@@ -99,11 +99,13 @@ const Header: FC<{
         ? Math.max(0, search_container.offsetTop - top_spacing)
         : 106;
 
-      const target_top = -Math.min(
-        Math.max(0, current_scroll_pos),
-        hide_offset,
-      );
-      header_ref.current.style.top = `${target_top}px`;
+      if (current_scroll_pos <= 10) {
+        // At top of page: show full header with categories bar
+        header_ref.current.style.top = "0";
+      } else {
+        // Once scrolled down: keep header collapsed so only SearchBar is visible
+        header_ref.current.style.top = `-${hide_offset}px`;
+      }
       updateVisibleHeaderHeight(header_ref.current);
 
       prev_scroll_pos = current_scroll_pos;
@@ -122,7 +124,7 @@ const Header: FC<{
     <header
       ref={header_ref}
       className={cn(
-        "fixed top-0 z-30 w-full",
+        "fixed top-0 z-30 w-full transition-all duration-200 ease-in",
         is_product_page && "hidden lg:block",
       )}
       id="app-header"
@@ -133,7 +135,7 @@ const Header: FC<{
       <div className="hidden lg:block">
         <StoreClosedBanner is_desktop_header />
       </div>
-      <div className="hidden flex-col gap-1 bg-[#FFF7ED] px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
+      <div className="hidden flex-col gap-1 bg-background-header px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button onClick={openMegaMenuDrawer}>

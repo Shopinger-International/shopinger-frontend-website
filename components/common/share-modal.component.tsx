@@ -121,7 +121,7 @@ const ShareLinkModal: FC<IProps> = ({
         <DialogPanel className="w-full max-w-110 overflow-hidden rounded-2xl bg-white shadow-2xl">
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-2">
-            <DialogTitle className="text-[18px] font-bold text-[#17233c]">
+            <DialogTitle className="text-[18px] font-bold text-share-modal-title">
               Share this product
             </DialogTitle>
 
@@ -155,12 +155,12 @@ const ShareLinkModal: FC<IProps> = ({
 
               {/* Product details */}
               <div>
-                <h3 className="text-[12px] font-medium text-[#17233c]">
+                <h3 className="text-[12px] font-medium text-share-modal-title">
                   {product_title}
                 </h3>
 
                 <div className="mt-2 flex items-center gap-3">
-                  <span className="text-[16px] font-semibold text-[#17233c]">
+                  <span className="text-[16px] font-semibold text-share-modal-title">
                     ₹{product_selling_price}
                   </span>
 
@@ -168,7 +168,7 @@ const ShareLinkModal: FC<IProps> = ({
                     ₹{product_mrp}
                   </span>
 
-                  <span className="text-[17px] font-medium text-[#ff6500]">
+                  <span className="text-[17px] font-medium text-brand-share">
                     {Math.round(
                       (Number(product_selling_price) * 100) /
                         Number(product_mrp),
@@ -212,12 +212,12 @@ const ShareLinkModal: FC<IProps> = ({
 
               {/* Instagram */}
               <ShareButton label="Instagram" onClick={shareOnInstagram}>
-                <FaInstagram className="size-6 text-[#F33358]" />
+                <FaInstagram className="size-6 text-share-modal-instagram" />
               </ShareButton>
               {/* More / Native share */}
               <ShareButton label="More" onClick={shareNative} outlined>
                 <div className="bg-white">
-                  <span className="text-[18px] font-bold text-[#17233c]">
+                  <span className="text-[18px] font-bold text-share-modal-title">
                     ···
                   </span>
                 </div>
@@ -253,7 +253,7 @@ function ShareButton({
         {children}
       </div>
 
-      <span className="text-[12px] text-[#17233c]">{label}</span>
+      <span className="text-[12px] text-text-dark-navy">{label}</span>
     </button>
   );
 }

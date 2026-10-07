@@ -14,7 +14,7 @@ import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/re
 import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // icons
-import { Star, ChevronDown } from "lucide-react";
+import { Star, ChevronDown, ArrowDown } from "lucide-react";
 
 // local components
 import VariantSelection from "@/components/product/variant-selection.component";
@@ -160,9 +160,10 @@ const ProductInfo: FC<IProps> = ({
             </span>
             {!!discount_percentage && (
               <>
-                <span className="inline font-medium text-gray-600">
-                  {discount_percentage}% off
+                <span className="inline-flex items-center font-bold text-brand">
+                  {discount_percentage}%
                   <span className="sr-only">discount</span>
+                  <ArrowDown className="inline size-4 text-brand" strokeWidth={3.5} />
                 </span>
               </>
             )}
@@ -186,25 +187,16 @@ const ProductInfo: FC<IProps> = ({
               product_id={product.id}
               product_reviews_link={`/${product_slug}/p/${product.id}/reviews`}
             >
-              <span className="inline-flex cursor-pointer items-center gap-1">
-                <strong className="font-medium">
-                  {product.average_rating}{" "}
-                </strong>{" "}
-                <span className="sr-only">out of 5 stars</span>{" "}
-                <Star
-                  className="inline size-4 fill-amber-300 text-amber-300"
-                  aria-hidden="true"
-                />
-                <ChevronDown
-                  className="inline-block size-4 text-orange-500"
-                  strokeWidth={2.5}
-                />
+              <span className="inline-flex cursor-pointer items-center gap-1 rounded-md bg-rating-green px-2 py-0.5 text-xs font-bold text-white shadow-2xs transition-opacity hover:opacity-90">
+                <span>{Number(product.average_rating).toFixed(1)}</span>
+                <Star className="size-3 fill-white text-white" aria-hidden="true" />
+                <ChevronDown className="size-3.5 text-white" strokeWidth={2.5} />
               </span>
             </RatingSummaryPopover>
             <span aria-hidden="true"> | </span>{" "}
             <Link
               href={`/${product_slug}/p/${product.id}/reviews`}
-              className="text-orange-500"
+              className="text-brand"
               aria-label={`view all ${product.total_reviews ?? 0} reviews`}
             >
               {product.total_reviews} reviews
@@ -228,7 +220,7 @@ const ProductInfo: FC<IProps> = ({
         />
         <div
           id="buy-cta-container"
-          className="fixed bottom-0 left-0 z-40 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md md:z-40 lg:sticky lg:border-none lg:px-0 lg:shadow-none"
+          className="fixed bottom-0 left-0 z-30 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md md:z-30 lg:sticky lg:z-10 lg:border-none lg:px-0 lg:shadow-none"
         >
           <button
             onClick={() => {
@@ -293,7 +285,7 @@ const ProductInfo: FC<IProps> = ({
             Add to cart
           </button>
           <button
-            className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white disabled:bg-orange-300"
+            className="w-full cursor-pointer rounded-md bg-brand py-2 font-semibold text-white disabled:bg-orange-300"
             disabled={
               create_buying_intent_mutation.isPending || !is_product_available
             }
