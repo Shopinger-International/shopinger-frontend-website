@@ -11,7 +11,7 @@ const EmptyReviews = () => {
   return (
     <div className="flex flex-col items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-16 text-center">
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-        <MessageSquareText className="h-8 w-8 text-orange-500" />
+        <MessageSquareText className="h-8 w-8 text-brand" />
       </div>
 
       <h2 className="mt-6 text-xl font-semibold text-gray-900">
@@ -26,7 +26,7 @@ const EmptyReviews = () => {
         {/* Primary CTA */}
         <Link
           href="/"
-          className="inline-flex items-center justify-center rounded-md bg-orange-500 px-6 py-3 text-sm font-medium text-white transition hover:bg-orange-600 active:scale-95"
+          className="inline-flex items-center justify-center rounded-md bg-brand px-6 py-3 text-sm font-medium text-white transition hover:bg-orange-600 active:scale-95"
         >
           Continue Shopping
         </Link>

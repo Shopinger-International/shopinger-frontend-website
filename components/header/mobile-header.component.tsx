@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 type ICategory = {
   label: string;
   href: string;
-  icon: ReactNode;
+  icon?: ReactNode;
 };
 
 const categories: ICategory[] = [
@@ -37,12 +37,12 @@ const categories: ICategory[] = [
   {
     label: "Grocery",
     href: "/categories/Grocery",
-    icon: <GroceryIcon size={28} />,
+    // icon: <GroceryIcon size={28} />,
   },
   {
-    label: "Pharmacy",
+    label: "Medicine",
     href: "/categories/Health-and-Personal-Care",
-    icon: <PharmacyIcon size={28} />,
+    // icon: <PharmacyIcon size={28} />,
   },
 ];
 
@@ -57,7 +57,7 @@ const MobileHeader: FC = () => {
     router.asPath.toLowerCase().includes("grocery");
 
   const is_pharmacy =
-    categories.find(({ label }) => label == "Pharmacy")?.href == router.asPath ||
+    categories.find(({ label }) => label == "Pharmacy" || label == "Medicine")?.href == router.asPath ||
     router.asPath.toLowerCase().includes("pharmacy") ||
     router.asPath.toLowerCase().includes("personal-care");
 
@@ -73,7 +73,7 @@ const MobileHeader: FC = () => {
       )}
     >
       {/* Store Closed Banner */}
-      <StoreClosedBanner />
+      <StoreClosedBanner className="w-full -mt-1 mb-1" />
 
       {/* Delivery & Account Header */}
       <div className="flex items-center justify-between">
@@ -83,7 +83,7 @@ const MobileHeader: FC = () => {
             <span
               className={cn(
                 "font-bold",
-                is_grocery ? "text-green-600" : is_pharmacy ? "text-blue-600" : "text-orange-500",
+                is_grocery ? "text-secondary" : is_pharmacy ? "text-blue-600" : "text-brand",
               )}
             >
               {delivery_time} minutes
@@ -108,7 +108,7 @@ const MobileHeader: FC = () => {
         {categories.map(({ label, href, icon }) => {
           const is_active = href == router.asPath;
           const is_cat_grocery = label === "Grocery";
-          const is_cat_pharmacy = label === "Pharmacy";
+          const is_cat_pharmacy = label === "Pharmacy" || label === "Medicine";
           return (
             <Link
               key={label}
@@ -120,7 +120,7 @@ const MobileHeader: FC = () => {
                     ? "bg-green-100 text-green-700"
                     : is_cat_pharmacy
                       ? "bg-blue-100 text-blue-700"
-                      : "bg-orange-100 text-orange-500"
+                      : "bg-orange-100 text-brand"
                   : "bg-white text-gray-900 shadow-xs hover:bg-gray-50",
               ].join(" ")}
             >

@@ -46,7 +46,7 @@ const Custom404Page: NextPageWithLayout = () => {
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href="/"
-              className="inline-flex items-center justify-center gap-2 rounded-md bg-orange-500 px-6 py-2 font-semibold text-white hover:bg-orange-600"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-brand px-6 py-2 font-semibold text-white hover:bg-orange-600"
             >
               Continue Shopping
               <ArrowRight className="size-5" />
@@ -72,7 +72,7 @@ const Custom404Page: NextPageWithLayout = () => {
                 <Link
                   key={category.slug}
                   href={`/categories/${category.slug}`}
-                  className="rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-medium text-orange-700 transition-colors hover:bg-orange-500 hover:text-white"
+                  className="rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-medium text-orange-700 transition-colors hover:bg-brand hover:text-white"
                 >
                   {category.name}
                 </Link>

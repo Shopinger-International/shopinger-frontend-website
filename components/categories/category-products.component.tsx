@@ -17,6 +17,7 @@ import SideFilter from "@/components/categories/side-filters/side-filters.compon
 import SortFilterDrawer from "@/components/categories/sort-filter-header/sort-filter-drawer.component";
 import SideFiltersSkeleton from "./side-filters/side-filters-skeleton.component";
 import ProductNotFound from "./product-not-found.component";
+import FilterSortBar from "@/components/categories/filter-sort-bar.component";
 
 // hooks
 import useGetProductsByCategory from "@/hooks/axios/categories/use-get-category-product.hook";
@@ -307,6 +308,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         )}
 
         <div className="min-w-0 flex-1 space-y-4">
+          <FilterSortBar className="sticky top-(--header-visible-height) lg:top-(--header-height) z-[31] lg:z-20 -mx-4 border-y border-gray-200 transition-[top] duration-200 ease-in" />
           <div className="hidden lg:block">
             {is_category_sorting_filters_pending ? (
               <SortFilterHeaderSkeleton />

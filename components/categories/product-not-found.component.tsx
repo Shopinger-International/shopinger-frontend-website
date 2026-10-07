@@ -126,14 +126,14 @@ Please let me know if you can arrange these products.
       {!sent_request ? (
         <div className="flex flex-col items-center text-center">
           <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-orange-50">
-            <MdSearchOff className="size-28 text-orange-500" />
+            <MdSearchOff className="size-28 text-brand" />
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 md:text-4xl">
             No Products Found
           </h2>
 
-          <p className="mt-1 text-lg font-semibold text-orange-500">
+          <p className="mt-1 text-lg font-semibold text-brand">
             "{query}"
           </p>
 
@@ -145,7 +145,7 @@ Please let me know if you can arrange these products.
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="mt-5 flex items-center gap-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600"
+            className="mt-5 flex items-center gap-2 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600"
           >
             <Send className="size-4" />
             Request this Product
@@ -164,7 +164,7 @@ Please let me know if you can arrange these products.
                 <div className="flex shrink-0 items-center justify-between border-b border-slate-100 p-5">
                   <div>
                     <DialogTitle className="text-lg font-bold text-slate-900">
-                      Request <span className="text-orange-500">Products</span>
+                      Request <span className="text-brand">Products</span>
                     </DialogTitle>
 
                     <p className="mt-1 text-xs text-slate-500">
@@ -230,7 +230,7 @@ Please let me know if you can arrange these products.
                                 }
                                 placeholder="Enter product name"
                                 required
-                                className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                                className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                               />
                             </div>
 
@@ -253,7 +253,7 @@ Please let me know if you can arrange these products.
                                   )
                                 }
                                 required
-                                className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                                className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                               />
                             </div>
 
@@ -318,7 +318,7 @@ Please let me know if you can arrange these products.
                     <button
                       type="button"
                       onClick={addProduct}
-                      className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-orange-300 py-2.5 text-sm font-semibold text-orange-500 transition hover:border-orange-500 hover:bg-orange-50"
+                      className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-orange-300 py-2.5 text-sm font-semibold text-brand transition hover:border-brand hover:bg-orange-50"
                     >
                       <Plus className="size-4" />
                       Add Another Product
@@ -338,7 +338,7 @@ Please let me know if you can arrange these products.
                             type="checkbox"
                             checked={notify_call}
                             onChange={(e) => setNotifyCall(e.target.checked)}
-                            className="accent-orange-500"
+                            className="accent-brand"
                           />
                           Call
                         </label>
@@ -348,7 +348,7 @@ Please let me know if you can arrange these products.
                             type="checkbox"
                             checked={notify_sms}
                             onChange={(e) => setNotifySms(e.target.checked)}
-                            className="accent-orange-500"
+                            className="accent-brand"
                           />
                           SMS
                         </label>
@@ -356,7 +356,7 @@ Please let me know if you can arrange these products.
 
                       <button
                         type="submit"
-                        className="flex h-10 items-center justify-center gap-2 rounded-lg bg-orange-500 px-5 text-sm font-semibold text-white transition hover:bg-orange-600"
+                        className="flex h-10 items-center justify-center gap-2 rounded-lg bg-brand px-5 text-sm font-semibold text-white transition hover:bg-orange-600"
                       >
                         <FaWhatsapp className="size-4" />
                         Send Request

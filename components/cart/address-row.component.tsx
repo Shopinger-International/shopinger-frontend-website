@@ -31,7 +31,7 @@ const AddressRow: FC<AddressRowProps> = ({
       className={clsx(
         "flex cursor-pointer items-start justify-between gap-3 rounded-lg border px-4 py-3 transition-colors duration-200",
         is_selected
-          ? "border-orange-500 bg-orange-50"
+          ? "border-brand bg-orange-50"
           : "border-transparent hover:bg-orange-50",
       )}
       onClick={() => onClick?.(address)}
@@ -41,7 +41,7 @@ const AddressRow: FC<AddressRowProps> = ({
       {/* Left */}
       <div className="flex items-start gap-3">
         <div className="mt-1 shrink-0">
-          <TypeIcon className="h-5 w-5 text-orange-500" />
+          <TypeIcon className="h-5 w-5 text-brand" />
         </div>
 
         <div className="min-w-0 flex-1">
@@ -49,7 +49,7 @@ const AddressRow: FC<AddressRowProps> = ({
             <p className="text-sm font-semibold">{address.full_name}</p>
 
             {address.is_default && (
-              <span className="rounded-full border border-orange-500 bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-500">
+              <span className="rounded-full border border-brand bg-orange-100 px-2 py-0.5 text-xs font-medium text-brand">
                 Primary
               </span>
             )}

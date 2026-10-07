@@ -86,7 +86,7 @@ export default function SubCategorySection() {
               {/* Circular Image */}
               <div
                 className={`relative size-14 shrink-0 overflow-hidden rounded-full md:size-18.5 ${
-                  is_selected ? "ring-2 ring-orange-500 ring-offset-2" : ""
+                  is_selected ? "ring-2 ring-brand ring-offset-2" : ""
                 }`}
               >
                 <SubCategoryImage

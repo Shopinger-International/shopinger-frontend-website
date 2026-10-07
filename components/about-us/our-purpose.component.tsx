@@ -52,15 +52,15 @@ const OurPurpose: FC = () => {
             <div className="relative z-10 flex h-full flex-col">
               {/* Header */}
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-orange-200 bg-orange-50 transition-all duration-300 group-hover:border-orange-500 group-hover:bg-orange-500 sm:size-14 sm:rounded-xl">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-orange-200 bg-orange-50 transition-all duration-300 group-hover:border-brand group-hover:bg-brand sm:size-14 sm:rounded-xl">
                   <Icon
-                    className="size-6 text-orange-500 transition-colors duration-300 group-hover:text-white sm:size-7"
+                    className="size-6 text-brand transition-colors duration-300 group-hover:text-white sm:size-7"
                     strokeWidth={2}
                   />
                 </div>
 
                 <div>
-                  <p className="text-[10px] font-semibold tracking-wider text-orange-500 uppercase sm:text-xs">
+                  <p className="text-[10px] font-semibold tracking-wider text-brand uppercase sm:text-xs">
                     {subtitle}
                   </p>
 

@@ -15,7 +15,7 @@ const PharmacyIcon: FC<IProps> = ({ size }) => (
     <path fill="none" d="M0 0h64v64H0z"></path>
     <g
       fill="none"
-      stroke="#182027"
+      stroke="var(--icon-stroke-dark)"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="2.3"
@@ -25,7 +25,7 @@ const PharmacyIcon: FC<IProps> = ({ size }) => (
     </g>
     <path
       fill="none"
-      stroke="#2563eb"
+      stroke="var(--pharmacy-blue)"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="2.3"

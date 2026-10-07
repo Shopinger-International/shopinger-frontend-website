@@ -50,7 +50,7 @@ const Directions = ({ start, end }: DirectionsProps) => {
           // LAYER 2: The Core Active Route (Thinner & Vibrant Orange 500)
           const core_polylines = target_route.createPolylines({
             polylineOptions: {
-              strokeColor: "#f97316", // Vibrant Orange (Tailwind orange-500)
+              strokeColor: "#f97316", // Vibrant Orange (Tailwind brand)
               strokeOpacity: 1, // Sharp, solid color visibility
               strokeWeight: 5, // Compact thickness to sit dead-center
               geodesic: true,

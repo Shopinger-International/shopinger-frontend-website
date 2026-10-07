@@ -103,7 +103,7 @@ useEffect(() => {
                     className={clsx(
                       "relative h-20 w-20 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-300",
                       is_active
-                        ? "border-3 border-orange-500"
+                        ? "border-3 border-brand"
                         : "border border-gray-300",
                     )}
                   >
@@ -124,7 +124,7 @@ useEffect(() => {
                 <button
                   onClick={goToPrev}
                   disabled={active_index <= 0}
-                  className="absolute top-1/2 left-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
+                  className="absolute top-1/2 left-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-brand hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
                 >
                   <ChevronLeft className="size-5" />
                 </button>
@@ -154,7 +154,7 @@ useEffect(() => {
                   disabled={
                     active_index >= variant_medias_with_title.length - 1
                   }
-                  className="absolute top-1/2 right-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
+                  className="absolute top-1/2 right-6 z-10 hidden -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-3 shadow-sm hover:bg-brand hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
                 >
                   <ChevronRight className="size-5" />
                 </button>

@@ -149,8 +149,8 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
                   onClick={() => setFilterState(value as IFilterType)}
                   className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 ${
                     isActive
-                      ? "bg-orange-500 text-white shadow-sm"
-                      : "border border-gray-300 text-gray-600 hover:border-orange-400 hover:text-orange-500"
+                      ? "bg-brand text-white shadow-sm"
+                      : "border border-gray-300 text-gray-600 hover:border-orange-400 hover:text-brand"
                   } `}
                 >
                   {label}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 // types
 import type { FC } from "react";
@@ -19,6 +20,9 @@ type ICampaignProps = {
 };
 
 const Campaign: FC<ICampaignProps> = ({ campaigns }) => {
+  const router = useRouter();
+  const is_home_page = router.pathname === "/";
+
   const [embla_ref, emabla_api] = useEmblaCarousel(
     { loop: true, align: "start" },
     [
@@ -68,21 +72,25 @@ const Campaign: FC<ICampaignProps> = ({ campaigns }) => {
         </ul>
       </div>
 
-      <button
-        onClick={() => emabla_api?.scrollPrev()}
-        className="absolute top-1/2 left-4 z-10 hidden -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60 lg:inline-block"
-        aria-label="Previous campaign"
-      >
-        <ChevronLeft className="size-4 text-white lg:size-6" />
-      </button>
+      {is_home_page && (
+        <>
+          <button
+            onClick={() => emabla_api?.scrollPrev()}
+            className="absolute top-1/2 left-4 z-10 hidden -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60 lg:inline-block"
+            aria-label="Previous campaign"
+          >
+            <ChevronLeft className="size-4 text-white lg:size-6" />
+          </button>
 
-      <button
-        onClick={() => emabla_api?.scrollNext()}
-        className="absolute top-1/2 right-4 z-10 hidden -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60 lg:inline-block"
-        aria-label="Next campaign"
-      >
-        <ChevronRight className="size-4 text-white lg:size-6" />
-      </button>
+          <button
+            onClick={() => emabla_api?.scrollNext()}
+            className="absolute top-1/2 right-4 z-10 hidden -translate-y-1/2 rounded-full bg-black/20 p-2 backdrop-blur transition hover:bg-black/60 lg:inline-block"
+            aria-label="Next campaign"
+          >
+            <ChevronRight className="size-4 text-white lg:size-6" />
+          </button>
+        </>
+      )}
     </section>
   );
 };

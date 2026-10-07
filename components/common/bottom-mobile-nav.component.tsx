@@ -49,7 +49,7 @@ const NavItem: FC<NavItemProps> = ({
       >
         <Icon
           className={`size-6 transition-colors ${
-            is_category_drawer_open ? "text-orange-500" : "text-gray-500"
+            is_category_drawer_open ? "text-brand" : "text-gray-500"
           }`}
           aria-hidden="true"
         />
@@ -57,7 +57,7 @@ const NavItem: FC<NavItemProps> = ({
         <span
           className={`mt-0.5 text-xs transition-colors ${
             is_category_drawer_open
-              ? "font-medium text-orange-500"
+              ? "font-medium text-brand"
               : "text-gray-500"
           }`}
         >
@@ -78,7 +78,7 @@ const NavItem: FC<NavItemProps> = ({
         <span className="relative inline-block">
           <Cart width={32} height={24} fill="oklch(55.1% 0.027 264.364)" />
 
-          <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-orange-500">
+          <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-brand">
             {cart_details?.total_items ?? 0}
           </span>
         </span>
@@ -86,7 +86,7 @@ const NavItem: FC<NavItemProps> = ({
         <span
           className={`mt-0.5 text-xs transition-colors ${
             active && !is_category_drawer_open
-              ? "font-medium text-orange-500"
+              ? "font-medium text-brand"
               : "text-gray-500"
           }`}
         >
@@ -107,7 +107,7 @@ const NavItem: FC<NavItemProps> = ({
         <Icon
           className={`size-6 transition-colors ${
             active && !is_category_drawer_open
-              ? "text-orange-500"
+              ? "text-brand"
               : "text-gray-500"
           }`}
           aria-hidden="true"
@@ -121,7 +121,7 @@ const NavItem: FC<NavItemProps> = ({
       <span
         className={`mt-0.5 text-xs transition-colors ${
           active && !is_category_drawer_open
-            ? "font-medium text-orange-500"
+            ? "font-medium text-brand"
             : "text-gray-500"
         }`}
       >

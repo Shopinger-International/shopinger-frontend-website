@@ -280,7 +280,7 @@ const AddAddressModal: FC<IProps> = ({
                       <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2">
                         <button
                           type="button"
-                          className="flex items-center gap-1 rounded-full border bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm hover:bg-orange-50"
+                          className="flex items-center gap-1 rounded-full border bg-white px-3 py-1.5 text-sm font-semibold text-brand shadow-sm hover:bg-orange-50"
                           onClick={handleUseCurrentLocation}
                         >
                           <MapPin className="size-3.5" />
@@ -343,7 +343,7 @@ const AddAddressModal: FC<IProps> = ({
                             <button
                               type="button"
                               onClick={handleUseCurrentLocation}
-                              className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600"
+                              className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-orange-600"
                             >
                               {is_current_location_fetching
                                 ? "Fetching location..."
@@ -363,7 +363,7 @@ const AddAddressModal: FC<IProps> = ({
                           </button>
                           {/* Icon */}
                           <div className="mb-4 flex items-center justify-center rounded-full bg-orange-100 p-4 shadow-sm">
-                            <MapPin className="size-6 text-orange-500" />
+                            <MapPin className="size-6 text-brand" />
                           </div>
 
                           {/* Heading */}
@@ -377,7 +377,7 @@ const AddAddressModal: FC<IProps> = ({
                           </p>
 
                           {/* Hint */}
-                          <div className="mt-4 rounded-full bg-orange-500/10 px-4 py-1.5 text-xs font-medium text-orange-600">
+                          <div className="mt-4 rounded-full bg-brand/10 px-4 py-1.5 text-xs font-medium text-orange-600">
                             Step 1 of 2
                           </div>
                         </div>
@@ -385,7 +385,7 @@ const AddAddressModal: FC<IProps> = ({
 
                       {/* RIGHT HEADER ONLY */}
                       <div className="flex shrink-0 items-center justify-between border-b border-gray-300 px-6 py-3">
-                        <h2 className="text-lg font-semibold text-orange-500">
+                        <h2 className="text-lg font-semibold text-brand">
                           {initial_data ? "Update Address" : "Add new address"}
                         </h2>
 
@@ -421,7 +421,7 @@ const AddAddressModal: FC<IProps> = ({
                                   className={clsx(
                                     "flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium",
                                     isActive
-                                      ? "border-orange-500 text-orange-600 ring-1 ring-orange-500"
+                                      ? "border-brand text-orange-600 ring-1 ring-brand"
                                       : "border-gray-300 text-gray-600",
                                   )}
                                 >
@@ -498,7 +498,7 @@ const AddAddressModal: FC<IProps> = ({
                             create_address_mutation.isPending ||
                             update_address_mutation.isPending
                           }
-                          className="w-full rounded-md bg-orange-500 px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
+                          className="w-full rounded-md bg-brand px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
                         >
                           {update_address_mutation.isPending
                             ? "Updating..."
