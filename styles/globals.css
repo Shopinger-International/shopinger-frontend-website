@@ -12,6 +12,45 @@
   --primary-foreground: #ffffff;
   --secondary: #16a34a;
   --secondary-foreground: #ffffff;
+
+  /* Brand Colors (extracted from header, location-tooltip, share-modal, store-banner) */
+  --brand-primary: #FF6801;
+  --brand-vibrant: #FF5300;
+  --brand-location: #FF6900;
+  --brand-share: #FF6500;
+
+  /* Layout & Page Backgrounds (extracted from header, login, cards) */
+  --background-page: #fff7ed;
+  --background-header: #FFF7ED;
+  --background-login: #FFE2D0;
+  --card-warm: #FFF4EB;
+  --background-dark: #111827;
+
+  /* Store Closed Banner (extracted from store-closed-banner.component.tsx) */
+  --store-banner-bg: #FFF6EE;
+  --store-banner-border: #F3E2D4;
+  --store-banner-divider: #EBD8C9;
+  --store-banner-title: #0B1E36;
+  --store-banner-message: #7D766D;
+  --store-banner-label: #938A7E;
+  --store-banner-sublabel: #A0988C;
+
+  /* Category Icons & Badges (extracted from pharmacy.icon, grocery.icon, rating) */
+  --pharmacy-blue: #2563EB;
+  --grocery-green: #16A34A;
+  --rating-green: #008748;
+
+  /* Modals, Tooltips & Icons (extracted from share-modal, tooltip, down-triangle) */
+  --share-modal-title: #17233C;
+  --share-modal-instagram: #F33358;
+  --icon-stroke-dark: #182027;
+  --triangle-dark: #313131;
+  --tooltip-border: #D1D5DB;
+
+  /* Text Colors */
+  --text-primary: #353535;
+  --text-dark: #111827;
+  --text-white: #ffffff;
 }
 @media (max-width: 1024px) {
   :root {
@@ -29,11 +68,45 @@
   --color-primary-foreground: #ffffff;
   --color-secondary: #16a34a;
   --color-secondary-foreground: #ffffff;
-  --color-bg-primary: #FF6801;
-  --color-text-primary: #353535;
-  --color-brand: #FF5300;
+
+  /* Brand Utility Classes */
+  --color-brand-primary: #FF6801;
+  --color-brand-vibrant: #FF5300;
+  --color-brand-location: #FF6900;
+  --color-brand-share: #FF6500;
+
+  /* Background Utility Classes */
+  --color-background-page: #fff7ed;
+  --color-background-header: #FFF7ED;
+  --color-background-login: #FFE2D0;
   --color-card-warm: #FFF4EB;
-  --color-rating: #008748;
+  --color-background-dark: #111827;
+
+  /* Store Closed Banner Utility Classes */
+  --color-store-banner-bg: #FFF6EE;
+  --color-store-banner-border: #F3E2D4;
+  --color-store-banner-divider: #EBD8C9;
+  --color-store-banner-title: #0B1E36;
+  --color-store-banner-message: #7D766D;
+  --color-store-banner-label: #938A7E;
+  --color-store-banner-sublabel: #A0988C;
+
+  /* Category & Badge Utility Classes */
+  --color-pharmacy-blue: #2563EB;
+  --color-grocery-green: #16A34A;
+  --color-rating-green: #008748;
+
+  /* Modal, Tooltip & Icon Utility Classes */
+  --color-share-modal-title: #17233C;
+  --color-share-modal-instagram: #F33358;
+  --color-icon-stroke-dark: #182027;
+  --color-triangle-dark: #313131;
+  --color-tooltip-border: #D1D5DB;
+
+  /* Text Utility Classes */
+  --color-text-primary: #353535;
+  --color-text-dark: #111827;
+  --color-text-white: #ffffff;
   --text-2xs: 0.625rem;
   --text-2xs--line-height: 0.75rem;
   --text-3xs: 0.5625rem;

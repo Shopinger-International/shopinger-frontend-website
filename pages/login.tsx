@@ -26,7 +26,7 @@ const Login: NextPageWithLayout = () => {
           key="desc"
         />
       </Head>
-      <div className="relative flex h-screen w-full items-center justify-center bg-[#FFE2D0]">
+      <div className="relative flex h-screen w-full items-center justify-center bg-background-login">
         <div className="absolute top-6 right-6">
           <Tooltip
             placement="bottom"

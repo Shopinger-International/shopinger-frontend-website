@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import type { FC } from "react";
 import { cn } from "@/lib/utils";
-import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 
 export const isStoreClosed = (date = new Date()): boolean => {
   const hours = date.getHours();
@@ -83,11 +82,9 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   force_show = false,
   is_desktop_header = false,
 }) => {
-  const is_mounted = useIsMounted();
-
   const [is_closed, setIsClosed] = useState<boolean>(() => {
     if (force_show) return true;
-    return false;
+    return isStoreClosed();
   });
 
   const [time_remaining, setTimeRemaining] = useState({
@@ -113,8 +110,8 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
     return () => clearInterval(timer);
   }, [force_show]);
 
-  // Hide during SSR or if force_show is false and store is not closed (7:00 AM - 9:59 PM)
-  if (!force_show && (!is_mounted || !is_closed)) {
+  // Hide immediately if force_show is false and store is not closed (7:00 AM - 9:59 PM)
+  if (!force_show && !is_closed) {
     return null;
   }
 
@@ -211,20 +208,20 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   return (
     <div
       className={cn(
-        "flex w-full items-center justify-between bg-[#FFF6EE] border-b border-[#F3E2D4] px-4 py-2.5 transition-all",
+        "flex w-full items-center justify-between bg-store-banner-bg border-b border-store-banner-border px-4 py-2.5 transition-all",
         className,
       )}
     >
       {/* LEFT: Moon Icon + Title & Description */}
       <div className="flex items-center gap-2.5 min-w-0">
-        <MoonIcon className="size-5 text-[#FF5300] shrink-0" />
+        <MoonIcon className="size-5 text-brand-vibrant shrink-0" />
 
         <div className="flex flex-col min-w-0">
-          <h3 className="text-xs font-extrabold leading-tight text-[#0B1E36] truncate">
+          <h3 className="text-xs font-extrabold leading-tight text-store-banner-title truncate">
             {title}
           </h3>
 
-          <p className="text-[10px] font-medium leading-tight text-[#7D766D] truncate mt-0.5">
+          <p className="text-[10px] font-medium leading-tight text-store-banner-message truncate mt-0.5">
             {message}
           </p>
         </div>
@@ -233,16 +230,16 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
       {/* RIGHT: Live Countdown Timer */}
       <div className="flex items-center gap-2.5 shrink-0 ml-2">
         {/* Vertical Divider Line */}
-        <div className="h-8 w-px bg-[#EBD8C9] shrink-0" />
+        <div className="h-8 w-px bg-store-banner-divider shrink-0" />
 
         {/* Live Countdown Timer (Opens in HH : MM : SS) */}
         <div className="flex flex-col items-center shrink-0">
-          <span className="text-[10px] font-medium text-[#938A7E] leading-none mb-1">
+          <span className="text-[10px] font-medium text-store-banner-label leading-none mb-1">
             Opens in
           </span>
 
           {/* Digits & Colons */}
-          <div className="flex items-center text-xs font-extrabold leading-none text-[#FF5300]">
+          <div className="flex items-center text-xs font-extrabold leading-none text-brand-vibrant">
             <span suppressHydrationWarning className="w-5 text-center">
               {time_remaining.hrs}
             </span>
@@ -257,7 +254,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
           </div>
 
           {/* Sub-labels underneath digits */}
-          <div className="flex items-center text-[8px] font-bold text-[#A0988C] tracking-wider leading-none mt-1">
+          <div className="flex items-center text-[8px] font-bold text-store-banner-sublabel tracking-wider leading-none mt-1">
             <span className="w-5 text-center">HRS</span>
             <span className="invisible mx-0.5">:</span>
             <span className="w-5 text-center">MIN</span>
