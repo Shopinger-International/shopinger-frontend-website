@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Script from "next/script";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // const
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
@@ -14,7 +14,8 @@ import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/re
 import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // icons
-import { Star, ChevronDown } from "lucide-react";
+import { Star, ChevronDown, Bell } from "lucide-react";
+import Cart from "@/components/common/icons/cart.icon";
 
 // local components
 import VariantSelection from "@/components/product/variant-selection.component";
@@ -23,6 +24,7 @@ import ProductDetails from "@/components/product/product-info/product-details.co
 import MobileProductGallary from "@/components/product/product-gallary/mobile-product-gallary.component";
 import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
 import DeliveryDetails from "@/components/product/product-info/delivery-details.component";
+import RequestAcceptedModal from "@/components/product/product-info/request-accepted-modal.component";
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
@@ -65,6 +67,8 @@ const ProductInfo: FC<IProps> = ({
 }) => {
   const { openModal: openLoginModal } = useLoginModalContext();
   const router = useRouter();
+  const [is_notified, setIsNotified] = useState(false);
+  const [is_request_modal_open, setIsRequestModalOpen] = useState(false);
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
   const is_logged_in = !!user_details;
@@ -230,96 +234,30 @@ const ProductInfo: FC<IProps> = ({
           category_mappings={category_mappings}
           handleReportModalState={handleReportModalState}
         />
-        <div
-          id="buy-cta-container"
-          className="fixed bottom-0 left-0 z-2 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md md:z-4 lg:sticky lg:border-none lg:px-0 lg:shadow-none"
-        >
-          <button
-            onClick={() => {
-              add_to_cart_mutation.mutate(
-                {
-                  product_id: product.id,
-                  variant_id: variant.id,
-                  quantity: 1,
-                },
-                {
-                  onSuccess() {
-                    addedToCartEvent({
-                      user_id,
-                      product_id: product.id,
-                      variant_id: variant.id,
-                      category_id: product.sub_sub_category_id,
-                      category_type: "SUB_SUB",
-                      source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                    });
-
-                    const query = router.query;
-                    const query_id =
-                      typeof query.query_id === "string"
-                        ? query.query_id
-                        : undefined;
-
-                    const index_name =
-                      typeof query.index_name === "string"
-                        ? query.index_name
-                        : undefined;
-
-                    const object_id =
-                      typeof query.object_id === "string"
-                        ? query.object_id
-                        : undefined;
-
-                    query_id &&
-                      index_name &&
-                      object_id &&
-                      insightsClient("addedToCartObjectIDsAfterSearch", {
-                        eventName: "Add to Cart",
-                        index: index_name,
-                        queryID: query_id,
-                        objectIDs: [object_id],
-                        objectData: [
-                          {
-                            price: selling_price_with_commission,
-                            discount: mrp - selling_price_with_commission,
-                            quantity: 1,
-                          },
-                        ],
-                        value: selling_price_with_commission,
-                        currency: "INR",
-                      });
-                  },
-                },
-              );
-            }}
-            disabled={add_to_cart_mutation.isPending || !is_product_available}
-            className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600"
+        {is_product_available ? (
+          <div
+            id="buy-cta-container"
+            className="fixed bottom-0 left-0 z-2 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md md:z-4 lg:sticky lg:border-none lg:px-0 lg:shadow-none"
           >
-            Add to cart
-          </button>
-          <button
-            className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white disabled:bg-orange-300"
-            disabled={
-              create_buying_intent_mutation.isPending || !is_product_available
-            }
-            onClick={() => {
-              user_id &&
-                buyNowClickedEvent({
-                  user_id,
-                  product_id: product.id,
-                  variant_id: variant.id,
-                  category_id: product.sub_sub_category_id,
-                  category_type: "SUB_SUB",
-                  source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                });
-              if (is_logged_in) {
-                create_buying_intent_mutation.mutate(
+            <button
+              onClick={() => {
+                add_to_cart_mutation.mutate(
                   {
                     product_id: product.id,
                     variant_id: variant.id,
                     quantity: 1,
                   },
                   {
-                    onSuccess({ intent_id }) {
+                    onSuccess() {
+                      addedToCartEvent({
+                        user_id,
+                        product_id: product.id,
+                        variant_id: variant.id,
+                        category_id: product.sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                      });
+
                       const query = router.query;
                       const query_id =
                         typeof query.query_id === "string"
@@ -335,68 +273,192 @@ const ProductInfo: FC<IProps> = ({
                         typeof query.object_id === "string"
                           ? query.object_id
                           : undefined;
-                      router.push({
-                        pathname: `/checkout/${intent_id}`,
-                        query: {
-                          ...(query_id ? { query_id } : {}),
-                          ...(index_name ? { index_name } : {}),
-                          ...(object_id ? { object_id } : {}),
-                        },
-                      });
+
+                      query_id &&
+                        index_name &&
+                        object_id &&
+                        insightsClient("addedToCartObjectIDsAfterSearch", {
+                          eventName: "Add to Cart",
+                          index: index_name,
+                          queryID: query_id,
+                          objectIDs: [object_id],
+                          objectData: [
+                            {
+                              price: selling_price_with_commission,
+                              discount: mrp - selling_price_with_commission,
+                              quantity: 1,
+                            },
+                          ],
+                          value: selling_price_with_commission,
+                          currency: "INR",
+                        });
                     },
                   },
                 );
-              } else {
-                openLoginModal({
-                  is_modal: true,
-                  title: "Log in to complete your purchase",
-                  onSuccess(user) {
-                    if (user) {
-                      create_buying_intent_mutation.mutate(
-                        {
-                          product_id: product.id,
-                          variant_id: variant.id,
-                          quantity: 1,
-                        },
-                        {
-                          onSuccess({ intent_id }) {
-                            const query = router.query;
-                            const query_id =
-                              typeof query.query_id === "string"
-                                ? query.query_id
-                                : undefined;
+              }}
+              disabled={add_to_cart_mutation.isPending}
+              className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600"
+            >
+              Add to cart
+            </button>
+            <button
+              className="w-full cursor-pointer rounded-md bg-orange-500 py-2 font-semibold text-white disabled:bg-orange-300"
+              disabled={create_buying_intent_mutation.isPending}
+              onClick={() => {
+                user_id &&
+                  buyNowClickedEvent({
+                    user_id,
+                    product_id: product.id,
+                    variant_id: variant.id,
+                    category_id: product.sub_sub_category_id,
+                    category_type: "SUB_SUB",
+                    source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                  });
+                if (is_logged_in) {
+                  create_buying_intent_mutation.mutate(
+                    {
+                      product_id: product.id,
+                      variant_id: variant.id,
+                      quantity: 1,
+                    },
+                    {
+                      onSuccess({ intent_id }) {
+                        const query = router.query;
+                        const query_id =
+                          typeof query.query_id === "string"
+                            ? query.query_id
+                            : undefined;
 
-                            const index_name =
-                              typeof query.index_name === "string"
-                                ? query.index_name
-                                : undefined;
+                        const index_name =
+                          typeof query.index_name === "string"
+                            ? query.index_name
+                            : undefined;
 
-                            const object_id =
-                              typeof query.object_id === "string"
-                                ? query.object_id
-                                : undefined;
-                            router.push({
-                              pathname: `/checkout/${intent_id}`,
-                              query: {
-                                ...(query_id ? { query_id } : {}),
-                                ...(index_name ? { index_name } : {}),
-                                ...(object_id ? { object_id } : {}),
-                              },
-                            });
+                        const object_id =
+                          typeof query.object_id === "string"
+                            ? query.object_id
+                            : undefined;
+                        router.push({
+                          pathname: `/checkout/${intent_id}`,
+                          query: {
+                            ...(query_id ? { query_id } : {}),
+                            ...(index_name ? { index_name } : {}),
+                            ...(object_id ? { object_id } : {}),
                           },
-                        },
-                      );
-                    }
-                  },
-                  onCancel() {},
-                });
-              }
-            }}
+                        });
+                      },
+                    },
+                  );
+                } else {
+                  openLoginModal({
+                    is_modal: true,
+                    title: "Log in to complete your purchase",
+                    onSuccess(user) {
+                      if (user) {
+                        create_buying_intent_mutation.mutate(
+                          {
+                            product_id: product.id,
+                            variant_id: variant.id,
+                            quantity: 1,
+                          },
+                          {
+                            onSuccess({ intent_id }) {
+                              const query = router.query;
+                              const query_id =
+                                typeof query.query_id === "string"
+                                  ? query.query_id
+                                  : undefined;
+
+                              const index_name =
+                                typeof query.index_name === "string"
+                                  ? query.index_name
+                                  : undefined;
+
+                              const object_id =
+                                typeof query.object_id === "string"
+                                  ? query.object_id
+                                  : undefined;
+                              router.push({
+                                pathname: `/checkout/${intent_id}`,
+                                query: {
+                                  ...(query_id ? { query_id } : {}),
+                                  ...(index_name ? { index_name } : {}),
+                                  ...(object_id ? { object_id } : {}),
+                                },
+                              });
+                            },
+                          },
+                        );
+                      }
+                    },
+                    onCancel() {},
+                  });
+                }
+              }}
+            >
+              Buy Now
+            </button>
+          </div>
+        ) : (
+          <div
+            id="buy-cta-container"
+            className="fixed bottom-0 left-0 z-2 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md md:z-4 lg:sticky lg:border-none lg:px-0 lg:shadow-none"
           >
-            Buy Now
-          </button>
-        </div>
+            <button
+              disabled
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#E5E7EB] py-3 text-sm font-semibold text-gray-700 cursor-not-allowed"
+            >
+              <Cart width={18} height={18} fill="#6B7280" />
+              <span>Out of stock</span>
+            </button>
+
+            {!is_notified ? (
+              <button
+                type="button"
+                onClick={() => {
+                  if (is_logged_in) {
+                    setIsNotified(true);
+                    setIsRequestModalOpen(true);
+                  } else {
+                    openLoginModal({
+                      is_modal: true,
+                      title:
+                        "Log in to get notified when product is back in stock",
+                      onSuccess(user) {
+                        if (user) {
+                          setIsNotified(true);
+                          setIsRequestModalOpen(true);
+                        }
+                      },
+                      onCancel() {},
+                    });
+                  }
+                }}
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#FF6801] py-3 text-sm font-semibold text-white shadow-xs hover:bg-[#e55d00] transition cursor-pointer"
+              >
+                <Bell className="size-4.5" />
+                <span>Notify Me</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsNotified(false);
+                }}
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#FF6801] bg-white py-3 text-sm font-semibold text-[#FF6801] shadow-xs hover:bg-orange-50 transition cursor-pointer"
+              >
+                <Bell className="size-4.5" />
+                <span>Cancel Notification</span>
+              </button>
+            )}
+          </div>
+        )}
       </section>
+
+      <RequestAcceptedModal
+        is_open={is_request_modal_open}
+        onClose={() => setIsRequestModalOpen(false)}
+      />
     </>
   );
 };
