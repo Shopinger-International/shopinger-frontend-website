@@ -244,7 +244,7 @@ const CategorySection: FC = () => {
                                 "font-semibold underline underline-offset-4",
                               selected_category?.id === id &&
                                 (is_item_grocery
-                                  ? "text-green-600"
+                                  ? "text-secondary"
                                   : is_item_pharmacy
                                     ? "text-blue-600"
                                     : "text-brand"),

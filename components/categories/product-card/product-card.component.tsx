@@ -173,7 +173,7 @@ const ProductCard: FC<IProps> = ({
                 className={clsx(
                   "absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold tracking-tight uppercase shadow-2xs",
                   is_grocery
-                    ? "text-green-600 lg:text-brand"
+                    ? "text-secondary lg:text-brand"
                     : is_pharmacy
                       ? "text-blue-500 lg:text-brand"
                       : "text-brand",
@@ -201,13 +201,13 @@ const ProductCard: FC<IProps> = ({
                 className={clsx(
                   "size-5 sm:size-6",
                   is_grocery
-                    ? "text-green-600 lg:text-brand"
+                    ? "text-secondary lg:text-brand"
                     : is_pharmacy
                       ? "text-blue-600 lg:text-brand"
                       : "text-brand",
                   is_wishlisted &&
                   (is_grocery
-                    ? "fill-green-600 lg:fill-brand"
+                    ? "fill-secondary lg:fill-brand"
                     : is_pharmacy
                       ? "fill-blue-600 lg:fill-brand"
                       : "fill-brand"),

@@ -55,7 +55,7 @@ const OrderHistoryItem: FC<IProps> = ({ order }) => {
                 is_cancelled
                   ? "bg-red-100 text-red-600"
                   : is_delivered
-                    ? "bg-green-100 text-green-600"
+                    ? "bg-green-100 text-secondary"
                     : "bg-orange-100 text-orange-600",
               )}
             >

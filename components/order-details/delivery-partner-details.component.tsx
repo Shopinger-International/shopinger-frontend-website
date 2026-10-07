@@ -47,7 +47,7 @@ const DeliveryPartnerDetails: FC<Props> = ({ partner }) => {
             href={`https://wa.me/${partner.phone}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-green-700"
+            className="flex items-center justify-center gap-2 rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-green-700"
           >
             <MessageCircle className="size-4" />
             WhatsApp

@@ -83,7 +83,7 @@ const MobileHeader: FC = () => {
             <span
               className={cn(
                 "font-bold",
-                is_grocery ? "text-green-600" : is_pharmacy ? "text-blue-600" : "text-brand",
+                is_grocery ? "text-secondary" : is_pharmacy ? "text-blue-600" : "text-brand",
               )}
             >
               {delivery_time} minutes
