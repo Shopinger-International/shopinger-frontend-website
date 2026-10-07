@@ -4,27 +4,32 @@
 :root {
   --header-height: 120px; /* adjust to match your header */
   --header-visible-height: var(--header-height); /* updated by header.component on scroll */
+
   --brand: #FF6801;
   --brand-foreground: #ffffff;
   --background: #fff7ed;
   --background-foreground: #111827;
-  --primary: #FF6801;
-  --primary-foreground: #ffffff;
-  --secondary: #16a34a;
-  --secondary-foreground: #ffffff;
+
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --grocery-green: #16a34a;
+  --rating-green: #008748;
+
+  --secondary: var(--grocery-green);
+  --secondary-foreground: var(--brand-foreground);
 
   /* Brand Colors (extracted from header, location-tooltip, share-modal, store-banner) */
-  --brand-primary: #FF6801;
+  --brand-primary: var(--brand);
   --brand-vibrant: #FF5300;
   --brand-location: #FF6900;
   --brand-share: #FF6500;
 
   /* Layout & Page Backgrounds (extracted from header, login, cards) */
-  --background-page: #fff7ed;
-  --background-header: #FFF7ED;
+  --background-page: var(--background);
+  --background-header: var(--background);
   --background-login: #FFE2D0;
   --card-warm: #FFF4EB;
-  --background-dark: #111827;
+  --background-dark: var(--background-foreground);
 
   /* Store Closed Banner (extracted from store-closed-banner.component.tsx) */
   --store-banner-bg: #FFF6EE;
@@ -37,8 +42,6 @@
 
   /* Category Icons & Badges (extracted from pharmacy.icon, grocery.icon, rating) */
   --pharmacy-blue: #2563EB;
-  --grocery-green: #16A34A;
-  --rating-green: #008748;
 
   /* Modals, Tooltips & Icons (extracted from share-modal, tooltip, down-triangle) */
   --share-modal-title: #17233C;
@@ -49,64 +52,66 @@
 
   /* Text Colors */
   --text-primary: #353535;
-  --text-dark: #111827;
-  --text-white: #ffffff;
+  --text-dark: var(--background-foreground);
+  --text-white: var(--brand-foreground);
 }
+
 @media (max-width: 1024px) {
   :root {
     --header-height: 150px;
   }
 }
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-brand: #FF6801;
-  --color-brand-foreground: #ffffff;
-  --color-background: #fff7ed;
-  --color-background-foreground: #111827;
-  --color-primary: #FF6801;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #16a34a;
-  --color-secondary-foreground: #ffffff;
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-background: var(--background);
+  --color-background-foreground: var(--background-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
 
   /* Brand Utility Classes */
-  --color-brand-primary: #FF6801;
-  --color-brand-vibrant: #FF5300;
-  --color-brand-location: #FF6900;
-  --color-brand-share: #FF6500;
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-vibrant: var(--brand-vibrant);
+  --color-brand-location: var(--brand-location);
+  --color-brand-share: var(--brand-share);
 
   /* Background Utility Classes */
   --color-background-page: var(--background-page);
   --color-background-header: var(--background-header);
   --color-background-login: var(--background-login);
-  --color-card-warm: #FFF4EB;
-  --color-background-dark: #111827;
+  --color-card-warm: var(--card-warm);
+  --color-background-dark: var(--background-dark);
 
   /* Store Closed Banner Utility Classes */
-  --color-store-banner-bg: #FFF6EE;
-  --color-store-banner-border: #F3E2D4;
-  --color-store-banner-divider: #EBD8C9;
-  --color-store-banner-title: #0B1E36;
-  --color-store-banner-message: #7D766D;
-  --color-store-banner-label: #938A7E;
-  --color-store-banner-sublabel: #A0988C;
+  --color-store-banner-bg: var(--store-banner-bg);
+  --color-store-banner-border: var(--store-banner-border);
+  --color-store-banner-divider: var(--store-banner-divider);
+  --color-store-banner-title: var(--store-banner-title);
+  --color-store-banner-message: var(--store-banner-message);
+  --color-store-banner-label: var(--store-banner-label);
+  --color-store-banner-sublabel: var(--store-banner-sublabel);
 
   /* Category & Badge Utility Classes */
-  --color-pharmacy-blue: #2563EB;
-  --color-grocery-green: #16A34A;
+  --color-pharmacy-blue: var(--pharmacy-blue);
+  --color-grocery-green: var(--grocery-green);
   --color-rating-green: var(--rating-green);
 
   /* Modal, Tooltip & Icon Utility Classes */
-  --color-share-modal-title: #17233C;
-  --color-share-modal-instagram: #F33358;
-  --color-icon-stroke-dark: #182027;
-  --color-triangle-dark: #313131;
-  --color-tooltip-border: #D1D5DB;
+  --color-share-modal-title: var(--share-modal-title);
+  --color-share-modal-instagram: var(--share-modal-instagram);
+  --color-icon-stroke-dark: var(--icon-stroke-dark);
+  --color-triangle-dark: var(--triangle-dark);
+  --color-tooltip-border: var(--tooltip-border);
 
   /* Text Utility Classes */
-  --color-text-primary: #353535;
-  --color-text-dark: #111827;
-  --color-text-white: #ffffff;
+  --color-text-primary: var(--text-primary);
+  --color-text-dark: var(--text-dark);
+  --color-text-white: var(--text-white);
   --text-2xs: 0.625rem;
   --text-2xs--line-height: 0.75rem;
   --text-3xs: 0.5625rem;
