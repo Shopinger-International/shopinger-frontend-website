@@ -17,6 +17,14 @@ export type IResponse = {
   error?: string;
 };
 
+export const campaignsQueryKey = ({
+  display_scope,
+  category_slug,
+}: {
+  display_scope?: string;
+  category_slug?: string;
+}) => ["campaigns", display_scope ?? null, category_slug ?? null];
+
 export const getCampaigns = async ({
   display_scope,
   category_slug,
@@ -43,10 +51,15 @@ const useAllCamapigns = ({
   category_slug?: string;
 }) => {
   return useQuery({
-    queryKey: ["campaigns", display_scope, category_slug],
-    async queryFn() {
-      return getCampaigns({ display_scope, category_slug });
-    },
+    queryKey: campaignsQueryKey({
+      display_scope,
+      category_slug,
+    }),
+    queryFn: () =>
+      getCampaigns({
+        display_scope,
+        category_slug,
+      }),
   });
 };
 

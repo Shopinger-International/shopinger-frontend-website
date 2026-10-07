@@ -187,9 +187,11 @@ const CategorySection: FC = () => {
 
                 {/* Categories */}
                 <ul className="flex items-start gap-2 whitespace-nowrap">
-                    {categories.map((category, index) => {
+                  {categories.map((category, index) => {
                     const { id, name, slug } = category;
-                    const is_item_grocery = slug.toLowerCase().includes("grocery") || name.toLowerCase().includes("grocery");
+                    const is_item_grocery =
+                      slug.toLowerCase().includes("grocery") ||
+                      name.toLowerCase().includes("grocery");
                     const is_item_pharmacy =
                       slug.toLowerCase().includes("pharmacy") ||
                       slug.toLowerCase().includes("medicine") ||
