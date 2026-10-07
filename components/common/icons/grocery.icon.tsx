@@ -22,7 +22,7 @@ const GroceryIcon: FC<IProps> = ({ size }) => (
     ></path>
     <path
       fill="none"
-      stroke="#16a34a"
+      stroke="secondary"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="2.3"

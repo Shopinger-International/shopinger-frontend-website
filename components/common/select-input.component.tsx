@@ -92,7 +92,7 @@ const SelectInput: FC<SelectInputProps> = ({
         control: ({ isFocused, isDisabled }) =>
           clsx(
             "flex w-full items-center rounded-md border px-3 py-2",
-            isFocused ? "border-2 border-orange-500" : "border-gray-300",
+            isFocused ? "border-2 border-brand" : "border-gray-300",
             isDisabled && "cursor-not-allowed bg-gray-100",
           ),
         valueContainer: () => "flex gap-1 flex-wrap",
@@ -108,7 +108,7 @@ const SelectInput: FC<SelectInputProps> = ({
               "cursor-not-allowed opacity-50 text-gray-400 bg-transparent",
 
             // Selected state
-            !isDisabled && isSelected && "bg-orange-500 text-white",
+            !isDisabled && isSelected && "bg-brand text-white",
 
             // Focused state
             !isDisabled &&
@@ -123,7 +123,7 @@ const SelectInput: FC<SelectInputProps> = ({
           "flex items-center gap-1 rounded bg-orange-100 px-2 py-0.5",
         multiValueLabel: () => "text-sm text-orange-800",
         multiValueRemove: () =>
-          "cursor-pointer text-orange-800 hover:text-white hover:bg-orange-500 rounded px-1",
+          "cursor-pointer text-orange-800 hover:text-white hover:bg-brand rounded px-1",
       }}
     />
   );

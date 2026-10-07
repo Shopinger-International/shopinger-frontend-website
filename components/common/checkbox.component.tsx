@@ -14,7 +14,7 @@ const Checkbox: FC<IProps> = ({ enabled, label, onChange }) => {
       <HeadlessCheckbox
         checked={enabled}
         onChange={onChange}
-        className="group flex size-5 shrink-0 items-center justify-center rounded border border-gray-300 bg-white outline-none data-checked:border-orange-500 data-checked:bg-orange-500"
+        className="group flex size-5 shrink-0 items-center justify-center rounded border border-gray-300 bg-white outline-none data-checked:border-brand data-checked:bg-brand"
       >
         <svg
           className="stroke-white opacity-0 group-data-checked:opacity-100"

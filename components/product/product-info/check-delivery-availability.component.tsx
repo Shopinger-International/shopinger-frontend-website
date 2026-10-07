@@ -139,7 +139,7 @@ const CheckDeliveryAvailability: FC = () => {
 
               <button
                 type="submit"
-                className="cursor-pointer rounded-md bg-orange-500 px-3 py-1.5 font-medium text-white lg:py-2"
+                className="cursor-pointer rounded-md bg-brand px-3 py-1.5 font-medium text-white lg:py-2"
                 aria-label="Check delivery availability for entered pincode"
                 disabled={verify_pincode_serviceability_mutation.isPending}
               >
@@ -178,7 +178,7 @@ const CheckDeliveryAvailability: FC = () => {
               {/* Express Delivery */}
               <DeliverZoneDataRenderer
                 icon={Truck}
-                iconClassName="text-orange-500"
+                iconClassName="text-brand"
               >
                 <>
                   <div className="flex items-center gap-2">
@@ -203,7 +203,7 @@ const CheckDeliveryAvailability: FC = () => {
               {delivery_zone_data.cod_available && (
                 <DeliverZoneDataRenderer
                   icon={Banknote}
-                  iconClassName="text-orange-500"
+                  iconClassName="text-brand"
                 >
                   <>
                     <h3 className="font-medium text-neutral-900">
@@ -218,7 +218,7 @@ const CheckDeliveryAvailability: FC = () => {
               {/* Delivery Slot */}
               {/* <DeliverZoneDataRenderer
                 icon={CalendarFold}
-                iconClassName="text-orange-500"
+                iconClassName="text-brand"
               >
                 <>
                   <h3 className="font-medium text-neutral-900">

@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 // icons
-import { Heart, ChevronRight, Star } from "lucide-react";
+import { Heart, ChevronRight, Star, ArrowDown } from "lucide-react";
 
 // local components
 import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
@@ -179,7 +179,10 @@ const ProductCard: FC<IProps> = ({
                       : "text-brand",
                 )}
               >
-                {Math.round(Number(discount_percentage))}%&nbsp;&nbsp;OFF
+                <span className="inline-flex items-center gap-0.5">
+                  {Math.round(Number(discount_percentage))}%
+                  <ArrowDown className="size-3 shrink-0" strokeWidth={3.5} />
+                </span>
               </span>
             )}
 
@@ -192,7 +195,7 @@ const ProductCard: FC<IProps> = ({
                 remove_from_wishlist_mutation.isPending
               }
               onClick={handleWishlistClick}
-              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-orange-500 shadow-2xs transition-transform active:scale-95"
+              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-brand shadow-2xs transition-transform active:scale-95"
             >
               <Heart
                 className={clsx(
@@ -203,11 +206,11 @@ const ProductCard: FC<IProps> = ({
                       ? "text-blue-600 lg:text-brand"
                       : "text-brand",
                   is_wishlisted &&
-                    (is_grocery
-                      ? "fill-green-600 lg:fill-brand"
-                      : is_pharmacy
-                        ? "fill-blue-600 lg:fill-brand"
-                        : "fill-brand"),
+                  (is_grocery
+                    ? "fill-green-600 lg:fill-brand"
+                    : is_pharmacy
+                      ? "fill-blue-600 lg:fill-brand"
+                      : "fill-brand"),
                 )}
                 strokeWidth={2.2}
               />

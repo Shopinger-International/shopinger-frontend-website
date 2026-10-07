@@ -163,7 +163,7 @@ const MobileAddressModal: FC<IProps> = ({
       <div className="fixed inset-0">
         <DialogPanel className="h-full w-full bg-white">
           <div className="flex items-center justify-between border-b border-gray-300 px-4 py-2">
-            <DialogTitle className="font-semibold text-orange-500">
+            <DialogTitle className="font-semibold text-brand">
               {initial_data ? "Update address" : "Add new address"}
             </DialogTitle>
 
@@ -282,13 +282,13 @@ const MobileAddressModal: FC<IProps> = ({
                   <button
                     type="button"
                     onClick={handleUseCurrentLocation}
-                    className="absolute left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm"
+                    className="absolute left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold text-brand shadow-sm"
                     style={{
                       bottom: `${bottom_bar_height}px`,
                     }}
                   >
                     <MapPin
-                      className="size-3.5 text-orange-500"
+                      className="size-3.5 text-brand"
                       strokeWidth={2.5}
                     />
                     <span>
@@ -334,7 +334,7 @@ const MobileAddressModal: FC<IProps> = ({
                               <button
                                 type="button"
                                 onClick={handleUseCurrentLocation}
-                                className="mt-2 text-xs font-semibold text-orange-500"
+                                className="mt-2 text-xs font-semibold text-brand"
                               >
                                 {is_current_location_fetching
                                   ? "Fetching location..."
@@ -358,7 +358,7 @@ const MobileAddressModal: FC<IProps> = ({
                     </div>
                     <button
                       type="button"
-                      className="w-full rounded-md bg-orange-500 py-2 font-semibold text-white shadow-sm disabled:bg-orange-300"
+                      className="w-full rounded-md bg-brand py-2 font-semibold text-white shadow-sm disabled:bg-orange-300"
                       disabled={!values.pincode || !is_pincode_serviceable}
                       onClick={() => setShowDrawer(true)}
                     >
@@ -407,7 +407,7 @@ const MobileAddressModal: FC<IProps> = ({
                                       className={clsx(
                                         "flex items-center gap-2 rounded-lg border px-3 py-1 text-sm",
                                         isActive
-                                          ? "border-orange-500 text-orange-500"
+                                          ? "border-brand text-brand"
                                           : "border-gray-300",
                                       )}
                                     >
@@ -478,7 +478,7 @@ const MobileAddressModal: FC<IProps> = ({
                               create_address_mutation.isPending ||
                               update_address_mutation.isPending
                             }
-                            className="w-full rounded-md bg-orange-500 px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
+                            className="w-full rounded-md bg-brand px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
                           >
                             {update_address_mutation.isPending
                               ? "Updating..."

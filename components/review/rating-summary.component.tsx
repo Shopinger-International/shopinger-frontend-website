@@ -34,7 +34,7 @@ const RatingSummary: FC<IProps> = ({
           </h1>
 
           <div className="flex items-center pb-1">
-            <Star className="size-6 fill-orange-500 text-orange-500 sm:size-10" />
+            <Star className="size-6 fill-brand text-brand sm:size-10" />
           </div>
         </div>
 
@@ -75,13 +75,13 @@ const RatingSummary: FC<IProps> = ({
                 {/* Star label */}
                 <div className="flex w-12 items-center gap-1 text-sm text-gray-700">
                   <span className="font-medium">{rating}</span>
-                  <Star className="size-3.5 fill-orange-500 text-orange-500" />
+                  <Star className="size-3.5 fill-brand text-brand" />
                 </div>
 
                 {/* Bar */}
                 <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-gray-200">
                   <div
-                    className="h-full rounded-full bg-orange-500 transition-all duration-500 group-hover:bg-orange-600"
+                    className="h-full rounded-full bg-brand transition-all duration-500 group-hover:bg-orange-600"
                     style={{ width: `${percent}%` }}
                   />
                 </div>

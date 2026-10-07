@@ -72,7 +72,7 @@ const PolicySection: FC<{ policies: IPolicySection[] }> = ({ policies }) => {
                               key={listItem}
                               className="flex items-start gap-3"
                             >
-                              <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-orange-500" />
+                              <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand" />
                               <span className="leading-7 text-gray-600">
                                 {listItem}
                               </span>

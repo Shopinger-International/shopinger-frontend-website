@@ -131,7 +131,7 @@ const OrderHistoryItem: FC<IProps> = ({ order }) => {
         </div>
 
         {/* {!is_cancelled && (
-          <button className="rounded-lg bg-orange-500 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-orange-600">
+          <button className="rounded-lg bg-brand px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-orange-600">
             Reorder
           </button>
         )} */}

@@ -19,7 +19,7 @@ const DeliveryPartnerDetails: FC<Props> = ({ partner }) => {
     <div className="rounded-xl border border-orange-200 bg-linear-to-r from-orange-50 to-white px-6 py-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-orange-500 font-semibold text-white sm:size-11">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand font-semibold text-white sm:size-11">
             {partner.name.charAt(0).toUpperCase()}
           </div>
 

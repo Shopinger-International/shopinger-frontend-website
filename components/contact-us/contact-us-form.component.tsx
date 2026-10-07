@@ -83,7 +83,7 @@ const ContactUsForm: FC = () => {
                 name="fullname"
                 type="text"
                 placeholder="e.g. Rishikesh Yadav"
-                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
+                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-brand focus:outline-brand"
               />
               <ErrorMessage
                 name="fullname"
@@ -106,7 +106,7 @@ const ContactUsForm: FC = () => {
                 name="phone"
                 type="tel"
                 placeholder="e.g. +91 98765XXXXX"
-                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
+                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-brand focus:outline-brand"
               />
 
               <ErrorMessage
@@ -129,7 +129,7 @@ const ContactUsForm: FC = () => {
                 name="email"
                 type="email"
                 placeholder="e.g. rishikesh@example.com"
-                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
+                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-brand focus:outline-brand"
               />
 
               <ErrorMessage
@@ -153,7 +153,7 @@ const ContactUsForm: FC = () => {
                 name="subject"
                 type="text"
                 placeholder="e.g. Order inquiry"
-                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-orange-500 focus:outline-orange-500"
+                className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 hover:outline-brand focus:outline-brand"
               />
 
               <ErrorMessage
@@ -178,7 +178,7 @@ const ContactUsForm: FC = () => {
                 name="message"
                 rows={6}
                 placeholder="Tell us how we can help..."
-                className="w-full rounded-md border border-gray-300 bg-white px-3 py-3 hover:outline-orange-500 focus:outline-orange-500"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-3 hover:outline-brand focus:outline-brand"
               />
 
               <ErrorMessage
@@ -191,7 +191,7 @@ const ContactUsForm: FC = () => {
             <button
               type="submit"
               disabled={contact_support_mutation.isPending}
-              className="w-full rounded-md bg-orange-500 py-2 font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
+              className="w-full rounded-md bg-brand py-2 font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
             >
               {contact_support_mutation.isPending
                 ? "Sending..."

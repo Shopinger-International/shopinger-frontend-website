@@ -200,7 +200,7 @@ const OTPInput: FC<OTPInputProps> = ({
           onChange={(event) => handleChange(index, event.target.value)}
           onPaste={handlePaste}
           onKeyDown={(event) => handleKeyDown(index, event)}
-          className="h-12 min-w-0 flex-1 rounded-md border border-gray-300 text-center text-lg font-semibold transition-all outline-none focus:border-orange-500 lg:h-12 lg:w-12 lg:flex-none"
+          className="h-12 min-w-0 flex-1 rounded-md border border-gray-300 text-center text-lg font-semibold transition-all outline-none focus:border-brand lg:h-12 lg:w-12 lg:flex-none"
         />
       ))}
     </div>

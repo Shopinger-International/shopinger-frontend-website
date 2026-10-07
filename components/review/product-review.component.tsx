@@ -117,7 +117,7 @@ const ProductReview: FC<IProps> = ({
       ) : null}
       <div className="flex items-center gap-3 text-sm font-medium">
         <button
-          className="flex cursor-pointer items-center gap-1 text-orange-500"
+          className="flex cursor-pointer items-center gap-1 text-brand"
           onClick={() => {
             if (is_reacted) {
               delete_review_reaction_mutation.mutate({
@@ -148,7 +148,7 @@ const ProductReview: FC<IProps> = ({
           }}
         >
           <ThumbsUp
-            className={clsx("size-4", is_reacted && "fill-orange-500")}
+            className={clsx("size-4", is_reacted && "fill-brand")}
             strokeWidth={2.5}
           />
           <span>Helpful {helpful_count > 0 && `(${helpful_count})`}</span>

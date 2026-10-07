@@ -74,8 +74,8 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
         value:
           attribute.data_type === "enum"
             ? attribute.options?.find(
-                ({ value: option_value }) => value == option_value,
-              )?.label
+              ({ value: option_value }) => value == option_value,
+            )?.label
             : value,
       };
     },
@@ -158,7 +158,7 @@ const CheckoutItem: FC<IProps> = ({ product, variant, type, intent_id }) => {
                   "mt-1 text-xs",
                   variant.stock_status == "STOCK_EXCEEDED"
                     ? "font-semibold text-red-600"
-                    : "font-medium text-orange-500",
+                    : "font-medium text-brand",
                 )}
               >
                 {getStockAvailabilityText(variant.stock_status)}

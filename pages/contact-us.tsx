@@ -57,7 +57,7 @@ const ContactCard: FC<IProps> = ({ icon: Icon, title, href }) => {
       className="w-full rounded-xl border border-gray-300 p-4"
     >
       <div className="mb-2 inline-block size-fit rounded-lg border border-gray-100 bg-orange-50 p-2">
-        <Icon className="size-5 text-orange-500" />
+        <Icon className="size-5 text-brand" />
       </div>
       <h2 className="mb-0.5 font-semibold text-gray-900">{title}</h2>
     </Link>

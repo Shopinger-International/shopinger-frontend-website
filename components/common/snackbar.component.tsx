@@ -18,7 +18,7 @@ export const SuccessSnackbar = forwardRef<
   ExtendedSnackbarProps
 >(({ message, action_label, onActionClick }, ref) => (
   <SnackbarContent ref={ref}>
-    <div className="flex w-full items-center gap-3 rounded-lg bg-orange-500 px-4 py-3 font-medium text-white shadow-lg">
+    <div className="flex w-full items-center gap-3 rounded-lg bg-brand px-4 py-3 font-medium text-white shadow-lg">
       <CheckCircle size={18} />
 
       <span className="flex-1">{message}</span>

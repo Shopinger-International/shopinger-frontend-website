@@ -235,7 +235,7 @@ const ProductDetails: FC<IProps> = ({
             {updated_key_features.length > initial_visible && (
               <button
                 onClick={() => setShowAll(!show_all)}
-                className="mt-1 font-medium text-orange-500 hover:underline"
+                className="mt-1 font-medium text-brand hover:underline"
                 aria-expanded={show_all}
                 aria-controls="key-features-content"
               >

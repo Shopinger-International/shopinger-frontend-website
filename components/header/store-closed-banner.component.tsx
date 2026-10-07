@@ -49,7 +49,7 @@ export const getTimeRemaining = (
 };
 
 const MoonIcon: FC<{ className?: string }> = ({
-  className = "size-5 text-orange-500",
+  className = "size-5 text-brand",
 }) => (
   <svg
     viewBox="0 0 24 24"
@@ -131,7 +131,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
           {/* LEFT: Moon Icon in Soft Circle + Title & Description */}
           <div className="flex items-center gap-3 min-w-0">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-orange-100/90">
-              <MoonIcon className="size-5 text-orange-500" />
+              <MoonIcon className="size-5 text-brand" />
             </div>
 
             <div className="flex flex-col min-w-0">
@@ -157,7 +157,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
                 <div className="flex flex-col items-center">
                   <div
                     suppressHydrationWarning
-                    className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-100/90 text-sm font-extrabold text-orange-500"
+                    className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-100/90 text-sm font-extrabold text-brand"
                   >
                     {time_remaining.hrs}
                   </div>
@@ -174,7 +174,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
                 <div className="flex flex-col items-center">
                   <div
                     suppressHydrationWarning
-                    className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-100/90 text-sm font-extrabold text-orange-500"
+                    className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-100/90 text-sm font-extrabold text-brand"
                   >
                     {time_remaining.min}
                   </div>
@@ -191,7 +191,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
                 <div className="flex flex-col items-center">
                   <div
                     suppressHydrationWarning
-                    className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-100/90 text-sm font-extrabold text-orange-500"
+                    className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-100/90 text-sm font-extrabold text-brand"
                   >
                     {time_remaining.sec}
                   </div>

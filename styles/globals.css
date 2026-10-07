@@ -4,11 +4,11 @@
 :root {
   --header-height: 120px; /* adjust to match your header */
   --header-visible-height: var(--header-height); /* updated by header.component on scroll */
-  --brand: #ff740a;
+  --brand: #FF6801;
   --brand-foreground: #ffffff;
   --background: #fff7ed;
   --background-foreground: #111827;
-  --primary: #ff740a;
+  --primary: #FF6801;
   --primary-foreground: #ffffff;
   --secondary: #16a34a;
   --secondary-foreground: #ffffff;
@@ -21,15 +21,15 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-brand: #ff740a;
+  --color-brand: #FF6801;
   --color-brand-foreground: #ffffff;
   --color-background: #fff7ed;
   --color-background-foreground: #111827;
-  --color-primary: #ff740a;
+  --color-primary: #FF6801;
   --color-primary-foreground: #ffffff;
   --color-secondary: #16a34a;
   --color-secondary-foreground: #ffffff;
-  --color-bg-primary: #ff740a;
+  --color-bg-primary: #FF6801;
   --color-text-primary: #353535;
   --color-brand: #FF5300;
   --color-card-warm: #FFF4EB;

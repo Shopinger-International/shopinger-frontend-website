@@ -64,7 +64,7 @@ const WatchLiveSection: FC = () => {
 
           {/* Share */}
           <button
-            className="absolute top-4 right-4 rounded-full bg-orange-500 p-2.5 text-white backdrop-blur transition hover:scale-110"
+            className="absolute top-4 right-4 rounded-full bg-brand p-2.5 text-white backdrop-blur transition hover:scale-110"
             aria-label="Share"
           >
             <Share2 className="h-5 w-5" />
@@ -73,7 +73,7 @@ const WatchLiveSection: FC = () => {
           {/* Mute Toggle */}
           <button
             onClick={toggleMute}
-            className="absolute right-4 bottom-4 rounded-full bg-orange-500 p-2.5 text-white backdrop-blur transition hover:scale-110"
+            className="absolute right-4 bottom-4 rounded-full bg-brand p-2.5 text-white backdrop-blur transition hover:scale-110"
             aria-label={isMuted ? "Unmute" : "Mute"}
           >
             {isMuted ? (

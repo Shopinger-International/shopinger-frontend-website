@@ -83,7 +83,7 @@ const MobileHeader: FC = () => {
             <span
               className={cn(
                 "font-bold",
-                is_grocery ? "text-green-600" : is_pharmacy ? "text-blue-600" : "text-orange-500",
+                is_grocery ? "text-green-600" : is_pharmacy ? "text-blue-600" : "text-brand",
               )}
             >
               {delivery_time} minutes
@@ -120,7 +120,7 @@ const MobileHeader: FC = () => {
                     ? "bg-green-100 text-green-700"
                     : is_cat_pharmacy
                       ? "bg-blue-100 text-blue-700"
-                      : "bg-orange-100 text-orange-500"
+                      : "bg-orange-100 text-brand"
                   : "bg-white text-gray-900 shadow-xs hover:bg-gray-50",
               ].join(" ")}
             >

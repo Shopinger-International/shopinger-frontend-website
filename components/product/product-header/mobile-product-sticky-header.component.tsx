@@ -106,9 +106,9 @@ const MobileProductStickyHeader: FC<IProps> = ({ product, variant }) => {
           type="button"
           onClick={() => router.back()}
           aria-label="Go back"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-orange-500 border border-gray-300 shadow-2xs transition-transform active:scale-95 hover:bg-orange-50"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-brand border border-gray-300 shadow-2xs transition-transform active:scale-95 hover:bg-orange-50"
         >
-          <ChevronLeft className="size-4 text-orange-500 stroke-[2.5]" />
+          <ChevronLeft className="size-4 text-brand stroke-[2.5]" />
         </button>
 
         {image_url && (
@@ -154,7 +154,7 @@ const MobileProductStickyHeader: FC<IProps> = ({ product, variant }) => {
               ? "Remove from wishlist"
               : "Add to wishlist"
           }
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-orange-500 border border-gray-300 shadow-2xs transition-transform active:scale-95 hover:bg-orange-50"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-brand border border-gray-300 shadow-2xs transition-transform active:scale-95 hover:bg-orange-50"
           disabled={
             add_to_wishlist_mutation.isPending ||
             remove_from_wishlist_mutation.isPending
@@ -177,7 +177,7 @@ const MobileProductStickyHeader: FC<IProps> = ({ product, variant }) => {
                   },
                 )
               : add_to_wishlist_mutation.mutate(
-                  { variant_id: variant.id },
+                { variant_id: variant.id },
                   {
                     onSuccess() {
                       addedToWishlistEvent({
@@ -196,8 +196,8 @@ const MobileProductStickyHeader: FC<IProps> = ({ product, variant }) => {
           <Heart
             aria-hidden={true}
             className={clsx(
-              "size-4 text-orange-500",
-              wishlist_data?.is_wishlisted && "fill-orange-500",
+              "size-4 text-brand",
+              wishlist_data?.is_wishlisted && "fill-brand",
             )}
             strokeWidth={2}
           />
@@ -208,9 +208,9 @@ const MobileProductStickyHeader: FC<IProps> = ({ product, variant }) => {
           onClick={handleShare}
           aria-label="Share Product"
           title="Share Product"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-orange-500 border border-gray-300 shadow-2xs transition-transform active:scale-95 hover:bg-orange-50"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-brand border border-gray-300 shadow-2xs transition-transform active:scale-95 hover:bg-orange-50"
         >
-          <Share className="size-4 text-orange-500 stroke-[2]" />
+          <Share className="size-4 text-brand stroke-[2]" />
         </button>
       </div>
     </div>

@@ -17,7 +17,7 @@ const CustomMarker: FC<CustomMarkerProps> = ({ type }) => {
     <div className="relative flex flex-col items-center justify-center">
       <div
         className={`relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-white shadow-xl transition-all duration-300 hover:scale-110 ${
-          is_delivery ? "bg-amber-500 text-white" : "bg-orange-500 text-white"
+          is_delivery ? "bg-amber-500 text-white" : "bg-brand text-white"
         }`}
       >
         {is_delivery ? (
@@ -30,7 +30,7 @@ const CustomMarker: FC<CustomMarkerProps> = ({ type }) => {
       {/* 3. Drop-Pin Pointer Triangle */}
       <div
         className={`-mt-1 h-2 w-2 rotate-45 border-r border-b border-white shadow-md ${
-          is_delivery ? "bg-amber-500" : "bg-orange-500"
+          is_delivery ? "bg-amber-500" : "bg-brand"
         }`}
       />
 

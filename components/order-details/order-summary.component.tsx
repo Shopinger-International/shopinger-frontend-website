@@ -37,7 +37,7 @@ const OrderSummary: FC<IProps> = ({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Customer */}
         <div className="flex gap-3 rounded-lg border border-gray-300 p-4">
-          <User className="mt-1 size-5 text-orange-500" />
+          <User className="mt-1 size-5 text-brand" />
           <div>
             <p className="text-sm font-semibold text-gray-900">
               Customer Details
@@ -51,7 +51,7 @@ const OrderSummary: FC<IProps> = ({
 
         {/* Payment */}
         <div className="flex gap-3 rounded-lg border border-gray-300 p-4">
-          <CreditCard className="mt-1 size-5 text-orange-500" />
+          <CreditCard className="mt-1 size-5 text-brand" />
           <div>
             <p className="text-sm font-semibold text-gray-900">
               Payment Method
@@ -62,7 +62,7 @@ const OrderSummary: FC<IProps> = ({
           </div>
         </div>
         <div className="flex gap-3 rounded-lg border border-gray-300 p-4 sm:col-span-2">
-          <MapPin className="mt-1 size-5 text-orange-500" />
+          <MapPin className="mt-1 size-5 text-brand" />
 
           <div className="w-full">
             {/* header */}
@@ -103,7 +103,7 @@ const OrderSummary: FC<IProps> = ({
             {/* actions */}
             <div className="mt-3 flex gap-3">
               <button
-                className="flex items-center gap-1 text-xs font-medium text-orange-500 hover:underline"
+                className="flex items-center gap-1 text-xs font-medium text-brand hover:underline"
                 onClick={() => navigator.clipboard.writeText(formatted_address)}
               >
                 <Copy className="size-3" strokeWidth={3} />
