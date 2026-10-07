@@ -187,7 +187,7 @@ const ProductInfo: FC<IProps> = ({
               product_id={product.id}
               product_reviews_link={`/${product_slug}/p/${product.id}/reviews`}
             >
-              <span className="inline-flex cursor-pointer items-center gap-1 rounded-md bg-rating px-2 py-0.5 text-xs font-bold text-white shadow-2xs transition-opacity hover:opacity-90">
+              <span className="inline-flex cursor-pointer items-center gap-1 rounded-md bg-rating-green px-2 py-0.5 text-xs font-bold text-white shadow-2xs transition-opacity hover:opacity-90">
                 <span>{Number(product.average_rating).toFixed(1)}</span>
                 <Star className="size-3 fill-white text-white" aria-hidden="true" />
                 <ChevronDown className="size-3.5 text-white" strokeWidth={2.5} />

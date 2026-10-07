@@ -76,9 +76,9 @@
   --color-brand-share: #FF6500;
 
   /* Background Utility Classes */
-  --color-background-page: #fff7ed;
-  --color-background-header: #FFF7ED;
-  --color-background-login: #FFE2D0;
+  --color-background-page: var(--background-page);
+  --color-background-header: var(--background-header);
+  --color-background-login: var(--background-login);
   --color-card-warm: #FFF4EB;
   --color-background-dark: #111827;
 
@@ -94,7 +94,7 @@
   /* Category & Badge Utility Classes */
   --color-pharmacy-blue: #2563EB;
   --color-grocery-green: #16A34A;
-  --color-rating-green: #008748;
+  --color-rating-green: var(--rating-green);
 
   /* Modal, Tooltip & Icon Utility Classes */
   --color-share-modal-title: #17233C;

@@ -210,7 +210,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
 
             {/* Bottom-Left Rating Overlay */}
             {avg_rating != null && Number(avg_rating) > 0 && (
-              <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating px-1.5 py-0.5 text-2xs font-bold text-white">
+              <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating-green px-1.5 py-0.5 text-2xs font-bold text-white">
                 <span>{Number(avg_rating).toFixed(1)}</span>
                 <Star className="size-2.5 fill-white text-white" />
               </div>
