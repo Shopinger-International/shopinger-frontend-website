@@ -1,8 +1,7 @@
-import { useLayoutEffect, useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-// types
 import type { FC } from "react";
 
 // local components
@@ -26,46 +25,6 @@ import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 // helpers
 import { cn } from "@/lib/utils";
 
-let cached_visible_height = -1;
-let cached_header_height = -1;
-let cached_hide_offset = 106;
-let cached_expanded_bottom = -1;
-
-const updateGeometryCache = (header: HTMLElement) => {
-  const h = header.offsetHeight;
-  if (cached_header_height !== h) {
-    cached_header_height = h;
-    document.documentElement.style.setProperty(
-      "--header-height",
-      `${h}px`,
-    );
-  }
-  const search_container = document.getElementById(
-    "mobile-header-search-container",
-  );
-  const search_block = search_container?.parentElement;
-
-  if (search_block && search_block.offsetHeight > 0 && search_container) {
-    cached_expanded_bottom = search_block.offsetTop + search_block.offsetHeight;
-    cached_hide_offset = Math.max(0, search_container.offsetTop - 8);
-  } else {
-    cached_expanded_bottom = h;
-    cached_hide_offset = 106;
-  }
-};
-
-const applyHeaderVisibleHeight = (is_shrunk: boolean) => {
-  const top_offset = is_shrunk ? -cached_hide_offset : 0;
-  const visible = Math.max(0, Math.round(cached_expanded_bottom + top_offset));
-  if (cached_visible_height !== visible) {
-    cached_visible_height = visible;
-    document.documentElement.style.setProperty(
-      "--header-visible-height",
-      `${visible}px`,
-    );
-  }
-};
-
 const Header: FC<{
   show_filter_sort_bar?: boolean;
   disable_side_filter?: boolean;
@@ -81,96 +40,72 @@ const Header: FC<{
 
   const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
-  const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
-
-  useLayoutEffect(() => {
-    const header = header_ref.current || document.getElementById("app-header");
-    if (!header) return;
-
-    const onResize = () => {
-      updateGeometryCache(header);
-      const is_shrunk = is_mobile ? window.scrollY >= 180 : false;
-      applyHeaderVisibleHeight(is_shrunk);
-    };
-
-    onResize();
-
-    const observer = new ResizeObserver(onResize);
-    observer.observe(header);
-
-    return () => observer.disconnect();
-  }, [is_mobile]);
+  const [is_search_fixed, setIsSearchFixed] = useState(false);
+  const top_banner_ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!is_mobile) {
-      if (header_ref.current) {
-        header_ref.current.style.transform = "translate3d(0, 0px, 0)";
-      }
-      applyHeaderVisibleHeight(false);
-      return;
-    }
+    // Reset CSS variables so main page content flows naturally in document layout below header
+    document.documentElement.style.setProperty("--header-height", "0px");
+    document.documentElement.style.setProperty("--header-visible-height", "0px");
 
     let ticking = false;
-    let is_shrunk_state: boolean | null = null;
-    const SHRINK_THRESHOLD = 180;
-
-    const updateHeaderScroll = () => {
-      ticking = false;
-      if (!header_ref.current) return;
-
-      const current_scroll_pos = window.scrollY;
-      const should_shrink = current_scroll_pos >= SHRINK_THRESHOLD;
-
-      if (is_shrunk_state !== should_shrink) {
-        is_shrunk_state = should_shrink;
-        header_ref.current.style.transform = should_shrink
-          ? `translate3d(0, -${cached_hide_offset}px, 0)`
-          : "translate3d(0, 0px, 0)";
-        applyHeaderVisibleHeight(should_shrink);
-      }
-    };
 
     const handleScroll = () => {
       if (!ticking) {
-        requestAnimationFrame(updateHeaderScroll);
+        requestAnimationFrame(() => {
+          const topBannerHeight = top_banner_ref.current?.offsetHeight || 30;
+          const shouldFix = window.scrollY >= topBannerHeight;
+          setIsSearchFixed((prev) => (prev !== shouldFix ? shouldFix : prev));
+          ticking = false;
+        });
         ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
-    updateHeaderScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [is_mobile]);
+  }, []);
 
   return (
     <header
-      ref={header_ref}
+      id="app-header"
       className={cn(
-        "fixed top-0 left-0 z-30 w-full transform-gpu transition-transform duration-300 ease-in-out will-change-transform",
+        "relative w-full bg-white text-gray-900 z-30",
         is_product_page && "hidden lg:block",
       )}
-      id="app-header"
     >
+      {/* Mobile Header: Scrollable Top + Fixed Search Bar */}
       <MobileHeader />
 
-      {/* Desktop Store Closed Banner */}
-      <div className="hidden lg:block">
+      {/* Desktop Store Closed Banner (Scrolls naturally with page) */}
+      <div ref={top_banner_ref} className="hidden lg:block">
         <StoreClosedBanner is_desktop_header />
       </div>
-      <div className="hidden flex-col gap-1 bg-background-header px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
+
+      {/* Spacer height placeholder when Search Bar row is fixed on screen to eliminate layout shifts */}
+      {is_search_fixed && <div className="hidden lg:block h-[64px]" />}
+
+      {/* Desktop Search & Main Header Row (Fixes on screen when top banner scrolls out) */}
+      <div
+        className={cn(
+          "hidden lg:grid flex-col gap-1 bg-background-header px-4 py-2.5 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8 border-b border-gray-100/20 transition-all duration-200",
+          is_search_fixed
+            ? "fixed top-0 left-0 z-30 w-full shadow-md bg-background-header/98 backdrop-blur-md"
+            : "relative w-full shadow-xs",
+        )}
+      >
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
-          <button onClick={openMegaMenuDrawer}>
+          <button onClick={openMegaMenuDrawer} aria-label="Open menu">
             <Menu className="inline h-6 w-6 text-white lg:hidden" />
           </button>
-          {/** LOGO SECTION */}
+
           <Link
             href="/"
             title="Shopinger Home"
@@ -186,6 +121,7 @@ const Header: FC<{
               className="object-contain"
             />
           </Link>
+
           <Link
             href="/account"
             aria-label="Account"
@@ -215,7 +151,6 @@ const Header: FC<{
               >
                 <span className="relative inline-block">
                   <Cart width={36} height={30} />
-
                   <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-white">
                     {cart_details?.total_items ?? 0}
                   </span>
@@ -230,6 +165,7 @@ const Header: FC<{
           <div className="hidden lg:inline">
             <AccountDropdown />
           </div>
+
           <Link
             href="/cart-checkout"
             className="hidden items-center gap-2 font-semibold text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
@@ -237,7 +173,6 @@ const Header: FC<{
           >
             <span className="relative inline-block">
               <Cart width={36} height={30} fill="black" />
-
               <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-black">
                 {cart_details?.total_items ?? 0}
               </span>
@@ -247,6 +182,7 @@ const Header: FC<{
         </div>
       </div>
 
+      {/* Category Navigation Bar (Scrolls naturally below search bar) */}
       <CategorySection />
     </header>
   );
