@@ -76,7 +76,7 @@ const LocationTooltip: FC<{
 
             <span
               className={clsx(
-                "inline-block rounded-md bg-brand-location px-2 py-0.5 text-sm font-semibold text-black transition-transform duration-100",
+                "bg-brand-location inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-black transition-transform duration-100",
               )}
             >
               <span className="flex items-center gap-1">
@@ -117,7 +117,7 @@ const LocationTooltip: FC<{
       strategy="fixed"
       static_offset={20}
       show_overlay={!selected_address}
-      handleOverlayClick={() => updateIsShown?.(true)}
+      // handleOverlayClick={() => updateIsShown?.(true)}
       content={({ handleClose }) => (
         <LocationTooltipContent
           toggle={false}
@@ -154,7 +154,7 @@ const LocationTooltip: FC<{
                   Delivery in
                 </span>
                 <div className="flex flex-row items-center gap-1">
-                  <span className="flex gap-1 rounded-md bg-brand-location px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
+                  <span className="bg-brand-location flex gap-1 rounded-md px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
                     {delivery_time} min
                   </span>
                 </div>
@@ -170,7 +170,7 @@ const LocationTooltip: FC<{
 
               <span
                 className={clsx(
-                  "inline-block rounded-md bg-brand-primary px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
+                  "bg-brand-primary inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
                 )}
               >
                 <span className="flex items-center gap-1">
