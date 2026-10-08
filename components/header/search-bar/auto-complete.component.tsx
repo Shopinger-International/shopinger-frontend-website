@@ -107,6 +107,24 @@ const AutoComplete: FC<
   const [is_deleting, setIsDeleting] = useState(false);
   const [category_index, setCategoryIndex] = useState(0);
 
+  const is_scrolling_ref = useRef(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    const handleScroll = () => {
+      is_scrolling_ref.current = true;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        is_scrolling_ref.current = false;
+      }, 150);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timer);
+    };
+  }, []);
+
   useEffect(() => {
     if (!animate_categories.length || query) return;
 
@@ -128,12 +146,13 @@ const AutoComplete: FC<
 
     //decrease the length of text if deleting else increase
     const updating_text_timeout = setTimeout(() => {
+      if (is_scrolling_ref.current) return;
       setText(
         is_deleting
           ? animate_categories[category_index].slice(0, text.length - 1)
           : animate_categories[category_index].slice(0, text.length + 1),
       );
-    }, 50);
+    }, 90);
     return () => clearTimeout(updating_text_timeout);
   }, [animate_categories, query, is_deleting, category_index, text]);
 

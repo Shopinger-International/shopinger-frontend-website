@@ -28,17 +28,35 @@ import { cn } from "@/lib/utils";
 
 let cached_visible_height = -1;
 let cached_header_height = -1;
+let cached_hide_offset = 106;
+let cached_expanded_bottom = -1;
 
-const updateVisibleHeaderHeight = (header: HTMLElement) => {
-  const top_offset = parseFloat(header.style.top || "0") || 0;
-  const search_block = document.getElementById(
+const updateGeometryCache = (header: HTMLElement) => {
+  const h = header.offsetHeight;
+  if (cached_header_height !== h) {
+    cached_header_height = h;
+    document.documentElement.style.setProperty(
+      "--header-height",
+      `${h}px`,
+    );
+  }
+  const search_container = document.getElementById(
     "mobile-header-search-container",
-  )?.parentElement;
-  const bottom =
-    search_block && search_block.offsetHeight > 0
-      ? search_block.offsetTop + search_block.offsetHeight
-      : header.offsetHeight;
-  const visible = Math.max(0, Math.round(bottom + top_offset));
+  );
+  const search_block = search_container?.parentElement;
+
+  if (search_block && search_block.offsetHeight > 0 && search_container) {
+    cached_expanded_bottom = search_block.offsetTop + search_block.offsetHeight;
+    cached_hide_offset = Math.max(0, search_container.offsetTop - 8);
+  } else {
+    cached_expanded_bottom = h;
+    cached_hide_offset = 106;
+  }
+};
+
+const applyHeaderVisibleHeight = (is_shrunk: boolean) => {
+  const top_offset = is_shrunk ? -cached_hide_offset : 0;
+  const visible = Math.max(0, Math.round(cached_expanded_bottom + top_offset));
   if (cached_visible_height !== visible) {
     cached_visible_height = visible;
     document.documentElement.style.setProperty(
@@ -68,61 +86,52 @@ const Header: FC<{
   const { data: cart_details } = useCart();
 
   useLayoutEffect(() => {
-    const header = document.getElementById("app-header");
+    const header = header_ref.current || document.getElementById("app-header");
     if (!header) return;
 
-    const setHeight = () => {
-      const h = header.offsetHeight;
-      if (cached_header_height !== h) {
-        cached_header_height = h;
-        document.documentElement.style.setProperty(
-          "--header-height",
-          `${h}px`,
-        );
-      }
-      updateVisibleHeaderHeight(header);
+    const onResize = () => {
+      updateGeometryCache(header);
+      const is_shrunk = is_mobile ? window.scrollY >= 180 : false;
+      applyHeaderVisibleHeight(is_shrunk);
     };
 
-    setHeight();
+    onResize();
 
-    const observer = new ResizeObserver(setHeight);
+    const observer = new ResizeObserver(onResize);
     observer.observe(header);
 
     return () => observer.disconnect();
-  }, []);
+  }, [is_mobile]);
+
   useEffect(() => {
-    if (!is_mobile) return;
+    if (!is_mobile) {
+      if (header_ref.current) {
+        header_ref.current.style.transform = "translate3d(0, 0px, 0)";
+      }
+      applyHeaderVisibleHeight(false);
+      return;
+    }
 
     let ticking = false;
-    let last_top_val = "";
+    let is_shrunk_state: boolean | null = null;
+    const SHRINK_THRESHOLD = 180;
 
     const updateHeaderScroll = () => {
-      if (!header_ref.current) {
-        ticking = false;
-        return;
-      }
-      const current_scroll_pos = window.scrollY;
-      const search_container = document.getElementById(
-        "mobile-header-search-container",
-      );
-      const top_spacing = 8;
-      const hide_offset = search_container
-        ? Math.max(0, search_container.offsetTop - top_spacing)
-        : 106;
-
-      // Shrink header ONLY when the top poster banner has scrolled halfway under header (~180px)
-      const SHRINK_THRESHOLD = 180;
-
-      const new_top =
-        current_scroll_pos < SHRINK_THRESHOLD ? "0px" : `-${hide_offset}px`;
-      if (last_top_val !== new_top) {
-        header_ref.current.style.top = new_top;
-        last_top_val = new_top;
-      }
-      updateVisibleHeaderHeight(header_ref.current);
-
       ticking = false;
+      if (!header_ref.current) return;
+
+      const current_scroll_pos = window.scrollY;
+      const should_shrink = current_scroll_pos >= SHRINK_THRESHOLD;
+
+      if (is_shrunk_state !== should_shrink) {
+        is_shrunk_state = should_shrink;
+        header_ref.current.style.transform = should_shrink
+          ? `translate3d(0, -${cached_hide_offset}px, 0)`
+          : "translate3d(0, 0px, 0)";
+        applyHeaderVisibleHeight(should_shrink);
+      }
     };
+
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(updateHeaderScroll);
@@ -139,11 +148,12 @@ const Header: FC<{
       window.removeEventListener("scroll", handleScroll);
     };
   }, [is_mobile]);
+
   return (
     <header
       ref={header_ref}
       className={cn(
-        "fixed top-0 z-30 w-full transition-[top] duration-300 ease-in-out",
+        "fixed top-0 left-0 z-30 w-full transform-gpu transition-transform duration-300 ease-in-out will-change-transform",
         is_product_page && "hidden lg:block",
       )}
       id="app-header"
