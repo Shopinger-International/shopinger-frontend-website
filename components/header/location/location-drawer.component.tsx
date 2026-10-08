@@ -27,14 +27,14 @@ const LocationDrawer: FC<IProps> = ({ toggle, open, onClose }) => {
       {/* Backdrop */}
       <div
         aria-hidden="true"
-        className="fixed inset-0 bg-black/40 transition-opacity duration-300 ease-out data-closed:opacity-0"
+        className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-out data-closed:opacity-0"
       />
 
       {/* Drawer */}
       <div className="fixed inset-0 flex items-end justify-center">
         <DialogPanel
           transition
-          className="relative h-full w-full transform overflow-hidden bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out outline-none data-closed:translate-y-full"
+          className="relative h-[65vh] w-full transform overflow-hidden bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out outline-none data-closed:translate-y-full"
         >
           {/* Content */}
           <div className="h-full overflow-y-auto">
