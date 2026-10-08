@@ -26,6 +26,9 @@ import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 // helpers
 import { cn } from "@/lib/utils";
 
+let cached_visible_height = -1;
+let cached_header_height = -1;
+
 const updateVisibleHeaderHeight = (header: HTMLElement) => {
   const top_offset = parseFloat(header.style.top || "0") || 0;
   const search_block = document.getElementById(
@@ -35,10 +38,14 @@ const updateVisibleHeaderHeight = (header: HTMLElement) => {
     search_block && search_block.offsetHeight > 0
       ? search_block.offsetTop + search_block.offsetHeight
       : header.offsetHeight;
-  document.documentElement.style.setProperty(
-    "--header-visible-height",
-    `${Math.max(0, bottom + top_offset)}px`,
-  );
+  const visible = Math.max(0, Math.round(bottom + top_offset));
+  if (cached_visible_height !== visible) {
+    cached_visible_height = visible;
+    document.documentElement.style.setProperty(
+      "--header-visible-height",
+      `${visible}px`,
+    );
+  }
 };
 
 const Header: FC<{
@@ -65,10 +72,14 @@ const Header: FC<{
     if (!header) return;
 
     const setHeight = () => {
-      document.documentElement.style.setProperty(
-        "--header-height",
-        `${header.offsetHeight + 12}px`,
-      );
+      const h = header.offsetHeight;
+      if (cached_header_height !== h) {
+        cached_header_height = h;
+        document.documentElement.style.setProperty(
+          "--header-height",
+          `${h}px`,
+        );
+      }
       updateVisibleHeaderHeight(header);
     };
 
@@ -82,15 +93,15 @@ const Header: FC<{
   useEffect(() => {
     if (!is_mobile) return;
 
-    let prev_scroll_pos = window.scrollY;
+    let ticking = false;
+    let last_top_val = "";
 
-    const handleScroll = () => {
+    const updateHeaderScroll = () => {
+      if (!header_ref.current) {
+        ticking = false;
+        return;
+      }
       const current_scroll_pos = window.scrollY;
-
-      if (!header_ref.current) return;
-
-      // iOS rubber-band / pull-to-refresh
-      // Always keep the header visible at the top.
       const search_container = document.getElementById(
         "mobile-header-search-container",
       );
@@ -99,22 +110,30 @@ const Header: FC<{
         ? Math.max(0, search_container.offsetTop - top_spacing)
         : 106;
 
-      if (current_scroll_pos <= 10) {
-        // At top of page: show full header with categories bar
-        header_ref.current.style.top = "0";
-      } else {
-        // Once scrolled down: keep header collapsed so only SearchBar is visible
-        header_ref.current.style.top = `-${hide_offset}px`;
+      // Shrink header ONLY when the top poster banner has scrolled halfway under header (~180px)
+      const SHRINK_THRESHOLD = 180;
+
+      const new_top =
+        current_scroll_pos < SHRINK_THRESHOLD ? "0px" : `-${hide_offset}px`;
+      if (last_top_val !== new_top) {
+        header_ref.current.style.top = new_top;
+        last_top_val = new_top;
       }
       updateVisibleHeaderHeight(header_ref.current);
 
-      prev_scroll_pos = current_scroll_pos;
+      ticking = false;
+    };
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateHeaderScroll);
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
-    handleScroll();
+    updateHeaderScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -124,7 +143,7 @@ const Header: FC<{
     <header
       ref={header_ref}
       className={cn(
-        "fixed top-0 z-30 w-full transition-all duration-200 ease-in",
+        "fixed top-0 z-30 w-full transition-[top] duration-300 ease-in-out",
         is_product_page && "hidden lg:block",
       )}
       id="app-header"

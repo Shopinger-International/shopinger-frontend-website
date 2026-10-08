@@ -82,10 +82,8 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   force_show = false,
   is_desktop_header = false,
 }) => {
-  const [is_closed, setIsClosed] = useState<boolean>(() => {
-    if (force_show) return true;
-    return isStoreClosed();
-  });
+  const [mounted, setMounted] = useState(false);
+  const [is_closed, setIsClosed] = useState<boolean>(force_show);
 
   const [time_remaining, setTimeRemaining] = useState({
     hrs: "00",
@@ -94,6 +92,7 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
   });
 
   useEffect(() => {
+    setMounted(true);
     // Set live time and store closed status on client mount using client timezone
     setTimeRemaining(getTimeRemaining());
     if (!force_show) {
@@ -109,6 +108,11 @@ const StoreClosedBanner: FC<IStoreClosedBannerProps> = ({
 
     return () => clearInterval(timer);
   }, [force_show]);
+
+  // Do not render on server / before hydration unless force_show is true
+  if (!mounted && !force_show) {
+    return null;
+  }
 
   // Hide immediately if force_show is false and store is not closed (7:00 AM - 9:59 PM)
   if (!force_show && !is_closed) {

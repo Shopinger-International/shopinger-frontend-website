@@ -226,6 +226,12 @@ const AutoComplete: FC<
   useEffect(() => {
     if (!autocomplete_container_ref.current) return;
 
+    if (autocomplete_instance_ref.current) {
+      try {
+        autocomplete_instance_ref.current.destroy();
+      } catch (e) {}
+    }
+
     const autocomplete_instance = autocomplete({
       ...auto_complete_props,
       insights: true,
@@ -349,27 +355,22 @@ const AutoComplete: FC<
     autocomplete_instance_ref.current = autocomplete_instance;
 
     const handleScroll = (event: Event) => {
-      const input = autocomplete_container_ref.current?.querySelector(
-        "input",
-      ) as HTMLInputElement | null;
-      //if input has value and show animation is true then make show animation false
-      if (show_animation && input?.value) {
-        setShowAnimation(false);
-      }
-      // Check if the scroll target is NOT inside the autocomplete panel
+      // Only process scroll events if autocomplete is currently open
+      if (!(autocomplete_instance as any).isOpen && !(autocomplete_instance as any).state?.isOpen) return;
+
       const is_scrolling_inside_panel = root_ref.current?.contains(
         event.target as Node,
       );
 
       if (!is_scrolling_inside_panel) {
         autocomplete_instance.setIsOpen(false);
-        setQuery("");
       }
     };
     window.addEventListener("scroll", handleScroll, true);
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
       autocomplete_instance.destroy();
+      autocomplete_instance_ref.current = null;
     };
   }, [plugins]);
 
@@ -386,14 +387,9 @@ const AutoComplete: FC<
       });
     };
 
-    // Watch for the detached modal being added to the DOM
-    const observer = new MutationObserver(hideSubmitBtn);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Also run once immediately
     hideSubmitBtn();
-
-    return () => observer.disconnect();
+    const interval = setInterval(hideSubmitBtn, 500);
+    return () => clearInterval(interval);
   }, [hide_submit_button]);
 
   return (

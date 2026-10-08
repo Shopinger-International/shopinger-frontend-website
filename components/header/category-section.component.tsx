@@ -36,25 +36,20 @@ const CategorySection: FC = () => {
   const hideNavRef = useRef(false);
 
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-    let lastDirection: "up" | "down" | null = null;
-    let directionStartY = window.scrollY;
-
-    const DIRECTION_THRESHOLD = 40;
+    let ticking = false;
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY <= 106) {
-        if (hideNavRef.current) {
-          hideNavRef.current = false;
-          setHideNav(false);
-        }
-      } else {
-        if (!hideNavRef.current) {
-          hideNavRef.current = true;
-          setHideNav(true);
-        }
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;          
+          const shouldHide = currentScrollY > 106;
+          if (hideNavRef.current !== shouldHide) {
+            hideNavRef.current = shouldHide;
+            setHideNav(shouldHide);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
@@ -103,9 +98,8 @@ const CategorySection: FC = () => {
     <>
       <div
         className={clsx(
-          "bg-white px-4 transition-[padding] duration-300 ease-in-out",
+          "bg-white px-4",
           hide_nav ? "py-0" : "py-0.5",
-          "mb-2",
         )}
       >
         <div className="flex items-center justify-between gap-4 text-brand">
