@@ -135,7 +135,7 @@ const Header: FC<{
       <div className="hidden lg:block">
         <StoreClosedBanner is_desktop_header />
       </div>
-      <div className="hidden flex-col gap-1 bg-background-header px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
+      <div className="bg-background-header hidden flex-col gap-1 px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
         {/* LEFT: Menu + Logo */}
         <div className="order-1 flex items-center gap-2">
           <button onClick={openMegaMenuDrawer}>
