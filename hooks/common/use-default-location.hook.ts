@@ -11,7 +11,7 @@ import { useAddressDrawerContext } from "@/provider/selected-address-provider.co
 import { getUserLocation } from "@/helpers/address.helper";
 
 const useDefaultLocationTooltipOpen = () => {
-  const [default_open, setIsDefaultOpen] = useState<boolean>(false);
+  const [default_open, setIsDefaultOpen] = useState<boolean>(true);
   const { is_shown, selected_address, updateSelectedAddress } =
     useLocationTooltipStateContext();
   const { data: user_details } = useUserDetails();
