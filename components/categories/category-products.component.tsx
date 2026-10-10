@@ -291,7 +291,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       </SortFilterDrawer>
       <div className="flex space-x-4 px-4">
         {category_type && category_slug && (
-          <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
+          <div className="sticky top-(--header-visible-height) hidden h-[calc(100vh-var(--header-visible-height))] min-w-70 self-start overflow-y-auto lg:block">
             {is_category_specific_filters_pending ? (
               <SideFiltersSkeleton />
             ) : (
@@ -308,7 +308,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         )}
 
         <div className="min-w-0 flex-1 space-y-4">
-          <FilterSortBar className="sticky top-(--header-visible-height) lg:top-(--header-height) z-[31] lg:z-20 -mx-4 border-y border-gray-200 transition-[top] duration-200 ease-in" />
+          <FilterSortBar className="sticky top-(--header-visible-height) z-20 -mx-4 border-y border-gray-200" />
           <div className="hidden lg:block">
             {is_category_sorting_filters_pending ? (
               <SortFilterHeaderSkeleton />
