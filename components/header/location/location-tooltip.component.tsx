@@ -109,7 +109,7 @@ const LocationTooltip: FC<{
       trigger="click"
       toggle={!default_open}
       offset_distance={12}
-      default_open={default_open && !is_shown}
+      default_open={selected_address ? false : default_open && !is_shown}
       className={clsx(
         "z-50 w-3/4 rounded-xl border border-gray-300 bg-white shadow-lg sm:w-100",
       )}

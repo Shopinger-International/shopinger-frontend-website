@@ -21,6 +21,7 @@ const LocationDrawer: FC<IProps> = ({ toggle, open, onClose }) => {
   return (
     <Dialog
       open={open}
+      transition
       onClose={() => toggle && onClose()}
       className="relative z-50"
     >

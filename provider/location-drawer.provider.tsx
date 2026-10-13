@@ -7,6 +7,7 @@ import LocationDrawer from "@/components/header/location/location-drawer.compone
 import useDefaultLocationTooltipOpen from "@/hooks/common/use-default-location.hook";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
+import { useLocationTooltipStateContext } from "./location-tooltip.provider";
 
 type ILocationDrawerContext = {
   is_drawer_open: boolean;
@@ -27,7 +28,9 @@ const LocationDrawerProvider: FC<{
   const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const { default_open, updateDefaultOpen } = useDefaultLocationTooltipOpen();
-  const [is_drawer_open, setIsDrawerOpen] = useState(false);
+  const { selected_address } = useLocationTooltipStateContext();
+
+  const [is_drawer_open, setIsDrawerOpen] = useState(true);
   if (is_mobile && is_mounted) {
     return (
       <LocationDrawerContext.Provider
@@ -40,7 +43,7 @@ const LocationDrawerProvider: FC<{
       >
         <LocationDrawer
           toggle={!default_open}
-          open={default_open || is_drawer_open}
+          open={selected_address ? false : default_open || is_drawer_open}
           onClose={() => {
             updateDefaultOpen(false);
             setIsDrawerOpen(false);

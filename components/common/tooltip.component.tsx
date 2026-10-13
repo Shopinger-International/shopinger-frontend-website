@@ -58,6 +58,7 @@ const Tooltip: FC<TooltipProps> = ({
   handleOverlayClick,
 }) => {
   const [open, setOpen] = useState(false);
+  const [shake, setShake] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
 
   const { refs, floatingStyles, context } = useFloating({
@@ -103,6 +104,12 @@ const Tooltip: FC<TooltipProps> = ({
     click,
     role,
   ]);
+  useEffect(() => {
+    if (!shake) return;
+
+    const timer = setTimeout(() => setShake(false), 500);
+    return () => clearTimeout(timer);
+  }, [shake]);
 
   useEffect(() => {
     setOpen(default_open);
@@ -125,6 +132,7 @@ const Tooltip: FC<TooltipProps> = ({
               className="z-100 bg-black/40"
               lockScroll
               onClick={() => {
+                setShake(true);
                 setOpen(true); // remove it when location tooltip have been be shown until user doesn't provide his/her location
                 handleOverlayClick?.();
               }}
@@ -150,7 +158,12 @@ const Tooltip: FC<TooltipProps> = ({
                 filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
               }}
             />
-            <div className="overflow-hidden rounded-lg outline-none">
+            <div
+              className={clsx(
+                "overflow-hidden rounded-lg outline-none",
+                shake && "animate-[shake_0.5s_ease-in-out]",
+              )}
+            >
               {content({ handleClose: () => setOpen(false) })}
             </div>
           </div>
