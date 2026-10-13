@@ -11,7 +11,7 @@ import webAxios from "@/lib/axios/web.lib";
 export const getMappings = async (
   category_id: number,
 ): Promise<ICategoryAttributeMapping[]> => {
-  const { data } = await webAxios.get<{
+  const { data } = await webAxios().get<{
     data: ICategoryAttributeMapping[];
   }>(`/list-category-attributes/${category_id}?type=subsub`, {
     headers: {

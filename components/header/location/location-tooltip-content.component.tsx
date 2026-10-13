@@ -36,7 +36,12 @@ const LocationTooltipContent: FC<{
 }> = ({ toggle, handleClose }) => {
   const [location_access_enabled, setLocationAccessEnabled] = useState(true);
   const current_location_subtitle_ref = useRef<HTMLParagraphElement>(null);
-  const { updateSelectedAddress } = useLocationTooltipStateContext();
+  const {
+    updateSelectedAddress,
+    updateVendorId,
+    updateDistance,
+    updateDeliveryTime,
+  } = useLocationTooltipStateContext();
   const { openModal: openAddressModal, updateState } =
     useAddressDrawerContext();
   const { openModal: openLoginModal } = useLoginModalContext();
@@ -89,13 +94,18 @@ const LocationTooltipContent: FC<{
 
   const handleSelect = (option: IOptionType) => {
     const mapped = mapPlaceToForm(option.data);
-
+    const latitude = option.data.location.latitude;
+    const longitude = option.data.location.longitude;
     verify_pincode_serviceability_mutation
       .mutateAsync({
-        pin_code: mapped.pincode,
+        latitude,
+        longitude,
       })
       .then((data) => {
         updateSelectedAddress?.(mapped.area);
+        updateVendorId?.(data.data.vendor_id);
+        updateDeliveryTime?.(data.data.delivery_time_minutes);
+        updateDistance?.(data.data.distance_km);
         handleClose();
       })
       .catch((err) => {
@@ -117,14 +127,18 @@ const LocationTooltipContent: FC<{
     }
     setIsLocating(true);
     getUserLocation({
-      handleSuccess(mapped) {
+      handleSuccess(coords, mapped) {
         verify_pincode_serviceability_mutation.mutate(
           {
-            pin_code: mapped.pincode,
+            latitude: coords.latitude,
+            longitude: coords.longitude,
           },
           {
-            onSuccess() {
+            onSuccess(data) {
               updateSelectedAddress?.(mapped.area);
+              updateVendorId?.(data.data.vendor_id);
+              updateDeliveryTime?.(data.data.delivery_time_minutes);
+              updateDistance?.(data.data.distance_km);
               handleClose();
             },
             onError(err) {

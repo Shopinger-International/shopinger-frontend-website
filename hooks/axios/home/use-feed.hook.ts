@@ -41,23 +41,26 @@ export type IResponse = {
   };
 };
 
-export const getFeed = async (cookie?: string) => {
-  const { data } = await Axios.get<IResponse>("/home-feed", {
-    headers: cookie
-      ? {
-          cookie,
-        }
-      : {},
-  });
+export const getFeed = async (vendor_id: number, cookie?: string) => {
+  const { data } = await Axios.get<IResponse>(
+    `/home-feed?vendor_id=${vendor_id}`,
+    {
+      headers: cookie
+        ? {
+            cookie,
+          }
+        : {},
+    },
+  );
   return data.data;
 };
 
-const useFeed = () => {
+const useFeed = (vendor_id?: number) => {
   return useQuery<IResponse["data"]>({
-    queryKey: ["feed"],
-    async queryFn() {
-      return getFeed();
-    },
+    queryKey: ["feed", vendor_id],
+    queryFn: () => getFeed(vendor_id!),
+    enabled: !!vendor_id,
   });
 };
+
 export default useFeed;

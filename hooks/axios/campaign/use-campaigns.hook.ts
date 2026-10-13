@@ -32,7 +32,7 @@ export const getCampaigns = async ({
   display_scope?: string;
   category_slug?: string;
 }) => {
-  const { data } = await webAxios.get<IResponse>(`/get-campaigns`, {
+  const { data } = await webAxios().get<IResponse>(`/get-campaigns`, {
     params: {
       is_active: true,
       status: "active",

@@ -17,7 +17,7 @@ type IResponse = {
 const useContactSupportMutation = () => {
   return useMutation<IResponse, Error, IContactUsFormData>({
     async mutationFn(payload) {
-      const { data } = await webAxios.post<IResponse>(
+      const { data } = await webAxios().post<IResponse>(
         "/contact-support",
         payload,
       );

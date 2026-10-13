@@ -22,7 +22,7 @@ const useGetCategoryBySlug = ({
   return useQuery<IResponse["category"]>({
     queryKey: ["category-by-slug", category_slug, category_type],
     async queryFn() {
-      const { data } = await webAxios<IResponse>(
+      const { data } = await webAxios()<IResponse>(
         `/get-category-by-slug/${category_slug}?category_type=${category_type}`,
       );
       return data.category;
