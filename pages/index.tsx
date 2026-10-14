@@ -175,7 +175,7 @@ const HomePage: NextPageWithLayout = () => {
           )}
         </LazyHomeSection>
 
-        <NProducts />
+        {home_feed && <NProducts />}
       </div>
     </>
   );
