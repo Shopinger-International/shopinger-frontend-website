@@ -53,8 +53,6 @@ const MobileHeader: FC = () => {
   const { data: user_details } = useUserDetails();
   const { delivery_time, distance, selected_address } =
     useLocationTooltipStateContext();
-  console.log(selected_address);
-  console.log(delivery_time);
 
   const is_mounted = useIsMounted();
   const is_grocery =

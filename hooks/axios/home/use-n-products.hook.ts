@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 // helpers
 import Axios from "@/lib/axios/private.lib";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 export type IResponseType = {
   success: boolean;
@@ -22,7 +23,7 @@ export type IResponseType = {
     stock: number;
     avg_rating: number;
     is_wishlisted: boolean;
-    have_variants:boolean;
+    have_variants: boolean;
     sub_sub_category_id: number;
     created_at: string;
     bought_last_month: number;
@@ -30,15 +31,19 @@ export type IResponseType = {
   }>;
 };
 const useNProducts = ({ limit = 10 }: { limit: number }) => {
+  const { vendor_id } = useLocationTooltipStateContext();
   return useInfiniteQuery({
     queryKey: ["n-products", limit],
     async queryFn({ pageParam }) {
-      const response = await Axios.get<IResponseType>("/n-products", {
-        params: {
-          page: pageParam,
-          limit,
+      const response = await Axios.get<IResponseType>(
+        `/n-products?vendor_id=${vendor_id}`,
+        {
+          params: {
+            page: pageParam,
+            limit,
+          },
         },
-      });
+      );
       return response.data;
     },
     getNextPageParam: (lastPage) => {
