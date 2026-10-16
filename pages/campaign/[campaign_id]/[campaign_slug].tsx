@@ -24,7 +24,7 @@ import webAxios from "@/lib/axios/web.lib";
 
 export const getCampaign = async (campaign_id: number) => {
   try {
-    const { data } = await webAxios.get<{
+    const { data } = await webAxios().get<{
       success: boolean;
       data: ICampaign;
     }>(`/get-campaign/${campaign_id}`);

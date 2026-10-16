@@ -53,7 +53,7 @@ export const getProduct = async (
 }> => {
   const {
     data: { product, category_mappings },
-  } = await webAxios.get<{
+  } = await webAxios().get<{
     success: boolean;
     product: IProduct;
     category_mappings: ICategoryAttributeMapping[];
@@ -70,7 +70,7 @@ type IProductObject = {
   title: string;
 };
 const getAllProducts = async (): Promise<Array<IProductObject>> => {
-  const { data } = await webAxios.get<{
+  const { data } = await webAxios().get<{
     success: boolean;
     products: Array<IProductObject>;
   }>(`/get-all-products`);
@@ -129,12 +129,19 @@ const ProductPage: NextPageWithLayout<IProps> = ({
     system_sku: "",
     variant_attribute_values: [],
     variant_inventory: { stock: 0, low_stock_threshold: 0 },
-    variant_pricing: { mrp: 0, selling_price: 0, selling_price_with_commission: 0, variant_id: variant_id || 0 },
+    variant_pricing: {
+      mrp: 0,
+      selling_price: 0,
+      selling_price_with_commission: 0,
+      variant_id: variant_id || 0,
+    },
     variant_medias: [],
   };
   const variant = (product.variants?.find(
     (variant) => variant.id == variant_id,
-  ) || product.variants?.[0] || default_variant) as IVariant;
+  ) ||
+    product.variants?.[0] ||
+    default_variant) as IVariant;
   const { data: top_products = [] } = useTopProducts(product_id);
   const { data: related_products = [] } = useRelatedProducts(product_id);
   const [report_modal_state, setReportModalState] = useState<IReportModalState>(
@@ -319,7 +326,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
       </div>
 
       {formatted_related_products_list.length > 0 && (
-        <div className="mx-auto max-w-6xl px-4 my-6">
+        <div className="mx-auto my-6 max-w-6xl px-4">
           <HomeProductRow
             title="Related Products"
             products={formatted_related_products_list}
