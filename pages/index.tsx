@@ -16,6 +16,7 @@ import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.compo
 import NProducts from "@/components/home/n-products/n-products.component";
 import Campaign from "@/components/home/campaign.component";
 import CampaignTimer from "@/components/header/campaign-timer.component";
+import ShopByCategory from "@/components/home/category-section";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -89,7 +90,7 @@ const HomePage: NextPageWithLayout = () => {
           <Campaign campaigns={campaigns} />
           <CampaignTimer />
           {/* <HighlightsBar /> */}
-
+          <ShopByCategory />
           {/* Continue Shopping */}
           <LazyHomeSection>
             {continue_shopping_recommendations.length > 0 && (
