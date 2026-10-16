@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { ChevronRight, PackageCheck } from "lucide-react";
+import { ChevronRight, PackageCheck, X } from "lucide-react";
 import useGetOrders from "@/hooks/axios/order/use-get-order.hook";
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
 import clsx from "clsx";
-
 // types
 import type { IOrderStatus } from "@/types/order";
 
@@ -60,6 +59,37 @@ const ActiveOrderStatusBanner = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const delivered_or_cancelled_orders = orders.filter(
+      (order) => order.status === "DELIVERED" || order.status === "CANCELLED",
+    );
+
+    if (!delivered_or_cancelled_orders.length) return;
+
+    const timeout = window.setTimeout(() => {
+      setDismissedIds((previous) => {
+        const next = [
+          ...new Set([
+            ...previous,
+            ...delivered_or_cancelled_orders.map((order) => order.id),
+          ]),
+        ];
+
+        try {
+          localStorage.setItem(
+            "dismissed_order_banner_ids",
+            JSON.stringify(next),
+          );
+        } catch {
+          // Ignore storage errors
+        }
+
+        return next;
+      });
+    }, 10000); // 10 seconds
+
+    return () => window.clearTimeout(timeout);
+  }, [orders]);
   // Show banner ONLY on the home page ('/')
   if (pathname !== "/") return null;
   if (!is_mounted || !orders.length) return null;
@@ -109,7 +139,7 @@ const ActiveOrderStatusBanner = ({
   return (
     <div
       className={clsx(
-        "fixed left-1/2 -translate-x-1/2 z-40 w-[92%] sm:w-full max-w-md transition-all duration-300 ease-in-out pointer-events-auto",
+        "pointer-events-auto fixed left-1/2 z-40 w-[92%] max-w-md -translate-x-1/2 transition-all duration-300 ease-in-out sm:w-full",
         has_bottom_nav
           ? is_scrolling_down
             ? "bottom-4 lg:bottom-6"
@@ -121,21 +151,21 @@ const ActiveOrderStatusBanner = ({
         href="/order-history"
         onClick={handleBannerClick}
         className={clsx(
-          "group flex items-center justify-between gap-3.5 rounded-2xl p-2.5 text-white shadow-xl border border-white/20 backdrop-blur-sm active:scale-[0.99] transition-all duration-200 cursor-pointer",
+          "group flex cursor-pointer items-center justify-between gap-3.5 rounded-2xl border border-white/20 p-2.5 text-white shadow-xl backdrop-blur-sm transition-all duration-200 active:scale-[0.99]",
           is_cancelled
-            ? "bg-red-600 border-red-500 shadow-red-500/25 hover:shadow-2xl hover:shadow-red-500/35"
-            : "bg-emerald-600 border-emerald-500 shadow-emerald-600/25 hover:shadow-2xl hover:shadow-emerald-600/35",
+            ? "border-red-500 bg-red-600 shadow-red-500/25 hover:shadow-2xl hover:shadow-red-500/35"
+            : "border-emerald-500 bg-emerald-600 shadow-emerald-600/25 hover:shadow-2xl hover:shadow-emerald-600/35",
         )}
       >
-        <div className="flex items-center gap-3 min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           {/* Item image container */}
-          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-200 p-0.5 shadow-inner border border-gray-300/50">
+          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-300/50 bg-gray-200 p-0.5 shadow-inner">
             {item_image ? (
               <Image
                 src={item_image}
                 alt="Order item"
                 fill
-                className="object-cover rounded-lg"
+                className="rounded-lg object-cover"
               />
             ) : (
               <PackageCheck
@@ -148,8 +178,8 @@ const ActiveOrderStatusBanner = ({
 
             {/* Subtle corner badge on product image for multiple items */}
             {total_items > 1 && (
-              <div className="absolute bottom-0 right-0 z-10 flex items-center justify-center rounded-tl-md bg-white/95 px-1.5 py-0.5 shadow-sm border-t border-l border-gray-300">
-                <span className="text-[10px] font-black text-slate-900 leading-none">
+              <div className="absolute right-0 bottom-0 z-10 flex items-center justify-center rounded-tl-md border-t border-l border-gray-300 bg-white/95 px-1.5 py-0.5 shadow-sm">
+                <span className="text-[10px] leading-none font-black text-slate-900">
                   {total_items - 1}+
                 </span>
               </div>
@@ -157,17 +187,31 @@ const ActiveOrderStatusBanner = ({
           </div>
 
           {/* Status info box */}
-          <div className="flex flex-col min-w-0 flex-1">
-            <p className="text-sm font-bold tracking-tight text-white leading-tight">
+          <div className="flex min-w-0 flex-1 flex-col">
+            <p className="text-sm leading-tight font-bold tracking-tight text-white">
               {status_text}
             </p>
           </div>
         </div>
 
         {/* Action badge */}
-        <div className="flex shrink-0 items-center gap-1 rounded-full bg-white/20 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md group-hover:bg-white/30 transition-all">
+        <div className="flex shrink-0 items-center gap-1 rounded-full bg-white/20 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition-all group-hover:bg-white/30">
           <span>{is_cancelled ? "View" : "Track"}</span>
           <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          {(is_delivered || is_cancelled) && (
+            <button
+              type="button"
+              aria-label="Dismiss order notification"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                handleBannerClick();
+              }}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 transition hover:bg-white/30"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </Link>
     </div>
@@ -175,4 +219,3 @@ const ActiveOrderStatusBanner = ({
 };
 
 export default ActiveOrderStatusBanner;
-
