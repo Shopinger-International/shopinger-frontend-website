@@ -8,7 +8,6 @@ import type { FC } from "react";
 // local components
 import SearchBar from "@/components/header/search-bar/search-bar.component";
 import Cart from "@/components/common/icons/cart.icon";
-import CategorySection from "@/components/header/category-section.component";
 import AccountDropdown from "@/components/header/account-dropdown.component";
 import LocationTooltip from "@/components/header/location/location-tooltip.component";
 import MobileHeader from "@/components/header/mobile-header.component";
@@ -218,7 +217,7 @@ const Header: FC<{
         </div>
       </div>
 
-      <CategorySection />
+      {/* <CategorySection /> */}
     </header>
   );
 };
