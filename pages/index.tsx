@@ -199,8 +199,8 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
         }),
     }),
     query_client.prefetchQuery({
-      queryKey: ["feed"],
-      queryFn: () => getFeed(cookie),
+      queryKey: ["feed", null],
+      queryFn: () => getFeed(undefined, cookie),
     }),
   ]);
   const dehydratedState = dehydrate(query_client);
