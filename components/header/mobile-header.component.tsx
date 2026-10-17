@@ -68,13 +68,16 @@ const MobileHeader: FC = () => {
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 px-4 py-3 transition-colors lg:hidden",
-        is_grocery
-          ? "bg-green-50"
-          : is_pharmacy
-            ? "bg-blue-50"
-            : "bg-orange-50",
+        "relative flex flex-col gap-2 overflow-hidden px-4 py-3",
+        "border-b border-amber-200/70 lg:hidden",
+        "bg-[#fff8eb]",
       )}
+      style={{
+        backgroundImage: "url('/diwali-bg.png')",
+        backgroundSize: "100% 100%",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
     >
       {/* Store Closed Banner */}
       <StoreClosedBanner className="-mt-1 mb-1 w-full" />
