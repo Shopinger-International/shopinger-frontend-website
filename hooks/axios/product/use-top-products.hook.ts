@@ -27,7 +27,7 @@ const getTopProducts = async (
   try {
     const {
       data: { top_products },
-    } = await webAxios.get<{
+    } = await webAxios().get<{
       success: boolean;
       top_products: Array<
         Omit<IProduct, "variants"> & {

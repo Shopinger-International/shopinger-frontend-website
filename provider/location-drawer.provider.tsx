@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 // types
 import type { FC, ReactNode } from "react";
 
@@ -29,8 +29,12 @@ const LocationDrawerProvider: FC<{
   const is_mobile = useIsMobile();
   const { default_open, updateDefaultOpen } = useDefaultLocationTooltipOpen();
   const { selected_address } = useLocationTooltipStateContext();
-
-  const [is_drawer_open, setIsDrawerOpen] = useState(true);
+  useEffect(() => {
+    if (is_mounted && is_mobile && !selected_address) {
+      updateDefaultOpen(true);
+    }
+  }, [is_mounted, is_mobile, selected_address, updateDefaultOpen]);
+  const [is_drawer_open, setIsDrawerOpen] = useState(false);
   if (is_mobile && is_mounted) {
     return (
       <LocationDrawerContext.Provider
@@ -43,7 +47,7 @@ const LocationDrawerProvider: FC<{
       >
         <LocationDrawer
           toggle={!default_open}
-          open={selected_address ? false : default_open || is_drawer_open}
+          open={default_open || is_drawer_open}
           onClose={() => {
             updateDefaultOpen(false);
             setIsDrawerOpen(false);

@@ -93,7 +93,10 @@ export const getUserLocation = ({
   handleSuccess,
   handleError,
 }: {
-  handleSuccess: (data: ReturnType<typeof mapGeocodeToForm>) => void;
+  handleSuccess: (
+    data: GeolocationCoordinates,
+    address: ReturnType<typeof mapGeocodeToForm>,
+  ) => void;
   handleError: () => void;
 }) => {
   navigator.geolocation.getCurrentPosition(
@@ -101,7 +104,7 @@ export const getUserLocation = ({
       const { latitude, longitude } = pos.coords;
       getAddressFromCoords(latitude, longitude).then((data) => {
         const mapped = mapGeocodeToForm(data);
-        handleSuccess(mapped);
+        handleSuccess(pos.coords, mapped);
       });
     },
     () => {

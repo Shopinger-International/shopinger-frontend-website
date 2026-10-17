@@ -41,6 +41,7 @@ import createHomeJSONLD from "@/seo/home.jsonld";
 // provider
 import FooterStateProvider from "@/provider/footer-state-provider";
 import LazyHomeSection from "@/components/home/lazy-home-section";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 type IProps = {
   dehydratedState: DehydratedState;
@@ -48,7 +49,8 @@ type IProps = {
 
 const HomePage: NextPageWithLayout = () => {
   useSnackbarOffset({});
-  const { data: home_feed } = useFeed();
+  const { vendor_id } = useLocationTooltipStateContext();
+  const { data: home_feed } = useFeed(vendor_id);
   const { data: campaigns = [] } = useAllCamapigns({ display_scope: "HOME" });
 
   const product_recommendations = home_feed?.product_recommendations ?? [];
@@ -174,7 +176,7 @@ const HomePage: NextPageWithLayout = () => {
           )}
         </LazyHomeSection>
 
-        <NProducts />
+        {home_feed && <NProducts />}
       </div>
     </>
   );
@@ -198,8 +200,8 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
         }),
     }),
     query_client.prefetchQuery({
-      queryKey: ["feed"],
-      queryFn: () => getFeed(cookie),
+      queryKey: ["feed", null],
+      queryFn: () => getFeed(undefined, cookie),
     }),
   ]);
   const dehydratedState = dehydrate(query_client);

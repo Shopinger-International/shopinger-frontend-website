@@ -33,6 +33,7 @@ import {
   mapPlaceToForm,
   mapGeocodeToForm,
   getAddressFromCoords,
+  getUserLocation,
 } from "@/helpers/address.helper";
 import { enqueueSnackbar } from "notistack";
 
@@ -44,6 +45,7 @@ import useCreateAddressMutation from "@/hooks/axios/address/use-create-address-m
 import useUpdateAddressMutation from "@/hooks/axios/address/use-update-address-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pincode-serviceability.hook";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 const address_types = [
   { id: "home", label: "Home", icon: Home, value: ADDRESS_TYPE.HOME },
@@ -78,6 +80,12 @@ const MobileAddressModal: FC<IProps> = ({
   const [bottom_bar_height, setBottomBarHeight] = useState(168); // in pixel;
   const formik_ref = useRef<FormikProps<IFormAddressType>>(null);
   const { data: user_detail } = useUserDetails();
+  const {
+    updateSelectedAddress,
+    updateVendorId,
+    updateDistance,
+    updateDeliveryTime,
+  } = useLocationTooltipStateContext();
   const user_addresses = user_detail?.user_addresses ?? [];
   const select_places_ref = useRef<SelectInstance>(null);
   const [show_drawer, setShowDrawer] = useState(false);
@@ -112,48 +120,49 @@ const MobileAddressModal: FC<IProps> = ({
       alert("Geolocation is not supported");
       return;
     }
-
     setIsCurrentFetching(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        getAddressFromCoords(latitude, longitude).then((data) => {
-          const mapped = mapGeocodeToForm(data);
-          verify_pincode_serviceability_mutation.mutate(
-            {
-              pin_code: mapped.pincode,
+
+    getUserLocation({
+      handleSuccess(coords, mapped) {
+        verify_pincode_serviceability_mutation.mutate(
+          {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+          },
+          {
+            onSuccess(data) {
+              updateSelectedAddress?.(mapped.area);
+              updateVendorId?.(data.data.vendor_id);
+              updateDeliveryTime?.(data.data.delivery_time_minutes);
+              updateDistance?.(data.data.distance_km);
+              setIsPincodeServiceable(true);
+              formik_ref.current?.setValues((prev) => ({
+                ...prev,
+                ...mapped,
+              }));
             },
-            {
-              onSuccess() {
-                setIsPincodeServiceable(true);
-                formik_ref.current?.setValues((prev) => ({
-                  ...prev,
-                  ...mapped,
-                }));
-              },
-              onError(err) {
-                setIsPincodeServiceable(false);
-                let message = "Something went wrong";
-                if (err instanceof AxiosError) {
-                  message = err.response?.data?.message || message;
-                }
-                enqueueSnackbar(message, {
-                  key: `verify-serviceable-pincode-error-${Date.now()}`,
-                  variant: "error",
-                });
-              },
-              onSettled() {
-                setIsCurrentFetching(false);
-              },
+            onError(err) {
+              setIsPincodeServiceable(false);
+              let message = "Something went wrong";
+              if (err instanceof AxiosError) {
+                message = err.response?.data?.message || message;
+              }
+              enqueueSnackbar(message, {
+                key: `verify-serviceable-pincode-error-${Date.now()}`,
+                variant: "error",
+              });
             },
-          );
-        });
+            onSettled() {
+              setIsCurrentFetching(false);
+            },
+          },
+        );
       },
-      () => {
+      handleError() {
         alert("Unable to fetch location");
         setIsCurrentFetching(false);
       },
-    );
+    });
   };
 
   return (
@@ -163,7 +172,7 @@ const MobileAddressModal: FC<IProps> = ({
       <div className="fixed inset-0">
         <DialogPanel className="h-full w-full bg-white">
           <div className="flex items-center justify-between border-b border-gray-300 px-4 py-2">
-            <DialogTitle className="font-semibold text-brand">
+            <DialogTitle className="text-brand font-semibold">
               {initial_data ? "Update address" : "Add new address"}
             </DialogTitle>
 
@@ -257,7 +266,8 @@ const MobileAddressModal: FC<IProps> = ({
                         const mapped = mapPlaceToForm(val.data);
                         verify_pincode_serviceability_mutation.mutate(
                           {
-                            pin_code: mapped.pincode,
+                            latitude: mapped.latitude,
+                            longitude: mapped.longitude,
                           },
                           {
                             onSuccess() {
@@ -282,15 +292,12 @@ const MobileAddressModal: FC<IProps> = ({
                   <button
                     type="button"
                     onClick={handleUseCurrentLocation}
-                    className="absolute left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold text-brand shadow-sm"
+                    className="text-brand absolute left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-semibold shadow-sm"
                     style={{
                       bottom: `${bottom_bar_height}px`,
                     }}
                   >
-                    <MapPin
-                      className="size-3.5 text-brand"
-                      strokeWidth={2.5}
-                    />
+                    <MapPin className="text-brand size-3.5" strokeWidth={2.5} />
                     <span>
                       {is_current_location_fetching
                         ? "Fetching Location..."
@@ -334,7 +341,7 @@ const MobileAddressModal: FC<IProps> = ({
                               <button
                                 type="button"
                                 onClick={handleUseCurrentLocation}
-                                className="mt-2 text-xs font-semibold text-brand"
+                                className="text-brand mt-2 text-xs font-semibold"
                               >
                                 {is_current_location_fetching
                                   ? "Fetching location..."
@@ -358,7 +365,7 @@ const MobileAddressModal: FC<IProps> = ({
                     </div>
                     <button
                       type="button"
-                      className="w-full rounded-md bg-brand py-2 font-semibold text-white shadow-sm disabled:bg-orange-300"
+                      className="bg-brand w-full rounded-md py-2 font-semibold text-white shadow-sm disabled:bg-orange-300"
                       disabled={!values.pincode || !is_pincode_serviceable}
                       onClick={() => setShowDrawer(true)}
                     >
@@ -478,7 +485,7 @@ const MobileAddressModal: FC<IProps> = ({
                               create_address_mutation.isPending ||
                               update_address_mutation.isPending
                             }
-                            className="w-full rounded-md bg-brand px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
+                            className="bg-brand w-full rounded-md px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
                           >
                             {update_address_mutation.isPending
                               ? "Updating..."
