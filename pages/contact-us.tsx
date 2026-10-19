@@ -57,7 +57,7 @@ const ContactCard: FC<IProps> = ({ icon: Icon, title, href }) => {
       className="w-full rounded-xl border border-gray-300 p-4"
     >
       <div className="mb-2 inline-block size-fit rounded-lg border border-gray-100 bg-orange-50 p-2">
-        <Icon className="size-5 text-brand" />
+        <Icon className="text-brand size-5" />
       </div>
       <h2 className="mb-0.5 font-semibold text-gray-900">{title}</h2>
     </Link>
@@ -86,7 +86,7 @@ const ContactUs: NextPageWithLayout = () => {
         image={`${process.env.NEXT_PUBLIC_CDN_URL}/uploads/assets/dark-mobile-logo.png`}
         json_ld={JSON.stringify(contact_us_json_ld)}
       />
-      <div className="mx-auto mt-(--header-height) max-w-6xl px-4 pt-2 pb-6 sm:py-6">
+      <div className="mx-auto max-w-6xl px-4 pt-2 pb-6 sm:py-6">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
           {/* Left Section */}
           <div className="space-y-4 sm:space-y-6">
