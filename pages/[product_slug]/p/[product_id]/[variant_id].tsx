@@ -274,7 +274,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
         source={report_modal_state.source as ISource}
         onClose={() => setReportModalState({ open: false })}
       />
-      <div className="-mt-2 hidden border-b border-neutral-300 pt-(--header-height) lg:block">
+      <div className="-mt-2 hidden border-b border-neutral-300 lg:block">
         <div className="mx-auto w-full px-4">
           <nav aria-label="Breadcrumb">
             <ol className="flex items-center gap-2 py-1.5 text-xs text-gray-600">
@@ -298,7 +298,7 @@ const ProductPage: NextPageWithLayout<IProps> = ({
           </nav>
         </div>
       </div>
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pt-(--header-height) lg:mt-8 lg:flex-row lg:items-start lg:pt-0">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-14 lg:mt-8 lg:flex-row lg:items-start lg:pt-0">
         <ProductGallary
           variant={variant}
           product={product}

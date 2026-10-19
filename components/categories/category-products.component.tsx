@@ -31,6 +31,7 @@ import { isNewProduct } from "@/helpers/product.helper";
 
 // context
 import { FiltersSortBarState, FooterStateContext } from "@/context";
+import { cn } from "@/lib/utils";
 
 export type ISort =
   | "latest"
@@ -155,8 +156,14 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       const product_slug = generateSlug(product.title);
       const sortedVariants = (variants || []).sort(
         (a, b) =>
-          (a.variant_pricing?.selling_price_with_commission ?? a.variant_pricing?.selling_price ?? (a as any).selling_price ?? 0) -
-          (b.variant_pricing?.selling_price_with_commission ?? b.variant_pricing?.selling_price ?? (b as any).selling_price ?? 0),
+          (a.variant_pricing?.selling_price_with_commission ??
+            a.variant_pricing?.selling_price ??
+            (a as any).selling_price ??
+            0) -
+          (b.variant_pricing?.selling_price_with_commission ??
+            b.variant_pricing?.selling_price ??
+            (b as any).selling_price ??
+            0),
       );
 
       const first_variant = sortedVariants[0];
@@ -166,21 +173,21 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
 
       const selling_price = Number(
         variant_pricing?.selling_price_with_commission ??
-        variant_pricing?.selling_price ??
-        (first_variant as any)?.selling_price_with_commission ??
-        (first_variant as any)?.selling_price ??
-        (product as any)?.selling_price ??
-        (product as any)?.price ??
-        0,
+          variant_pricing?.selling_price ??
+          (first_variant as any)?.selling_price_with_commission ??
+          (first_variant as any)?.selling_price ??
+          (product as any)?.selling_price ??
+          (product as any)?.price ??
+          0,
       );
 
       const mrp = Number(
         variant_pricing?.mrp ??
-        (first_variant as any)?.mrp ??
-        (product as any)?.mrp ??
-        (product as any)?.original_price ??
-        (product as any)?.price ??
-        selling_price,
+          (first_variant as any)?.mrp ??
+          (product as any)?.mrp ??
+          (product as any)?.original_price ??
+          (product as any)?.price ??
+          selling_price,
       );
 
       const discount_percentage =
@@ -291,7 +298,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
       </SortFilterDrawer>
       <div className="flex space-x-4 px-4">
         {category_type && category_slug && (
-          <div className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-w-70 self-start overflow-y-auto lg:block">
+          <div className="sticky hidden min-w-70 self-start overflow-y-auto lg:block">
             {is_category_specific_filters_pending ? (
               <SideFiltersSkeleton />
             ) : (
@@ -308,7 +315,13 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         )}
 
         <div className="min-w-0 flex-1 space-y-4">
-          <FilterSortBar className="sticky top-(--header-visible-height) lg:top-(--header-height) z-[31] lg:z-20 -mx-4 border-y border-gray-200 transition-[top] duration-200 ease-in" />
+          <FilterSortBar
+            className={cn(
+              "sticky top-14 z-[31] -mx-4 border-y border-gray-200",
+              "transition-[top] duration-200 ease-in",
+              "lg:top-(--header-height) lg:z-20",
+            )}
+          />
           <div className="hidden lg:block">
             {is_category_sorting_filters_pending ? (
               <SortFilterHeaderSkeleton />

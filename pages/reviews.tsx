@@ -65,7 +65,7 @@ const Reviews: NextPageWithLayout = () => {
         />
       )}
       <section className="w-full bg-gray-50 py-4">
-        <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
+        <div className="mx-auto max-w-6xl px-4">
           <div className="mb-4 flex items-center justify-between sm:mb-6">
             <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
               My Reviews

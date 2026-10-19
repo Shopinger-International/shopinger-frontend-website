@@ -64,7 +64,7 @@ const CampaignPage: NextPageWithLayout<IProps> = ({
       <section className="min-h-screen w-full">
         <h1 className="sr-only">{campaign.title}</h1>
         <p className="sr-only">{campaign.description}</p>
-        <div className="mx-auto mt-(--header-height) max-w-6xl space-y-3 pb-4">
+        <div className="mx-auto max-w-6xl space-y-3 pb-4">
           <CampaignProducts campaign_id={campaign_id} />
         </div>
       </section>

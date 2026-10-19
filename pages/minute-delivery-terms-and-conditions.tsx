@@ -241,7 +241,7 @@ const MinutesDeliveryTermsAndConditions: NextPageWithLayout = () => {
         image={`${process.env.NEXT_PUBLIC_CDN_URL}/uploads/assets/dark-mobile-logo.png`}
       />
       <div className="w-full bg-gray-50 py-2 sm:py-4">
-        <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
+        <div className="mx-auto max-w-7xl px-2.5 sm:px-4">
           <div className="border-b border-gray-200 pb-6">
             <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
               Shopinger Minute Delivery – Terms & Conditions

@@ -52,12 +52,41 @@ const Header: FC<{
   const router = useRouter();
   const is_product_page =
     router.pathname.includes("/p/") || router.asPath.includes("/p/");
+  const [showStickySearch, setShowStickySearch] = useState(false);
 
   const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
+
+  useEffect(() => {
+    const searchElement = document.getElementById(
+      "mobile-header-search-container",
+    );
+
+    if (!searchElement) return;
+
+    const handleScroll = () => {
+      const rect = searchElement.getBoundingClientRect();
+
+      // Trigger 16px before the search container's border reaches the top.
+      setShowStickySearch(rect.top <= 16);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -164,9 +193,17 @@ const Header: FC<{
 
         {/* <CategorySection /> */}
       </header>
+
       <div
-        id="mobile-header-search-container"
-        className="bg-background sticky top-0 z-50 px-4 py-2 lg:hidden"
+        aria-hidden={!showStickySearch}
+        inert={!showStickySearch}
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 bg-[#fff8eb] px-4 py-2 shadow-sm lg:hidden",
+          "transform-gpu transition-[transform,opacity,visibility] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+          showStickySearch
+            ? "visible translate-y-0 opacity-100"
+            : "pointer-events-none invisible -translate-y-3 opacity-0",
+        )}
       >
         <SearchBar />
       </div>
