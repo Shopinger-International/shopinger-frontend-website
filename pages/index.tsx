@@ -87,8 +87,8 @@ const HomePage: NextPageWithLayout = () => {
         url={page_url}
         json_ld={JSON.stringify(json_ld)}
       />
-      <div className="space-y-6 pt-(--header-height)">
-        <div className="max-w-8xl mx-auto w-full space-y-6 px-4">
+      <div className="space-y-6">
+        <div className="max-w-8xl mx-auto w-full space-y-6 px-4 pt-4 lg:pt-20">
           <Campaign campaigns={campaigns} />
           <CampaignTimer />
           {/* <HighlightsBar /> */}

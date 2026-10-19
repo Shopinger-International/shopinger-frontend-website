@@ -147,10 +147,13 @@ const MobileHeader: FC = () => {
         })}
       </nav>
 
-      {/* Search */}
-      <div id="mobile-header-search-container">
+      {/* Sticky Search */}
+      {/* <div
+        id="mobile-header-search-container"
+        className="sticky top-0 z-50 -mx-4 px-4 py-2"
+      >
         <SearchBar />
-      </div>
+      </div> */}
     </div>
   );
 };

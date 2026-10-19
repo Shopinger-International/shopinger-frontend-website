@@ -59,166 +59,118 @@ const Header: FC<{
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
 
-  useLayoutEffect(() => {
-    const header = document.getElementById("app-header");
-    if (!header) return;
-
-    const setHeight = () => {
-      document.documentElement.style.setProperty(
-        "--header-height",
-        `${header.offsetHeight + 12}px`,
-      );
-      updateVisibleHeaderHeight(header);
-    };
-
-    setHeight();
-
-    const observer = new ResizeObserver(setHeight);
-    observer.observe(header);
-
-    return () => observer.disconnect();
-  }, []);
-  useEffect(() => {
-    if (!is_mobile) return;
-
-    let prev_scroll_pos = window.scrollY;
-
-    const handleScroll = () => {
-      const current_scroll_pos = window.scrollY;
-
-      if (!header_ref.current) return;
-
-      // iOS rubber-band / pull-to-refresh
-      // Always keep the header visible at the top.
-      const search_container = document.getElementById(
-        "mobile-header-search-container",
-      );
-      const top_spacing = 8;
-      const hide_offset = search_container
-        ? Math.max(0, search_container.offsetTop - top_spacing)
-        : 106;
-
-      if (current_scroll_pos <= 10) {
-        // At top of page: show full header with categories bar
-        header_ref.current.style.top = "0";
-      } else {
-        // Once scrolled down: keep header collapsed so only SearchBar is visible
-        header_ref.current.style.top = `-${hide_offset}px`;
-      }
-      updateVisibleHeaderHeight(header_ref.current);
-
-      prev_scroll_pos = current_scroll_pos;
-    };
-
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
-    handleScroll();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [is_mobile]);
   return (
-    <header
-      ref={header_ref}
-      className={cn(
-        "fixed top-0 z-30 w-full transition-all duration-200 ease-in",
-        is_product_page && "hidden lg:block",
-      )}
-      id="app-header"
-    >
-      <MobileHeader />
+    <>
+      <header
+        ref={header_ref}
+        className={cn(
+          "relative top-0 z-30 w-full transition-all duration-200 ease-in",
+          is_product_page && "hidden lg:block",
+          !is_mobile && "fixed",
+        )}
+        id="app-header"
+      >
+        <MobileHeader />
 
-      {/* Desktop Store Closed Banner */}
-      <div className="hidden lg:block">
-        <StoreClosedBanner is_desktop_header />
-      </div>
-      <div className="bg-background-header hidden flex-col gap-1 px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
-        {/* LEFT: Menu + Logo */}
-        <div className="order-1 flex items-center gap-2">
-          <button onClick={openMegaMenuDrawer}>
-            <Menu className="inline h-6 w-6 text-white lg:hidden" />
-          </button>
-          {/** LOGO SECTION */}
-          <Link
-            href="/"
-            title="Shopinger Home"
-            aria-label="Shopinger Home"
-            className="relative flex h-8 w-34 shrink-0 items-center justify-center lg:h-11 lg:w-48"
-          >
-            <Image
-              src="/shopinger-logo.svg"
-              alt="Shopinger"
-              fill
-              priority
-              sizes="(max-width: 640px) 112px, (max-width: 1024px) 160px, 216px"
-              className="object-contain"
-            />
-          </Link>
-          <Link
-            href="/account"
-            aria-label="Account"
-            className="ml-auto lg:hidden"
-          >
-            <CircleUserIcon aria-hidden={true} className="size-6 text-white" />
-          </Link>
+        {/* Desktop Store Closed Banner */}
+        <div className="hidden lg:block">
+          <StoreClosedBanner is_desktop_header />
         </div>
+        <div className="bg-background-header hidden flex-col gap-1 px-4 py-1.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8">
+          {/* LEFT: Menu + Logo */}
+          <div className="order-1 flex items-center gap-2">
+            <button onClick={openMegaMenuDrawer}>
+              <Menu className="inline h-6 w-6 text-white lg:hidden" />
+            </button>
+            {/** LOGO SECTION */}
+            <Link
+              href="/"
+              title="Shopinger Home"
+              aria-label="Shopinger Home"
+              className="relative flex h-8 w-34 shrink-0 items-center justify-center lg:h-11 lg:w-48"
+            >
+              <Image
+                src="/shopinger-logo.svg"
+                alt="Shopinger"
+                fill
+                priority
+                sizes="(max-width: 640px) 112px, (max-width: 1024px) 160px, 216px"
+                className="object-contain"
+              />
+            </Link>
+            <Link
+              href="/account"
+              aria-label="Account"
+              className="ml-auto lg:hidden"
+            >
+              <CircleUserIcon
+                aria-hidden={true}
+                className="size-6 text-white"
+              />
+            </Link>
+          </div>
 
-        {/* CENTER: Location + Searchbar */}
-        <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-8">
-          {is_mounted && (
-            <LocationTooltip
-              className={
-                is_mobile ? "flex lg:hidden" : "hidden shrink-0 lg:flex"
-              }
-            />
-          )}
-
-          <div className="flex w-full items-center gap-3">
-            <SearchBar />
-            {!is_bottom_navigation_showing && (
-              <Link
-                href="/cart-checkout"
-                className="shrink-0 lg:hidden"
-                aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
-              >
-                <span className="relative inline-block">
-                  <Cart width={36} height={30} />
-
-                  <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-white">
-                    {cart_details?.total_items ?? 0}
-                  </span>
-                </span>
-              </Link>
+          {/* CENTER: Location + Searchbar */}
+          <div className="order-3 col-span-3 flex flex-col gap-2 lg:order-2 lg:col-span-1 lg:flex-row lg:items-center lg:gap-8">
+            {is_mounted && (
+              <LocationTooltip
+                className={
+                  is_mobile ? "flex lg:hidden" : "hidden shrink-0 lg:flex"
+                }
+              />
             )}
-          </div>
-        </div>
 
-        {/* RIGHT: Actions */}
-        <div className="order-2 flex items-center justify-end gap-8 lg:order-3">
-          <div className="hidden lg:inline">
-            <AccountDropdown />
-          </div>
-          <Link
-            href="/cart-checkout"
-            className="hidden items-center gap-2 font-semibold text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
-            aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
-          >
-            <span className="relative inline-block">
-              <Cart width={36} height={30} fill="black" />
+            <div className="flex w-full items-center gap-3">
+              <SearchBar />
+              {!is_bottom_navigation_showing && (
+                <Link
+                  href="/cart-checkout"
+                  className="shrink-0 lg:hidden"
+                  aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
+                >
+                  <span className="relative inline-block">
+                    <Cart width={36} height={30} />
 
-              <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-black">
-                {cart_details?.total_items ?? 0}
+                    <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-white">
+                      {cart_details?.total_items ?? 0}
+                    </span>
+                  </span>
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* RIGHT: Actions */}
+          <div className="order-2 flex items-center justify-end gap-8 lg:order-3">
+            <div className="hidden lg:inline">
+              <AccountDropdown />
+            </div>
+            <Link
+              href="/cart-checkout"
+              className="hidden items-center gap-2 font-semibold text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
+              aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
+            >
+              <span className="relative inline-block">
+                <Cart width={36} height={30} fill="black" />
+
+                <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-black">
+                  {cart_details?.total_items ?? 0}
+                </span>
               </span>
-            </span>
-            <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
-          </Link>
+              <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
+            </Link>
+          </div>
         </div>
-      </div>
 
-      {/* <CategorySection /> */}
-    </header>
+        {/* <CategorySection /> */}
+      </header>
+      <div
+        id="mobile-header-search-container"
+        className="bg-background sticky top-0 z-50 px-4 py-2 lg:hidden"
+      >
+        <SearchBar />
+      </div>
+    </>
   );
 };
 
