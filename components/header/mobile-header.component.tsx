@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useRef } from "react";
 // types
 import type { FC, ReactNode } from "react";
 
@@ -53,6 +54,7 @@ const MobileHeader: FC = () => {
   const { data: user_details } = useUserDetails();
   const { delivery_time, distance, selected_address } =
     useLocationTooltipStateContext();
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const is_mounted = useIsMounted();
   const is_grocery =
@@ -147,8 +149,12 @@ const MobileHeader: FC = () => {
         })}
       </nav>
 
-      {/* Search */}
-      <div id="mobile-header-search-container">
+      {/* Sticky Search */}
+      <div
+        id="mobile-header-search-container"
+        ref={searchRef}
+        className="lg:hidden"
+      >
         <SearchBar />
       </div>
     </div>

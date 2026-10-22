@@ -111,7 +111,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
         }}
       />
       <section className="w-full bg-white py-4">
-        <div className="mx-auto mt-(--header-height) max-w-6xl space-y-4 px-4">
+        <div className="mx-auto mt-6 max-w-6xl space-y-4 px-4">
           {/* Rating Summary */}
           {rating_summary && <RatingSummary {...rating_summary} />}
 
@@ -150,7 +150,7 @@ const Reviews: NextPageWithLayout<IProps> = ({ product_id, product }) => {
                   className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 ${
                     isActive
                       ? "bg-brand text-white shadow-sm"
-                      : "border border-gray-300 text-gray-600 hover:border-orange-400 hover:text-brand"
+                      : "hover:text-brand border border-gray-300 text-gray-600 hover:border-orange-400"
                   } `}
                 >
                   {label}

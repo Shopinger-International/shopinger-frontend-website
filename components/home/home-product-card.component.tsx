@@ -154,7 +154,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
   return (
     <div
       className={clsx(
-        "group relative flex h-full w-full flex-col justify-between rounded-2xl border border-orange-100/60 p-2 sm:p-2.5",
+        "group relative flex h-full w-full flex-col justify-between rounded-2xl border border-orange-100/60",
         className,
       )}
     >
@@ -168,9 +168,12 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-white">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="absolute top-0 left-0 z-10 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold text-brand tracking-tight uppercase inline-flex items-center gap-0.5">
+              <span className="text-brand absolute top-0 left-0 z-10 inline-flex items-center gap-0.5 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold tracking-tight uppercase">
                 <span>{discount_perc}%</span>
-                <ArrowDown className="size-3 shrink-0 text-brand" strokeWidth={3.5} />
+                <ArrowDown
+                  className="text-brand size-3 shrink-0"
+                  strokeWidth={3.5}
+                />
               </span>
             )}
 
@@ -183,7 +186,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
                 remove_from_wishlist_mutation.isPending
               }
               onClick={handleWishlistClick}
-              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-brand transition-transform active:scale-95"
+              className="text-brand absolute top-1.5 right-1.5 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white transition-transform active:scale-95 sm:size-9"
             >
               <Heart
                 className={clsx(
@@ -207,7 +210,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
 
             {/* Bottom-Left Rating Overlay */}
             {avg_rating != null && Number(avg_rating) > 0 && (
-              <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating-green px-1.5 py-0.5 text-2xs font-bold text-white">
+              <div className="bg-rating-green text-2xs absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md px-1.5 py-0.5 font-bold text-white">
                 <span>{Number(avg_rating).toFixed(1)}</span>
                 <Star className="size-2.5 fill-white text-white" />
               </div>
@@ -222,7 +225,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
       </div>
 
       {/* Price and Action Row (Fixed at Bottom) */}
-      <div className="mt-auto flex items-center justify-between gap-1 pt-2">
+      <div className="mt-auto flex flex-col justify-between gap-1 pt-2 md:flex-row">
         {Number(selling_price) > 0 && (
           <div className="flex min-w-0 flex-col gap-0">
             <span className="truncate text-sm leading-tight font-black text-gray-900 sm:text-base md:text-lg">

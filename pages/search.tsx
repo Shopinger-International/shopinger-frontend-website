@@ -115,7 +115,7 @@ const MainCategoryPage: NextPageWithLayout<IProps> = ({}) => {
         <meta name="twitter:creator" content="@shopinger" />
       </Head>
       <section className="min-h-screen w-full">
-        <div className="mx-auto mt-(--header-height) max-w-6xl space-y-3 pb-4">
+        <div className="mx-auto max-w-6xl space-y-3 pb-4">
           <CategoryProducts />
         </div>
       </section>

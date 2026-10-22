@@ -142,29 +142,33 @@ const Tooltip: FC<TooltipProps> = ({
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            className={clsx("relative z-120", className)}
+            className="z-120"
           >
-            <FloatingArrow
-              ref={arrow_ref}
-              context={context}
-              width={18}
-              height={9}
-              fill="var(--surface-white)"
-              stroke="var(--border-light)"
-              strokeWidth={1}
-              tipRadius={2}
-              staticOffset={static_offset}
-              style={{
-                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
-              }}
-            />
             <div
               className={clsx(
-                "overflow-hidden rounded-lg outline-none",
+                "relative",
                 shake && "animate-[shake_0.5s_ease-in-out]",
+                className,
               )}
             >
-              {content({ handleClose: () => setOpen(false) })}
+              <FloatingArrow
+                ref={arrow_ref}
+                context={context}
+                width={18}
+                height={9}
+                fill="var(--surface-white)"
+                stroke="var(--border-light)"
+                strokeWidth={1}
+                tipRadius={2}
+                staticOffset={static_offset}
+                style={{
+                  filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
+                }}
+              />
+
+              <div className="overflow-hidden rounded-lg outline-none">
+                {content({ handleClose: () => setOpen(false) })}
+              </div>
             </div>
           </div>
         </FloatingPortal>

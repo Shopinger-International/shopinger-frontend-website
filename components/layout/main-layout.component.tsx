@@ -135,7 +135,7 @@ const MainLayout: FC<{
         disable_side_filter={disable_side_filter}
         is_bottom_navigation_showing={show_bottom_navigation}
       />
-      <main>
+      <main className="mt-6 lg:mx-20 lg:mt-18">
         <LoginModal
           is_modal={is_mobile || !!login_modal_state.is_modal}
           heading_text={

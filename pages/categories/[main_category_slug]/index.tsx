@@ -60,7 +60,7 @@ const MainCategoryPage: NextPageWithLayout<IProps> = ({ category_slug }) => {
           great deals, and fast delivery on a wide range of{" "}
           {category_name.toLowerCase()}.
         </p>
-        <div className="max-w-8xl mx-auto mt-(--header-height) space-y-3 pb-4">
+        <div className="max-w-8xl mx-auto space-y-3 pb-4">
           <CategoryHome category_slug={category_slug} />
         </div>
       </section>

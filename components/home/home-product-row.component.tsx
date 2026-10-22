@@ -92,7 +92,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
     <section
       aria-labelledby={`home-row-${section_id_slug}`}
       className={clsx(
-        "relative rounded-2xl p-3 sm:p-4 transition-all group/row",
+        "group/row relative rounded-2xl p-3 transition-all sm:p-4",
         background_style ?? "bg-white",
         className,
       )}
@@ -102,12 +102,12 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
         <div>
           <h2
             id={`home-row-${section_id_slug}`}
-            className="text-base font-bold text-gray-900 sm:text-lg md:text-xl tracking-tight"
+            className="text-base font-bold tracking-tight text-gray-900 sm:text-lg md:text-xl"
           >
             {title}
           </h2>
           {subtitle && (
-            <p className="mt-0.5 text-xs text-gray-500 font-medium sm:text-sm">
+            <p className="mt-0.5 text-xs font-medium text-gray-500 sm:text-sm">
               {subtitle}
             </p>
           )}
@@ -117,7 +117,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
           <Link
             href={view_all_href}
             title={`View all ${title}`}
-            className="text-xs font-medium text-brand transition-colors hover:text-orange-600 sm:text-sm hover:underline"
+            className="text-brand text-xs font-medium transition-colors hover:text-orange-600 hover:underline sm:text-sm"
           >
             See All →
           </Link>
@@ -131,7 +131,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
           <button
             type="button"
             onClick={scrollPrev}
-            className="absolute left-0 sm:-left-3 top-1/2 -translate-y-1/2 z-20 hidden md:flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 hover:bg-brand hover:text-white hover:border-brand active:scale-95"
+            className="hover:bg-brand hover:border-brand absolute top-1/2 left-0 z-20 hidden size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 hover:text-white active:scale-95 sm:-left-3 sm:size-9 md:flex"
             aria-label="Scroll left"
           >
             <ChevronLeft className="size-5" />
@@ -139,17 +139,14 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
         )}
 
         {/* Embla Viewport */}
-        <div
-          className="overflow-hidden rounded-xl touch-pan-y"
-          ref={embla_ref}
-        >
-          <ul className="flex gap-2.5 sm:gap-3.5 py-1">
+        <div className="touch-pan-y overflow-hidden rounded-xl" ref={embla_ref}>
+          <ul className="flex gap-2.5 py-1 sm:gap-3.5">
             {products.map((product, idx) => {
               const item_key = `home-prod-${product.product_id ?? idx}-${product.variant_id ?? idx}`;
               return (
                 <li
                   key={item_key}
-                  className="w-40 min-w-40 sm:w-48 sm:min-w-48 md:w-52 md:min-w-52 shrink-0 grow-0 select-none"
+                  className="w-30 min-w-30 shrink-0 grow-0 select-none sm:w-36 sm:min-w-36 md:w-44 md:min-w-44"
                 >
                   {renderCard ? (
                     renderCard(product)
@@ -169,7 +166,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
           <button
             type="button"
             onClick={scrollNext}
-            className="absolute right-0 sm:-right-3 top-1/2 -translate-y-1/2 z-20 hidden md:flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 hover:bg-brand hover:text-white hover:border-brand active:scale-95"
+            className="hover:bg-brand hover:border-brand absolute top-1/2 right-0 z-20 hidden size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 hover:text-white active:scale-95 sm:-right-3 sm:size-9 md:flex"
             aria-label="Scroll right"
           >
             <ChevronRight className="size-5" />

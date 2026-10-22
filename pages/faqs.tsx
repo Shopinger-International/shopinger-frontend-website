@@ -209,7 +209,7 @@ const FAQSPage: NextPageWithLayout = () => {
         json_ld={JSON.stringify(faq_json_ld)}
       />
       <div className="w-full bg-gray-50 py-2 sm:py-4">
-        <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
+        <div className="mx-auto max-w-7xl px-2.5 sm:px-4">
           {/* Hero */}
           <div className="mb-4 text-center sm:mb-10">
             <Badge title="Help center" />
@@ -232,7 +232,7 @@ const FAQSPage: NextPageWithLayout = () => {
               >
                 {/* Category */}
                 <div className="border-b border-gray-200 px-4 py-4 sm:px-6 sm:py-5">
-                  <h2 className="border-l-4 border-brand pl-3 text-base font-semibold text-gray-900 sm:pl-4 sm:text-xl">
+                  <h2 className="border-brand border-l-4 pl-3 text-base font-semibold text-gray-900 sm:pl-4 sm:text-xl">
                     {section.category}
                   </h2>
                 </div>
@@ -256,7 +256,7 @@ const FAQSPage: NextPageWithLayout = () => {
                           <div
                             className={`flex size-7 shrink-0 items-center justify-center rounded-full border transition-all duration-200 sm:size-8 ${
                               is_open
-                                ? "rotate-180 border-brand bg-brand text-white"
+                                ? "border-brand bg-brand rotate-180 text-white"
                                 : "border-gray-300 text-gray-500"
                             }`}
                           >
