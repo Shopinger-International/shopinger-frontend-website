@@ -138,8 +138,8 @@ const AddAddressModal: FC<IProps> = ({
               formik_ref.current?.setValues((prev) => ({
                 ...prev,
                 ...mapped,
-                latitude: 0,
-                longitude: 0,
+                latitude: mapped.latitude,
+                longitude: mapped.longitude,
               }));
             },
             onError(err) {
