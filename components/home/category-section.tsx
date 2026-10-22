@@ -15,10 +15,6 @@ const CategorySection: FC = () => {
       <div className="px-3 sm:px-4">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold tracking-tight text-gray-900 sm:text-xl">
-            Shop by Category
-          </h2>
-
           {/* <Link
             href="/"
             onClick={() => setSelectedCategory(null)}

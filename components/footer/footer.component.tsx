@@ -7,6 +7,7 @@ import FooterLinks from "@/components/footer/footer-links.component";
 import FooterAddress from "@/components/footer/footer-address.component";
 import FooterBottom from "@/components/footer/footer-bottom.component";
 import CitiesWeServe from "@/components/footer/cities-we-serve.component";
+import FooterCategories from "@/components/footer/footer-categories.component";
 
 // icons
 import { ArrowUp } from "lucide-react";
@@ -25,20 +26,17 @@ const Footer: FC = () => {
               behavior: "smooth",
             })
           }
-          className="group flex items-center justify-center gap-2.5 rounded-full bg-brand px-5 py-1.5 text-xs sm:text-sm font-bold text-brand-foreground border border-brand/20 shadow-xs hover:opacity-90 transition-all cursor-pointer"
+          className="group bg-brand text-brand-foreground border-brand/20 flex cursor-pointer items-center justify-center gap-2.5 rounded-full border px-5 py-1.5 text-xs font-bold shadow-xs transition-all hover:opacity-90 sm:text-sm"
           aria-label="back to top"
         >
           <span>Back to top</span>
-          <span className="rounded-full bg-brand-foreground p-1 transition-colors">
-            <ArrowUp strokeWidth={2.5} className="size-3.5 text-brand" />
+          <span className="bg-brand-foreground rounded-full p-1 transition-colors">
+            <ArrowUp strokeWidth={2.5} className="text-brand size-3.5" />
           </span>
         </button>
       </section>
-      <footer className="mb-(--buy-cta-container-height) w-full bg-background text-sm text-background-foreground lg:mb-0">
-        <div className="max-w-8xl mx-auto grid w-full grid-cols-2 gap-8 px-4 py-8 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr] lg:px-12">
-          <FooterLinks />
-          <FooterAddress />
-        </div>
+      <footer className="bg-background text-background-foreground mb-(--buy-cta-container-height) w-full text-sm lg:mb-0">
+        <FooterCategories />
         <div className="mb-8 flex flex-wrap items-center gap-3 px-4 lg:hidden">
           {payment_methods.map((icon) => (
             <Image
@@ -52,6 +50,10 @@ const Footer: FC = () => {
           ))}
         </div>
         <CitiesWeServe />
+        <div className="max-w-8xl mx-auto grid w-full grid-cols-2 gap-8 border-t border-orange-200 px-4 py-8 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr] lg:px-12">
+          <FooterLinks />
+          <FooterAddress />
+        </div>
         <FooterBottom />
       </footer>
     </>

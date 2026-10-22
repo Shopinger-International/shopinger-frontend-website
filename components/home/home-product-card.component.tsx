@@ -218,14 +218,14 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           </div>
 
           {/* Title */}
-          <h3 className="text-2xs mt-2 line-clamp-2 leading-snug font-semibold text-gray-900 sm:text-xs">
+          <h3 className="text-2xs mt-2 line-clamp-2 p-2 leading-snug font-semibold text-gray-900 sm:text-xs">
             {title}
           </h3>
         </Link>
       </div>
 
       {/* Price and Action Row (Fixed at Bottom) */}
-      <div className="mt-auto flex flex-col justify-between gap-1 pt-2 md:flex-row">
+      <div className="mt-auto flex flex-col justify-between gap-1 p-2 pt-2 md:flex-row">
         {Number(selling_price) > 0 && (
           <div className="flex min-w-0 flex-col gap-0">
             <span className="truncate text-sm leading-tight font-black text-gray-900 sm:text-base md:text-lg">

@@ -130,7 +130,6 @@ const Tooltip: FC<TooltipProps> = ({
           {show_overlay && (
             <FloatingOverlay
               className="z-100 bg-black/40"
-              lockScroll
               onClick={() => {
                 setShake(true);
                 setOpen(true); // remove it when location tooltip have been be shown until user doesn't provide his/her location
