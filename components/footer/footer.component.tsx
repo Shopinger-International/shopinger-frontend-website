@@ -7,6 +7,7 @@ import FooterLinks from "@/components/footer/footer-links.component";
 import FooterAddress from "@/components/footer/footer-address.component";
 import FooterBottom from "@/components/footer/footer-bottom.component";
 import CitiesWeServe from "@/components/footer/cities-we-serve.component";
+import FooterCategories from "@/components/footer/footer-categories.component";
 
 // icons
 import { ArrowUp } from "lucide-react";
@@ -39,6 +40,7 @@ const Footer: FC = () => {
           <FooterLinks />
           <FooterAddress />
         </div>
+        <FooterCategories />
         <div className="mb-8 flex flex-wrap items-center gap-3 px-4 lg:hidden">
           {payment_methods.map((icon) => (
             <Image

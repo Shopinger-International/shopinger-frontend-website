@@ -4,7 +4,7 @@ import type { FC } from "react";
 
 const footer_sections = [
   {
-    title: "About",
+    title: "Discover Shopinger",
     list: [
       { label: "Shopinger", href: "/about-us" },
       { label: "Contact Us", href: "/contact-us" },
@@ -44,8 +44,10 @@ const footer_sections = [
 ];
 const FooterLinks: FC = () => {
   return footer_sections.map(({ title, list }) => (
-    <div key={title} className="space-y-4">
-      <h4 className="font-semibold text-background-foreground uppercase">{title}</h4>
+    <div key={title} className="min-w-0 space-y-4">
+      <h4 className="text-background-foreground font-semibold uppercase">
+        {title}
+      </h4>
 
       <ul className="space-y-2.5 text-sm">
         {list.map((item, index) => (
@@ -53,15 +55,15 @@ const FooterLinks: FC = () => {
             {item.href.startsWith("tel:") || item.href.startsWith("mailto:") ? (
               <a
                 href={item.href}
-                className="font-medium text-background-foreground/75 hover:text-brand transition-colors"
+                className="text-background-foreground/75 hover:text-brand font-medium transition-colors"
               >
                 {item.label}
               </a>
             ) : (
               <Link
-                target="_blank"
+                target={item.href.startsWith("/") ? undefined : "_blank"}
                 href={item.href}
-                className="font-medium text-background-foreground/75 hover:text-brand transition-colors"
+                className="text-background-foreground/75 hover:text-brand font-medium transition-colors"
               >
                 {item.label}
               </Link>
