@@ -14,26 +14,31 @@ import { ArrowUp } from "lucide-react";
 
 // data
 import { payment_methods } from "@/components/footer/footer-bottom.component";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 const Footer: FC = () => {
+  const { selected_address } = useLocationTooltipStateContext();
+
   return (
     <>
       <section className="flex w-full items-center justify-center py-3.5">
-        <button
-          onClick={() =>
-            window.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            })
-          }
-          className="group bg-brand text-brand-foreground border-brand/20 flex cursor-pointer items-center justify-center gap-2.5 rounded-full border px-5 py-1.5 text-xs font-bold shadow-xs transition-all hover:opacity-90 sm:text-sm"
-          aria-label="back to top"
-        >
-          <span>Back to top</span>
-          <span className="bg-brand-foreground rounded-full p-1 transition-colors">
-            <ArrowUp strokeWidth={2.5} className="text-brand size-3.5" />
-          </span>
-        </button>
+        {selected_address && (
+          <button
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              })
+            }
+            className="group bg-brand text-brand-foreground border-brand/20 flex cursor-pointer items-center justify-center gap-2.5 rounded-full border px-5 py-1.5 text-xs font-bold shadow-xs transition-all hover:opacity-90 sm:text-sm"
+            aria-label="back to top"
+          >
+            <span>Back to top</span>
+            <span className="bg-brand-foreground rounded-full p-1 transition-colors">
+              <ArrowUp strokeWidth={2.5} className="text-brand size-3.5" />
+            </span>
+          </button>
+        )}
       </section>
       <footer className="bg-background text-background-foreground mb-(--buy-cta-container-height) w-full text-sm lg:mb-0">
         <FooterCategories />
