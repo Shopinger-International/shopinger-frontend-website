@@ -9,7 +9,7 @@ import { useCategoryContext } from "@/provider/selected-category-provider";
 const CategorySection: FC = () => {
   const { data: categories = [] } = useCategories(true);
   const { setSelectedCategory } = useCategoryContext();
-  console.log(categories);
+
   return (
     <section className="bg-white">
       <div className="px-3 sm:px-4">

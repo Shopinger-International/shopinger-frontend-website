@@ -20,6 +20,7 @@ import createCategoryJSONLD from "@/seo/category.jsonld";
 // analytics
 import useCategoryViewed from "@/hooks/analytics/use-category-viewed.hook";
 import CategoryHome from "@/components/categories/category-home";
+import { useCategoryContext } from "@/provider/selected-category-provider";
 
 type IProps = {
   category_slug: string;
