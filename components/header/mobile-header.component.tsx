@@ -75,7 +75,7 @@ const MobileHeader: FC = () => {
         "bg-[#fff8eb]",
       )}
       style={{
-        backgroundImage: "url('/diwali-bg.png')",
+        backgroundImage: "url('/diwali-bg.webp')",
         backgroundSize: "100% 100%",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
