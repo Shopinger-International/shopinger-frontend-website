@@ -75,7 +75,7 @@ const SortFilterHeader: FC<IProps> = ({
                 className={clsx(
                   "flex h-9 items-center gap-1 rounded-lg border px-3 text-sm",
                   active
-                    ? "bg-orange-500 font-semibold text-white"
+                    ? "bg-brand font-semibold text-white"
                     : "border-gray-300 bg-white font-medium text-gray-900 hover:bg-gray-100",
                 )}
               >
@@ -104,7 +104,7 @@ const SortFilterHeader: FC<IProps> = ({
                 className={clsx(
                   "flex h-9 items-center gap-1 rounded-lg border px-3 text-sm",
                   active
-                    ? "bg-orange-500 font-semibold text-white"
+                    ? "bg-brand font-semibold text-white"
                     : "border-gray-300 bg-white font-medium text-gray-900 hover:bg-gray-100",
                 )}
               >
@@ -174,7 +174,7 @@ const SelectInput: FC<{
                   clsx(
                     "relative flex cursor-pointer items-center rounded-md px-3 py-2 text-sm transition select-none",
                     focus && "bg-orange-100 text-gray-900",
-                    selected && "bg-orange-500 font-medium text-white",
+                    selected && "bg-brand font-medium text-white",
                   )
                 }
               >

@@ -45,7 +45,7 @@ const FilterSelector: FC<IProps> = ({
         className="flex w-full items-center justify-between py-3.5 cursor-pointer"
         onClick={() => handleOpen(code)}
       >
-        <h3 className="text-sm font-semibold text-orange-500">{label}</h3>
+        <h3 className="text-sm font-semibold text-brand">{label}</h3>
 
         {is_open ? (
           <ChevronUp className="size-4 text-gray-600" />

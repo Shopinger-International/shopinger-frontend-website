@@ -26,14 +26,14 @@ const Login: NextPageWithLayout = () => {
           key="desc"
         />
       </Head>
-      <div className="relative flex h-screen w-full items-center justify-center bg-[#FFE2D0]">
+      <div className="relative flex h-screen w-full items-center justify-center bg-background-login">
         <div className="absolute top-6 right-6">
           <Tooltip
             placement="bottom"
             content={() => (
               <div className="w-max rounded-lg border border-gray-200 bg-white p-3 shadow-md">
                 <p className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-900">
-                  <MessageCircleQuestionIcon className="h-4 w-4 text-orange-500" />
+                  <MessageCircleQuestionIcon className="h-4 w-4 text-brand" />
                   Need help?
                 </p>
 
@@ -47,8 +47,8 @@ const Login: NextPageWithLayout = () => {
             )}
           >
             {({}) => (
-              <button className="flex items-center justify-between gap-2 rounded-lg bg-orange-500 px-3 py-1.5 text-sm font-medium text-white shadow-md">
-                <MessageCircleQuestionIcon className="size-4 fill-white text-orange-500" />
+              <button className="flex items-center justify-between gap-2 rounded-lg bg-brand px-3 py-1.5 text-sm font-medium text-white shadow-md">
+                <MessageCircleQuestionIcon className="size-4 fill-white text-brand" />
                 <span>Need Help</span>
               </button>
             )}

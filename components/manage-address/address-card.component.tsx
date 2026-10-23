@@ -35,7 +35,7 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
     >
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
-          <TypeIcon className="h-5 w-5 text-orange-500" />
+          <TypeIcon className="h-5 w-5 text-brand" />
 
           <h3 className="text-sm font-semibold text-gray-900">
             {data.full_name}
@@ -47,7 +47,7 @@ const AddressCard: FC<IProps> = ({ data, onEdit }) => {
         </div>
 
         {data.is_default && (
-          <span className="flex items-center justify-between rounded-full bg-orange-500 px-2 py-0.5 text-xs font-medium text-white">
+          <span className="flex items-center justify-between rounded-full bg-brand px-2 py-0.5 text-xs font-medium text-white">
             Primary
           </span>
         )}

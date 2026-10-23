@@ -37,7 +37,7 @@ const HomeProductQuantityControl: FC<IQuantityControlProps> = memo(
     const increase_mutation = useCartItemIncreaseMutation();
     const decrease_mutation = useCartItemDecreaseMutation();
     const remove_mutation = useCartItemRemoveMutation();
-    
+
     const [pending_qty, setPendingQty] = useState<number | null>(null);
 
     let cart_quantity = 0;
@@ -110,8 +110,7 @@ const HomeProductQuantityControl: FC<IQuantityControlProps> = memo(
           });
           return;
         }
-      } catch {
-      }
+      } catch {}
 
       setPendingQty(1);
 
@@ -197,25 +196,25 @@ const HomeProductQuantityControl: FC<IQuantityControlProps> = memo(
       return (
         <div
           className={clsx(
-            "flex h-7 shrink-0 items-center justify-between rounded-lg bg-white px-1 text-brand select-none sm:h-8 border-2 border-brand",
+            "text-brand border-brand flex h-7 shrink-0 items-center justify-between rounded-lg border-2 bg-white px-1 select-none sm:h-8",
             fullWidth ? "w-full px-3" : "w-18 sm:w-20",
           )}
         >
           <button
             type="button"
             onClick={handleDecreaseQuantity}
-            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded text-brand hover:bg-white/20 active:scale-90"
+            className="text-brand flex size-5 cursor-pointer items-center justify-center rounded hover:bg-white/20 active:scale-90 sm:size-6"
             aria-label="Decrease quantity"
           >
             <Minus className="size-3.5 sm:size-4" strokeWidth={2.5} />
           </button>
-          <span className="w-4 text-center text-xs font-black text-brand sm:text-sm">
+          <span className="text-brand w-4 text-center text-xs font-black sm:text-sm">
             {display_quantity}
           </span>
           <button
             type="button"
             onClick={handleIncreaseQuantity}
-            className="flex size-5 sm:size-6 cursor-pointer items-center justify-center rounded text-brand hover:bg-white/20 active:scale-90"
+            className="text-brand flex size-5 cursor-pointer items-center justify-center rounded hover:bg-white/20 active:scale-90 sm:size-6"
             aria-label="Increase quantity"
           >
             <Plus className="size-3.5 sm:size-4" strokeWidth={2.5} />
@@ -229,7 +228,7 @@ const HomeProductQuantityControl: FC<IQuantityControlProps> = memo(
         type="button"
         onClick={handleAddToCart}
         className={clsx(
-          "flex h-7 shrink-0 items-center justify-center cursor-pointer rounded-lg border-2 border-brand bg-white text-xs font-extrabold text-brand transition-all hover:bg-orange-50 active:scale-95 sm:h-8",
+          "border-brand text-brand flex h-7 shrink-0 cursor-pointer items-center justify-center rounded-lg border-2 bg-white text-xs font-bold transition-all hover:bg-orange-50 active:scale-95 sm:h-8",
           fullWidth ? "w-full" : "w-18 sm:w-20",
         )}
       >

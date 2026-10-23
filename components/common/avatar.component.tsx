@@ -14,7 +14,7 @@ const Avatar = ({ name, size = 40 }: AvatarProps) => {
   return (
     <div
       style={dimension}
-      className="flex items-center justify-center rounded-full bg-orange-500 font-medium text-white"
+      className="flex items-center justify-center rounded-full bg-brand font-medium text-white"
     >
       {initial}
     </div>

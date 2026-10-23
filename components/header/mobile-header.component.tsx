@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useRef } from "react";
 // types
 import type { FC, ReactNode } from "react";
 
@@ -21,11 +22,12 @@ import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 
 // helpers
 import { cn } from "@/lib/utils";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 type ICategory = {
   label: string;
   href: string;
-  icon: ReactNode;
+  icon?: ReactNode;
 };
 
 const categories: ICategory[] = [
@@ -37,12 +39,12 @@ const categories: ICategory[] = [
   {
     label: "Grocery",
     href: "/categories/Grocery",
-    icon: <GroceryIcon size={28} />,
+    // icon: <GroceryIcon size={28} />,
   },
   {
-    label: "Pharmacy",
+    label: "Medicine",
     href: "/categories/Health-and-Personal-Care",
-    icon: <PharmacyIcon size={28} />,
+    // icon: <PharmacyIcon size={28} />,
   },
 ];
 
@@ -50,30 +52,37 @@ const MobileHeader: FC = () => {
   const is_mobile = useIsMobile();
   const router = useRouter();
   const { data: user_details } = useUserDetails();
+  const { delivery_time, distance, selected_address } =
+    useLocationTooltipStateContext();
+  const searchRef = useRef<HTMLDivElement>(null);
+
   const is_mounted = useIsMounted();
-  const delivery_time = user_details ? "45" : "10";
   const is_grocery =
     categories.find(({ label }) => label == "Grocery")?.href == router.asPath ||
     router.asPath.toLowerCase().includes("grocery");
 
   const is_pharmacy =
-    categories.find(({ label }) => label == "Pharmacy")?.href == router.asPath ||
+    categories.find(({ label }) => label == "Pharmacy" || label == "Medicine")
+      ?.href == router.asPath ||
     router.asPath.toLowerCase().includes("pharmacy") ||
     router.asPath.toLowerCase().includes("personal-care");
 
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 px-4 py-3 lg:hidden transition-colors",
-        is_grocery
-          ? "bg-green-50"
-          : is_pharmacy
-            ? "bg-blue-50"
-            : "bg-orange-50",
+        "relative flex flex-col gap-2 overflow-hidden px-4 py-3",
+        "border-b border-amber-200/70 lg:hidden",
+        "bg-[#fff8eb]",
       )}
+      style={{
+        backgroundImage: "url('/diwali-bg.png')",
+        backgroundSize: "100% 100%",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
     >
       {/* Store Closed Banner */}
-      <StoreClosedBanner />
+      <StoreClosedBanner className="-mt-1 mb-1 w-full" />
 
       {/* Delivery & Account Header */}
       <div className="flex items-center justify-between">
@@ -83,7 +92,11 @@ const MobileHeader: FC = () => {
             <span
               className={cn(
                 "font-bold",
-                is_grocery ? "text-green-600" : is_pharmacy ? "text-blue-600" : "text-orange-500",
+                is_grocery
+                  ? "text-secondary"
+                  : is_pharmacy
+                    ? "text-blue-600"
+                    : "text-brand",
               )}
             >
               {delivery_time} minutes
@@ -103,24 +116,24 @@ const MobileHeader: FC = () => {
       {/* Quick Commerce Categories */}
       <nav
         aria-label="Shopinger categories"
-        className="no-scrollbar flex items-center gap-2 overflow-x-auto overflow-y-hidden whitespace-nowrap py-0.5"
+        className="no-scrollbar flex items-center gap-2 overflow-x-auto overflow-y-hidden py-0.5 whitespace-nowrap"
       >
         {categories.map(({ label, href, icon }) => {
           const is_active = href == router.asPath;
           const is_cat_grocery = label === "Grocery";
-          const is_cat_pharmacy = label === "Pharmacy";
+          const is_cat_pharmacy = label === "Pharmacy" || label === "Medicine";
           return (
             <Link
               key={label}
               href={href}
               className={[
-                "flex h-10 shrink-0 items-center justify-center gap-1 rounded-md px-3 text-sm transition-colors overflow-hidden",
+                "flex h-10 shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md px-3 text-sm transition-colors",
                 is_active
                   ? is_cat_grocery
                     ? "bg-green-100 text-green-700"
                     : is_cat_pharmacy
                       ? "bg-blue-100 text-blue-700"
-                      : "bg-orange-100 text-orange-500"
+                      : "text-brand bg-orange-100"
                   : "bg-white text-gray-900 shadow-xs hover:bg-gray-50",
               ].join(" ")}
             >
@@ -136,8 +149,12 @@ const MobileHeader: FC = () => {
         })}
       </nav>
 
-      {/* Search */}
-      <div id="mobile-header-search-container">
+      {/* Sticky Search */}
+      <div
+        id="mobile-header-search-container"
+        ref={searchRef}
+        className="lg:hidden"
+      >
         <SearchBar />
       </div>
     </div>

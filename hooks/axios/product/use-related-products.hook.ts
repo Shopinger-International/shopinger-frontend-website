@@ -14,7 +14,7 @@ const getRelatedProducts = async (
   try {
     const {
       data: { related_products },
-    } = await webAxios.get<{
+    } = await webAxios().get<{
       success: boolean;
       related_products: IProduct[];
     }>(`/get-related-products/${product_id}`);

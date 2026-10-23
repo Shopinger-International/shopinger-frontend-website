@@ -25,7 +25,7 @@ const AddressBar: FC<AddressBarProps> = ({ address }) => {
       )}
     >
       <div className="flex items-start gap-3">
-        <MapPin className="mt-1 size-5 shrink-0 text-orange-500" />
+        <MapPin className="mt-1 size-5 shrink-0 text-brand" />
 
         <div className="space-y-1">
           <p className="text-sm font-semibold text-gray-900">
@@ -41,7 +41,7 @@ const AddressBar: FC<AddressBarProps> = ({ address }) => {
       </div>
 
       <button
-        className="w-full cursor-pointer rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition active:scale-[0.98] sm:w-auto"
+        className="w-full cursor-pointer rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition active:scale-[0.98] sm:w-auto"
         onClick={openDrawer}
       >
         Change

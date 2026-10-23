@@ -152,7 +152,7 @@ const AutoComplete: FC<
             ...source.templates,
             header() {
               return (
-                <div className="text-sm font-semibold text-orange-500">
+                <div className="text-sm font-semibold text-brand">
                   Recent Searches
                 </div>
               );
@@ -184,7 +184,7 @@ const AutoComplete: FC<
               ...source.templates,
               header() {
                 return (
-                  <div className="text-sm font-semibold text-orange-500">
+                  <div className="text-sm font-semibold text-brand">
                     Suggested Searches
                   </div>
                 );
@@ -249,7 +249,7 @@ const AutoComplete: FC<
         inputWrapper: "pl-2 sm:pl-3",
         submitButton: hide_submit_button
           ? "!hidden"
-          : "landing-search-submit-btn flex items-center justify-center !bg-orange-500 hover:!bg-orange-600 !w-12 !min-w-12 !h-full cursor-pointer transition-colors shrink-0 relative z-20",
+          : "landing-search-submit-btn flex items-center justify-center !bg-brand hover:!bg-orange-600 !w-12 !min-w-12 !h-full cursor-pointer transition-colors shrink-0 relative z-20",
         item: "!w-full hover:!bg-gray-100 hover:!rounded-lg !px-1",
         form: "!rounded-lg outline-none focus-within:!shadow-none focus-within:!border-none overflow-hidden  flex flex-row-reverse !border-none",
         detachedSearchButton: clsx(
@@ -261,13 +261,13 @@ const AutoComplete: FC<
         detachedSearchButtonPlaceholder: "hidden",
         detachedSearchButtonIcon: show_search_icon_only
           ? "[&_svg]:!text-gray-900"
-          : "!text-orange-500 bg-orange-500",
+          : "!text-brand bg-brand",
         detachedSearchButtonQuery: show_search_icon_only
           ? "hidden"
           : "pl-2 md:p-0",
 
         loadingIndicator:
-          "bg-white lg:!bg-orange-500 flex items-center justify-center [&_svg]:!stroke-orange-500 [&_svg_path]:!stroke-orange-500 [&_svg_circle]:!stroke-orange-500 lg:[&_svg]:!stroke-white lg:[&_svg_path]:!stroke-white lg:[&_svg_circle]:!stroke-white",
+          "bg-white lg:!bg-brand flex items-center justify-center [&_svg]:!stroke-brand [&_svg_path]:!stroke-brand [&_svg_circle]:!stroke-brand lg:[&_svg]:!stroke-white lg:[&_svg_path]:!stroke-white lg:[&_svg_circle]:!stroke-white",
       },
 
       getSources({ query }) {
@@ -284,7 +284,7 @@ const AutoComplete: FC<
                 templates: {
                   header() {
                     return (
-                      <div className="text-sm font-semibold text-orange-500">
+                      <div className="text-sm font-semibold text-brand">
                         Suggested Products
                       </div>
                     );

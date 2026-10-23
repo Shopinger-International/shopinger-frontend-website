@@ -51,7 +51,7 @@ const AccountDropdown: FC = () => {
               <div className="flex flex-col gap-3 px-3 py-3">
                 <Link
                   href="/login"
-                  className="rounded-lg bg-orange-500 py-2 text-center font-semibold text-white transition hover:bg-orange-600"
+                  className="rounded-lg bg-brand py-2 text-center font-semibold text-white transition hover:bg-orange-600"
                 >
                   Log in
                 </Link>
@@ -87,7 +87,7 @@ const AccountDropdown: FC = () => {
                     href={href}
                     className={clsx(
                       "flex items-center gap-3 px-4 py-3 text-sm",
-                      "transition hover:bg-orange-500 hover:text-white",
+                      "transition hover:bg-brand hover:text-white",
                     )}
                   >
                     <Icon className="size-5" />
@@ -103,7 +103,7 @@ const AccountDropdown: FC = () => {
                   onClick={() => openLogoutModal({})}
                   className={clsx(
                     "flex w-full items-center gap-3 px-4 py-3 text-sm",
-                    "transition hover:bg-orange-500 hover:text-white",
+                    "transition hover:bg-brand hover:text-white",
                   )}
                 >
                   <LogOut className="size-5" />

@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 // types
 import type { FC, ReactNode } from "react";
 
@@ -7,6 +7,7 @@ import LocationDrawer from "@/components/header/location/location-drawer.compone
 import useDefaultLocationTooltipOpen from "@/hooks/common/use-default-location.hook";
 import useIsMobile from "@/hooks/common/use-is-mobile.hook";
 import useIsMounted from "@/hooks/common/use-is-mounted.hook";
+import { useLocationTooltipStateContext } from "./location-tooltip.provider";
 
 type ILocationDrawerContext = {
   is_drawer_open: boolean;
@@ -27,6 +28,12 @@ const LocationDrawerProvider: FC<{
   const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const { default_open, updateDefaultOpen } = useDefaultLocationTooltipOpen();
+  const { selected_address } = useLocationTooltipStateContext();
+  useEffect(() => {
+    if (is_mounted && is_mobile && !selected_address) {
+      updateDefaultOpen(true);
+    }
+  }, [is_mounted, is_mobile, selected_address, updateDefaultOpen]);
   const [is_drawer_open, setIsDrawerOpen] = useState(false);
   if (is_mobile && is_mounted) {
     return (

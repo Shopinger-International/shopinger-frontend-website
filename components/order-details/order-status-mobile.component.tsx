@@ -137,7 +137,7 @@ const OrderStatusMobile: FC<Props> = ({
               {index !== updated_steps.length - 1 && (
                 <div
                   className={clsx("absolute top-10 left-5 h-full w-0.5", {
-                    "bg-orange-500": is_connected_completed,
+                    "bg-brand": is_connected_completed,
 
                     "bg-gray-300": !is_connected_completed,
 
@@ -152,11 +152,11 @@ const OrderStatusMobile: FC<Props> = ({
                   "z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all",
                   {
                     // completed
-                    "border-orange-500 bg-orange-500 text-white":
+                    "border-brand bg-brand text-white":
                       !is_current && is_completed && !is_cancelled_step,
 
                     // current active step
-                    "scale-110 border-orange-500 bg-white text-orange-500 shadow-md":
+                    "scale-110 border-brand bg-white text-brand shadow-md":
                       is_current && !is_cancelled,
 
                     // cancelled

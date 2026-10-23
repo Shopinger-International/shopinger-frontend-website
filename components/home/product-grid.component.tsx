@@ -41,7 +41,7 @@ const ProductGrid: FC<IProps> = ({ title, products, view_all_href }) => {
           href={view_all_href}
           title={`View all ${title}`}
           aria-label={`View all ${title}`}
-          className="text-sm font-semibold text-orange-500 hover:underline md:text-base"
+          className="text-sm font-semibold text-brand hover:underline md:text-base"
         >
           View All
         </Link>

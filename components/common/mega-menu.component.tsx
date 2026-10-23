@@ -177,13 +177,13 @@ const MenuGroup: FC<IMenuGroupProps> = ({
                   className="group flex items-center gap-4 px-6 py-3 transition-colors hover:bg-orange-50"
                   target={target}
                 >
-                  <Icon className="size-5 text-gray-500 transition-colors group-hover:text-orange-500" />
+                  <Icon className="size-5 text-gray-500 transition-colors group-hover:text-brand" />
 
                   <span className="flex-1 text-sm font-medium text-gray-700 group-hover:text-gray-900">
                     {label}
                   </span>
 
-                  <ChevronRight className="size-5 text-gray-400 transition-all duration-200 group-hover:translate-x-1 group-hover:text-orange-500" />
+                  <ChevronRight className="size-5 text-gray-400 transition-all duration-200 group-hover:translate-x-1 group-hover:text-brand" />
                 </Link>
               ))}
               {children}

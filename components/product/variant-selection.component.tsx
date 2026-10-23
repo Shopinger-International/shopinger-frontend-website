@@ -123,13 +123,13 @@ const VariantSelection: FC<{
                         className={clsx(
                           "group flex h-full w-24 flex-col overflow-hidden rounded-lg border bg-white transition-all duration-200 lg:w-20",
                           is_selected
-                            ? "border-orange-500 ring-2 ring-orange-200"
-                            : "border-gray-300 hover:border-orange-500",
+                            ? "border-brand ring-2 ring-orange-200"
+                            : "border-gray-300 hover:border-brand",
                         )}
                       >
                         <div
                           className={clsx(
-                            "relative h-24 w-full overflow-hidden border-b border-gray-300 group-hover:border-orange-500 lg:h-20",
+                            "relative h-24 w-full overflow-hidden border-b border-gray-300 group-hover:border-brand lg:h-20",
                           )}
                         >
                           <Image
@@ -169,7 +169,7 @@ const VariantSelection: FC<{
                         className={clsx(
                           "shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition-all duration-200",
                           is_selected
-                            ? "border-orange-500 bg-orange-50 text-orange-600"
+                            ? "border-brand bg-orange-50 text-orange-600"
                             : "border-neutral-300 bg-white hover:border-neutral-400 hover:bg-neutral-50",
                         )}
                       >

@@ -14,7 +14,7 @@ const useGetTimeWindowCampaign = () => {
   return useQuery<IResponse["data"]>({
     queryKey: ["time-window-sale"],
     async queryFn() {
-      const { data } = await webAxios<IResponse>("/get-time-window-campaign");
+      const { data } = await webAxios()<IResponse>("/get-time-window-campaign");
       return data.data;
     },
   });

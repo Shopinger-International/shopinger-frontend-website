@@ -122,7 +122,7 @@ const CheckoutSummary: FC<IProps> = ({
                   <span
                     className={clsx(
                       "font-semibold text-gray-900",
-                      label === "Discount" && "text-orange-500",
+                      label === "Discount" && "text-brand",
                     )}
                   >
                     {value}
@@ -130,7 +130,7 @@ const CheckoutSummary: FC<IProps> = ({
                 </div>
               </div>
               {label === "Delivery Fee" && away_from_free_threshold > 0 && (
-                <p className="text-xs font-medium text-orange-500">
+                <p className="text-xs font-medium text-brand">
                   Add ₹{away_from_free_threshold.toLocaleString("en-IN")} more
                   to unlock free delivery!
                 </p>
@@ -171,7 +171,7 @@ const CheckoutSummary: FC<IProps> = ({
           <label
             className={`flex cursor-pointer items-center rounded-md border p-4 ${
               payment_mode === "ONLINE"
-                ? "border-orange-500 bg-orange-50"
+                ? "border-brand bg-orange-50"
                 : "border-gray-200"
             }`}
           >
@@ -181,7 +181,7 @@ const CheckoutSummary: FC<IProps> = ({
               value="ONLINE"
               checked={payment_mode === "ONLINE"}
               onChange={() => setPaymentMode("ONLINE")}
-              className="h-4 w-4 accent-orange-500"
+              className="h-4 w-4 accent-brand"
             />
 
             <div className="ml-3">
@@ -195,7 +195,7 @@ const CheckoutSummary: FC<IProps> = ({
           <label
             className={`flex cursor-pointer items-center rounded-md border p-4 ${
               payment_mode === "COD"
-                ? "border-orange-500 bg-orange-50"
+                ? "border-brand bg-orange-50"
                 : "border-gray-200"
             }`}
           >
@@ -205,7 +205,7 @@ const CheckoutSummary: FC<IProps> = ({
               value="COD"
               checked={payment_mode === "COD"}
               onChange={() => setPaymentMode("COD")}
-              className="h-4 w-4 accent-orange-500"
+              className="h-4 w-4 accent-brand"
             />
 
             <div className="ml-3">
@@ -224,7 +224,7 @@ const CheckoutSummary: FC<IProps> = ({
       <div className="mt-6 space-y-4">
         <button
           type="button"
-          className="relative w-full cursor-pointer overflow-hidden rounded-md bg-orange-500 py-2 font-semibold text-white before:absolute before:inset-y-0 before:-left-full before:w-1/3 before:skew-x-[-20deg] before:animate-[wipe_1.5s_ease-in-out_infinite] before:bg-white/50 before:blur-sm"
+          className="relative w-full cursor-pointer overflow-hidden rounded-md bg-brand py-2 font-semibold text-white before:absolute before:inset-y-0 before:-left-full before:w-1/3 before:skew-x-[-20deg] before:animate-[wipe_1.5s_ease-in-out_infinite] before:bg-white/50 before:blur-sm"
           onClick={() => {
             if (!user_detail)
               return openLoginModal({

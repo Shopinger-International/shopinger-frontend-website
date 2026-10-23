@@ -92,7 +92,7 @@ const CampaignTimer: FC = () => {
 
   const timer_content =
     time_left && is_within_24hours ? (
-      <span className="font-semibold tracking-wider text-orange-500">
+      <span className="font-semibold tracking-wider text-brand">
         {String(time_left.hours).padStart(2, "0")}
         <span className="text-xs">H</span>{" "}
         {String(time_left.minutes).padStart(2, "0")}
@@ -101,7 +101,7 @@ const CampaignTimer: FC = () => {
         <span className="text-xs">S</span>
       </span>
     ) : (
-      <span className="font-semibold tracking-tight text-orange-500">
+      <span className="font-semibold tracking-tight text-brand">
         {campaign_state.target_date
           ? format(campaign_state.target_date, "MMM d, yyyy h:mm a")
           : ""}
@@ -110,7 +110,7 @@ const CampaignTimer: FC = () => {
 
   if (campaign_state.status === "UPCOMING") {
     return (
-      <div className="mx-auto flex w-fit items-center gap-1.5 rounded-full border border-orange-500 bg-orange-50 px-2.5 py-1 text-xs sm:text-sm md:px-3">
+      <div className="mx-auto flex w-fit items-center gap-1.5 rounded-full border border-brand bg-orange-50 px-2.5 py-1 text-xs sm:text-sm md:px-3">
         <span className="text-[10px] font-medium tracking-wider text-black uppercase md:text-xs">
           {is_within_24hours ? "Sale starts In" : "Sale starts On"}
         </span>
@@ -121,7 +121,7 @@ const CampaignTimer: FC = () => {
 
   return (
     <div className="mx-auto flex w-fit items-center gap-3 text-xs sm:text-sm">
-      <div className="flex items-center gap-1.5 rounded-full border border-orange-500 bg-orange-50 px-2.5 py-1 md:px-3">
+      <div className="flex items-center gap-1.5 rounded-full border border-brand bg-orange-50 px-2.5 py-1 md:px-3">
         <span className="text-[10px] font-medium tracking-wider text-black uppercase md:text-xs">
           {is_within_24hours ? "Sale ends In" : "Sale ends On"}
         </span>
@@ -130,7 +130,7 @@ const CampaignTimer: FC = () => {
 
       <Link
         href={`campaign/${campaign.id}/${campaign.slug}`}
-        className="flex items-center rounded-full border border-orange-500 bg-orange-500 px-2.5 py-1 text-white md:px-3"
+        className="flex items-center rounded-full border border-brand bg-brand px-2.5 py-1 text-white md:px-3"
       >
         <FaArrowRightLong className="size-4 sm:size-5" />
       </Link>

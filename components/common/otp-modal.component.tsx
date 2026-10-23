@@ -111,7 +111,7 @@ const OTPModal: FC<OTPModalProps> = ({
                     }}
                     className={`text-sm ${
                       timer === 0
-                        ? "text-orange-500 hover:text-orange-600"
+                        ? "text-brand hover:text-orange-600"
                         : "cursor-not-allowed text-gray-400"
                     }`}
                   >
@@ -126,7 +126,7 @@ const OTPModal: FC<OTPModalProps> = ({
                 <button
                   type="submit"
                   className={clsx(
-                    "w-full rounded-md bg-orange-500 py-3 font-bold text-white transition duration-300",
+                    "w-full rounded-md bg-brand py-3 font-bold text-white transition duration-300",
                     "hover:bg-orange-600 hover:shadow-md",
                     "disabled:bg-orange-300",
                   )}

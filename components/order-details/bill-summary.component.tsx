@@ -56,7 +56,7 @@ const BillSummary: FC<IProps> = ({
             <span
               className={clsx(
                 "font-semibold text-gray-900",
-                label === "Discount" && "text-orange-500",
+                label === "Discount" && "text-brand",
               )}
             >
               {value}
@@ -94,7 +94,7 @@ const BillSummary: FC<IProps> = ({
         disabled={!invoice_url}
         className={clsx(
           "mt-6 flex w-full cursor-pointer items-center justify-center gap-3 rounded-md py-2 font-semibold text-white shadow-sm",
-          invoice_url ? "bg-orange-500" : "bg-orange-300",
+          invoice_url ? "bg-brand" : "bg-orange-300",
         )}
         onClick={() => {
           if (invoice_url) {

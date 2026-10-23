@@ -187,7 +187,7 @@ export default function CancelOrderModal({ is_open, order, onClose }: Props) {
                     <textarea
                       rows={4}
                       placeholder="Reason for order cancelling"
-                      className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 focus:outline-orange-500"
+                      className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 focus:outline-brand"
                     />
                   )}
                 </div>

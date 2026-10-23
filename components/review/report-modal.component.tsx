@@ -194,7 +194,7 @@ const ReportModal: FC<IProps> = ({ review_id, is_open, source, onClose }) => {
                             <span
                               className={`size-4 rounded-full transition ${
                                 active
-                                  ? "bg-orange-500"
+                                  ? "bg-brand"
                                   : "border-2 border-gray-400"
                               }`}
                             />
@@ -230,7 +230,7 @@ const ReportModal: FC<IProps> = ({ review_id, is_open, source, onClose }) => {
                               rows={4}
                               maxLength={300}
                               placeholder="Explain the issue clearly (e.g., misleading information, spam, abuse, etc.)"
-                              className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-orange-500"
+                              className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-brand"
                             />
 
                             <div className="flex justify-between text-xs text-gray-400">
@@ -262,7 +262,7 @@ const ReportModal: FC<IProps> = ({ review_id, is_open, source, onClose }) => {
 
                   <button
                     type="submit"
-                    className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-50"
+                    className="rounded-md bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-50"
                   >
                     Submit Report
                   </button>

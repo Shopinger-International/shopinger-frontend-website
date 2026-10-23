@@ -54,12 +54,12 @@ const SideFilters: FC<{
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-300 px-4 py-3">
         <div className="flex items-center gap-3">
-          <div className="rounded-xl border border-gray-300 bg-orange-500 p-2 text-white">
+          <div className="rounded-xl border border-gray-300 bg-brand p-2 text-white">
             <SlidersHorizontal className="size-4" />
           </div>
 
           <div>
-            <h2 className="text-sm font-semibold text-orange-500">Filters</h2>
+            <h2 className="text-sm font-semibold text-brand">Filters</h2>
 
             <p className="text-xs text-gray-600">Refine your results</p>
           </div>

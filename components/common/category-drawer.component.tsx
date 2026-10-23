@@ -51,7 +51,7 @@ const SubSubCategorySection: FC<{
       </div>
       <div className="grid grid-cols-3 gap-x-6 gap-y-4">
         {visible_sub_sub_categories.map(
-          ({ id, name, slug: sub_sub_category_slug, media }) => (
+         ({ id, name, slug: sub_sub_category_slug, media }) => (
             <Link
               key={`sub-sub-category-${id}`}
               href={`/categories/${main_category_slug}/${sub_category_slug}/${sub_sub_category_slug}`}
@@ -87,7 +87,7 @@ const SubSubCategorySection: FC<{
           <button
             type="button"
             onClick={() => setIsExpanded((prev) => !prev)}
-            className="flex items-center text-sm font-medium text-orange-500"
+            className="flex items-center text-sm font-medium text-brand"
           >
             <span>{is_expanded ? "View less" : `View more`}</span>
             <ChevronDown className="size-5" />
@@ -155,7 +155,7 @@ const CategoryDrawer: FC<IProps> = ({ is_open, handleClose }) => {
                   className={clsx(
                     "flex w-full flex-col items-center gap-1 px-1 pt-2 pb-1",
                     selected_main_category_id == id &&
-                      "border-r-3 border-orange-500 bg-orange-100 text-gray-900",
+                    "border-r-3 border-brand bg-orange-100 text-gray-900",
                   )}
                   onClick={() => setSelectedMainCatgoryId(id)}
                 >

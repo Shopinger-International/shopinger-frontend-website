@@ -42,7 +42,7 @@ type IProps = {
 const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
   const router = useRouter();
   const { data: intent_details } = useCheckoutIntent(intent_id);
-  const { data: user_addresses = []} = useUserAddresses();
+  const { data: user_addresses = [] } = useUserAddresses();
   const { address_id } = useAddressDrawerContext();
   const [selected_address, setSelectedAddress] = useState<IAddress | null>(
     null,
@@ -93,7 +93,7 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
       <OrderSuccessfulModal
         is_open={order_success_modal_state.open}
         order_id={order_success_modal_state.order?.id}
-        order_name = {order_success_modal_state.order?.order_name}
+        order_name={order_success_modal_state.order?.order_name}
         total_amount={order_success_modal_state.order?.total_amount}
         onClose={() =>
           setOrderSuccessModalState({
@@ -103,7 +103,7 @@ const CheckoutPage: NextPageWithLayout<IProps> = ({ intent_id }) => {
       />
 
       <section className="w-full bg-gray-50 py-4">
-        <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
+        <div className="mx-auto max-w-6xl px-4">
           <CheckoutDetail
             intent_id={intent_id}
             total_amount={intent_details?.total_amount ?? 0}

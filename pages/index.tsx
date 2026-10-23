@@ -16,6 +16,7 @@ import HighlightsBar from "@/components/home/highlights-bar/highlights-bar.compo
 import NProducts from "@/components/home/n-products/n-products.component";
 import Campaign from "@/components/home/campaign.component";
 import CampaignTimer from "@/components/header/campaign-timer.component";
+import ShopByCategory from "@/components/home/category-section";
 
 // lib
 import { prefetchCommonData } from "@/lib/prefetch-common-data.lib";
@@ -30,12 +31,17 @@ import { useSnackbarOffset } from "@/hooks/common/use-snackbar-offset.hook";
 import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
 
 // helpers
-import { getCampaigns } from "@/hooks/axios/campaign/use-campaigns.hook";
+import {
+  campaignsQueryKey,
+  getCampaigns,
+} from "@/hooks/axios/campaign/use-campaigns.hook";
 import { getFeed } from "@/hooks/axios/home/use-feed.hook";
 import createHomeJSONLD from "@/seo/home.jsonld";
 
 // provider
 import FooterStateProvider from "@/provider/footer-state-provider";
+import LazyHomeSection from "@/components/home/lazy-home-section";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 type IProps = {
   dehydratedState: DehydratedState;
@@ -43,7 +49,8 @@ type IProps = {
 
 const HomePage: NextPageWithLayout = () => {
   useSnackbarOffset({});
-  const { data: home_feed } = useFeed();
+  const { vendor_id } = useLocationTooltipStateContext();
+  const { data: home_feed } = useFeed(vendor_id);
   const { data: campaigns = [] } = useAllCamapigns({ display_scope: "HOME" });
 
   const product_recommendations = home_feed?.product_recommendations ?? [];
@@ -80,23 +87,25 @@ const HomePage: NextPageWithLayout = () => {
         url={page_url}
         json_ld={JSON.stringify(json_ld)}
       />
-      <div className="space-y-6 pt-(--header-height)">
+      <div className="space-y-6">
         <div className="max-w-8xl mx-auto w-full space-y-6 px-4">
           <Campaign campaigns={campaigns} />
           <CampaignTimer />
-          <HighlightsBar />
-
+          {/* <HighlightsBar /> */}
+          <ShopByCategory />
           {/* Continue Shopping */}
-          {continue_shopping_recommendations.length > 0 && (
-            <HomeProductRow
-              products={continue_shopping_recommendations}
-              title={
-                user?.name
-                  ? `${user.name}, pick up where you left off`
-                  : "Based on your recent browsing activity"
-              }
-            />
-          )}
+          <LazyHomeSection>
+            {continue_shopping_recommendations.length > 0 && (
+              <HomeProductRow
+                products={continue_shopping_recommendations}
+                title={
+                  user?.name
+                    ? `${user.name}, pick up where you left off`
+                    : "Based on your recent browsing activity"
+                }
+              />
+            )}
+          </LazyHomeSection>
 
           {/* Trending Products Row */}
           {trending_product_recommendations.length > 0 && (
@@ -106,58 +115,68 @@ const HomePage: NextPageWithLayout = () => {
               view_all_href="section/trending-products"
             />
           )}
-
-          {/* New Arrivals Row */}
-          {new_arrivals.length > 0 && (
-            <HomeProductRow
-              title="New Arrivals"
-              products={new_arrivals}
-              view_all_href="section/new-arrivals"
-            />
-          )}
-
+          <LazyHomeSection>
+            {/* New Arrivals Row */}
+            {new_arrivals.length > 0 && (
+              <HomeProductRow
+                title="New Arrivals"
+                products={new_arrivals}
+                view_all_href="section/new-arrivals"
+              />
+            )}
+          </LazyHomeSection>
           {/* Featured Products Row */}
-          {featured_products.length > 0 && (
-            <HomeProductRow
-              title="Featured"
-              products={featured_products}
-              view_all_href="section/featured-products"
-            />
-          )}
+          <LazyHomeSection>
+            {featured_products.length > 0 && (
+              <HomeProductRow
+                title="Featured"
+                products={featured_products}
+                view_all_href="section/featured-products"
+              />
+            )}
+          </LazyHomeSection>
 
-          {/* Best Sellers Row */}
-          {best_seller_products.length > 0 && (
-            <HomeProductRow
-              title="Best Sellers"
-              products={best_seller_products}
-              view_all_href="section/best-sellers"
-            />
-          )}
+          <LazyHomeSection>
+            {/* Best Sellers Row */}
+            {best_seller_products.length > 0 && (
+              <HomeProductRow
+                title="Best Sellers"
+                products={best_seller_products}
+                view_all_href="section/best-sellers"
+              />
+            )}
+          </LazyHomeSection>
+          <LazyHomeSection>
+            {/* Handpicked Recommendations Row */}
+            {product_recommendations.length > 0 && (
+              <HomeProductRow
+                products={product_recommendations}
+                title="Handpicked for You"
+              />
+            )}
+          </LazyHomeSection>
 
-          {/* Handpicked Recommendations Row */}
-          {product_recommendations.length > 0 && (
-            <HomeProductRow
-              products={product_recommendations}
-              title="Handpicked for You"
-            />
-          )}
           {/* Deals of the Day */}
-          <BestDeals
-            products={deals_of_the_day}
-            fallback_products={
-              trending_product_recommendations.length > 0
-                ? trending_product_recommendations
-                : featured_products
-            }
-          />
+          <LazyHomeSection>
+            <BestDeals
+              products={deals_of_the_day}
+              fallback_products={
+                trending_product_recommendations.length > 0
+                  ? trending_product_recommendations
+                  : featured_products
+              }
+            />
+          </LazyHomeSection>
         </div>
+        <LazyHomeSection>
+          {category_recommendations.length > 0 && (
+            <CategorySection
+              category_recommendations={category_recommendations}
+            />
+          )}
+        </LazyHomeSection>
 
-        {category_recommendations.length > 0 && (
-          <CategorySection
-            category_recommendations={category_recommendations}
-          />
-        )}
-        <NProducts />
+        {home_feed && <NProducts />}
       </div>
     </>
   );
@@ -172,12 +191,17 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (
   await Promise.all([
     prefetchCommonData(query_client, cookie),
     query_client.prefetchQuery({
-      queryKey: ["campaigns"],
-      queryFn: () => getCampaigns({ display_scope: "HOME" }),
+      queryKey: campaignsQueryKey({
+        display_scope: "HOME",
+      }),
+      queryFn: () =>
+        getCampaigns({
+          display_scope: "HOME",
+        }),
     }),
     query_client.prefetchQuery({
-      queryKey: ["feed"],
-      queryFn: () => getFeed(cookie),
+      queryKey: ["feed", null],
+      queryFn: () => getFeed(undefined, cookie),
     }),
   ]);
   const dehydratedState = dehydrate(query_client);

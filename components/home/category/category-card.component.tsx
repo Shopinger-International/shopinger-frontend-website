@@ -36,7 +36,7 @@ const CategoryCard: FC<ICategoryRecommendation> = ({
         </h3>
         <Link
           href={category_url}
-          className="rounded-full bg-orange-500 p-1 text-white transition-all hover:scale-110 hover:bg-orange-600"
+          className="rounded-full bg-brand p-1 text-white transition-all hover:scale-110 hover:bg-orange-600"
           title={`Browse ${category_name} category`}
           aria-label={`Browse ${category_name} category`}
         >
@@ -65,7 +65,7 @@ const CategoryCard: FC<ICategoryRecommendation> = ({
       <div className="relative">
         <Link
           href={category_url}
-          className="inline-block font-semibold text-orange-500 transition-colors hover:text-orange-600 hover:underline hover:underline-offset-2"
+          className="inline-block font-semibold text-brand transition-colors hover:text-orange-600 hover:underline hover:underline-offset-2"
           title={`Explore ${category_name}`}
         >
           View All

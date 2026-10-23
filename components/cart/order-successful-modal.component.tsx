@@ -65,19 +65,19 @@ const OrderSuccessfulModal: FC<IProps> = ({
         </TransitionChild>
 
         {/* Modal container */}
-        <div className="fixed inset-0 flex items-center justify-center p-4">
+        <div className="fixed inset-0 flex items-end justify-center p-0 sm:items-center sm:p-4">
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
-            enterFrom="opacity-0 scale-90 translate-y-5"
-            enterTo="opacity-100 scale-100 translate-y-0"
+            enterFrom="opacity-0 translate-y-full sm:scale-90 sm:translate-y-5"
+            enterTo="opacity-100 translate-y-0 sm:scale-100"
             leave="ease-in duration-200"
-            leaveFrom="opacity-100 scale-100 translate-y-0"
-            leaveTo="opacity-0 scale-95 translate-y-3"
+            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+            leaveTo="opacity-0 translate-y-full sm:scale-95 sm:translate-y-3"
           >
-            <DialogPanel className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <DialogPanel className="w-full max-w-md overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl">
               {/* Top accent */}
-              <div className="h-1.5 bg-orange-500" />
+              <div className="h-1.5 bg-brand" />
 
               <div className="p-6 text-center">
                 {/* Success Icon */}
@@ -101,7 +101,7 @@ const OrderSuccessfulModal: FC<IProps> = ({
                       <CheckCircle
                         size={42}
                         strokeWidth={2.2}
-                        className={`text-orange-500 transition-all duration-500 ${
+                        className={`text-brand transition-all duration-500 ${
                           animate
                             ? "scale-100 opacity-100"
                             : "scale-50 opacity-0"
@@ -190,7 +190,7 @@ const OrderSuccessfulModal: FC<IProps> = ({
 
                   <Link
                     href={`/order-detail/${order_id}`}
-                    className="flex flex-1 items-center justify-center rounded-lg bg-orange-500 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-md active:translate-y-0 active:scale-[0.98]"
+                    className="flex flex-1 items-center justify-center rounded-lg bg-brand py-2.5 text-sm font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-md active:translate-y-0 active:scale-[0.98]"
                   >
                     View Order
                   </Link>

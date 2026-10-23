@@ -75,7 +75,7 @@ const ProfilePage: NextPageWithLayout = () => {
         }}
       />
       <section className="min-h-screen w-full bg-gray-50 py-4">
-        <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
+        <div className="mx-auto max-w-6xl px-4">
           <div className="w-full rounded-xl border border-gray-300 bg-white">
             <ProfileForm />
             <div className="mt-10 border-t border-gray-200 p-6">

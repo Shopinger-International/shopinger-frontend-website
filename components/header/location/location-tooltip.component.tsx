@@ -24,15 +24,13 @@ const LocationTooltip: FC<{
   className: string;
 }> = ({ className }) => {
   const is_mobile = useIsMobile();
-  const { is_shown, selected_address, updateIsShown } =
+  const { is_shown, selected_address, updateIsShown, delivery_time } =
     useLocationTooltipStateContext();
   const { updateState: updateLocationDrawerState } = useLocationDrawerContext();
   const { is_modal_open: is_login_modal_open } = useLoginModalContext();
   const { is_modal_open: is_address_modal_open } = useAddressDrawerContext();
   const { data: user_details } = useUserDetails();
   const { default_open, updateDefaultOpen } = useDefaultLocationTooltipOpen();
-
-  const delivery_time = user_details ? "45" : "10";
 
   if (is_mobile) {
     return (
@@ -60,7 +58,7 @@ const LocationTooltip: FC<{
                 Delivery in
               </span>
               <div className="flex flex-row items-center gap-1">
-                <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
+                <span className="flex gap-1 rounded-md bg-brand-primary px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
                   {delivery_time} MIN
                 </span>
               </div>
@@ -76,7 +74,8 @@ const LocationTooltip: FC<{
 
             <span
               className={clsx(
-                "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-black transition-transform duration-100",
+                "bg-brand-location inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-black transition-transform duration-100",
+                "bg-brand-location inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-black transition-transform duration-100",
               )}
             >
               <span className="flex items-center gap-1">
@@ -109,7 +108,7 @@ const LocationTooltip: FC<{
       trigger="click"
       toggle={!default_open}
       offset_distance={12}
-      default_open={default_open && !is_shown}
+      default_open={selected_address ? false : default_open && !is_shown}
       className={clsx(
         "z-50 w-3/4 rounded-xl border border-gray-300 bg-white shadow-lg sm:w-100",
       )}
@@ -117,7 +116,7 @@ const LocationTooltip: FC<{
       strategy="fixed"
       static_offset={20}
       show_overlay={!selected_address}
-      handleOverlayClick={() => updateIsShown?.(true)}
+      // handleOverlayClick={() => updateIsShown?.(true)}
       content={({ handleClose }) => (
         <LocationTooltipContent
           toggle={false}
@@ -154,8 +153,8 @@ const LocationTooltip: FC<{
                   Delivery in
                 </span>
                 <div className="flex flex-row items-center gap-1">
-                  <span className="flex gap-1 rounded-md bg-[#FF6900] px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
-                    {delivery_time} min
+                  <span className="bg-brand-location flex gap-1 rounded-md px-2 py-1 text-[10px] font-bold whitespace-nowrap text-white">
+                    {delivery_time ?? 15} min
                   </span>
                 </div>
               </div>
@@ -170,7 +169,8 @@ const LocationTooltip: FC<{
 
               <span
                 className={clsx(
-                  "inline-block rounded-md bg-[#FF6900] px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
+                  "bg-brand-primary inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
+                  "bg-brand-primary inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
                 )}
               >
                 <span className="flex items-center gap-1">

@@ -51,7 +51,7 @@ const ProductSection: FC<IProps> = ({ heading, data, aria_label }) => {
             disabled={!can_scroll_prev}
             aria-label="Show previous products"
             onClick={goToPrev}
-            className="absolute top-1/2 -left-5 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-2 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
+            className="absolute top-1/2 -left-5 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-2 shadow-sm hover:bg-brand hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
           >
             <ChevronLeft aria-hidden={true} />
           </button>
@@ -91,7 +91,7 @@ const ProductSection: FC<IProps> = ({ heading, data, aria_label }) => {
             disabled={!can_scroll_next}
             aria-label="Show more products"
             onClick={goToNext}
-            className="absolute top-1/2 -right-5 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-2 shadow-sm hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
+            className="absolute top-1/2 -right-5 z-10 hidden -translate-y-3/4 cursor-pointer items-center justify-center rounded-full border border-gray-300 bg-white p-2 shadow-sm hover:bg-brand hover:text-white disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-300 disabled:hover:bg-gray-50 md:flex"
           >
             <ChevronRight aria-hidden={true} />
           </button>

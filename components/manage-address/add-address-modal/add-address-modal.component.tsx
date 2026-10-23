@@ -32,6 +32,7 @@ import {
   mapPlaceToForm,
   mapGeocodeToForm,
   getAddressFromCoords,
+  getUserLocation,
 } from "@/helpers/address.helper";
 import { z } from "zod";
 import clsx from "clsx";
@@ -45,6 +46,7 @@ import useVerifyPincodeServiceability from "@/hooks/axios/product/use-verify-pin
 
 // const
 import { ADDRESS_TYPE } from "@/constants/display-area.constant";
+import { useLocationTooltipStateContext } from "@/provider/location-tooltip.provider";
 
 const address_types = [
   { id: ADDRESS_TYPE.HOME, label: "Home", icon: Home },
@@ -97,6 +99,12 @@ const AddAddressModal: FC<IProps> = ({
 }) => {
   const [is_current_location_fetching, setIsCurrentFetching] = useState(false);
   const [is_pincode_serviceable, setIsPincodeServiceable] = useState(true);
+  const {
+    updateSelectedAddress,
+    updateVendorId,
+    updateDeliveryTime,
+    updateDistance,
+  } = useLocationTooltipStateContext();
   const select_places_ref = useRef<SelectInstance>(null);
   const { data: user_detail } = useUserDetails();
   const user_addresses = user_detail?.user_addresses ?? [];
@@ -113,46 +121,48 @@ const AddAddressModal: FC<IProps> = ({
       return;
     }
     setIsCurrentFetching(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        getAddressFromCoords(latitude, longitude).then((data) => {
-          const mapped = mapGeocodeToForm(data);
-          verify_pincode_serviceability_mutation.mutate(
-            {
-              pin_code: mapped.pincode,
+    getUserLocation({
+      handleSuccess(coords, mapped) {
+        verify_pincode_serviceability_mutation.mutate(
+          {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+          },
+          {
+            onSuccess(data) {
+              updateSelectedAddress?.(mapped.area);
+              updateVendorId?.(data.data.vendor_id);
+              updateDeliveryTime?.(data.data.delivery_time_minutes);
+              updateDistance?.(data.data.distance_km);
+              setIsPincodeServiceable(true);
+              formik_ref.current?.setValues((prev) => ({
+                ...prev,
+                ...mapped,
+                latitude: mapped.latitude,
+                longitude: mapped.longitude,
+              }));
             },
-            {
-              onSuccess() {
-                setIsPincodeServiceable(true);
-                formik_ref.current?.setValues((prev) => ({
-                  ...prev,
-                  ...mapped,
-                }));
-              },
-              onError(err) {
-                setIsPincodeServiceable(false);
-                let message = "Something went wrong";
-                if (err instanceof AxiosError) {
-                  message = err.response?.data?.message || message;
-                }
-                enqueueSnackbar(message, {
-                  key: `verify-serviceable-pincode-error-${Date.now()}`,
-                  variant: "error",
-                });
-              },
-              onSettled() {
-                setIsCurrentFetching(false);
-              },
+            onError(err) {
+              setIsPincodeServiceable(false);
+              let message = "Something went wrong";
+              if (err instanceof AxiosError) {
+                message = err.response?.data?.message || message;
+              }
+              enqueueSnackbar(message, {
+                key: `verify-serviceable-pincode-error-${Date.now()}`,
+                variant: "error",
+              });
             },
-          );
-        });
+            onSettled() {
+              setIsCurrentFetching(false);
+            },
+          },
+        );
       },
-      () => {
+      handleError() {
         alert("Unable to fetch location");
-        setIsCurrentFetching(false);
       },
-    );
+    });
   };
 
   return (
@@ -238,7 +248,8 @@ const AddAddressModal: FC<IProps> = ({
                             const mapped = mapPlaceToForm(val.data);
                             verify_pincode_serviceability_mutation.mutate(
                               {
-                                pin_code: mapped.pincode,
+                                latitude: mapped.latitude,
+                                longitude: mapped.longitude,
                               },
                               {
                                 onSuccess() {
@@ -280,7 +291,7 @@ const AddAddressModal: FC<IProps> = ({
                       <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2">
                         <button
                           type="button"
-                          className="flex items-center gap-1 rounded-full border bg-white px-3 py-1.5 text-sm font-semibold text-orange-500 shadow-sm hover:bg-orange-50"
+                          className="text-brand flex items-center gap-1 rounded-full border bg-white px-3 py-1.5 text-sm font-semibold shadow-sm hover:bg-orange-50"
                           onClick={handleUseCurrentLocation}
                         >
                           <MapPin className="size-3.5" />
@@ -343,7 +354,7 @@ const AddAddressModal: FC<IProps> = ({
                             <button
                               type="button"
                               onClick={handleUseCurrentLocation}
-                              className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600"
+                              className="bg-brand rounded-lg px-4 py-2 text-sm font-medium text-white hover:bg-orange-600"
                             >
                               {is_current_location_fetching
                                 ? "Fetching location..."
@@ -363,7 +374,7 @@ const AddAddressModal: FC<IProps> = ({
                           </button>
                           {/* Icon */}
                           <div className="mb-4 flex items-center justify-center rounded-full bg-orange-100 p-4 shadow-sm">
-                            <MapPin className="size-6 text-orange-500" />
+                            <MapPin className="text-brand size-6" />
                           </div>
 
                           {/* Heading */}
@@ -377,7 +388,7 @@ const AddAddressModal: FC<IProps> = ({
                           </p>
 
                           {/* Hint */}
-                          <div className="mt-4 rounded-full bg-orange-500/10 px-4 py-1.5 text-xs font-medium text-orange-600">
+                          <div className="bg-brand/10 mt-4 rounded-full px-4 py-1.5 text-xs font-medium text-orange-600">
                             Step 1 of 2
                           </div>
                         </div>
@@ -385,7 +396,7 @@ const AddAddressModal: FC<IProps> = ({
 
                       {/* RIGHT HEADER ONLY */}
                       <div className="flex shrink-0 items-center justify-between border-b border-gray-300 px-6 py-3">
-                        <h2 className="text-lg font-semibold text-orange-500">
+                        <h2 className="text-brand text-lg font-semibold">
                           {initial_data ? "Update Address" : "Add new address"}
                         </h2>
 
@@ -421,7 +432,7 @@ const AddAddressModal: FC<IProps> = ({
                                   className={clsx(
                                     "flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium",
                                     isActive
-                                      ? "border-orange-500 text-orange-600 ring-1 ring-orange-500"
+                                      ? "border-brand ring-brand text-orange-600 ring-1"
                                       : "border-gray-300 text-gray-600",
                                   )}
                                 >
@@ -498,7 +509,7 @@ const AddAddressModal: FC<IProps> = ({
                             create_address_mutation.isPending ||
                             update_address_mutation.isPending
                           }
-                          className="w-full rounded-md bg-orange-500 px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
+                          className="bg-brand w-full rounded-md px-6 py-2 font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60"
                         >
                           {update_address_mutation.isPending
                             ? "Updating..."

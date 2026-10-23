@@ -26,7 +26,7 @@ const Rating: FC<IProps> = ({ total_stars, size, custom_rating, gap = 2 }) => {
               size={size}
               className={
                 index <= custom_rating
-                  ? "fill-orange-500 text-orange-500"
+                  ? "fill-brand text-brand"
                   : "fill-none text-gray-400"
               }
             />

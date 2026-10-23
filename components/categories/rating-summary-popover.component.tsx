@@ -119,7 +119,7 @@ const RatingSummaryPopover: FC<IProps> = ({
             <div>
               <Link
                 href={product_reviews_link}
-                className="flex items-center justify-center gap-1 text-orange-500"
+                className="flex items-center justify-center gap-1 text-brand"
               >
                 <span>See all reviews</span>
                 <ChevronRight className="size-4" strokeWidth={2} />

@@ -102,9 +102,9 @@ const ProductGallary: FC<IProps> = ({
                     index === selected_thumbnail_index ? "true" : undefined
                   }
                   className={clsx(
-                    "relative h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-md border transition-colors hover:border-orange-500",
+                    "relative h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-md border transition-colors hover:border-brand",
                     index == selected_thumbnail_index
-                      ? "border-orange-500"
+                      ? "border-brand"
                       : "border-neutral-300",
                   )}
                   onClick={() => setSelectedThumbnailIndex(index)}
@@ -121,7 +121,7 @@ const ProductGallary: FC<IProps> = ({
               ))}
             {variant_medias_with_title.length > THUMBNAIL_LIMIT && (
               <button
-                className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-neutral-300 transition hover:border-orange-500"
+                className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-neutral-300 transition hover:border-brand"
                 onClick={() => setShowFullGallary(true)}
               >
                 <Image
@@ -212,8 +212,8 @@ const ProductGallary: FC<IProps> = ({
                     <Heart
                       aria-hidden={true}
                       className={clsx(
-                        "size-5 text-orange-500",
-                        wishlist_data?.is_wishlisted && "fill-orange-500",
+                        "size-5 text-brand",
+                        wishlist_data?.is_wishlisted && "fill-brand",
                       )}
                       strokeWidth={2}
                     />
@@ -227,7 +227,7 @@ const ProductGallary: FC<IProps> = ({
                   >
                     <Share
                       aria-hidden={true}
-                      className={clsx("size-5 text-orange-500")}
+                      className={clsx("size-5 text-brand")}
                       strokeWidth={2}
                     />
                   </button>

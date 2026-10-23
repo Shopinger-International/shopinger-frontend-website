@@ -91,7 +91,7 @@ const AiChatBox: FC = () => {
             {/* Avatar with glow */}
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-orange-400/40 blur-md" />
-              <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-amber-400 shadow-md">
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-brand to-amber-400 shadow-md">
                 <Image
                   src="/header/barsati.png"
                   alt="Barsati AI"
@@ -143,7 +143,7 @@ const AiChatBox: FC = () => {
             )}
           >
             {role === "assistant" && (
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-brand to-orange-600 shadow-sm">
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
             )}
@@ -153,14 +153,14 @@ const AiChatBox: FC = () => {
                 "max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
                 role === "assistant"
                   ? "bg-orange-50 text-gray-900 shadow-sm"
-                  : "bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-md"
+                  : "bg-gradient-to-br from-brand to-orange-600 text-white shadow-md"
               )}
             >
               {content}
             </div>
 
             {role === "user" && (
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-brand to-orange-600 shadow-sm">
                 <User className="h-4 w-4 text-white" />
               </div>
             )}
@@ -169,7 +169,7 @@ const AiChatBox: FC = () => {
 
         {typing && (
           <div className="flex items-center gap-2 text-xs text-gray-500">
-            <Sparkles className="h-4 w-4 animate-pulse text-orange-500" />
+            <Sparkles className="h-4 w-4 animate-pulse text-brand" />
             Barsati AI is thinking…
           </div>
         )}
@@ -190,7 +190,7 @@ const AiChatBox: FC = () => {
           <button
             onClick={sendMessage}
             disabled={!input.trim()}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-md transition disabled:opacity-40"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-brand to-orange-600 text-white shadow-md transition disabled:opacity-40"
           >
             <Send className="h-4 w-4" />
           </button>

@@ -45,48 +45,17 @@ const CategorySection: FC = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Always show at top
-      if (currentScrollY <= 5) {
+      if (currentScrollY <= 106) {
         if (hideNavRef.current) {
           hideNavRef.current = false;
           setHideNav(false);
         }
-
-        lastScrollY = currentScrollY;
-        directionStartY = currentScrollY;
-        lastDirection = null;
-        return;
-      }
-
-      const direction = currentScrollY > lastScrollY ? "down" : "up";
-
-      // Direction changed — don't react yet
-      if (direction !== lastDirection) {
-        lastDirection = direction;
-        directionStartY = currentScrollY;
-        lastScrollY = currentScrollY;
-        return;
-      }
-
-      const distance = Math.abs(currentScrollY - directionStartY);
-
-      if (distance >= DIRECTION_THRESHOLD) {
-        if (direction === "down" && !hideNavRef.current) {
+      } else {
+        if (!hideNavRef.current) {
           hideNavRef.current = true;
           setHideNav(true);
-
-          directionStartY = currentScrollY;
-        }
-
-        if (direction === "up" && hideNavRef.current) {
-          hideNavRef.current = false;
-          setHideNav(false);
-
-          directionStartY = currentScrollY;
         }
       }
-
-      lastScrollY = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll, {
@@ -139,7 +108,7 @@ const CategorySection: FC = () => {
           "mb-2",
         )}
       >
-        <div className="flex items-center justify-between gap-4 text-orange-500">
+        <div className="flex items-center justify-between gap-4 text-brand">
           {/* Left Section: Menu + Navigation */}
           <div className="flex min-w-0 items-center gap-4">
             {/* Menu Button */}
@@ -218,9 +187,11 @@ const CategorySection: FC = () => {
 
                 {/* Categories */}
                 <ul className="flex items-start gap-2 whitespace-nowrap">
-                    {categories.map((category, index) => {
+                  {categories.map((category, index) => {
                     const { id, name, slug } = category;
-                    const is_item_grocery = slug.toLowerCase().includes("grocery") || name.toLowerCase().includes("grocery");
+                    const is_item_grocery =
+                      slug.toLowerCase().includes("grocery") ||
+                      name.toLowerCase().includes("grocery");
                     const is_item_pharmacy =
                       slug.toLowerCase().includes("pharmacy") ||
                       slug.toLowerCase().includes("medicine") ||
@@ -275,10 +246,10 @@ const CategorySection: FC = () => {
                                 "font-semibold underline underline-offset-4",
                               selected_category?.id === id &&
                                 (is_item_grocery
-                                  ? "text-green-600"
+                                  ? "text-secondary"
                                   : is_item_pharmacy
                                     ? "text-blue-600"
-                                    : "text-orange-500"),
+                                    : "text-brand"),
                             )}
                           >
                             {name}
@@ -331,7 +302,7 @@ const CategorySection: FC = () => {
               </span>
             </div>
             <div className="h-6 w-px bg-white" />
-            <button className="cursor-pointer rounded-full bg-orange-500 p-0.5">
+            <button className="cursor-pointer rounded-full bg-brand p-0.5">
               <ChevronRight className="size-5 text-white" />
             </button>
           </Link> */}

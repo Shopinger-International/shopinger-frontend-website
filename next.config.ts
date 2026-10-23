@@ -4,11 +4,14 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "shopinger.co.in",
+        hostname: "cdn.shopinger.co.in",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn-staging.shopinger.co.in",
       },
     ],
   },

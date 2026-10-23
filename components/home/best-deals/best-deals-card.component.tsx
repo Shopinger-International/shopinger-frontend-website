@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowDown } from "lucide-react";
 // types
 import type { FC } from "react";
 import type { IResponse } from "@/hooks/axios/home/use-feed.hook";
@@ -19,7 +20,7 @@ const BestDealsCard: FC<IResponse["data"]["deals_of_the_day"][number]> = ({
       href={`/${generateSlug(title)}/p/${product_id}/${variant_id}`}
       className="group block w-28 space-y-3 focus-visible:outline-none sm:w-48 lg:w-52"
     >
-      <div className="overflow-hidden rounded-lg sm:rounded-xl border border-gray-300 bg-white transition-all duration-300 group-hover:-translate-y-0.5 group-focus-visible:ring-2 group-focus-visible:ring-orange-500 group-focus-visible:ring-offset-2">
+      <div className="overflow-hidden rounded-lg sm:rounded-xl border border-gray-300 bg-white transition-all duration-300 group-hover:-translate-y-0.5 group-focus-visible:ring-2 group-focus-visible:ring-brand group-focus-visible:ring-offset-2">
         <div className="flex aspect-square items-center justify-center bg-linear-to-br from-orange-50/60 to-orange-100/20 p-4 md:p-6">
           <div className="relative h-full w-full overflow-hidden">
             <Image
@@ -35,8 +36,10 @@ const BestDealsCard: FC<IResponse["data"]["deals_of_the_day"][number]> = ({
       </div>
 
       <div className="px-1">
-        <p className="truncate text-sm leading-snug font-semibold tracking-tight text-gray-900 transition-colors group-hover:text-orange-600 md:text-base">
-          Up to {Math.floor(discount)}% off | {title}
+        <p className="inline-flex items-center gap-0.5 truncate text-sm leading-snug font-semibold tracking-tight text-gray-900 transition-colors group-hover:text-orange-600 md:text-base">
+          <span>Up to {Math.floor(discount)}%</span>
+          <ArrowDown className="size-3.5 shrink-0 text-orange-600" strokeWidth={3.5} />
+          <span>| {title}</span>
         </p>
       </div>
     </Link>

@@ -65,7 +65,7 @@ const SectionPage: NextPageWithLayout<IProps> = ({ section }) => {
       <section className="min-h-screen w-full">
         <h1 className="sr-only">{SECTION_CONFIG[section].heading}</h1>
         <p className="sr-only">{SECTION_CONFIG[section].description}</p>
-        <div className="mx-auto mt-(--header-height) max-w-6xl space-y-3 pb-4">
+        <div className="mx-auto max-w-6xl space-y-3 pb-4">
           <SectionProducts section={section} />
         </div>
       </section>

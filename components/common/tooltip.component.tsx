@@ -58,6 +58,7 @@ const Tooltip: FC<TooltipProps> = ({
   handleOverlayClick,
 }) => {
   const [open, setOpen] = useState(false);
+  const [shake, setShake] = useState(false);
   const arrow_ref = useRef<SVGSVGElement>(null);
 
   const { refs, floatingStyles, context } = useFloating({
@@ -103,6 +104,12 @@ const Tooltip: FC<TooltipProps> = ({
     click,
     role,
   ]);
+  useEffect(() => {
+    if (!shake) return;
+
+    const timer = setTimeout(() => setShake(false), 500);
+    return () => clearTimeout(timer);
+  }, [shake]);
 
   useEffect(() => {
     setOpen(default_open);
@@ -123,8 +130,8 @@ const Tooltip: FC<TooltipProps> = ({
           {show_overlay && (
             <FloatingOverlay
               className="z-100 bg-black/40"
-              lockScroll
               onClick={() => {
+                setShake(true);
                 setOpen(true); // remove it when location tooltip have been be shown until user doesn't provide his/her location
                 handleOverlayClick?.();
               }}
@@ -134,24 +141,33 @@ const Tooltip: FC<TooltipProps> = ({
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            className={clsx("relative z-120", className)}
+            className="z-120"
           >
-            <FloatingArrow
-              ref={arrow_ref}
-              context={context}
-              width={18}
-              height={9}
-              fill="#fff"
-              stroke="#d1d5db"
-              strokeWidth={1}
-              tipRadius={2}
-              staticOffset={static_offset}
-              style={{
-                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
-              }}
-            />
-            <div className="overflow-hidden rounded-lg outline-none">
-              {content({ handleClose: () => setOpen(false) })}
+            <div
+              className={clsx(
+                "relative",
+                shake && "animate-[shake_0.5s_ease-in-out]",
+                className,
+              )}
+            >
+              <FloatingArrow
+                ref={arrow_ref}
+                context={context}
+                width={18}
+                height={9}
+                fill="var(--surface-white)"
+                stroke="var(--border-light)"
+                strokeWidth={1}
+                tipRadius={2}
+                staticOffset={static_offset}
+                style={{
+                  filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))",
+                }}
+              />
+
+              <div className="overflow-hidden rounded-lg outline-none">
+                {content({ handleClose: () => setOpen(false) })}
+              </div>
             </div>
           </div>
         </FloatingPortal>

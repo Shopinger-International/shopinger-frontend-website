@@ -102,14 +102,14 @@ const Hero: FC = () => {
                   {value ? (
                     <p
                       className={`text-2xl font-bold sm:text-3xl lg:text-4xl ${
-                        highlight ? "text-orange-500" : "text-gray-900"
+                        highlight ? "text-brand" : "text-gray-900"
                       }`}
                     >
                       {value}
                     </p>
                   ) : (
                     <Icon
-                      className="mx-auto size-8 text-orange-500 sm:mx-0 sm:size-10"
+                      className="mx-auto size-8 text-brand sm:mx-0 sm:size-10"
                       strokeWidth={1.8}
                     />
                   )}

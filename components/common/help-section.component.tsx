@@ -31,7 +31,7 @@ const HelpSection: FC<IProps> = ({ title, description }) => {
                 "_blank",
               );
             }}
-            className="mt-3 inline-flex items-center gap-1 rounded-md bg-orange-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-orange-600"
+            className="mt-3 inline-flex items-center gap-1 rounded-md bg-brand px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-orange-600"
           >
             Get help
           </button>

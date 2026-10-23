@@ -17,7 +17,7 @@ const ProductMarquee: FC = () => {
         {/* Left Info Block */}
         <div className="flex shrink-0 flex-col gap-1">
           <div className="flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 text-orange-500" />
+            <CheckCircle className="h-4 w-4 text-brand" />
             <span className="text-sm font-semibold text-gray-900">
               Delivered Products
             </span>

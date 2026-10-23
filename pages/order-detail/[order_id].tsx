@@ -140,7 +140,7 @@ const OrderDetailPage: NextPageWithLayout<{
       />
       <AblyProvider client={ably_client}>
         <section className="w-full bg-gray-50 py-6">
-          <div className="mx-auto mt-(--header-height) max-w-6xl px-4">
+          <div className="mx-auto max-w-6xl px-4">
             {/* Header */}
             <div className="flex justify-between rounded-xl border border-gray-300 bg-white p-5">
               <div>
@@ -215,7 +215,7 @@ const OrderDetailPage: NextPageWithLayout<{
                         <div className="flex h-full flex-col items-center justify-center px-6 text-center">
                           {/* Icon */}
                           <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                            <CircleAlert className="size-8 text-orange-500" />
+                            <CircleAlert className="text-brand size-8" />
                           </div>
 
                           {/* Title */}
@@ -230,7 +230,7 @@ const OrderDetailPage: NextPageWithLayout<{
                           </p>
 
                           {/* Status pill */}
-                          <div className="mt-3 rounded-full bg-orange-500 px-3 py-1 text-[11px] font-medium text-white">
+                          <div className="bg-brand mt-3 rounded-full px-3 py-1 text-[11px] font-medium text-white">
                             Preparing order
                           </div>
                         </div>

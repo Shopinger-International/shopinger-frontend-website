@@ -40,7 +40,7 @@ const AboutPage: NextPageWithLayout = () => {
         json_ld={JSON.stringify(about_us_json_ld)}
       />
       <div className="w-full bg-gray-50 py-2 sm:py-4">
-        <div className="mx-auto mt-(--header-height) max-w-7xl px-2.5 sm:px-4">
+        <div className="mx-auto max-w-7xl px-2.5 sm:px-4">
           <Hero />
           <OurPurpose />
           <GetInTouch />
