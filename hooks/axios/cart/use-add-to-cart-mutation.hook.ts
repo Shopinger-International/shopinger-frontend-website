@@ -11,6 +11,8 @@ import Axios from "@/lib/axios/private.lib";
 // helpers
 import { enqueueSnackbar } from "notistack";
 
+export const CART_EMPTY_ADD_EVENT = "cart-empty-item-added";
+
 type IRequest = {
   product_id: number;
   variant_id: number;
@@ -26,7 +28,12 @@ type IResponse = {
 const useAddToCartMutation = () => {
   const router = useRouter();
   const query_client = useQueryClient();
-  return useMutation<IResponse, AxiosError, IRequest>({
+  return useMutation<
+    IResponse,
+    AxiosError,
+    IRequest,
+    { was_cart_empty: boolean }
+  >({
     async mutationFn(payload) {
       const { data } = await Axios.post<{
         message: string;
@@ -36,7 +43,17 @@ const useAddToCartMutation = () => {
       return data.data;
     },
 
-    onSuccess(response, { product_id, variant_id }) {
+    onMutate() {
+      const cached_cart = query_client.getQueryData<{ total_items?: number }>([
+        "carts",
+      ]);
+      return { was_cart_empty: cached_cart?.total_items === 0 };
+    },
+    onSuccess(response, { product_id, variant_id }, context) {
+      if (typeof window !== "undefined" && context?.was_cart_empty) {
+        window.dispatchEvent(new Event(CART_EMPTY_ADD_EVENT));
+      }
+
       query_client.invalidateQueries({
         queryKey: ["carts"],
       });
