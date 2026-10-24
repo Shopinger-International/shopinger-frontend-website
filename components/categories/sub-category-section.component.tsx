@@ -48,7 +48,9 @@ export default function SubCategorySection({
 
   if (!data) return null;
 
-  const category = data.find((category) => category.slug === category_slug);
+  const category = data.find(
+    (category) => category.slug?.toLowerCase() === category_slug?.toLowerCase(),
+  );
 
   if (!category?.sub_categories?.length) return null;
 
