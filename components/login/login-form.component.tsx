@@ -149,7 +149,7 @@ const LoginForm: FC<IProps> = ({
         <button
           onClick={() => router.push("/")}
           className={clsx(
-            "text-md absolute top-6 right-6 inline-block cursor-pointer font-semibold text-brand",
+            "text-md text-brand absolute top-6 right-6 inline-block cursor-pointer font-semibold",
             !is_login_page && "lg:hidden",
           )}
         >
@@ -164,7 +164,7 @@ const LoginForm: FC<IProps> = ({
           )}
         >
           <Image
-            src="/dark-mobile-logo.png"
+            src="/Shopinger-Cart-Icon.svg"
             alt="Shopinger – Online Shopping Platform"
             fill
             priority
@@ -282,7 +282,7 @@ const LoginForm: FC<IProps> = ({
                         </div>
                         <button
                           type="button"
-                          className="ml-auto cursor-pointer text-sm font-medium text-brand hover:text-orange-600 focus:outline-none"
+                          className="text-brand ml-auto cursor-pointer text-sm font-medium hover:text-orange-600 focus:outline-none"
                           onClick={() => {
                             setLoginMode((prev) =>
                               prev === "phone" ? "email" : "phone",
@@ -302,7 +302,7 @@ const LoginForm: FC<IProps> = ({
 
               <button
                 onClick={() => console.log(errors)}
-                className="h-10 w-full cursor-pointer rounded-md bg-brand font-bold text-white shadow-sm hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
+                className="bg-brand h-10 w-full cursor-pointer rounded-md font-bold text-white shadow-sm hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
                 disabled={
                   send_otp_mutation.isPending ||
                   (login_mode === "phone" &&
@@ -374,7 +374,7 @@ const LoginForm: FC<IProps> = ({
                             setShowOtp(false);
                             setTimer(60);
                           }}
-                          className="flex cursor-pointer items-center gap-1 text-sm font-medium text-brand hover:text-orange-600"
+                          className="text-brand flex cursor-pointer items-center gap-1 text-sm font-medium hover:text-orange-600"
                         >
                           Change
                         </button>
@@ -399,7 +399,7 @@ const LoginForm: FC<IProps> = ({
                 <button
                   type="submit"
                   disabled={verify_otp_mutation.isPending}
-                  className="w-full cursor-pointer rounded-md bg-brand py-2 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
+                  className="bg-brand w-full cursor-pointer rounded-md py-2 font-bold text-white shadow-sm hover:bg-orange-600 disabled:bg-orange-300"
                 >
                   Continue
                 </button>
@@ -429,7 +429,7 @@ const LoginForm: FC<IProps> = ({
                       );
                     }}
                     className={clsx(
-                      "cursor-pointer font-medium text-brand hover:text-orange-600",
+                      "text-brand cursor-pointer font-medium hover:text-orange-600",
                       "disabled:cursor-not-allowed disabled:text-orange-300",
                     )}
                   >
@@ -452,7 +452,7 @@ const LoginForm: FC<IProps> = ({
       {!is_modal && (
         <p className="absolute bottom-6 text-sm lg:hidden">
           Need Help? Call us at{" "}
-          <a href="tel:+919415761434" className="font-medium text-brand">
+          <a href="tel:+919415761434" className="text-brand font-medium">
             +91 9415761434
           </a>
         </p>

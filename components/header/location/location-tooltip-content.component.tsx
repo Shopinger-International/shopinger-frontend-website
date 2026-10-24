@@ -333,13 +333,13 @@ const LocationTooltipContent: FC<{
               >
                 Try another location
               </button>
-              <button
+              {/* <button
                 type="button"
                 onClick={handleClose}
                 className="bg-brand flex h-10 w-full items-center justify-center rounded-md px-6 font-semibold text-white transition-colors hover:bg-orange-600 sm:h-10"
               >
                 Explore Shopinger
-              </button>
+              </button> */}
             </div>
           </div>
         ) : (

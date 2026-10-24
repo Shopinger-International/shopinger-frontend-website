@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useEffect, useRef } from "react";
+import { useLayoutEffect, useEffect, useRef, useState } from "react";
 // types
 import type { FC, HTMLAttributeAnchorTarget } from "react";
 import type { LucideProps } from "lucide-react";
@@ -10,6 +10,7 @@ import { Home, ShoppingCart, CreditCard, LayoutDashboard } from "lucide-react";
 
 // hooks
 import useCart from "@/hooks/axios/cart/use-cart.hook";
+import { CART_EMPTY_ADD_EVENT } from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
 import { useCategoryDrawerContext } from "@/provider/category-drawer.provider";
 
 // local components
@@ -25,6 +26,8 @@ type NavItemProps = {
   target: HTMLAttributeAnchorTarget;
   active?: boolean;
   show_badge?: boolean;
+  cart_count: number;
+  cart_animation_id: number | null;
 };
 
 const NavItem: FC<NavItemProps> = ({
@@ -34,13 +37,14 @@ const NavItem: FC<NavItemProps> = ({
   active,
   target,
   show_badge,
+  cart_count,
+  cart_animation_id,
 }) => {
   const {
     is_drawer_open: is_category_drawer_open,
     openDrawer,
     closeDrawer: closeCategoryDrawer,
   } = useCategoryDrawerContext();
-  const { data: cart_details } = useCart();
   if (title == "Categories") {
     return (
       <button
@@ -56,9 +60,7 @@ const NavItem: FC<NavItemProps> = ({
 
         <span
           className={`mt-0.5 text-xs transition-colors ${
-            is_category_drawer_open
-              ? "font-medium text-brand"
-              : "text-gray-500"
+            is_category_drawer_open ? "text-brand font-medium" : "text-gray-500"
           }`}
         >
           {title}
@@ -75,18 +77,31 @@ const NavItem: FC<NavItemProps> = ({
         className="flex flex-1 flex-col items-center justify-center py-1.5 transition-transform active:scale-95"
         target={target}
       >
-        <span className="relative inline-block">
-          <Cart width={32} height={24} fill="oklch(55.1% 0.027 264.364)" />
+        <span
+          key={cart_animation_id ?? "idle"}
+          className={`relative inline-block ${cart_animation_id !== null ? "animate-cart-added" : ""}`}
+        >
+          <Cart
+            width={32}
+            height={24}
+            fill={
+              cart_animation_id !== null
+                ? "#ff6801"
+                : "oklch(55.1% 0.027 264.364)"
+            }
+          />
 
-          <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-brand">
-            {cart_details?.total_items ?? 0}
+          <span
+            className={`text-brand pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold ${cart_animation_id !== null ? "animate-cart-count-added" : ""}`}
+          >
+            {cart_count}
           </span>
         </span>
 
         <span
           className={`mt-0.5 text-xs transition-colors ${
             active && !is_category_drawer_open
-              ? "font-medium text-brand"
+              ? "text-brand font-medium"
               : "text-gray-500"
           }`}
         >
@@ -106,9 +121,7 @@ const NavItem: FC<NavItemProps> = ({
       <div className="relative">
         <Icon
           className={`size-6 transition-colors ${
-            active && !is_category_drawer_open
-              ? "text-brand"
-              : "text-gray-500"
+            active && !is_category_drawer_open ? "text-brand" : "text-gray-500"
           }`}
           aria-hidden="true"
         />
@@ -121,7 +134,7 @@ const NavItem: FC<NavItemProps> = ({
       <span
         className={`mt-0.5 text-xs transition-colors ${
           active && !is_category_drawer_open
-            ? "font-medium text-brand"
+            ? "text-brand font-medium"
             : "text-gray-500"
         }`}
       >
@@ -161,7 +174,30 @@ const items_list = [
 
 const BottomMobileNav: FC = () => {
   const bottom_ref = useRef<HTMLDivElement>(null);
+  const cart_animation_counter = useRef(0);
+  const [cart_feedback_id, setCartFeedbackId] = useState<number | null>(null);
   const pathname = usePathname();
+  const { data: cart_details } = useCart();
+  const cart_count = cart_details?.total_items ?? 0;
+
+  useEffect(() => {
+    const handleEmptyCartAdd = () => {
+      cart_animation_counter.current += 1;
+      setCartFeedbackId(cart_animation_counter.current);
+    };
+    window.addEventListener(CART_EMPTY_ADD_EVENT, handleEmptyCartAdd);
+    return () =>
+      window.removeEventListener(CART_EMPTY_ADD_EVENT, handleEmptyCartAdd);
+  }, []);
+
+  useEffect(() => {
+    if (cart_feedback_id === null) return;
+
+    const timeout = window.setTimeout(() => {
+      setCartFeedbackId(null);
+    }, 2200);
+    return () => window.clearTimeout(timeout);
+  }, [cart_feedback_id]);
 
   useEffect(() => {
     let prev_scroll_pos = window.pageYOffset;
@@ -210,6 +246,8 @@ const BottomMobileNav: FC = () => {
             {...item}
             active={pathname === item.href}
             target={item.target}
+            cart_count={cart_count}
+            cart_animation_id={item.title === "Cart" ? cart_feedback_id : null}
           />
         ))}
       </div>

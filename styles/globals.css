@@ -1,6 +1,43 @@
 @import "tailwindcss";
 @import "@algolia/autocomplete-theme-classic/dist/theme.css";
 
+@keyframes cart-added {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  38% {
+    transform: scale(1.08);
+  }
+  68% {
+    transform: scale(1);
+  }
+}
+
+@keyframes cart-count-added {
+  0% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-cart-added {
+  animation: cart-added 360ms ease-out;
+}
+
+.animate-cart-count-added {
+  animation: cart-count-added 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cart-added,
+  .animate-cart-count-added {
+    animation: none;
+  }
+}
+
 :root {
   --header-height: 120px; /* adjust to match your header */
   --header-visible-height: var(

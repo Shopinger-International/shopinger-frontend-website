@@ -67,7 +67,7 @@ const CategoryHome: FC<{
       <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
         <Campaign campaigns={campaigns} />
         <CampaignTimer />
-        {!is_medical && <SubCategorySection />}
+        {!is_medical && <SubCategorySection category_slug={category_slug} />}
       </div>
 
       {!is_medical && (
