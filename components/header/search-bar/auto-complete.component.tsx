@@ -98,17 +98,16 @@ const AutoComplete: FC<
   const panel_container_ref = useRef<Root | null>(null);
   const root_ref = useRef<HTMLElement | null>(null);
 
-  const { refine: setQuery, query } = useSearchBox();
   const { refine: setPage } = usePagination();
 
   //categories animation
-  const [show_animation, setShowAnimation] = useState(query ? false : true);
+  const [show_animation, setShowAnimation] = useState(true);
   const [text, setText] = useState("");
   const [is_deleting, setIsDeleting] = useState(false);
   const [category_index, setCategoryIndex] = useState(0);
 
   useEffect(() => {
-    if (!animate_categories.length || query) return;
+    if (!animate_categories.length) return;
 
     //start text animation if not started and completed
     if (!is_deleting && text === animate_categories[category_index]) {
@@ -135,7 +134,7 @@ const AutoComplete: FC<
       );
     }, 50);
     return () => clearTimeout(updating_text_timeout);
-  }, [animate_categories, query, is_deleting, category_index, text]);
+  }, [animate_categories, is_deleting, category_index, text]);
 
   const plugins = useMemo(() => {
     const algolia_insights_plugin = createAlgoliaInsightsPlugin({
@@ -152,7 +151,7 @@ const AutoComplete: FC<
             ...source.templates,
             header() {
               return (
-                <div className="text-sm font-semibold text-brand">
+                <div className="text-brand text-sm font-semibold">
                   Recent Searches
                 </div>
               );
@@ -161,7 +160,6 @@ const AutoComplete: FC<
           onSelect({ item }) {
             autocomplete_instance_ref.current?.setIsOpen(false);
             onClose?.();
-            setQuery(item.label);
             router.push(`/search?query=${item.label}`);
           },
         };
@@ -184,7 +182,7 @@ const AutoComplete: FC<
               ...source.templates,
               header() {
                 return (
-                  <div className="text-sm font-semibold text-brand">
+                  <div className="text-brand text-sm font-semibold">
                     Suggested Searches
                   </div>
                 );
@@ -194,7 +192,6 @@ const AutoComplete: FC<
             onSelect({ item }) {
               autocomplete_instance_ref.current?.setIsOpen(false);
               onClose?.();
-              setQuery(item.query);
               const query_id = item.__autocomplete_queryID;
               const index_name = item.__autocomplete_indexName;
               const object_id = item.objectID;
@@ -271,7 +268,6 @@ const AutoComplete: FC<
       },
 
       getSources({ query }) {
-        setQuery(query);
         return query
           ? [
               {
@@ -284,7 +280,7 @@ const AutoComplete: FC<
                 templates: {
                   header() {
                     return (
-                      <div className="text-sm font-semibold text-brand">
+                      <div className="text-brand text-sm font-semibold">
                         Suggested Products
                       </div>
                     );
@@ -320,16 +316,13 @@ const AutoComplete: FC<
       onSubmit({ state }) {
         autocomplete_instance.setIsOpen(false);
         onClose?.();
-        setQuery(state.query);
         router.push(`/search?query=${state.query}`);
       },
 
       onReset() {
-        setQuery("");
         setPage(0);
       },
       onStateChange(props) {
-        setQuery(props.state.query);
         setShowAnimation(props.state.query ? false : true);
       },
 
@@ -363,7 +356,6 @@ const AutoComplete: FC<
 
       if (!is_scrolling_inside_panel) {
         autocomplete_instance.setIsOpen(false);
-        setQuery("");
       }
     };
     window.addEventListener("scroll", handleScroll, true);
@@ -400,12 +392,11 @@ const AutoComplete: FC<
     <div className={clsx("relative", className)}>
       <div ref={autocomplete_container_ref} />
 
-      {!query &&
-        !show_search_icon_only &&
+      {!show_search_icon_only &&
         show_animation &&
         animate_categories.length > 0 &&
         animate_categories[category_index] !== "" && (
-          <div className="pointer-events-none absolute inset-y-0 left-3 right-14 z-10 flex items-center overflow-hidden truncate text-xs text-gray-400 sm:text-sm max-w-[calc(100%-3.5rem)]">
+          <div className="pointer-events-none absolute inset-y-0 right-14 left-3 z-10 flex max-w-[calc(100%-3.5rem)] items-center truncate overflow-hidden text-xs text-gray-400 sm:text-sm">
             <span className="truncate">Search &quot;{text}&quot;</span>
           </div>
         )}
