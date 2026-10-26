@@ -15,6 +15,7 @@ const useDefaultLocationTooltipOpen = () => {
   const [default_open, setIsDefaultOpen] = useState(false);
 
   const {
+    is_location_hydrated,
     is_shown,
     selected_address,
     updateSelectedAddress,
@@ -32,6 +33,7 @@ const useDefaultLocationTooltipOpen = () => {
 
   useEffect(() => {
     if (
+      !is_location_hydrated ||
       selected_address ||
       is_user_address_pending ||
       is_shown ||
@@ -84,6 +86,7 @@ const useDefaultLocationTooltipOpen = () => {
     };
   }, [
     selected_address,
+    is_location_hydrated,
     is_user_address_pending,
     is_shown,
     user_details?.user_addresses?.length,

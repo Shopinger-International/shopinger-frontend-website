@@ -196,7 +196,7 @@ const HomeProductQuantityControl: FC<IQuantityControlProps> = memo(
       return (
         <div
           className={clsx(
-            "text-brand border-brand flex h-7 shrink-0 items-center justify-between rounded-lg border-2 bg-white px-1 select-none sm:h-8",
+            "text-brand border-brand flex h-7 shrink-0 items-center justify-between rounded-lg border-1 bg-white px-1 select-none sm:h-8",
             fullWidth ? "w-full px-3" : "w-18 sm:w-20",
           )}
         >
@@ -228,8 +228,8 @@ const HomeProductQuantityControl: FC<IQuantityControlProps> = memo(
         type="button"
         onClick={handleAddToCart}
         className={clsx(
-          "border-brand text-brand flex h-7 shrink-0 cursor-pointer items-center justify-center rounded-lg border-2 bg-white text-xs font-bold transition-all hover:bg-orange-50 active:scale-95 sm:h-8",
-          fullWidth ? "w-full" : "w-18 sm:w-20",
+          "border-brand text-brand flex h-7 w-14 shrink-0 cursor-pointer items-center justify-center rounded-lg border bg-white text-[11px] font-bold transition-all hover:bg-orange-50 active:scale-95 sm:h-8 sm:w-20 sm:text-xs",
+          fullWidth && "w-full",
         )}
       >
         ADD

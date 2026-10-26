@@ -165,16 +165,10 @@ const LocationTooltip: FC<{
           <div className="hidden text-black lg:flex lg:flex-col lg:items-start">
             {/* Delivery time */}
             <div className="flex items-center gap-1">
-              <span className="text-sm font-semibold">Delivery in</span>
-
-              <span
-                className={clsx(
-                  "bg-brand-primary inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
-                  "bg-brand-primary inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-white transition-transform duration-100",
-                )}
-              >
-                <span className="flex items-center gap-1">
-                  {delivery_time} min
+              <span className="text-md flex gap-2 font-semibold">
+                Delivery in{" "}
+                <span className="text-brand flex items-center gap-1 font-bold">
+                  {delivery_time ?? 15} min
                 </span>
               </span>
             </div>

@@ -28,12 +28,24 @@ const LocationDrawerProvider: FC<{
   const is_mounted = useIsMounted();
   const is_mobile = useIsMobile();
   const { default_open, updateDefaultOpen } = useDefaultLocationTooltipOpen();
-  const { selected_address } = useLocationTooltipStateContext();
+  const { selected_address, is_location_hydrated } =
+    useLocationTooltipStateContext();
   useEffect(() => {
-    if (is_mounted && is_mobile && !selected_address) {
+    if (
+      is_location_hydrated &&
+      is_mounted &&
+      is_mobile &&
+      !selected_address
+    ) {
       updateDefaultOpen(true);
     }
-  }, [is_mounted, is_mobile, selected_address, updateDefaultOpen]);
+  }, [
+    is_location_hydrated,
+    is_mounted,
+    is_mobile,
+    selected_address,
+    updateDefaultOpen,
+  ]);
   const [is_drawer_open, setIsDrawerOpen] = useState(false);
   if (is_mobile && is_mounted) {
     return (

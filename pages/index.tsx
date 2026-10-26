@@ -3,6 +3,7 @@ import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { GetServerSideProps } from "next";
 import type { DehydratedState } from "@tanstack/react-query";
+import Image from "next/image";
 
 // layout
 import MainLayout from "@/components/layout/main-layout.component";
@@ -49,8 +50,9 @@ type IProps = {
 
 const HomePage: NextPageWithLayout = () => {
   useSnackbarOffset({});
-  const { vendor_id } = useLocationTooltipStateContext();
-  const { data: home_feed } = useFeed(vendor_id);
+  const { vendor_id, is_location_hydrated } = useLocationTooltipStateContext();
+  const { data: home_feed, isLoading: is_feed_loading } = useFeed(vendor_id);
+  const is_home_loading = !is_location_hydrated || is_feed_loading;
   const { data: campaigns = [] } = useAllCamapigns({ display_scope: "HOME" });
 
   const product_recommendations = home_feed?.product_recommendations ?? [];
@@ -87,97 +89,118 @@ const HomePage: NextPageWithLayout = () => {
         url={page_url}
         json_ld={JSON.stringify(json_ld)}
       />
-      <div className="space-y-6">
-        <div className="max-w-8xl mx-auto w-full space-y-6 px-4">
-          <Campaign campaigns={campaigns} />
-          <CampaignTimer />
-          {/* <HighlightsBar /> */}
-          <ShopByCategory />
-          {/* Continue Shopping */}
-          <LazyHomeSection>
-            {continue_shopping_recommendations.length > 0 && (
+      {is_home_loading ? (
+        <div
+          className="fixed inset-0 z-[500] grid place-items-center bg-white"
+          role="status"
+          aria-label="Loading home page"
+        >
+          <div className="flex flex-col items-center justify-center gap-2 motion-safe:animate-bounce">
+            <Image
+              src="/Shopinger-Cart-Icon.svg"
+              alt=""
+              width={76}
+              height={60}
+              priority
+            />
+            <span className="text-brand text-center text-sm font-semibold">
+              Shopinger
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          <div className="max-w-8xl mx-auto w-full space-y-6 px-4">
+            <Campaign campaigns={campaigns} />
+            <CampaignTimer />
+            {/* <HighlightsBar /> */}
+            <ShopByCategory />
+            {/* Continue Shopping */}
+            <LazyHomeSection>
+              {continue_shopping_recommendations.length > 0 && (
+                <HomeProductRow
+                  products={continue_shopping_recommendations}
+                  title={
+                    user?.name
+                      ? `${user.name}, pick up where you left off`
+                      : "Based on your recent browsing activity"
+                  }
+                />
+              )}
+            </LazyHomeSection>
+
+            {/* Trending Products Row */}
+            {trending_product_recommendations.length > 0 && (
               <HomeProductRow
-                products={continue_shopping_recommendations}
-                title={
-                  user?.name
-                    ? `${user.name}, pick up where you left off`
-                    : "Based on your recent browsing activity"
+                title="Trending Products"
+                products={trending_product_recommendations}
+                view_all_href="section/trending-products"
+              />
+            )}
+            <LazyHomeSection>
+              {/* New Arrivals Row */}
+              {new_arrivals.length > 0 && (
+                <HomeProductRow
+                  products={new_arrivals}
+                  title="New Arrivals"
+                  view_all_href="section/new-arrivals"
+                />
+              )}
+            </LazyHomeSection>
+            {/* Featured Products Row */}
+            <LazyHomeSection>
+              {featured_products.length > 0 && (
+                <HomeProductRow
+                  products={featured_products}
+                  title="Featured"
+                  view_all_href="section/featured-products"
+                />
+              )}
+            </LazyHomeSection>
+
+            <LazyHomeSection>
+              {/* Best Sellers Row */}
+              {best_seller_products.length > 0 && (
+                <HomeProductRow
+                  products={best_seller_products}
+                  title="Best Sellers"
+                  view_all_href="section/best-sellers"
+                />
+              )}
+            </LazyHomeSection>
+            <LazyHomeSection>
+              {/* Handpicked Recommendations Row */}
+              {product_recommendations.length > 0 && (
+                <HomeProductRow
+                  products={product_recommendations}
+                  title="Handpicked for You"
+                />
+              )}
+            </LazyHomeSection>
+
+            {/* Deals of the Day */}
+            <LazyHomeSection>
+              <BestDeals
+                products={deals_of_the_day}
+                fallback_products={
+                  trending_product_recommendations.length > 0
+                    ? trending_product_recommendations
+                    : featured_products
                 }
               />
-            )}
-          </LazyHomeSection>
-
-          {/* Trending Products Row */}
-          {trending_product_recommendations.length > 0 && (
-            <HomeProductRow
-              title="Trending Products"
-              products={trending_product_recommendations}
-              view_all_href="section/trending-products"
-            />
-          )}
+            </LazyHomeSection>
+          </div>
           <LazyHomeSection>
-            {/* New Arrivals Row */}
-            {new_arrivals.length > 0 && (
-              <HomeProductRow
-                title="New Arrivals"
-                products={new_arrivals}
-                view_all_href="section/new-arrivals"
-              />
-            )}
-          </LazyHomeSection>
-          {/* Featured Products Row */}
-          <LazyHomeSection>
-            {featured_products.length > 0 && (
-              <HomeProductRow
-                title="Featured"
-                products={featured_products}
-                view_all_href="section/featured-products"
+            {category_recommendations.length > 0 && (
+              <CategorySection
+                category_recommendations={category_recommendations}
               />
             )}
           </LazyHomeSection>
 
-          <LazyHomeSection>
-            {/* Best Sellers Row */}
-            {best_seller_products.length > 0 && (
-              <HomeProductRow
-                title="Best Sellers"
-                products={best_seller_products}
-                view_all_href="section/best-sellers"
-              />
-            )}
-          </LazyHomeSection>
-          <LazyHomeSection>
-            {/* Handpicked Recommendations Row */}
-            {product_recommendations.length > 0 && (
-              <HomeProductRow
-                products={product_recommendations}
-                title="Handpicked for You"
-              />
-            )}
-          </LazyHomeSection>
-
-          {/* Deals of the Day */}
-          <LazyHomeSection>
-            <BestDeals
-              products={deals_of_the_day}
-              fallback_products={
-                trending_product_recommendations.length > 0
-                  ? trending_product_recommendations
-                  : featured_products
-              }
-            />
-          </LazyHomeSection>
+          {home_feed && <NProducts />}
         </div>
-        <LazyHomeSection>
-          {category_recommendations.length > 0 && (
-            <CategorySection
-              category_recommendations={category_recommendations}
-            />
-          )}
-        </LazyHomeSection>
-
-        {home_feed && <NProducts />}
-      </div>
+      )}
     </>
   );
 };

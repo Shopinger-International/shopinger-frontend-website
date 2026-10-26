@@ -79,6 +79,8 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
 
   const { selling_price, mrp, discount_perc } = extractProductPrices(product);
   const { avg_rating } = extractProductRating(product);
+  const rating_count =
+    product.reviews_count ?? product.ratings_count ?? product.rating_count;
 
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
@@ -168,7 +170,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-white">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="text-brand absolute top-0 left-0 z-10 inline-flex items-center gap-0.5 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-extrabold tracking-tight uppercase">
+              <span className="text-brand absolute top-0 left-0 z-10 inline-flex items-center gap-0.5 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-medium tracking-tight uppercase">
                 <span>{discount_perc}%</span>
                 <ArrowDown
                   className="text-brand size-3 shrink-0"
@@ -186,12 +188,12 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
                 remove_from_wishlist_mutation.isPending
               }
               onClick={handleWishlistClick}
-              className="text-brand absolute top-1.5 right-1.5 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white transition-transform active:scale-95 sm:size-9"
+              className="absolute top-1.5 right-1.5 z-10 flex size-4 cursor-pointer items-center justify-center text-gray-500 transition-transform active:scale-95 sm:size-5"
             >
               <Heart
                 className={clsx(
-                  "text-brand size-5 sm:size-6",
-                  is_wishlisted && "fill-brand",
+                  "size-5 sm:size-6",
+                  is_wishlisted ? "text-brand fill-brand" : "fill-white",
                 )}
                 strokeWidth={2.2}
               />
@@ -207,55 +209,94 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
                 className="pointer-events-none rounded-2xl object-contain p-1 transition-transform duration-300 select-none"
               />
             </div>
+          </div>
 
-            {/* Bottom-Left Rating Overlay */}
-            {avg_rating != null && Number(avg_rating) > 0 && (
-              <div className="bg-rating-green text-2xs absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md px-1.5 py-0.5 font-bold text-white">
-                <span>{Number(avg_rating).toFixed(1)}</span>
-                <Star className="size-2.5 fill-white text-white" />
+          <div className="p-2">
+            {/* Title */}
+            <h3 className="text-2xs px-2s mt-2 line-clamp-2 leading-snug font-semibold text-gray-900 sm:text-xs">
+              {title}
+            </h3>
+            {avg_rating !== undefined && (
+              <div
+                className="mt-1 flex w-full min-w-0 items-center gap-1 px-2 text-[10px] sm:text-xs"
+                role="img"
+                aria-label={`${avg_rating.toFixed(1)} out of 5 stars${rating_count != null ? `, ${rating_count} ratings` : ""}`}
+              >
+                <span className="shrink-0 font-medium text-gray-700">
+                  {avg_rating.toFixed(1)}
+                </span>
+                <span
+                  className="flex shrink-0 items-center gap-0.5"
+                  aria-hidden="true"
+                >
+                  {Array.from({ length: 5 }, (_, index) => {
+                    const fill_percentage =
+                      Math.min(Math.max(avg_rating - index, 0), 1) * 100;
+
+                    return (
+                      <span key={index} className="relative inline-flex">
+                        <Star className="size-2.5 text-gray-300 sm:size-3" />
+                        <span
+                          className="absolute inset-y-0 left-0 overflow-hidden"
+                          style={{ width: `${fill_percentage}%` }}
+                        >
+                          <Star className="fill-rating-green text-rating-green size-2.5 sm:size-3" />
+                        </span>
+                      </span>
+                    );
+                  })}
+                </span>
+                {rating_count != null && (
+                  <span className="min-w-0 font-medium">({rating_count})</span>
+                )}
               </div>
             )}
-          </div>
+            {/* Price and Action Row */}
+            <div className="mt-auto flex w-full items-center justify-between gap-2 pt-3">
+              {/* Price */}
+              <div className="flex shrink-0 flex-col gap-0.5">
+                {Number(selling_price) > 0 ? (
+                  <>
+                    <span className="text-xs leading-tight font-semibold whitespace-nowrap text-gray-900 sm:text-sm md:text-base">
+                      ₹{Number(selling_price).toLocaleString("en-IN")}
+                    </span>
 
-          {/* Title */}
-          <h3 className="text-2xs mt-2 line-clamp-2 p-2 leading-snug font-semibold text-gray-900 sm:text-xs">
-            {title}
-          </h3>
+                    {Number(mrp) > Number(selling_price) && Number(mrp) > 0 && (
+                      <span className="truncate text-[10px] leading-tight font-normal text-gray-400 line-through sm:text-xs">
+                        ₹{Number(mrp).toLocaleString("en-IN")}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className="text-xs text-gray-400">
+                    Price unavailable
+                  </span>
+                )}
+              </div>
+
+              {/* Action */}
+              <div className="w-auto shrink-0">
+                {have_variants ? (
+                  <Link
+                    href={product_href}
+                    aria-label={`See options for ${title}`}
+                    className="border-brand text-brand flex h-8 items-center justify-center gap-1 rounded-lg border bg-orange-50 px-2 text-xs font-bold transition-colors hover:bg-orange-100 active:scale-[0.98] sm:h-9 sm:px-3"
+                  >
+                    <span>Options</span>
+                    <ChevronRight className="size-4 shrink-0" />
+                  </Link>
+                ) : (
+                  <HomeProductQuantityControl
+                    product_id={product_id}
+                    variant_id={variant_id}
+                    user_id={user_id}
+                    sub_sub_category_id={sub_sub_category_id}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
         </Link>
-      </div>
-
-      {/* Price and Action Row (Fixed at Bottom) */}
-      <div className="mt-auto flex flex-col justify-between gap-1 p-2 pt-2 md:flex-row">
-        {Number(selling_price) > 0 && (
-          <div className="flex min-w-0 flex-col gap-0">
-            <span className="truncate text-sm leading-tight font-black text-gray-900 sm:text-base md:text-lg">
-              ₹{Number(selling_price).toLocaleString()}
-            </span>
-            {Number(mrp) > Number(selling_price) && Number(mrp) > 0 && (
-              <span className="text-2xs truncate leading-tight font-medium text-gray-400 line-through sm:text-xs">
-                ₹{Number(mrp).toLocaleString()}
-              </span>
-            )}
-          </div>
-        )}
-        {have_variants ? (
-          <Link
-            href={product_href}
-            aria-label="See options"
-            className="text-2xs flex h-7 shrink-0 items-center justify-center gap-0.5 rounded-lg border border-gray-300 bg-white px-2 font-bold text-gray-900 transition-colors hover:bg-gray-100 sm:h-9 sm:rounded-xl sm:px-3 sm:text-xs"
-          >
-            <span>See options</span>
-            <ChevronRight className="size-3.5 shrink-0" />
-          </Link>
-        ) : (
-          <HomeProductQuantityControl
-            product_id={product_id}
-            variant_id={variant_id}
-            user_id={user_id}
-            sub_sub_category_id={sub_sub_category_id}
-            fullWidth={selling_price <= 0}
-          />
-        )}
       </div>
     </div>
   );

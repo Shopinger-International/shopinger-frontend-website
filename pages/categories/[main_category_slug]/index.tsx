@@ -20,7 +20,8 @@ import createCategoryJSONLD from "@/seo/category.jsonld";
 // analytics
 import useCategoryViewed from "@/hooks/analytics/use-category-viewed.hook";
 import CategoryHome from "@/components/categories/category-home";
-import { useCategoryContext } from "@/provider/selected-category-provider";
+
+import { getCategory } from "@/hooks/axios/common/use-categories";
 
 type IProps = {
   category_slug: string;
@@ -76,6 +77,16 @@ export const getServerSideProps = (async ({ params, req }) => {
   if (!category_slug) {
     return { notFound: true };
   }
+  const categories = await getCategory(false, "main");
+
+  const category_exists = categories.some(
+    (category) => category.slug === category_slug,
+  );
+
+  if (!category_exists) {
+    return { notFound: true };
+  }
+
   return {
     props: {
       category_slug,
