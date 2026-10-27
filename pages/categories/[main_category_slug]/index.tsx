@@ -74,13 +74,15 @@ export default MainCategoryPage;
 
 export const getServerSideProps = (async ({ params, req }) => {
   const category_slug = params?.main_category_slug as string;
+  console.log("category_slug", category_slug);
   if (!category_slug) {
     return { notFound: true };
   }
   const categories = await getCategory(false, "main");
 
   const category_exists = categories.some(
-    (category) => category.slug === category_slug,
+    (category) =>
+      category.slug.toLocaleLowerCase() === category_slug.toLocaleLowerCase(),
   );
 
   if (!category_exists) {
