@@ -5,6 +5,7 @@ import type { FC } from "react";
 import ProductCard from "./components/categories/product-card/product-card.component";
 import useTopProducts from "./hooks/axios/product/use-top-products.hook";
 import { generateSlug, isNewProduct } from "./helpers/product.helper";
+import HomeProductCardComponent from "./components/home/home-product-card.component";
 
 type IProps = {
   heading: string;
@@ -93,9 +94,11 @@ const ProductGridSection: FC<IProps> = ({
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
             {formatted_top_products?.map((product, index) =>
               product ? (
-                <ProductCard
-                  {...product}
-                  index={index}
+                <HomeProductCardComponent
+                  product={{
+                    ...product,
+                    media_url: product.product_thumbnail.url,
+                  }}
                   key={`category-product-${product?.variant_id}`}
                 />
               ) : null,
