@@ -21,7 +21,7 @@ const CategoryHome: FC<{
       <div className="max-w-8xl mx-auto w-full space-y-4 px-4">
         <Campaign campaigns={campaigns} />
         <CampaignTimer />
-        <SubCategorySection />
+        <SubCategorySection category_slug={category_slug} />
       </div>
 
       <CategoryProducts category_slug={category_slug} category_type={"main"} />

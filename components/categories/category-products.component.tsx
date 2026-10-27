@@ -32,6 +32,7 @@ import { isNewProduct } from "@/helpers/product.helper";
 // context
 import { FiltersSortBarState, FooterStateContext } from "@/context";
 import { cn } from "@/lib/utils";
+import HomeProductCardComponent from "../home/home-product-card.component";
 
 export type ISort =
   | "latest"
@@ -202,7 +203,7 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
         variant_id,
         title: updated_title,
         src: `/${product_slug}/p/${product.id}/${variant_id}`,
-        product_thumbnail: variant_medias[0]?.media ?? product_medias[0]?.media,
+        product_thumbnail: product_medias[0]?.media,
         selling_price,
         mrp,
         discount_percentage,
@@ -249,6 +250,8 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
   useEffect(() => {
     updateShowFooter?.(!hasNextPage && !isProductPending);
   }, [hasNextPage, isProductPending]);
+
+  console.log("category_products", category_products);
 
   if (!category_products?.length && !isProductPending && !isFetchingNextPage) {
     return <ProductNotFound query={search} />;
@@ -347,9 +350,11 @@ const CategoryProducts: FC<IProps> = ({ category_slug, category_type }) => {
             ) : (
               formatted_category_products?.map((product, index) =>
                 product ? (
-                  <ProductCard
-                    {...product}
-                    index={index}
+                  <HomeProductCardComponent
+                    product={{
+                      ...product,
+                      media_url: product.product_thumbnail.url,
+                    }}
                     key={`category-product-${product.variant_id}`}
                   />
                 ) : null,

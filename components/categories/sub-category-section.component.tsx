@@ -36,17 +36,20 @@ function SubCategoryImage({ src, alt }: ISubCategoryImageProps) {
   );
 }
 
-export default function SubCategorySection() {
+export default function SubCategorySection({
+  category_slug,
+}: {
+  category_slug: string;
+}) {
   const { data } = useCategories(true, "sub");
   const router = useRouter();
-
-  const { selected_category, selected_sub_category, setSelectedSubCategory } =
+  const { selected_sub_category, setSelectedSubCategory } =
     useCategoryContext();
 
-  if (!data || !selected_category) return null;
+  if (!data) return null;
 
   const category = data.find(
-    (category) => category.id === selected_category.id,
+    (category) => category.slug?.toLowerCase() === category_slug?.toLowerCase(),
   );
 
   if (!category?.sub_categories?.length) return null;
@@ -86,7 +89,7 @@ export default function SubCategorySection() {
               {/* Circular Image */}
               <div
                 className={`relative size-14 shrink-0 overflow-hidden rounded-full md:size-18.5 ${
-                  is_selected ? "ring-2 ring-brand ring-offset-2" : ""
+                  is_selected ? "ring-brand ring-2 ring-offset-2" : ""
                 }`}
               >
                 <SubCategoryImage

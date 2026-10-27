@@ -75,7 +75,7 @@ const MobileHeader: FC = () => {
         "bg-[#fff8eb]",
       )}
       style={{
-        backgroundImage: "url('/diwali-bg.png')",
+        backgroundImage: "url('/diwali-bg.webp')",
         backgroundSize: "100% 100%",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -86,27 +86,29 @@ const MobileHeader: FC = () => {
 
       {/* Delivery & Account Header */}
       <div className="flex items-center justify-between">
-        <div className="flex min-w-0 flex-col gap-1">
-          <p className="text-lg font-semibold">
-            Delivery in{" "}
-            <span
-              className={cn(
-                "font-bold",
-                is_grocery
-                  ? "text-secondary"
-                  : is_pharmacy
-                    ? "text-blue-600"
-                    : "text-brand",
-              )}
-            >
-              {delivery_time} minutes
-            </span>
-          </p>
+        {delivery_time && (
+          <div className="flex min-w-0 flex-col gap-1">
+            <p className="text-lg font-semibold text-[#111827]">
+              Delivery in{" "}
+              <span
+                className={cn(
+                  "font-bold",
+                  is_grocery
+                    ? "text-secondary"
+                    : is_pharmacy
+                      ? "text-blue-600"
+                      : "text-brand",
+                )}
+              >
+                {delivery_time} minutes
+              </span>
+            </p>
 
-          {is_mounted && is_mobile && (
-            <LocationTooltip className="flex lg:hidden" />
-          )}
-        </div>
+            {is_mounted && is_mobile && (
+              <LocationTooltip className="flex lg:hidden" />
+            )}
+          </div>
+        )}
 
         <Link href="/account" aria-label="Account" className="ml-3 shrink-0">
           <CircleUserIcon className="size-6 text-gray-900" aria-hidden />
