@@ -12,6 +12,7 @@ import HomeProductCard, {
 
 type IProps = {
   title: string;
+  subtitle?: string;
   section: string;
   initial_products?: Array<IHomeProduct>;
   view_all_href?: string;
@@ -20,6 +21,7 @@ type IProps = {
 
 const HomeSectionRow: FC<IProps> = ({
   title,
+  subtitle,
   section,
   initial_products = [],
   view_all_href,
@@ -111,6 +113,7 @@ const HomeSectionRow: FC<IProps> = ({
   return (
     <HomeProductRow
       title={title}
+      subtitle={subtitle}
       products={combined_products}
       view_all_href={view_all_href}
       background_style={background_style}

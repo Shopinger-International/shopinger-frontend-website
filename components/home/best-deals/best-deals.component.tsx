@@ -11,9 +11,16 @@ import HomeProductCard, {
 type IProps = {
   products: IResponse["data"]["deals_of_the_day"];
   fallback_products?: Array<any>;
+  title?: string;
+  background_style?: string;
 };
 
-const BestDeals: FC<IProps> = ({ products = [], fallback_products = [] }) => {
+const BestDeals: FC<IProps> = ({
+  products = [],
+  fallback_products = [],
+  title = "Deals of the day",
+  background_style,
+}) => {
   const formatted_products = useMemo<IHomeProduct[]>(() => {
     // 1. From deals_of_the_day
     if (products && Array.isArray(products) && products.length > 0) {
@@ -110,10 +117,13 @@ const BestDeals: FC<IProps> = ({ products = [], fallback_products = [] }) => {
 
   return (
     <HomeProductRow
-      title="Deals of the day"
+      title={title}
       subtitle="Explore today's best discounted products and limited-time offers"
       products={final_products}
-      background_style="bg-gradient-to-r from-orange-100/90 via-orange-50 to-orange-100/90 border border-orange-200/80 shadow-xs"
+      background_style={
+        background_style ??
+        "bg-gradient-to-r from-orange-100/90 via-orange-50 to-orange-100/90 border border-orange-200/80 shadow-xs"
+      }
       CardComponent={HomeProductCard}
     />
   );

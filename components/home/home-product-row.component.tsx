@@ -22,6 +22,7 @@ interface IHomeProductRowProps<T = IHomeProduct> {
   view_all_href?: string;
   background_style?: string;
   className?: string;
+  item_class_name?: string;
   CardComponent?: FC<{ product: T }>;
   renderCard?: (product: T) => ReactNode;
 }
@@ -33,6 +34,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
   view_all_href,
   background_style,
   className,
+  item_class_name,
   CardComponent,
   renderCard,
 }: IHomeProductRowProps<T>) => {
@@ -146,7 +148,10 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
               return (
                 <li
                   key={item_key}
-                  className="w-30 min-w-30 shrink-0 grow-0 select-none sm:w-36 sm:min-w-36 md:w-44 md:min-w-44"
+                  className={clsx(
+                    "w-30 min-w-30 shrink-0 grow-0 select-none sm:w-36 sm:min-w-36 md:w-44 md:min-w-44",
+                    item_class_name,
+                  )}
                 >
                   {renderCard ? (
                     renderCard(product)

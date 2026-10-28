@@ -7,6 +7,7 @@ import useAllCamapigns from "@/hooks/axios/campaign/use-campaigns.hook";
 import CategoryProducts from "./category-products.component";
 import Campaign from "../home/campaign.component";
 import CampaignTimer from "../header/campaign-timer.component";
+import GroceryPage from "@/pages/grocery";
 
 const CategoryHome: FC<{
   category_slug: string;
@@ -15,7 +16,11 @@ const CategoryHome: FC<{
     display_scope: "CATEGORY",
     category_slug: category_slug,
   });
+  const isGroceryCategory = category_slug.toLowerCase() === "grocery";
 
+  if (isGroceryCategory) {
+    return <GroceryPage />;
+  }
   return (
     <>
       <div className="max-w-8xl mx-auto w-full space-y-4 px-4">

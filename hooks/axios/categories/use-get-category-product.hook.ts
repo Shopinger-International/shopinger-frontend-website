@@ -19,6 +19,7 @@ type GetProductsByCategoryParams = {
   brands?: Array<string>;
   filters?: Record<string, string[]>;
   search?: string;
+  enabled?: boolean;
 };
 
 export type IResponseType = {
@@ -55,8 +56,10 @@ const useGetCategoryProducts = ({
   brands,
   filters,
   search,
+  enabled = true,
 }: GetProductsByCategoryParams) => {
   return useInfiniteQuery({
+    enabled,
     queryKey: [
       "products-by-category",
       slug,
