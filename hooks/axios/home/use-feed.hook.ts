@@ -12,6 +12,7 @@ export type IProductRecommendation = {
   variant_id: number;
   title: string;
   media_url: string;
+  unit_label?: string;
 };
 
 export type ICategoryRecommendation = {

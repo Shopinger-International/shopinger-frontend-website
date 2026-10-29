@@ -20,6 +20,26 @@ type IGroceryProductCard = IHomeProduct & {
   bought_last_month: number;
 };
 
+const get_variant_unit_label = (
+  variant: IResponseType["products"][number]["variants"][number],
+) =>
+  variant.variant_attribute_values
+    .filter(({ attribute }) => attribute.is_unit)
+    .map(({ attribute, value }) => {
+      const option_label =
+        attribute.data_type === "enum"
+          ? attribute.options?.find(
+              ({ value: option_value }) => value == option_value,
+            )?.label
+          : undefined;
+      const formatted_value = option_label ?? String(value ?? "").trim();
+      return formatted_value
+        ? `${attribute.name ? `${attribute.name}: ` : ""}${formatted_value}`
+        : "";
+    })
+    .filter(Boolean)
+    .join(" · ");
+
 const category_groups = [
   {
     title: "Atta and Flours",
@@ -150,6 +170,7 @@ const format_grocery_products = (
         selling_price,
         mrp,
         discount_percentage,
+        unit_label: get_variant_unit_label(first_variant),
         avg_rating: product.avg_rating,
         rating_count: product.reviews_count,
         reviews_count: product.reviews_count,
@@ -204,6 +225,11 @@ function GroceryProductCard({
         <h3 className="line-clamp-2 min-h-9 text-xs font-medium leading-4 text-gray-800 sm:text-sm">
           {product.title}
         </h3>
+        {product.unit_label && (
+          <span className="mt-1 inline-flex max-w-full truncate rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 sm:text-xs">
+            {product.unit_label}
+          </span>
+        )}
       </Link>
 
       <div className="mt-auto border-t border-gray-100 pt-2">

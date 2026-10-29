@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { FC } from "react";
 
 // icons
-import { Heart, Star, ChevronRight, ArrowDown } from "lucide-react";
+import { Heart, Star, ChevronRight } from "lucide-react";
 
 // types
 import type { IProductRecommendation } from "@/hooks/axios/home/use-feed.hook";
@@ -42,6 +42,7 @@ export type IHomeProduct = IProductRecommendation & {
   is_wishlisted?: boolean;
   sub_sub_category_id?: number;
   have_variants?: boolean;
+  unit_label?: string;
 };
 
 interface IHomeProductCardProps {
@@ -168,14 +169,9 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           className="block w-full"
         >
           <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-white">
-            {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="text-brand absolute top-0 left-0 z-10 inline-flex items-center gap-0.5 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-medium tracking-tight uppercase">
-                <span>{discount_perc}%</span>
-                <ArrowDown
-                  className="text-brand size-3 shrink-0"
-                  strokeWidth={3.5}
-                />
+              <span className="absolute top-1.5 left-1.5 z-10 rounded bg-emerald-700 px-1.5 py-0.5 text-[10px] font-bold text-white sm:top-2 sm:left-2 sm:px-2 sm:text-xs">
+                {discount_perc}% OFF
               </span>
             )}
 
@@ -216,6 +212,11 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
             <h3 className="text-2xs px-2s mt-2 line-clamp-2 leading-snug font-semibold text-gray-900 sm:text-xs">
               {title}
             </h3>
+            {product.unit_label && (
+              <span className="mt-1 inline-flex max-w-full truncate rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 sm:text-xs">
+                {product.unit_label}
+              </span>
+            )}
             {avg_rating !== undefined && (
               <div
                 className="mt-1 flex w-full min-w-0 items-center gap-1 px-2 text-[10px] sm:text-xs"
