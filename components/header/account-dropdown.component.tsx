@@ -32,10 +32,11 @@ const AccountDropdown: FC = () => {
       <Tooltip
         placement="bottom"
         offset_distance={6}
+        trigger="click"
         className={clsx(
-          "z-50 w-52 rounded-xl border border-neutral-300 bg-white shadow-lg",
+          "z-50 w-52 rounded-xl border border-neutral-300 bg-white shadow-lg hover:cursor-pointer",
         )}
-        show_tooltip={!user_details && false}
+        show_tooltip={!!user_details}
         strategy="fixed"
         content={({ handleClose }) => (
           <div>
@@ -73,6 +74,7 @@ const AccountDropdown: FC = () => {
                   <Link
                     key={label}
                     href={href}
+                    onClick={handleClose}
                     className={clsx(
                       "flex items-center gap-3 px-4 py-3 text-sm",
                       "hover:bg-brand transition hover:text-white",
@@ -106,9 +108,11 @@ const AccountDropdown: FC = () => {
           user_details ? (
             <button
               className={clsx(
-                "flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-black",
+                "flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-black hover:cursor-pointer",
                 "transition hover:bg-white/10 focus:outline-none",
               )}
+              aria-expanded={open}
+              aria-haspopup="menu"
             >
               <CircleUserRound className="size-6" />
               <span className="max-w-28 truncate">
