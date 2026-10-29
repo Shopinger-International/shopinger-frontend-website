@@ -6,6 +6,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
 
+//hooks
+import useRouteLoader from "@/hooks/common/use-route-loader.hook";
+
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
@@ -21,6 +24,9 @@ import MegaMenuProvider from "@/provider/mega-menu-provider";
 import LocationTooltipStateProvider from "@/provider/location-tooltip.provider";
 import LocationDrawerProvider from "@/provider/location-drawer.provider";
 import { SelectedCategoryProvider } from "@/provider/selected-category-provider";
+
+//local components
+import RouteLoader from "@/components/common/route-loader.component";
 
 // react query
 import {
@@ -59,6 +65,7 @@ type AppPropsWithLayout = AppProps & {
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [query_client] = useState(() => new QueryClient());
+  const is_route_changing = useRouteLoader();
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   const json_ld = createOrganizationJSONLD();
@@ -114,6 +121,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         )}
         <SpeedInsights />
       </QueryClientProvider>
+      <RouteLoader is_loading={is_route_changing} />
     </>
   );
 }
