@@ -176,7 +176,7 @@ const Header: FC<{
             </div>
             <Link
               href="/cart-checkout"
-              className="hidden items-center gap-2 font-semibold text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
+              className="hidden items-center gap-2 font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
               aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
             >
               <span className="relative inline-block">

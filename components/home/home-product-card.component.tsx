@@ -170,10 +170,10 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-white">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="text-brand absolute top-0 left-0 z-10 inline-flex items-center gap-0.5 rounded-tl-xl rounded-br-lg bg-white px-2 py-0.5 text-xs font-medium tracking-tight uppercase">
+              <span className="absolute top-0 left-0 z-10 inline-flex items-center gap-0.5 rounded-tl-xl rounded-br-lg bg-yellow-700 px-2 py-0.5 text-xs font-semibold tracking-tight text-white uppercase">
                 <span>{discount_perc}%</span>
                 <ArrowDown
-                  className="text-brand size-3 shrink-0"
+                  className="size-3 shrink-0 text-white"
                   strokeWidth={3.5}
                 />
               </span>

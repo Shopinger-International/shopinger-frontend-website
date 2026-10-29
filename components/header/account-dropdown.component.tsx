@@ -22,43 +22,32 @@ import { clsx } from "clsx";
 // hooks
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
 import { useLogoutModalContext } from "@/provider/logout-modal-provider";
-import { useLoginTooltipContext } from "@/provider/login-tooltip.provider";
 
 const AccountDropdown: FC = () => {
   const { data: user_details } = useUserDetails();
   const { openModal: openLogoutModal } = useLogoutModalContext();
-  const { show_tooltip } = useLoginTooltipContext();
 
   return (
     <div className="hidden lg:inline">
       <Tooltip
         placement="bottom"
         offset_distance={6}
+        trigger="click"
         className={clsx(
-          "z-50 w-52 rounded-xl border border-neutral-300 bg-white shadow-lg",
-          show_tooltip && "tooltip-jiggle",
+          "z-50 w-52 rounded-xl border border-neutral-300 bg-white shadow-lg hover:cursor-pointer",
         )}
-        default_open={show_tooltip}
+        show_tooltip={!!user_details}
         strategy="fixed"
         content={({ handleClose }) => (
           <div>
             {/* Auth ww. tion */}
-            {user_details ? (
+            {user_details && (
               <div className="flex flex-col gap-3 px-3 py-3">
                 <p className="text-sm font-semibold">Account </p>
               </div>
-            ) : (
-              <div className="flex flex-col gap-3 px-3 py-3">
-                <Link
-                  href="/login"
-                  className="rounded-lg bg-brand py-2 text-center font-semibold text-white transition hover:bg-orange-600"
-                >
-                  Log in
-                </Link>
-              </div>
             )}
             {/* Menu section */}
-            {!show_tooltip && (
+            {user_details && (
               <div className={"border-t border-gray-300"}>
                 {[
                   {
@@ -85,9 +74,10 @@ const AccountDropdown: FC = () => {
                   <Link
                     key={label}
                     href={href}
+                    onClick={handleClose}
                     className={clsx(
                       "flex items-center gap-3 px-4 py-3 text-sm",
-                      "transition hover:bg-brand hover:text-white",
+                      "hover:bg-brand transition hover:text-white",
                     )}
                   >
                     <Icon className="size-5" />
@@ -103,7 +93,7 @@ const AccountDropdown: FC = () => {
                   onClick={() => openLogoutModal({})}
                   className={clsx(
                     "flex w-full items-center gap-3 px-4 py-3 text-sm",
-                    "transition hover:bg-brand hover:text-white",
+                    "hover:bg-brand transition hover:text-white",
                   )}
                 >
                   <LogOut className="size-5" />
@@ -118,9 +108,11 @@ const AccountDropdown: FC = () => {
           user_details ? (
             <button
               className={clsx(
-                "flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-black",
+                "flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-black hover:cursor-pointer",
                 "transition hover:bg-white/10 focus:outline-none",
               )}
+              aria-expanded={open}
+              aria-haspopup="menu"
             >
               <CircleUserRound className="size-6" />
               <span className="max-w-28 truncate">
@@ -134,14 +126,10 @@ const AccountDropdown: FC = () => {
                 "transition hover:bg-white/10 focus:outline-none",
               )}
             >
-              <CircleUserRound className="size-6" strokeWidth={1.5} />
-              <span className="font-semibold">Log In</span>
-              <Triangle
-                className={clsx(
-                  "size-2.5 fill-black transition-transform",
-                  open ? "rotate-0" : "rotate-180",
-                )}
-              />
+              <CircleUserRound className="size-6" strokeWidth={1.3} />
+              <Link href="/login" className="font-normal hover:cursor-pointer">
+                Log In
+              </Link>
             </button>
           )
         }
