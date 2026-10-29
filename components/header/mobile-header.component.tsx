@@ -132,10 +132,10 @@ const MobileHeader: FC = () => {
                 "flex h-10 shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md px-3 text-sm transition-colors",
                 is_active
                   ? is_cat_grocery
-                    ? "bg-green-100 text-green-700"
+                    ? "border border-green-200 bg-green-100 text-green-700"
                     : is_cat_pharmacy
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-brand bg-orange-100"
+                      ? "border border-blue-200 bg-blue-100 text-blue-700"
+                      : "text-brand border border-orange-200 bg-orange-100"
                   : "bg-white text-gray-900 shadow-xs hover:bg-gray-50",
               ].join(" ")}
             >
