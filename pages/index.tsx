@@ -95,14 +95,17 @@ const HomePage: NextPageWithLayout = () => {
           role="status"
           aria-label="Loading home page"
         >
-          <div className="flex flex-col items-center justify-center gap-2 motion-safe:animate-bounce">
-            <Image
-              src="/Shopinger-Cart-Icon.svg"
-              alt=""
-              width={76}
-              height={60}
-              priority
-            />
+          <div className="flex flex-col items-center justify-center gap-2">
+            <div className="motion-safe:animate-bounce">
+              <Image
+                src="/Shopinger-Cart-Icon.svg"
+                alt=""
+                width={76}
+                height={60}
+                priority
+              />
+            </div>
+
             <span className="text-brand text-center text-sm font-semibold">
               Shopinger
             </span>
@@ -115,6 +118,7 @@ const HomePage: NextPageWithLayout = () => {
             <CampaignTimer />
             {/* <HighlightsBar /> */}
             <ShopByCategory />
+
             {/* Continue Shopping */}
             <LazyHomeSection>
               {continue_shopping_recommendations.length > 0 && (
@@ -137,6 +141,17 @@ const HomePage: NextPageWithLayout = () => {
                 view_all_href="section/trending-products"
               />
             )}
+            {/* Deals of the Day */}
+            <LazyHomeSection>
+              <BestDeals
+                products={deals_of_the_day}
+                fallback_products={
+                  trending_product_recommendations.length > 0
+                    ? trending_product_recommendations
+                    : featured_products
+                }
+              />
+            </LazyHomeSection>
             <LazyHomeSection>
               {/* New Arrivals Row */}
               {new_arrivals.length > 0 && (
@@ -176,18 +191,6 @@ const HomePage: NextPageWithLayout = () => {
                   title="Handpicked for You"
                 />
               )}
-            </LazyHomeSection>
-
-            {/* Deals of the Day */}
-            <LazyHomeSection>
-              <BestDeals
-                products={deals_of_the_day}
-                fallback_products={
-                  trending_product_recommendations.length > 0
-                    ? trending_product_recommendations
-                    : featured_products
-                }
-              />
             </LazyHomeSection>
           </div>
           <LazyHomeSection>

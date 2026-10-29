@@ -113,7 +113,7 @@ const BestDeals: FC<IProps> = ({ products = [], fallback_products = [] }) => {
       title="Deals of the day"
       subtitle="Explore today's best discounted products and limited-time offers"
       products={final_products}
-      background_style="bg-gradient-to-r from-orange-100/90 via-orange-50 to-orange-100/90 border border-orange-200/80 shadow-xs"
+      background_style="bg-gradient-to-r from-blue-200/90 via-blue-50 to-blue-200/90 border border-blue-200/80 shadow-xs"
       CardComponent={HomeProductCard}
     />
   );
