@@ -146,7 +146,7 @@ const HomeProductRow = <T extends IHomeProduct = IHomeProduct>({
               return (
                 <li
                   key={item_key}
-                  className="w-30 min-w-30 shrink-0 grow-0 select-none sm:w-36 sm:min-w-36 md:w-44 md:min-w-44"
+                  className="w-30 min-w-30 shrink-0 grow-0 select-none sm:w-40 sm:min-w-40 md:w-44 md:min-w-44"
                 >
                   {renderCard ? (
                     renderCard(product)

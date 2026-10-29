@@ -200,7 +200,14 @@ const LocationTooltipContent: FC<{
   }, []);
 
   return (
-    <div className="h-full w-full">
+    <div
+      className="h-full w-full"
+      onPointerDown={(event) => {
+        if (event.target !== input_ref.current) {
+          input_ref.current?.blur();
+        }
+      }}
+    >
       {/* Heading & Subtitle Header */}
 
       <div className="sticky top-0 space-y-4 border-b border-gray-300 bg-white p-3 lg:p-2.5">
@@ -242,7 +249,7 @@ const LocationTooltipContent: FC<{
         </div>
       </div>
 
-      <div className="h-[calc(100%-63px)] overflow-y-auto bg-gray-100 p-3 lg:p-2.5">
+      <div className="max-h-[min(70vh,32rem)] overflow-y-auto bg-gray-100 p-3 lg:p-2.5">
         {!query.trim() &&
           !is_delivery_unavailable &&
           (location_access_enabled ? (
