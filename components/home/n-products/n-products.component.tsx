@@ -94,10 +94,10 @@ const NProducts = () => {
   }, [has_started_loading_more, hasNextPage, isProductPending]);
   return (
     <div className="max-w-8xl mx-auto w-full space-y-4 px-4 pb-4">
-      <h2 className="text-base font-bold text-gray-900 sm:text-lg md:text-xl tracking-tight">
+      <h2 className="text-base font-bold tracking-tight text-gray-900 sm:text-lg md:text-xl">
         Personalized Products For You
       </h2>
-      <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3.5 md:grid-cols-4 xl:grid-cols-5">
         {isProductPending
           ? Array.from({ length: 20 }).map((_, i) => (
               <ProductCardSkeleton key={`initial-skeleton-${i}`} />
@@ -120,40 +120,23 @@ const NProducts = () => {
       </div>
 
       {/* observer */}
-      {show_view_more ? (
+      {show_view_more && user_details ? (
         <div className="relative mx-auto my-4 max-w-xl overflow-hidden rounded-xl border border-orange-200 bg-linear-to-br from-orange-50 via-white to-amber-50 px-4 py-4 sm:my-8 sm:px-6 sm:py-5">
           <div className="relative flex flex-col gap-4 sm:items-center sm:justify-between sm:gap-6">
             <h3 className="w-full text-center text-sm leading-5 font-semibold text-gray-900 sm:text-xl">
-              {user_details
-                ? "Explore more products based on your interests"
-                : "Log in to see personalized products"}
+              Explore more products based on your interests
             </h3>
 
             <button
               type="button"
               onClick={() => {
-                if (user_details) {
-                  setHasStartedLoadingMore(true);
-                  fetchNextPage();
-                } else {
-                  openLoginModal({
-                    is_modal: true,
-                    title: "Log In for better experience",
-                    onSuccess() {},
-                    onCancel() {},
-                  });
-                }
+                setHasStartedLoadingMore(true);
+                fetchNextPage();
               }}
-              disabled={is_logged_in && isFetchingNextPage}
-              className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-orange-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:text-sm"
+              disabled={isFetchingNextPage}
+              className="group bg-brand inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-orange-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:text-sm"
             >
-              <span>
-                {user_details
-                  ? isFetchingNextPage
-                    ? "Loading..."
-                    : "View more"
-                  : "Log In"}
-              </span>
+              <span>{isFetchingNextPage ? "Loading..." : "View more"}</span>
               <ArrowRight className="size-4 text-white" />
             </button>
           </div>

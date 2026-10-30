@@ -157,7 +157,7 @@ const MobileHeader: FC = () => {
         ref={searchRef}
         className="lg:hidden"
       >
-        <SearchBar />
+        <SearchBar hide_submit_button={true} />
       </div>
     </div>
   );
