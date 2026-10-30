@@ -200,7 +200,7 @@ const ProductDetails: FC<IProps> = ({
     <section className="order-9 flex h-full flex-col">
       <div className="flex-1">
         {!!full_top_highlights.length && (
-          <ExtendedDisclosure default_open={true} heading="Top Highlights">
+          <ExtendedDisclosure default_open={true} heading="Highlights">
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
               {full_top_highlights.map((item, index) => {
                 const is_in_last_row = index >= full_top_highlights.length - 2;
@@ -235,7 +235,7 @@ const ProductDetails: FC<IProps> = ({
             {updated_key_features.length > initial_visible && (
               <button
                 onClick={() => setShowAll(!show_all)}
-                className="mt-1 font-medium text-brand hover:underline"
+                className="text-brand mt-1 font-medium hover:underline"
                 aria-expanded={show_all}
                 aria-controls="key-features-content"
               >
