@@ -81,13 +81,6 @@ const AccountPage: NextPageWithLayout = () => {
             </NavigationCard>
 
             <NavigationCard
-              title="My Cart"
-              description="Review items in your cart, update quantities, or proceed to checkout"
-              href="/cart-checkout"
-            >
-              <span className="text-2xl">🛒</span>
-            </NavigationCard>
-            <NavigationCard
               title="My Wishlist"
               description="View and manage your saved products for future purchases"
               href="/wishlist"
