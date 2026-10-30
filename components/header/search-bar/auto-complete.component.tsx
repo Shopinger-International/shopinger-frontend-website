@@ -258,7 +258,7 @@ const AutoComplete: FC<
         detachedSearchButtonPlaceholder: "hidden",
         detachedSearchButtonIcon: show_search_icon_only
           ? "[&_svg]:!text-gray-900"
-          : "!text-brand bg-brand",
+          : "!text-brand ",
         detachedSearchButtonQuery: show_search_icon_only
           ? "hidden"
           : "pl-2 md:p-0",
