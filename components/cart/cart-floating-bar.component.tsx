@@ -29,7 +29,7 @@ const CartFloatingBar: FC<IProps> = ({ show_bottom_navigation }) => {
     <Link
       href="/cart-checkout"
       aria-label={`View cart with ${cart.total_items} ${item_label}. Total ₹${total_amount}`}
-      className="fixed inset-x-4 z-40 mx-auto flex max-w-2xl items-center justify-between rounded-xl bg-green-600 px-4 py-3 text-white shadow-lg transition-transform active:scale-[0.99] lg:hidden"
+      className="fixed inset-x-4 z-40 mx-auto flex max-w-2xl items-center justify-between rounded-xl bg-green-700 px-4 py-3 text-white shadow-lg transition-transform active:scale-[0.99] lg:hidden"
       style={{
         bottom: show_bottom_navigation
           ? "calc(var(--bottom-nav-height, 4rem) + env(safe-area-inset-bottom) + 0.75rem)"

@@ -180,7 +180,7 @@ const ProductInfo: FC<IProps> = ({
           </h1>
           <h2 className="sr-only">Price</h2>
           <p>
-            <span className="mr-5 inline-block rounded-md bg-green-700 px-2 py-1 text-2xl text-white lg:text-3xl">
+            <span className="text-blue mr-5 inline-block rounded-md bg-yellow-300 px-2 py-1 text-2xl lg:text-3xl">
               ₹{selling_price_with_commission}{" "}
             </span>
             {!!discount_percentage && (
