@@ -217,9 +217,9 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
             <h3 className="text-2xs px-2s mt-2 line-clamp-2 leading-snug font-semibold text-gray-900 sm:text-xs">
               {title}
             </h3>
-            <div className="px-2">
-              <ProductDeliveryTimeBadge />
-            </div>
+
+            <ProductDeliveryTimeBadge />
+
             {avg_rating != undefined && (
               <div
                 className="mt-1 flex w-full min-w-0 items-center gap-1 px-2 text-[10px] sm:text-xs"
