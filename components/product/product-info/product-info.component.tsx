@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Script from "next/script";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // const
 import { ANALYTICS_SOURCE_TYPE } from "@/constants/analytics.constant";
@@ -14,7 +14,7 @@ import type { IReportModalState } from "@/pages/[product_slug]/p/[product_id]/re
 import type { IFormattedCategoryMapping } from "@/pages/[product_slug]/p/[product_id]/[variant_id]";
 
 // icons
-import { Star, ChevronDown, ArrowDown } from "lucide-react";
+import { Star, ChevronDown, ArrowDown, Minus, Plus } from "lucide-react";
 
 // local components
 import VariantSelection from "@/components/product/variant-selection.component";
@@ -25,11 +25,11 @@ import DeliveryDetails from "@/components/product/product-info/delivery-details.
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
-import useCreateBuyingIntentMutation from "@/hooks/axios/checkout/use-create-buying-intent-mutation.hook";
+import useCart from "@/hooks/axios/cart/use-cart.hook";
+import useCartItemIncreaseMutation from "@/hooks/axios/cart/use-cart-item-increase-mutation.hook";
+import useCartItemDecreaseMutation from "@/hooks/axios/cart/use-cart-item-decrease-mutation.hook";
+import useCartItemRemoveMutation from "@/hooks/axios/cart/use-cart-item-remove-mutation.hook";
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
-
-// hooks
-import { useLoginModalContext } from "@/provider/login-modal-provider";
 
 // helpers
 import { generateSlug } from "@/helpers/product.helper";
@@ -39,7 +39,6 @@ import insightsClient from "@/lib/algolia/algolia-insight.lib";
 
 // analytics events
 import addedToCartEvent from "@/analytics/events/added-to-cart.event";
-import buyNowClickedEvent from "@/analytics/events/buy-now-clicked.event";
 
 type IProps = {
   product: IProduct;
@@ -62,13 +61,36 @@ const ProductInfo: FC<IProps> = ({
   is_product_available,
   handleReportModalState,
 }) => {
-  const { openModal: openLoginModal } = useLoginModalContext();
   const router = useRouter();
   const { data: user_details } = useUserDetails();
   const user_id = user_details?.id;
-  const is_logged_in = !!user_details;
-  const create_buying_intent_mutation = useCreateBuyingIntentMutation();
+  const { data: cart_data, refetch: refetch_cart } = useCart();
   const add_to_cart_mutation = useAddToCartMutation();
+  const increase_mutation = useCartItemIncreaseMutation();
+  const decrease_mutation = useCartItemDecreaseMutation();
+  const remove_mutation = useCartItemRemoveMutation();
+  const [pending_quantity, setPendingQuantity] = useState<number | null>(null);
+  const cart_quantity =
+    cart_data?.items
+      .find((item) => item.id === product.id)
+      ?.variants.find((cart_variant) => cart_variant.id === variant.id)
+      ?.selected_stock ?? 0;
+  const display_quantity = pending_quantity ?? cart_quantity;
+  const is_quantity_mutation_pending =
+    pending_quantity !== null ||
+    add_to_cart_mutation.isPending ||
+    increase_mutation.isPending ||
+    decrease_mutation.isPending ||
+    remove_mutation.isPending;
+
+  const refreshCart = async () => {
+    try {
+      await refetch_cart();
+    } finally {
+      setPendingQuantity(null);
+    }
+  };
+
   const { title, brand } = product;
   const updated_title =
     !brand || brand.toLocaleLowerCase() == "generic" || title.includes(brand)
@@ -157,7 +179,7 @@ const ProductInfo: FC<IProps> = ({
           </h1>
           <h2 className="sr-only">Price</h2>
           <p>
-            <span className="text-2xl lg:text-3xl">
+            <span className="mr-5 inline-block rounded-md bg-green-700 px-2 py-1 text-2xl text-white lg:text-3xl">
               ₹{selling_price_with_commission}{" "}
             </span>
             {!!discount_percentage && (
@@ -233,92 +255,79 @@ const ProductInfo: FC<IProps> = ({
           id="buy-cta-container"
           className="fixed bottom-0 left-0 z-30 flex w-full gap-3 border-t border-gray-300 bg-white px-4 py-3 shadow-md md:z-30 lg:sticky lg:z-10 lg:border-none lg:px-0 lg:shadow-none"
         >
-          <button
-            onClick={() => {
-              add_to_cart_mutation.mutate(
-                {
-                  product_id: product.id,
-                  variant_id: variant.id,
-                  quantity: 1,
-                },
-                {
-                  onSuccess() {
-                    addedToCartEvent({
-                      user_id,
-                      product_id: product.id,
-                      variant_id: variant.id,
-                      category_id: product.sub_sub_category_id,
-                      category_type: "SUB_SUB",
-                      source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                    });
+          {display_quantity > 0 ? (
+            <div className="border-brand bg-brand flex w-full items-center justify-between rounded-md border py-2 font-semibold text-white">
+              <button
+                type="button"
+                aria-label="Decrease quantity"
+                disabled={is_quantity_mutation_pending}
+                className="flex flex-1 cursor-pointer justify-center disabled:cursor-not-allowed"
+                onClick={() => {
+                  const next_quantity = Math.max(0, display_quantity - 1);
+                  setPendingQuantity(next_quantity);
 
-                    const query = router.query;
-                    const query_id =
-                      typeof query.query_id === "string"
-                        ? query.query_id
-                        : undefined;
-
-                    const index_name =
-                      typeof query.index_name === "string"
-                        ? query.index_name
-                        : undefined;
-
-                    const object_id =
-                      typeof query.object_id === "string"
-                        ? query.object_id
-                        : undefined;
-
-                    query_id &&
-                      index_name &&
-                      object_id &&
-                      insightsClient("addedToCartObjectIDsAfterSearch", {
-                        eventName: "Add to Cart",
-                        index: index_name,
-                        queryID: query_id,
-                        objectIDs: [object_id],
-                        objectData: [
-                          {
-                            price: selling_price_with_commission,
-                            discount: mrp - selling_price_with_commission,
-                            quantity: 1,
-                          },
-                        ],
-                        value: selling_price_with_commission,
-                        currency: "INR",
-                      });
-                  },
-                },
-              );
-            }}
-            disabled={add_to_cart_mutation.isPending || !is_product_available}
-            className="w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 font-semibold text-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600"
-          >
-            Add to cart
-          </button>
-          <button
-            className="bg-brand w-full cursor-pointer rounded-md py-2 font-semibold text-white disabled:bg-orange-300"
-            disabled={
-              create_buying_intent_mutation.isPending || !is_product_available
-            }
-            onClick={() => {
-              user_id &&
-                buyNowClickedEvent({
-                  user_id,
-                  product_id: product.id,
-                  variant_id: variant.id,
-                  category_id: product.sub_sub_category_id,
-                  category_type: "SUB_SUB",
-                  source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
-                });
-              if (is_logged_in) {
-                create_buying_intent_mutation.mutate(
+                  if (cart_quantity > 1) {
+                    decrease_mutation.mutate(
+                      { variant_id: variant.id },
+                      {
+                        onSuccess: refreshCart,
+                        onError: () => setPendingQuantity(null),
+                      },
+                    );
+                  } else {
+                    remove_mutation.mutate(
+                      { product_id: product.id, variant_id: variant.id },
+                      {
+                        onSuccess: refreshCart,
+                        onError: () => setPendingQuantity(null),
+                      },
+                    );
+                  }
+                }}
+              >
+                <Minus className="size-5" aria-hidden="true" />
+              </button>
+              <span aria-live="polite">{display_quantity}</span>
+              <button
+                type="button"
+                aria-label="Increase quantity"
+                disabled={is_quantity_mutation_pending || !is_product_available}
+                className="flex flex-1 cursor-pointer justify-center disabled:cursor-not-allowed"
+                onClick={() => {
+                  setPendingQuantity(display_quantity + 1);
+                  increase_mutation.mutate(
+                    { variant_id: variant.id },
+                    {
+                      onSuccess: refreshCart,
+                      onError: () => setPendingQuantity(null),
+                    },
+                  );
+                }}
+              >
+                <Plus className="size-5" aria-hidden="true" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                setPendingQuantity(1);
+                add_to_cart_mutation.mutate(
                   {
                     product_id: product.id,
                     variant_id: variant.id,
                     quantity: 1,
                   },
                   {
-                    onSuccess({ intent_id }) {
+                    async onSuccess() {
+                      addedToCartEvent({
+                        user_id,
+                        product_id: product.id,
+                        variant_id: variant.id,
+                        category_id: product.sub_sub_category_id,
+                        category_type: "SUB_SUB",
+                        source: ANALYTICS_SOURCE_TYPE.PRODUCT_DETAILS,
+                      });
+
                       const query = router.query;
                       const query_id =
                         typeof query.query_id === "string"
@@ -334,66 +343,40 @@ const ProductInfo: FC<IProps> = ({
                         typeof query.object_id === "string"
                           ? query.object_id
                           : undefined;
-                      router.push({
-                        pathname: `/checkout/${intent_id}`,
-                        query: {
-                          ...(query_id ? { query_id } : {}),
-                          ...(index_name ? { index_name } : {}),
-                          ...(object_id ? { object_id } : {}),
-                        },
-                      });
+
+                      query_id &&
+                        index_name &&
+                        object_id &&
+                        insightsClient("addedToCartObjectIDsAfterSearch", {
+                          eventName: "Add to Cart",
+                          index: index_name,
+                          queryID: query_id,
+                          objectIDs: [object_id],
+                          objectData: [
+                            {
+                              price: selling_price_with_commission,
+                              discount: mrp - selling_price_with_commission,
+                              quantity: 1,
+                            },
+                          ],
+                          value: selling_price_with_commission,
+                          currency: "INR",
+                        });
+
+                      await refreshCart();
+                    },
+                    onError() {
+                      setPendingQuantity(null);
                     },
                   },
                 );
-              } else {
-                openLoginModal({
-                  is_modal: true,
-                  title: "Log in to complete your purchase",
-                  onSuccess(user) {
-                    if (user) {
-                      create_buying_intent_mutation.mutate(
-                        {
-                          product_id: product.id,
-                          variant_id: variant.id,
-                          quantity: 1,
-                        },
-                        {
-                          onSuccess({ intent_id }) {
-                            const query = router.query;
-                            const query_id =
-                              typeof query.query_id === "string"
-                                ? query.query_id
-                                : undefined;
-
-                            const index_name =
-                              typeof query.index_name === "string"
-                                ? query.index_name
-                                : undefined;
-
-                            const object_id =
-                              typeof query.object_id === "string"
-                                ? query.object_id
-                                : undefined;
-                            router.push({
-                              pathname: `/checkout/${intent_id}`,
-                              query: {
-                                ...(query_id ? { query_id } : {}),
-                                ...(index_name ? { index_name } : {}),
-                                ...(object_id ? { object_id } : {}),
-                              },
-                            });
-                          },
-                        },
-                      );
-                    }
-                  },
-                  onCancel() {},
-                });
-              }
-            }}
-          >
-            Buy Now
-          </button>
+              }}
+              disabled={is_quantity_mutation_pending || !is_product_available}
+              className="bg-brand w-full cursor-pointer rounded-md border border-gray-300 py-2 font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600"
+            >
+              Add to cart
+            </button>
+          )}
         </div>
       </section>
     </>
