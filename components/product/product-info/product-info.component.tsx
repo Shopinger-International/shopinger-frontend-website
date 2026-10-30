@@ -22,6 +22,7 @@ import ProductDetails from "@/components/product/product-info/product-details.co
 import MobileProductGallary from "@/components/product/product-gallary/mobile-product-gallary.component";
 import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
 import DeliveryDetails from "@/components/product/product-info/delivery-details.component";
+import ProductDeliveryTimeBadge from "@/components/product/product-delivery-time-badge.component";
 
 // api hooks
 import useAddToCartMutation from "@/hooks/axios/cart/use-add-to-cart-mutation.hook";
@@ -203,6 +204,7 @@ const ProductInfo: FC<IProps> = ({
           )}
 
           <p className="text-sm">Inclusive of all taxes</p>
+          <ProductDeliveryTimeBadge />
           <div id="razorpay-affordability-widget" />
         </section>
 
