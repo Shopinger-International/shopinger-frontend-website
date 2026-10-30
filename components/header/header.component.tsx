@@ -59,6 +59,25 @@ const Header: FC<{
   const header_ref = useRef<HTMLElement>(null);
   const { openDrawer: openMegaMenuDrawer } = useMegaMenuContext();
   const { data: cart_details } = useCart();
+  const total_cart_items = cart_details?.total_items ?? 0;
+  const is_cart_disabled = total_cart_items < 1;
+  const cartClassName =
+    "hidden items-center gap-2 rounded-md bg-green-700 p-2 font-medium text-white lg:flex";
+  const cartContent = (
+    <>
+      <Cart width={30} height={24} fill="white" />
+      <div className="flex flex-col items-start">
+        <span className="text-sm leading-none font-bold">
+          {total_cart_items} item
+        </span>
+        {is_cart_disabled ? null : (
+          <span className="text-sm font-semibold">
+            ₹{cart_details?.total_amount ?? 0}
+          </span>
+        )}
+      </div>
+    </>
+  );
 
   useEffect(() => {
     const searchElement = document.getElementById(
@@ -150,7 +169,7 @@ const Header: FC<{
             )}
 
             <div className="flex w-full items-center gap-3">
-              <SearchBar />
+              <SearchBar hide_submit_button={true} />
               {!is_bottom_navigation_showing && (
                 <Link
                   href="/cart-checkout"
@@ -174,20 +193,18 @@ const Header: FC<{
             <div className="hidden lg:inline">
               <AccountDropdown />
             </div>
-            <Link
-              href="/cart-checkout"
-              className="hidden items-center gap-2 font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white lg:flex"
-              aria-label={`Cart with ${cart_details?.items.length ?? 0} items. Total ₹${cart_details?.total_amount ?? 0}. Go to checkout`}
-            >
-              <span className="relative inline-block">
-                <Cart width={36} height={30} fill="black" />
-
-                <span className="pointer-events-none absolute top-[35%] left-1/2 -translate-x-1/3 -translate-y-1/2 text-xs leading-none font-bold text-black">
-                  {cart_details?.total_items ?? 0}
-                </span>
-              </span>
-              <span aria-hidden="true">₹{cart_details?.total_amount ?? 0}</span>
-            </Link>
+            {is_cart_disabled ? (
+              <div
+                aria-disabled="true"
+                className={`${cartClassName} cursor-not-allowed opacity-50`}
+              >
+                {cartContent}
+              </div>
+            ) : (
+              <Link href="/cart-checkout" className={cartClassName}>
+                {cartContent}
+              </Link>
+            )}
           </div>
         </div>
 
@@ -205,7 +222,7 @@ const Header: FC<{
             : "pointer-events-none invisible -translate-y-3 opacity-0",
         )}
       >
-        <SearchBar />
+        <SearchBar hide_submit_button={true} />
       </div>
     </>
   );

@@ -11,6 +11,7 @@ import { Heart, ChevronRight, Star, ArrowDown } from "lucide-react";
 // local components
 import RatingSummaryPopover from "@/components/categories/rating-summary-popover.component";
 import ProductCardQuantityControl from "./product-card-quantity-control.component";
+import ProductDeliveryTimeBadge from "@/components/product/product-delivery-time-badge.component";
 
 // api hooks & helpers
 import useUserDetails from "@/hooks/axios/common/use-user-details.hook";
@@ -73,14 +74,26 @@ const ProductCard: FC<IProps> = ({
 
   const is_grocery =
     router.asPath.toLowerCase().includes("grocery") ||
-    router.query.main_category_slug?.toString().toLowerCase().includes("grocery");
+    router.query.main_category_slug
+      ?.toString()
+      .toLowerCase()
+      .includes("grocery");
   const is_pharmacy =
     router.asPath.toLowerCase().includes("pharmacy") ||
     router.asPath.toLowerCase().includes("personal-care") ||
     router.asPath.toLowerCase().includes("health") ||
-    router.query.main_category_slug?.toString().toLowerCase().includes("pharmacy") ||
-    router.query.main_category_slug?.toString().toLowerCase().includes("personal-care") ||
-    router.query.main_category_slug?.toString().toLowerCase().includes("health");
+    router.query.main_category_slug
+      ?.toString()
+      .toLowerCase()
+      .includes("pharmacy") ||
+    router.query.main_category_slug
+      ?.toString()
+      .toLowerCase()
+      .includes("personal-care") ||
+    router.query.main_category_slug
+      ?.toString()
+      .toLowerCase()
+      .includes("health");
 
   const [local_wishlisted, setLocalWishlisted] = useState<boolean | null>(null);
   const is_wishlisted =
@@ -136,7 +149,7 @@ const ProductCard: FC<IProps> = ({
   const media_url =
     typeof product_thumbnail === "string"
       ? product_thumbnail
-      : product_thumbnail?.url ?? "/shopinger-logo.svg";
+      : (product_thumbnail?.url ?? "/shopinger-logo.svg");
 
   const product_href = {
     pathname: src,
@@ -150,7 +163,7 @@ const ProductCard: FC<IProps> = ({
   return (
     <div
       className={clsx(
-        "group relative flex h-full w-full flex-col justify-between rounded-2xl p-2 sm:p-2.5 bg-white border transition-all duration-200",
+        "group relative flex h-full w-full flex-col justify-between rounded-2xl border bg-white p-2 transition-all duration-200 sm:p-2.5",
         is_grocery
           ? "border-green-100/60 lg:border-orange-100/60"
           : is_pharmacy
@@ -166,7 +179,7 @@ const ProductCard: FC<IProps> = ({
           aria-label={`View product ${title}`}
           className="block w-full"
         >
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white flex items-center justify-center">
+          <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-white">
             {/* Top-Left Discount Badge */}
             {discount_percentage > 0 && (
               <span
@@ -175,7 +188,7 @@ const ProductCard: FC<IProps> = ({
                   is_grocery
                     ? "text-secondary lg:text-brand"
                     : is_pharmacy
-                      ? "text-blue-500 lg:text-brand"
+                      ? "lg:text-brand text-blue-500"
                       : "text-brand",
                 )}
               >
@@ -195,7 +208,7 @@ const ProductCard: FC<IProps> = ({
                 remove_from_wishlist_mutation.isPending
               }
               onClick={handleWishlistClick}
-              className="absolute top-1.5 right-1.5 z-10 flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-brand shadow-2xs transition-transform active:scale-95"
+              className="text-brand absolute top-1.5 right-1.5 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white shadow-2xs transition-transform active:scale-95 sm:size-9"
             >
               <Heart
                 className={clsx(
@@ -203,14 +216,14 @@ const ProductCard: FC<IProps> = ({
                   is_grocery
                     ? "text-secondary lg:text-brand"
                     : is_pharmacy
-                      ? "text-blue-600 lg:text-brand"
+                      ? "lg:text-brand text-blue-600"
                       : "text-brand",
                   is_wishlisted &&
-                  (is_grocery
-                    ? "fill-secondary lg:fill-brand"
-                    : is_pharmacy
-                      ? "fill-blue-600 lg:fill-brand"
-                      : "fill-brand"),
+                    (is_grocery
+                      ? "fill-secondary lg:fill-brand"
+                      : is_pharmacy
+                        ? "lg:fill-brand fill-blue-600"
+                        : "fill-brand"),
                 )}
                 strokeWidth={2.2}
               />
@@ -224,7 +237,7 @@ const ProductCard: FC<IProps> = ({
                 alt={title}
                 fill
                 sizes="(max-width: 640px) 140px, 180px"
-                className="object-contain p-1 transition-transform duration-300 rounded-2xl"
+                className="rounded-2xl object-contain p-1 transition-transform duration-300"
               />
             </div>
 
@@ -241,7 +254,7 @@ const ProductCard: FC<IProps> = ({
                     event.preventDefault();
                     event.stopPropagation();
                   }}
-                  className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 rounded-md bg-rating-green px-1.5 py-0.5 text-2xs font-bold text-white shadow-2xs cursor-pointer hover:opacity-90"
+                  className="bg-rating-green text-2xs absolute bottom-1.5 left-1.5 z-10 flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-0.5 font-bold text-white shadow-2xs hover:opacity-90"
                 >
                   <span>{Number(avg_rating).toFixed(1)}</span>
                   <Star className="size-2.5 fill-white text-white" />
@@ -251,28 +264,29 @@ const ProductCard: FC<IProps> = ({
           </div>
 
           {/* Title */}
-          <h3 className="mt-2 line-clamp-2 text-2xs font-semibold leading-snug text-gray-900 sm:text-xs">
+          <h3 className="text-2xs mt-2 line-clamp-2 leading-snug font-semibold text-gray-900 sm:text-xs">
             {title}
           </h3>
 
           {/* Bought last month info */}
           {!!bought_last_month && (
-            <p className="mt-0.5 text-3xs sm:text-2xs font-medium text-gray-500 line-clamp-1">
+            <p className="text-3xs sm:text-2xs mt-0.5 line-clamp-1 font-medium text-gray-500">
               {bought_last_month} bought recently
             </p>
           )}
+          <ProductDeliveryTimeBadge />
         </Link>
       </div>
 
       {/* Price and Action Row (Fixed at Bottom) */}
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-y-1.5 gap-x-1 pt-2">
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-x-1 gap-y-1.5 pt-2">
         {Number(selling_price) > 0 && (
-          <div className="flex flex-col min-w-0 gap-0">
-            <span className="text-sm font-black text-gray-900 sm:text-base md:text-lg leading-tight truncate">
+          <div className="flex min-w-0 flex-col gap-0">
+            <span className="truncate text-sm leading-tight font-black text-gray-900 sm:text-base md:text-lg">
               ₹{Number(selling_price).toLocaleString()}
             </span>
             {Number(mrp) > Number(selling_price) && Number(mrp) > 0 && (
-              <span className="text-2xs font-medium text-gray-400 line-through leading-tight sm:text-xs truncate">
+              <span className="text-2xs truncate leading-tight font-medium text-gray-400 line-through sm:text-xs">
                 ₹{Number(mrp).toLocaleString()}
               </span>
             )}
@@ -283,7 +297,7 @@ const ProductCard: FC<IProps> = ({
           <Link
             aria-label="See all options"
             href={product_href}
-            className="flex h-7 sm:h-9 w-full min-[230px]:w-auto shrink-0 items-center justify-center gap-0.5 rounded-lg border border-gray-300 bg-white px-2 text-2xs font-medium text-gray-900 transition-colors hover:bg-gray-100 sm:rounded-xl sm:px-3 sm:text-xs"
+            className="text-2xs flex h-7 w-full shrink-0 items-center justify-center gap-0.5 rounded-lg border border-gray-300 bg-white px-2 font-medium text-gray-900 transition-colors hover:bg-gray-100 min-[230px]:w-auto sm:h-9 sm:rounded-xl sm:px-3 sm:text-xs"
           >
             <span>See options</span>
             <ChevronRight className="size-3.5 shrink-0" />

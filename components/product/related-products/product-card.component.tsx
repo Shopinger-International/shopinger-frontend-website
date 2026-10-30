@@ -4,6 +4,7 @@ import { ArrowDown } from "lucide-react";
 import type { FC } from "react";
 import type IMedia from "@/types/media";
 import { cn } from "@/lib/utils";
+import ProductDeliveryTimeBadge from "@/components/product/product-delivery-time-badge.component";
 
 type IProps = {
   title: string;
@@ -50,6 +51,7 @@ const ProductCard: FC<IProps> = ({ title, thumbnail, selling_price, mrp,average_
       <h3 className="mb-1.5 truncate text-base font-semibold text-gray-800">
         {title}
       </h3>
+      <ProductDeliveryTimeBadge />
       {!!discount_percentage && (
         <p
           className="font-sm mb-1.5 font-medium text-brand inline-flex items-center gap-0.5"
