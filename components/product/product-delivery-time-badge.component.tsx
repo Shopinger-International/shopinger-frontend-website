@@ -11,18 +11,16 @@ const ProductDeliveryTimeBadge: FC = () => {
   return (
     <p
       aria-label={`Estimated delivery: ${delivery_time} minutes`}
-      className="mt-1.5 inline-flex max-w-full items-center gap-1 rounded-lg bg-blue-100 px-2 py-1 text-[10px] text-orange-800 sm:text-xs"
+      className="gap mt-1.5 inline-flex max-w-full items-center rounded-lg px-2 py-1 text-[10px] text-black sm:text-xs"
     >
       <Zap
-        className="size-2.5 shrink-0 text-green-700"
+        className="size-2.5 shrink-0"
         strokeWidth={2.75}
-        fill="green"
+        fill="grey"
         aria-hidden="true"
       />
       <span className="truncate">
-        <span className="font-bold text-green-700">
-          {delivery_time} mins
-        </span>{" "}
+        <span className="font-bold">{delivery_time} mins</span>{" "}
       </span>
     </p>
   );
