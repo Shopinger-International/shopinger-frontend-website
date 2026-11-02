@@ -171,10 +171,10 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
           <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-white">
             {/* Top-Left Discount Badge */}
             {discount_perc > 0 && (
-              <span className="absolute top-0 left-0 z-10 inline-flex items-center gap-0.5 rounded-tl-xl rounded-br-lg bg-yellow-700 px-2 py-0.5 text-xs font-semibold tracking-tight text-white uppercase">
+              <span className="absolute top-0 left-0 z-10 inline-flex items-center gap-0.5 rounded-tl-xl rounded-br-lg bg-yellow-300 px-2 py-0.5 text-xs font-semibold tracking-tight text-black uppercase">
                 <span>{discount_perc}%</span>
                 <ArrowDown
-                  className="size-3 shrink-0 text-white"
+                  className="size-3 shrink-0 text-black"
                   strokeWidth={3.5}
                 />
               </span>
@@ -261,7 +261,7 @@ const HomeProductCard: FC<IHomeProductCardProps> = ({ product, className }) => {
               <div className="flex shrink-0 flex-col gap-0.5">
                 {Number(selling_price) > 0 ? (
                   <>
-                    <span className="text-xs leading-tight font-semibold whitespace-nowrap text-gray-900 sm:text-sm md:text-base">
+                    <span className="rounded-md bg-green-700 p-1 text-xs leading-tight font-semibold whitespace-nowrap text-white sm:text-sm md:text-base">
                       ₹{Number(selling_price).toLocaleString("en-IN")}
                     </span>
 
