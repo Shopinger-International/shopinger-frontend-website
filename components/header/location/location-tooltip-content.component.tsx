@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 // types
 import type { FC } from "react";
 import type { IPlace } from "@/types/address";
+import { FaWhatsapp } from "react-icons/fa6";
 
 // icons
 import { MapPin, Search, LocateFixed, ChevronRight, X } from "lucide-react";
@@ -340,6 +341,16 @@ const LocationTooltipContent: FC<{
               >
                 Try another location
               </button>
+              <a
+                href={`https://wa.me/${process.env.NEXT_PUBLIC_ADMIN_PHONE}?text=${encodeURIComponent("Hi, Shopinger is not available in my area. Can you help me check availability?")}`}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                aria-label="Contact Shopinger on WhatsApp about availability in your area"
+                className="flex h-10 w-full items-center justify-center gap-2 rounded-md border border-green-600 px-6 font-semibold text-green-700 transition-colors hover:bg-green-50"
+              >
+                <FaWhatsapp className="size-5" aria-hidden="true" />
+                Contact us on WhatsApp
+              </a>
               {/* <button
                 type="button"
                 onClick={handleClose}
