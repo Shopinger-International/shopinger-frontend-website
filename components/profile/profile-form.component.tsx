@@ -196,12 +196,12 @@ const ProfileForm: FC = () => {
         {otp_modal_state.type == "email-otp" && (
           <div className="mb-6 flex flex-col items-center gap-2">
             <span className="shrink-0 rounded-full bg-orange-100 p-4">
-              <Mail className="h-8 w-8 fill-brand text-white" />
+              <Mail className="fill-brand h-8 w-8 text-white" />
             </span>
             <h2 className="text-center text-2xl font-bold">Check your email</h2>
             <p className="jtext-gray-600 text-center">
               Enter the verification code sent to{" "}
-              <span className="font-medium text-brand">
+              <span className="text-brand font-medium">
                 {otp_modal_state.identifier}
               </span>
             </p>
@@ -210,12 +210,12 @@ const ProfileForm: FC = () => {
         {otp_modal_state.type == "phone-otp" && (
           <div className="mb-6 flex flex-col items-center gap-2">
             <span className="shrink-0 rounded-full bg-orange-100 p-4">
-              <Phone className="h-8 w-8 fill-brand text-white" />
+              <Phone className="fill-brand h-8 w-8 text-white" />
             </span>
             <h2 className="text-center text-2xl font-bold">Check your Phone</h2>
             <p className="jtext-gray-600 text-center">
               Enter the verification code sent to{" "}
-              <span className="font-medium text-brand">
+              <span className="text-brand font-medium">
                 {otp_modal_state.identifier}
               </span>
             </p>
@@ -233,12 +233,12 @@ const ProfileForm: FC = () => {
         {!is_editing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-brand hover:bg-orange-50 sm:border sm:border-brand"
+            className="text-brand sm:border-brand rounded-lg px-4 py-2 text-sm font-medium hover:bg-orange-50 sm:border"
           >
             <span className="hidden font-semibold sm:inline-block">
               Edit Profile
             </span>
-            <Pen className="inline-block size-4 text-brand sm:hidden" />
+            <Pen className="text-brand inline-block size-4 sm:hidden" />
           </button>
         )}
       </div>
@@ -292,7 +292,7 @@ const ProfileForm: FC = () => {
                   ) && (
                     <button
                       type="button"
-                      className="h-11 shrink-0 rounded-lg bg-brand px-4 font-medium text-white"
+                      className="bg-brand h-11 shrink-0 rounded-lg px-4 font-medium text-white"
                       onClick={() => {
                         (setDetails(values),
                           send_otp_mutation.mutate(
@@ -361,7 +361,7 @@ const ProfileForm: FC = () => {
                           },
                         );
                       }}
-                      className="h-11 shrink-0 rounded-lg bg-brand px-4 font-medium text-white"
+                      className="bg-brand h-11 shrink-0 rounded-lg px-4 font-medium text-white"
                     >
                       Send OTP
                     </button>
@@ -383,8 +383,9 @@ const ProfileForm: FC = () => {
               <ExtendedField
                 type="date"
                 name="dob"
-                label="Date of Birth"
+                label="Your Birthday"
                 placeholder="Select your date of birth"
+                helperText="We will use this to send you personalized Birthday Wishes"
                 disabled={!is_editing}
               />
             </div>
@@ -400,7 +401,7 @@ const ProfileForm: FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:bg-orange-300 sm:w-auto"
+                  className="bg-brand w-full rounded-lg px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:bg-orange-300 sm:w-auto"
                   disabled={
                     !verification_flag.is_email_verified ||
                     !verification_flag.is_phone_verified ||
