@@ -28,6 +28,7 @@ type IExtendedFieldProps =
       name: string;
       label: string;
       placeholder?: string;
+      helperText?: string;
       handleOnChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     }
   | {
@@ -35,6 +36,7 @@ type IExtendedFieldProps =
       name: string;
       label: string;
       placeholder: string;
+      helperText?: string;
       options: IOption[];
       handleOnChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     };
@@ -43,7 +45,7 @@ const ExtendedField: FC<
   IExtendedFieldProps & { disabled?: boolean; children?: ReactNode }
 > = ({ children, ...props }) => {
   const { values } = useFormikContext<IInitialValues>();
-  const { name, label, disabled, handleOnChange } = props;
+  const { name, label, disabled, handleOnChange, helperText } = props;
 
   return (
     <Field name={name}>
@@ -157,6 +159,9 @@ const ExtendedField: FC<
           <div className="flex flex-1 flex-col gap-2">
             <label className="text-sm font-medium text-gray-900">{label}</label>
             {input_comp()}
+            {helperText && (
+              <p className="text-xs text-gray-500">{helperText}</p>
+            )}
             {has_error && <p className="text-xs text-red-500">{meta.error}</p>}
           </div>
         );
